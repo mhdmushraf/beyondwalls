@@ -71,7 +71,7 @@ export default function BookSlot() {
 
   const { data: screens = [] } = useQuery({
     queryKey: ["available-screens"],
-    queryFn: () => base44.entities.Screen.filter({ status: "online", is_public: true })
+    queryFn: () => base44.entities.Screen.filter({ status: "online" })
   });
 
   const { data: venues = [] } = useQuery({
