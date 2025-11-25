@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import {
   Search,
@@ -12,23 +12,80 @@ import {
   Megaphone,
   CheckCircle2,
   Clock,
-  XCircle
+  XCircle,
+  Wallet,
+  Plus,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 export default function AdminUsers() {
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
+  const [showWalletDialog, setShowWalletDialog] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [walletAmount, setWalletAmount] = useState("");
+  const [walletLoading, setWalletLoading] = useState(false);
 
   const { data: users = [], isLoading } = useQuery({
     queryKey: ["admin-users"],
     queryFn: () => base44.entities.User.list("-created_date")
   });
+
+  const handleAddWallet = (user) => {
+    setSelectedUser(user);
+    setWalletAmount("");
+    setShowWalletDialog(true);
+  };
+
+  const handleWalletSubmit = async () => {
+    const amount = parseFloat(walletAmount);
+    if (!amount || amount <= 0) {
+      toast.error("Please enter a valid amount");
+      return;
+    }
+
+    setWalletLoading(true);
+    try {
+      const newBalance = (selectedUser.wallet_balance || 0) + amount;
+      await base44.entities.User.update(selectedUser.id, {
+        wallet_balance: newBalance
+      });
+
+      await base44.entities.Transaction.create({
+        user_id: selectedUser.email,
+        type: "top_up",
+        amount: amount,
+        balance_after: newBalance,
+        description: "Admin wallet top-up",
+        status: "completed",
+        payment_method: "bank_transfer"
+      });
+
+      toast.success(`Added AED ${amount.toLocaleString()} to ${selectedUser.full_name}'s wallet`);
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+      setShowWalletDialog(false);
+    } catch (error) {
+      toast.error("Failed to add wallet balance");
+    } finally {
+      setWalletLoading(false);
+    }
+  };
 
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.full_name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -215,9 +272,20 @@ export default function AdminUsers() {
                         </Badge>
                       </td>
                       <td className="p-4">
-                        <p className="font-medium text-slate-900">
-                          AED {user.wallet_balance?.toLocaleString() || 0}
-                        </p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium text-slate-900">
+                            AED {user.wallet_balance?.toLocaleString() || 0}
+                          </p>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleAddWallet(user)}
+                            className="h-7 px-2"
+                          >
+                            <Plus className="w-3 h-3 mr-1" />
+                            Add
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -227,6 +295,61 @@ export default function AdminUsers() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Add Wallet Dialog */}
+      <Dialog open={showWalletDialog} onOpenChange={setShowWalletDialog}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Wallet className="w-5 h-5 text-violet-600" />
+              Add Wallet Balance
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
+              <Avatar>
+                <AvatarImage src={selectedUser?.avatar_url} />
+                <AvatarFallback className="bg-violet-500 text-white">
+                  {selectedUser?.full_name?.charAt(0) || "U"}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="font-medium">{selectedUser?.full_name}</p>
+                <p className="text-sm text-slate-500">
+                  Current: AED {selectedUser?.wallet_balance?.toLocaleString() || 0}
+                </p>
+              </div>
+            </div>
+            <div>
+              <Label>Amount to Add (AED)</Label>
+              <Input
+                type="number"
+                placeholder="Enter amount"
+                value={walletAmount}
+                onChange={(e) => setWalletAmount(e.target.value)}
+                min="1"
+                className="mt-1"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowWalletDialog(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleWalletSubmit}
+              disabled={walletLoading || !walletAmount}
+              className="bg-gradient-to-r from-violet-600 to-indigo-600"
+            >
+              {walletLoading ? (
+                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Adding...</>
+              ) : (
+                <><Plus className="w-4 h-4 mr-2" /> Add Balance</>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
