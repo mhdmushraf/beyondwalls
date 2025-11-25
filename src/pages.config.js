@@ -36,6 +36,7 @@ import AdminUserApprovals from './pages/AdminUserApprovals';
 import Wallet from './pages/Wallet';
 import ManageOwnerSlots from './pages/ManageOwnerSlots';
 import MyBookings from './pages/MyBookings';
+import AICampaignCreator from './pages/AICampaignCreator';
 import __Layout from './Layout.jsx';
 
 
@@ -78,6 +79,7 @@ export const PAGES = {
     "Wallet": Wallet,
     "ManageOwnerSlots": ManageOwnerSlots,
     "MyBookings": MyBookings,
+    "AICampaignCreator": AICampaignCreator,
 }
 
 export const pagesConfig = {
