@@ -34,32 +34,26 @@ export default function AICampaignOptimizer({ userId, compact = false }) {
   const queryClient = useQueryClient();
 
   // Fetch user's bookings and campaigns
-  const { data: bookings = [], isLoading: loadingBookings } = useQuery({
+  const { data: bookings = [] } = useQuery({
     queryKey: ["optimizer-bookings", userId],
     queryFn: () => base44.entities.AdSlotBooking.filter({ advertiser_id: userId }),
     enabled: !!userId
   });
 
-  const { data: campaigns = [], isLoading: loadingCampaigns } = useQuery({
+  const { data: campaigns = [] } = useQuery({
     queryKey: ["optimizer-campaigns", userId],
     queryFn: () => base44.entities.Campaign.filter({ advertiser_id: userId }),
     enabled: !!userId
   });
 
-  const { data: screens = [], isLoading: loadingScreens } = useQuery({
+  const { data: screens = [] } = useQuery({
     queryKey: ["optimizer-screens"],
     queryFn: () => base44.entities.Screen.list(),
     enabled: !!userId
   });
 
-  const isLoading = loadingBookings || loadingCampaigns || loadingScreens;
   const activeBookings = bookings.filter(b => b.status === "active");
   const activeCampaigns = campaigns.filter(c => c.status === "active");
-
-  // Don't render anything if no userId
-  if (!userId) {
-    return null;
-  }
 
   const analyzePerformance = async () => {
     if (activeBookings.length === 0 && activeCampaigns.length === 0) {
@@ -430,18 +424,12 @@ Focus on:
             <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center mx-auto mb-3">
               <Sparkles className="w-6 h-6 text-violet-600" />
             </div>
-            {isLoading ? (
-              <p className="text-sm text-slate-500">Loading campaign data...</p>
-            ) : (
-              <>
-                <p className="text-sm text-slate-600 mb-1">
-                  {activeBookings.length + activeCampaigns.length} active campaigns
-                </p>
-                <p className="text-xs text-slate-400">
-                  Click "Analyze Campaigns" to get AI-powered optimization recommendations
-                </p>
-              </>
-            )}
+            <p className="text-sm text-slate-600 mb-1">
+              {activeBookings.length + activeCampaigns.length} active campaigns
+            </p>
+            <p className="text-xs text-slate-400">
+              Click "Analyze Campaigns" to get AI-powered optimization recommendations
+            </p>
           </div>
         )}
       </CardContent>

@@ -101,7 +101,7 @@ export default function Layout({ children, currentPageName }) {
   };
 
   // Public pages without sidebar
-  if (["Home", "Login", "Register", "CompleteProfile", "ScreenPlayer", "About", "Services", "Contact", "ScreenLocations", "Blog", "HelpCenter", "Terms", "Privacy", "HowItWorks", "PendingApproval", "BlogPost", "AuthorProfile"].includes(currentPageName)) {
+  if (["Home", "Login", "Register", "CompleteProfile", "ScreenPlayer", "About", "Services", "Contact", "ScreenLocations", "Blog", "HelpCenter", "Terms", "Privacy", "HowItWorks", "PendingApproval"].includes(currentPageName)) {
     return <>{children}</>;
   }
 
