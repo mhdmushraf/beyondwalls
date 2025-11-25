@@ -125,7 +125,7 @@ export default function BookSlot() {
 
   // Dynamic pricing calculation
   const calculateDynamicPrice = useMemo(() => {
-    if (!selectedScreen) return { dynamicPrice: 0, totalCost: 0, multiplier: 1 };
+    if (!selectedScreen) return { dynamicPrice: 0, totalCost: 0, multiplier: 1, basePrice: 0 };
     
     const basePrice = selectedScreen.slot_price || 100;
     const venue = venues.find(v => v.id === selectedScreen.venue_id);
@@ -320,7 +320,7 @@ BeyondWalls Team
   };
 
   const endDate = addWeeks(formData.start_date, formData.weeks);
-  const { totalCost, dynamicPrice } = calculateDynamicPrice;
+  const { totalCost = 0, dynamicPrice = 0 } = calculateDynamicPrice || {};
 
   const handleSubmit = async () => {
     if (totalCost > (user?.wallet_balance || 0)) {
@@ -780,7 +780,7 @@ BeyondWalls Team
                   <div>
                     <p className="text-lg font-bold">Total Cost</p>
                     <p className="text-sm text-slate-500">
-                      AED {dynamicPrice}/week × {formData.weeks} weeks
+                      AED {dynamicPrice || 0}/week × {formData.weeks} weeks
                       {calculateDynamicPrice.multiplier !== 1 && (
                         <span className={calculateDynamicPrice.multiplier > 1 ? "text-rose-500 ml-1" : "text-emerald-500 ml-1"}>
                           ({calculateDynamicPrice.multiplier > 1 ? "+" : ""}{((calculateDynamicPrice.multiplier - 1) * 100).toFixed(0)}% dynamic pricing)
@@ -788,7 +788,7 @@ BeyondWalls Team
                       )}
                     </p>
                   </div>
-                  <p className="text-3xl font-bold text-violet-600">AED {totalCost.toLocaleString()}</p>
+                  <p className="text-3xl font-bold text-violet-600">AED {(totalCost || 0).toLocaleString()}</p>
                 </div>
                 <div className="flex justify-between items-center mt-3 text-sm">
                   <span className="text-slate-500">Wallet Balance</span>
