@@ -19,6 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
 import CommentSection from "@/components/blog/CommentSection";
+import NewsletterSignup from "@/components/NewsletterSignup";
 
 export default function BlogPost() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -108,6 +109,13 @@ export default function BlogPost() {
               <article className="prose prose-slate prose-lg max-w-none mb-8">
                 <ReactMarkdown>{post.content}</ReactMarkdown>
               </article>
+
+              {/* Newsletter CTA */}
+              <div className="my-8 p-6 bg-gradient-to-r from-violet-50 to-indigo-50 rounded-xl border border-violet-100">
+                <h4 className="font-semibold text-slate-900 mb-1">Enjoyed this article?</h4>
+                <p className="text-slate-600 text-sm mb-4">Subscribe to get more insights delivered to your inbox.</p>
+                <NewsletterSignup source="blog" variant="inline" />
+              </div>
 
               {/* Comments */}
               <CommentSection postId={post.id} />

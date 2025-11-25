@@ -18,6 +18,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
+import NewsletterSignup from "@/components/NewsletterSignup";
 
 export default function Blog() {
   const [search, setSearch] = useState("");
@@ -183,14 +184,8 @@ export default function Blog() {
           <p className="text-white/80 mb-8">
             Get the latest insights and updates delivered to your inbox
           </p>
-          <div className="flex gap-3 max-w-md mx-auto">
-            <Input
-              placeholder="Enter your email"
-              className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
-            />
-            <Button className="bg-amber-100 text-slate-900 hover:bg-amber-100/90">
-              Subscribe
-            </Button>
+          <div className="flex justify-center">
+            <NewsletterSignup source="blog" variant="dark" />
           </div>
         </div>
       </section>

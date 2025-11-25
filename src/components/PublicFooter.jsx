@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { MonitorPlay } from "lucide-react";
+import NewsletterSignup from "./NewsletterSignup";
 
 export default function PublicFooter() {
   return (
@@ -41,6 +42,17 @@ export default function PublicFooter() {
               <p>+971 55 614 0067</p>
               <p>Dubai, UAE</p>
             </div>
+          </div>
+        </div>
+        
+        {/* Newsletter Section */}
+        <div className="mb-8 p-6 bg-slate-800 rounded-xl">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h4 className="font-semibold text-white text-lg">Subscribe to our Newsletter</h4>
+              <p className="text-slate-400 text-sm">Get the latest updates and insights delivered to your inbox.</p>
+            </div>
+            <NewsletterSignup source="footer" variant="dark" />
           </div>
         </div>
         <div className="border-t border-slate-700 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
