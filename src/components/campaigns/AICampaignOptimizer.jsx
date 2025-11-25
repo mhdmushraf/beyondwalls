@@ -430,12 +430,18 @@ Focus on:
             <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center mx-auto mb-3">
               <Sparkles className="w-6 h-6 text-violet-600" />
             </div>
-            <p className="text-sm text-slate-600 mb-1">
-              {activeBookings.length + activeCampaigns.length} active campaigns
-            </p>
-            <p className="text-xs text-slate-400">
-              Click "Analyze Campaigns" to get AI-powered optimization recommendations
-            </p>
+            {isLoading ? (
+              <p className="text-sm text-slate-500">Loading campaign data...</p>
+            ) : (
+              <>
+                <p className="text-sm text-slate-600 mb-1">
+                  {activeBookings.length + activeCampaigns.length} active campaigns
+                </p>
+                <p className="text-xs text-slate-400">
+                  Click "Analyze Campaigns" to get AI-powered optimization recommendations
+                </p>
+              </>
+            )}
           </div>
         )}
       </CardContent>
