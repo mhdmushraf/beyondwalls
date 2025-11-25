@@ -11,7 +11,8 @@ import {
   Building2,
   Phone,
   MapPin,
-  FileText
+  FileText,
+  Camera
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +29,7 @@ export default function CompleteProfile() {
   const [formData, setFormData] = useState({
     phone: "",
     address: "",
+    avatar_url: "",
     emirates_id_front_url: "",
     emirates_id_back_url: "",
     company_name: "",
@@ -91,6 +93,7 @@ export default function CompleteProfile() {
       const updateData = {
         phone: formData.phone,
         address: formData.address,
+        avatar_url: formData.avatar_url,
         account_type: accountType,
         user_role: userRole,
         profile_complete: true,
@@ -208,6 +211,53 @@ export default function CompleteProfile() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Profile Picture */}
+              <div className="flex flex-col items-center space-y-3">
+                <Label className="text-center">
+                  <Camera className="w-4 h-4 inline mr-2" />
+                  Profile Picture <span className="text-red-500">*</span>
+                </Label>
+                <div className="relative">
+                  {formData.avatar_url ? (
+                    <div className="relative">
+                      <img 
+                        src={formData.avatar_url} 
+                        alt="Profile" 
+                        className="w-28 h-28 rounded-full object-cover border-4 border-violet-200"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, avatar_url: "" }))}
+                        className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="cursor-pointer">
+                      <div className={`w-28 h-28 rounded-full border-2 border-dashed flex flex-col items-center justify-center transition-all ${
+                        uploading.avatar_url ? "border-violet-400 bg-violet-50" : "border-slate-300 hover:border-violet-400 bg-slate-50"
+                      }`}>
+                        {uploading.avatar_url ? (
+                          <Loader2 className="w-8 h-8 text-violet-600 animate-spin" />
+                        ) : (
+                          <>
+                            <Camera className="w-8 h-8 text-slate-400 mb-1" />
+                            <span className="text-xs text-slate-500">Upload</span>
+                          </>
+                        )}
+                      </div>
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={(e) => handleFileUpload(e, "avatar_url")}
+                      />
+                    </label>
+                  )}
+                </div>
+              </div>
+
               {/* Basic Info */}
               <div className="grid gap-4">
                 <div className="space-y-2">
@@ -310,7 +360,7 @@ export default function CompleteProfile() {
 
               <Button 
                 type="submit"
-                disabled={loading}
+                disabled={loading || !formData.avatar_url}
                 className="w-full h-12 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700"
               >
                 {loading ? (
