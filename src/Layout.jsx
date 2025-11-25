@@ -93,8 +93,6 @@ export default function Layout({ children, currentPageName }) {
     }
   };
 
-  const navItems = getNavItems();
-
   // Public pages without sidebar
   if (["Home", "Login", "Register", "CompleteProfile", "ScreenPlayer", "About", "Services", "Contact", "ScreenLocations", "Blog", "HelpCenter", "Terms", "Privacy", "HowItWorks", "PendingApproval"].includes(currentPageName)) {
     return <>{children}</>;
@@ -156,7 +154,7 @@ export default function Layout({ children, currentPageName }) {
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-            {navItems.map((item) => {
+            {getNavItems().map((item) => {
               if (item.isGroup) {
                 const isChildActive = item.children?.some(child => currentPageName === child.page);
                 return (
