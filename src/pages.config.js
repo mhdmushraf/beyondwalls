@@ -8,6 +8,10 @@ import CreateCampaign from './pages/CreateCampaign';
 import VenueDashboard from './pages/VenueDashboard';
 import MyVenues from './pages/MyVenues';
 import AddVenue from './pages/AddVenue';
+import MyScreens from './pages/MyScreens';
+import AddScreen from './pages/AddScreen';
+import VenueEarnings from './pages/VenueEarnings';
+import Settings from './pages/Settings';
 import __Layout from './Layout.jsx';
 
 
@@ -22,6 +26,10 @@ export const PAGES = {
     "VenueDashboard": VenueDashboard,
     "MyVenues": MyVenues,
     "AddVenue": AddVenue,
+    "MyScreens": MyScreens,
+    "AddScreen": AddScreen,
+    "VenueEarnings": VenueEarnings,
+    "Settings": Settings,
 }
 
 export const pagesConfig = {
