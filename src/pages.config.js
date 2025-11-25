@@ -12,6 +12,10 @@ import MyScreens from './pages/MyScreens';
 import AddScreen from './pages/AddScreen';
 import VenueEarnings from './pages/VenueEarnings';
 import Settings from './pages/Settings';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminCampaigns from './pages/AdminCampaigns';
+import AdminVenues from './pages/AdminVenues';
+import AdminScreens from './pages/AdminScreens';
 import __Layout from './Layout.jsx';
 
 
@@ -30,6 +34,10 @@ export const PAGES = {
     "AddScreen": AddScreen,
     "VenueEarnings": VenueEarnings,
     "Settings": Settings,
+    "AdminDashboard": AdminDashboard,
+    "AdminCampaigns": AdminCampaigns,
+    "AdminVenues": AdminVenues,
+    "AdminScreens": AdminScreens,
 }
 
 export const pagesConfig = {
