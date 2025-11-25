@@ -38,6 +38,8 @@ import ManageOwnerSlots from './pages/ManageOwnerSlots';
 import MyBookings from './pages/MyBookings';
 import AICampaignCreator from './pages/AICampaignCreator';
 import AdminPricing from './pages/AdminPricing';
+import CampaignReport from './pages/CampaignReport';
+import FavoriteScreens from './pages/FavoriteScreens';
 import __Layout from './Layout.jsx';
 
 
@@ -82,6 +84,8 @@ export const PAGES = {
     "MyBookings": MyBookings,
     "AICampaignCreator": AICampaignCreator,
     "AdminPricing": AdminPricing,
+    "CampaignReport": CampaignReport,
+    "FavoriteScreens": FavoriteScreens,
 }
 
 export const pagesConfig = {
