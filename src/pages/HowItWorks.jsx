@@ -9,17 +9,12 @@ import {
   ArrowRight,
   CheckCircle2,
   Wifi,
-  Upload,
   CreditCard,
   BarChart3,
   Shield,
   Zap,
-  Play,
-  Settings,
-  Globe,
   Lock,
   RefreshCw,
-  Eye,
   DollarSign,
   ChevronDown,
   ChevronUp
@@ -27,6 +22,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import PublicNav from "@/components/PublicNav";
+import PublicFooter from "@/components/PublicFooter";
 
 export default function HowItWorks() {
   const [openFaq, setOpenFaq] = useState(null);
@@ -220,29 +217,7 @@ export default function HowItWorks() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link to={createPageUrl("Home")} className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/25">
-              <MonitorPlay className="w-5 h-5 text-white" />
-            </div>
-            <span className="font-bold text-xl bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
-              BeyondWalls
-            </span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link to={createPageUrl("Home")}>
-              <Button variant="ghost">Home</Button>
-            </Link>
-            <Link to={createPageUrl("Register")}>
-              <Button className="bg-gradient-to-r from-violet-600 to-indigo-600">
-                Get Started
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <PublicNav />
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50">
@@ -654,12 +629,7 @@ export default function HowItWorks() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-8 px-6 bg-slate-900 text-center">
-        <p className="text-slate-400">
-          © 2024 BeyondWalls. All rights reserved.
-        </p>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

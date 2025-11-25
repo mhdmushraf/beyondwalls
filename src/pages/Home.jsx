@@ -1,37 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { base44 } from "@/api/base44Client";
-import { motion } from "framer-motion";
 import {
   MonitorPlay,
   ArrowRight,
-  CheckCircle2,
-  MapPin,
+  Target,
   TrendingUp,
   Zap,
   Shield,
   Building2,
-  Target,
-  Play,
-  ChevronRight,
-  Star
+  Play
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import PublicNav from "@/components/PublicNav";
+import PublicFooter from "@/components/PublicFooter";
 
 export default function Home() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
-    const auth = await base44.auth.isAuthenticated();
-    setIsAuthenticated(auth);
-  };
-
   const stats = [
     { value: "500+", label: "Active Screens" },
     { value: "1M+", label: "Daily Impressions" },
@@ -71,51 +56,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/25">
-              <MonitorPlay className="w-5 h-5 text-white" />
-            </div>
-            <span className="font-bold text-xl bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
-              BeyondWalls
-            </span>
-          </div>
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-slate-600 hover:text-slate-900 font-medium transition-colors">Features</a>
-            <a href="#venues" className="text-slate-600 hover:text-slate-900 font-medium transition-colors">Venues</a>
-            <Link to={createPageUrl("About")} className="text-slate-600 hover:text-slate-900 font-medium transition-colors">About</Link>
-            <Link to={createPageUrl("Contact")} className="text-slate-600 hover:text-slate-900 font-medium transition-colors">Contact</Link>
-          </div>
-          <div className="flex items-center gap-3">
-            {isAuthenticated ? (
-              <Link to={createPageUrl("AdvertiserDashboard")}>
-                <Button className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700">
-                  Go to Dashboard
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
-            ) : (
-              <>
-                <Button 
-                  variant="ghost" 
-                  className="hidden sm:flex"
-                  onClick={() => base44.auth.redirectToLogin()}
-                >
-                  Sign In
-                </Button>
-                <Link to={createPageUrl("Register")}>
-                  <Button className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700">
-                    Get Started
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </nav>
+      <PublicNav />
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-6 relative overflow-hidden">
@@ -263,56 +204,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 px-6 bg-slate-900">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-indigo-500 rounded-xl flex items-center justify-center">
-                  <MonitorPlay className="w-5 h-5 text-white" />
-                </div>
-                <span className="font-bold text-xl text-white">BeyondWalls</span>
-              </div>
-              <p className="text-slate-400 text-sm">The #1 self-serve DOOH advertising platform in the UAE.</p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-white mb-4">Company</h4>
-              <div className="space-y-2 text-sm">
-                <Link to={createPageUrl("About")} className="block text-slate-400 hover:text-white">About Us</Link>
-                <Link to={createPageUrl("Services")} className="block text-slate-400 hover:text-white">Services</Link>
-                <Link to={createPageUrl("Blog")} className="block text-slate-400 hover:text-white">Blog</Link>
-                <Link to={createPageUrl("Contact")} className="block text-slate-400 hover:text-white">Contact</Link>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold text-white mb-4">Resources</h4>
-              <div className="space-y-2 text-sm">
-                <Link to={createPageUrl("HowItWorks")} className="block text-slate-400 hover:text-white">How It Works</Link>
-                <Link to={createPageUrl("ScreenLocations")} className="block text-slate-400 hover:text-white">Screen Locations</Link>
-                <Link to={createPageUrl("HelpCenter")} className="block text-slate-400 hover:text-white">Help Center</Link>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold text-white mb-4">Contact</h4>
-              <div className="space-y-2 text-sm text-slate-400">
-                <p>info@beyondwalls.ae</p>
-                <p>+971 55 614 0067</p>
-                <p>Dubai, UAE</p>
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-slate-700 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-slate-400 text-sm">
-              © 2024 BeyondWalls. All rights reserved.
-            </p>
-            <div className="flex gap-6 text-sm">
-              <Link to={createPageUrl("Terms")} className="text-slate-400 hover:text-white">Terms of Service</Link>
-              <Link to={createPageUrl("Privacy")} className="text-slate-400 hover:text-white">Privacy Policy</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

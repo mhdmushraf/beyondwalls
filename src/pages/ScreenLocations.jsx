@@ -5,11 +5,9 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import {
   MonitorPlay,
-  ArrowRight,
   MapPin,
   Building2,
   Search,
-  Filter,
   Users,
   Clock
 } from "lucide-react";
@@ -25,6 +23,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import PublicNav from "@/components/PublicNav";
+import PublicFooter from "@/components/PublicFooter";
 
 export default function ScreenLocations() {
   const [search, setSearch] = useState("");
@@ -66,27 +66,7 @@ export default function ScreenLocations() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link to={createPageUrl("Home")} className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-              <MonitorPlay className="w-5 h-5 text-white" />
-            </div>
-            <span className="font-bold text-xl text-slate-900">BeyondWalls</span>
-          </Link>
-          <div className="hidden md:flex items-center gap-6">
-            <Link to={createPageUrl("Home")} className="text-slate-600 hover:text-slate-900 font-medium">Home</Link>
-            <Link to={createPageUrl("About")} className="text-slate-600 hover:text-slate-900 font-medium">About</Link>
-            <Link to={createPageUrl("Contact")} className="text-slate-600 hover:text-slate-900 font-medium">Contact</Link>
-          </div>
-          <Link to={createPageUrl("Register")}>
-            <Button className="bg-gradient-to-r from-violet-600 to-indigo-600">
-              Get Started <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </Link>
-        </div>
-      </nav>
+      <PublicNav />
 
       {/* Hero */}
       <section className="pt-32 pb-12 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50">
@@ -246,10 +226,7 @@ export default function ScreenLocations() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-8 px-6 bg-slate-900 text-center">
-        <p className="text-slate-400">© 2024 BeyondWalls. All rights reserved.</p>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

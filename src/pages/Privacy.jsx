@@ -1,29 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { createPageUrl } from "@/utils";
-import { MonitorPlay, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import PublicNav from "@/components/PublicNav";
+import PublicFooter from "@/components/PublicFooter";
 
 export default function Privacy() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link to={createPageUrl("Home")} className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-              <MonitorPlay className="w-5 h-5 text-white" />
-            </div>
-            <span className="font-bold text-xl text-slate-900">BeyondWalls</span>
-          </Link>
-          <Link to={createPageUrl("Register")}>
-            <Button className="bg-gradient-to-r from-violet-600 to-indigo-600">
-              Get Started <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </Link>
-        </div>
-      </nav>
+      <PublicNav />
 
       {/* Hero */}
       <section className="pt-32 pb-12 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50">
@@ -157,10 +140,7 @@ export default function Privacy() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-8 px-6 bg-slate-900 text-center">
-        <p className="text-slate-400">© 2024 BeyondWalls. All rights reserved.</p>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }
