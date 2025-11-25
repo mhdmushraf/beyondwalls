@@ -36,7 +36,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import ReactQuill from "react-quill";
 
 export default function AdminBlog() {
   const [user, setUser] = useState(null);
@@ -345,14 +344,13 @@ export default function AdminBlog() {
 
             <div className="space-y-2">
               <Label>Content</Label>
-              <div className="bg-white rounded-lg border">
-                <ReactQuill
-                  theme="snow"
-                  value={formData.content}
-                  onChange={(v) => setFormData({ ...formData, content: v })}
-                  style={{ minHeight: "250px" }}
-                />
-              </div>
+              <Textarea
+                value={formData.content}
+                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                placeholder="Write your blog content here..."
+                rows={12}
+                className="min-h-[250px]"
+              />
             </div>
           </div>
 
