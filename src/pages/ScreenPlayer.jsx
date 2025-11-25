@@ -46,7 +46,23 @@ export default function ScreenPlayer() {
     }
   }, []);
 
-  // Fetch campaigns for this screen
+  // Fetch ad slot bookings for this screen (only approved/active ones)
+  const { data: bookings = [], refetch: refetchBookings } = useQuery({
+    queryKey: ["player-bookings", screen?.id],
+    queryFn: async () => {
+      const allBookings = await base44.entities.AdSlotBooking.filter({ 
+        screen_id: screen?.id, 
+        status: "active" 
+      });
+      // Filter to only show bookings within their date range
+      const today = new Date().toISOString().split('T')[0];
+      return allBookings.filter(b => b.start_date <= today && b.end_date >= today);
+    },
+    enabled: authenticated && !!screen?.id,
+    refetchInterval: 60000 // Refresh every minute
+  });
+
+  // Fetch campaigns for this screen (legacy support)
   const { data: campaigns = [], refetch: refetchCampaigns } = useQuery({
     queryKey: ["player-campaigns", screen?.id],
     queryFn: async () => {
@@ -57,16 +73,34 @@ export default function ScreenPlayer() {
     refetchInterval: 60000 // Refresh every minute
   });
 
+  // Combine bookings and campaigns for display
+  const allAds = [
+    ...bookings.map(b => ({ 
+      id: b.id, 
+      name: b.campaign_name || "Ad Slot", 
+      creative_url: b.creative_url, 
+      creative_type: b.creative_type,
+      type: "booking"
+    })),
+    ...campaigns.map(c => ({ 
+      id: c.id, 
+      name: c.name, 
+      creative_url: c.creative_url, 
+      creative_type: c.creative_type,
+      type: "campaign"
+    }))
+  ].filter(ad => ad.creative_url);
+
   // Cycle through ads
   useEffect(() => {
-    if (!authenticated || campaigns.length === 0) return;
+    if (!authenticated || allAds.length === 0) return;
     
     const interval = setInterval(() => {
-      setCurrentAdIndex(prev => (prev + 1) % campaigns.length);
+      setCurrentAdIndex(prev => (prev + 1) % allAds.length);
     }, 15000); // 15 seconds per ad
 
     return () => clearInterval(interval);
-  }, [authenticated, campaigns.length]);
+  }, [authenticated, allAds.length]);
 
   // Send heartbeat
   useEffect(() => {
@@ -163,7 +197,7 @@ export default function ScreenPlayer() {
     }
   };
 
-  const currentCampaign = campaigns[currentAdIndex];
+  const currentAd = allAds[currentAdIndex];
 
   // Login Screen
   if (!authenticated) {
@@ -316,27 +350,27 @@ export default function ScreenPlayer() {
 
       {/* Ad Content */}
       <div className="w-full h-screen flex items-center justify-center">
-        {campaigns.length === 0 ? (
+        {allAds.length === 0 ? (
           <div className="text-center text-white">
             <div className="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
               <MonitorPlay className="w-12 h-12 text-white/60" />
             </div>
             <h2 className="text-2xl font-bold mb-2">No Active Campaigns</h2>
-            <p className="text-white/60">Waiting for ads to be scheduled...</p>
+            <p className="text-white/60">Waiting for approved ads to be scheduled...</p>
             <Button 
               variant="ghost" 
               className="mt-6 text-white/60"
-              onClick={() => refetchCampaigns()}
+              onClick={() => { refetchBookings(); refetchCampaigns(); }}
             >
               <RefreshCw className="w-4 h-4 mr-2" />
               Refresh
             </Button>
           </div>
-        ) : currentCampaign?.creative_url ? (
-          currentCampaign.creative_type === "video" ? (
+        ) : currentAd?.creative_url ? (
+          currentAd.creative_type === "video" ? (
             <video
               ref={videoRef}
-              src={currentCampaign.creative_url}
+              src={currentAd.creative_url}
               className="w-full h-full object-contain"
               autoPlay
               loop
@@ -345,8 +379,8 @@ export default function ScreenPlayer() {
             />
           ) : (
             <img
-              src={currentCampaign.creative_url}
-              alt={currentCampaign.name}
+              src={currentAd.creative_url}
+              alt={currentAd.name}
               className="w-full h-full object-contain"
             />
           )
@@ -358,7 +392,7 @@ export default function ScreenPlayer() {
         <div className="absolute bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-black/80 to-transparent p-4">
           <div className="flex items-center justify-between max-w-7xl mx-auto">
             <div className="flex items-center gap-2">
-              {campaigns.map((_, idx) => (
+              {allAds.map((_, idx) => (
                 <div 
                   key={idx}
                   className={`w-2 h-2 rounded-full transition-all ${
@@ -390,11 +424,11 @@ export default function ScreenPlayer() {
       )}
 
       {/* Campaign Info Overlay */}
-      {!isFullscreen && currentCampaign && (
+      {!isFullscreen && currentAd && (
         <div className="absolute bottom-16 left-4 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2">
-          <p className="text-white text-sm font-medium">{currentCampaign.name}</p>
+          <p className="text-white text-sm font-medium">{currentAd.name}</p>
           <p className="text-white/60 text-xs">
-            {currentAdIndex + 1} of {campaigns.length}
+            {currentAdIndex + 1} of {allAds.length}
           </p>
         </div>
       )}
