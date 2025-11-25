@@ -90,6 +90,7 @@ export default function Layout({ children, currentPageName }) {
       if (user?.is_venue_owner) {
         items.push(
           { name: "My Venues", icon: Building2, page: "MyVenues" },
+          { name: "Add Venue", icon: Plus, page: "AddVenue" },
           { name: "My Screens", icon: MonitorPlay, page: "MyScreens" },
           { name: "My Ad Slots", icon: Settings, page: "ManageOwnerSlots" },
         );
