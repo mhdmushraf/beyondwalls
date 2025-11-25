@@ -16,6 +16,9 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminCampaigns from './pages/AdminCampaigns';
 import AdminVenues from './pages/AdminVenues';
 import AdminScreens from './pages/AdminScreens';
+import AdminUsers from './pages/AdminUsers';
+import AdminTransactions from './pages/AdminTransactions';
+import AdRequests from './pages/AdRequests';
 import __Layout from './Layout.jsx';
 
 
@@ -38,6 +41,9 @@ export const PAGES = {
     "AdminCampaigns": AdminCampaigns,
     "AdminVenues": AdminVenues,
     "AdminScreens": AdminScreens,
+    "AdminUsers": AdminUsers,
+    "AdminTransactions": AdminTransactions,
+    "AdRequests": AdRequests,
 }
 
 export const pagesConfig = {
