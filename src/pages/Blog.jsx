@@ -146,10 +146,14 @@ export default function Blog() {
                     </p>
                     <div className="flex items-center justify-between text-xs text-slate-500">
                       <div className="flex items-center gap-4">
-                        <span className="flex items-center gap-1">
-                          <User className="w-3 h-3" />
-                          {post.author_name || "Admin"}
-                        </span>
+                        <Link 
+                        to={createPageUrl(`AuthorProfile?${post.author_id ? `email=${post.author_id}` : `name=${encodeURIComponent(post.author_name || "Admin")}`}`)}
+                        className="flex items-center gap-1 hover:text-violet-600 transition-colors"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <User className="w-3 h-3" />
+                        {post.author_name || "Admin"}
+                      </Link>
                         <span className="flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
                           {post.published_at ? format(new Date(post.published_at), "MMM d, yyyy") : format(new Date(post.created_date), "MMM d, yyyy")}
