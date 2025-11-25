@@ -15,7 +15,9 @@ import {
   Play,
   Copy,
   ExternalLink,
-  Lock
+  Lock,
+  QrCode,
+  Clock
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -84,7 +86,8 @@ export default function MyScreens() {
     online: "bg-emerald-100 text-emerald-700 border-emerald-200",
     offline: "bg-slate-100 text-slate-700 border-slate-200",
     maintenance: "bg-amber-100 text-amber-700 border-amber-200",
-    pending_setup: "bg-blue-100 text-blue-700 border-blue-200"
+    pending_setup: "bg-blue-100 text-blue-700 border-blue-200",
+    pending_approval: "bg-amber-100 text-amber-700 border-amber-200"
   };
 
   const statusCounts = {
@@ -194,6 +197,10 @@ export default function MyScreens() {
                         <><Wifi className="w-3 h-3 mr-1" /> Online</>
                       ) : screen.status === "offline" ? (
                         <><WifiOff className="w-3 h-3 mr-1" /> Offline</>
+                      ) : screen.status === "pending_approval" ? (
+                        <><Clock className="w-3 h-3 mr-1" /> Pending Approval</>
+                      ) : screen.status === "pending_setup" ? (
+                        <><QrCode className="w-3 h-3 mr-1" /> Ready to Setup</>
                       ) : (
                         screen.status?.replace("_", " ")
                       )}
@@ -232,17 +239,33 @@ export default function MyScreens() {
                   )}
 
                   <div className="flex gap-2">
-                    <Button 
-                      variant="outline" 
-                      className="flex-1"
-                      onClick={() => {
-                        setSelectedScreen(screen);
-                        setShowPlayerDialog(true);
-                      }}
-                    >
-                      <Play className="w-4 h-4 mr-2" />
-                      Launch Player
-                    </Button>
+                    {screen.status === "pending_approval" ? (
+                      <Button variant="outline" className="flex-1" disabled>
+                        <Clock className="w-4 h-4 mr-2" />
+                        Awaiting Admin Approval
+                      </Button>
+                    ) : (
+                      <Button 
+                        variant="outline" 
+                        className="flex-1"
+                        onClick={() => {
+                          setSelectedScreen(screen);
+                          setShowPlayerDialog(true);
+                        }}
+                      >
+                        {screen.setup_code ? (
+                          <>
+                            <QrCode className="w-4 h-4 mr-2" />
+                            Setup Code
+                          </>
+                        ) : (
+                          <>
+                            <Play className="w-4 h-4 mr-2" />
+                            Launch Player
+                          </>
+                        )}
+                      </Button>
+                    )}
                     <Button variant="outline" size="icon">
                       <Settings className="w-4 h-4" />
                     </Button>
@@ -269,6 +292,36 @@ export default function MyScreens() {
           
           {selectedScreen && (
             <div className="space-y-4 py-4">
+              {/* Setup Code - Primary method after approval */}
+              {selectedScreen.setup_code && (
+                <div className="bg-gradient-to-br from-violet-50 to-indigo-50 rounded-xl p-5 border border-violet-200">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <QrCode className="w-5 h-5 text-violet-600" />
+                      <Label className="text-violet-700 font-semibold">Setup Code</Label>
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => {
+                        navigator.clipboard.writeText(selectedScreen.setup_code);
+                        toast.success("Setup code copied!");
+                      }}
+                    >
+                      <Copy className="w-4 h-4 mr-1" />
+                      Copy
+                    </Button>
+                  </div>
+                  <p className="text-3xl font-mono font-bold text-violet-900 tracking-wider text-center py-2">
+                    {selectedScreen.setup_code}
+                  </p>
+                  <p className="text-xs text-violet-600 text-center mt-2">
+                    Use this code in the BeyondWalls Player to connect your screen
+                  </p>
+                </div>
+              )}
+
+              {/* Screen ID fallback */}
               <div className="bg-slate-50 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-3">
                   <Label className="text-slate-500">Screen ID</Label>
@@ -284,7 +337,7 @@ export default function MyScreens() {
                     Copy
                   </Button>
                 </div>
-                <p className="text-2xl font-mono font-bold text-slate-900 tracking-wider">
+                <p className="text-xl font-mono font-bold text-slate-900 tracking-wider">
                   {selectedScreen.device_id || selectedScreen.id.slice(-8).toUpperCase()}
                 </p>
               </div>
@@ -307,16 +360,17 @@ export default function MyScreens() {
                 </p>
                 <ol className="text-sm text-violet-600 space-y-2">
                   <li>1. Open the Player URL on your TV browser</li>
-                  <li>2. Enter the Screen ID shown above</li>
-                  <li>3. Enter the PIN if required</li>
-                  <li>4. Click "Connect Screen" to start</li>
+                  <li>2. Enter the <strong>Setup Code</strong> shown above</li>
+                  <li>3. Click "Connect Screen" - your screen will go online automatically!</li>
                 </ol>
               </div>
 
               <Button 
                 className="w-full h-12 bg-gradient-to-r from-violet-600 to-indigo-600"
                 onClick={() => {
-                  const playerUrl = `${window.location.origin}${createPageUrl("ScreenPlayer")}?screen_id=${selectedScreen.device_id || selectedScreen.id}`;
+                  const playerUrl = selectedScreen.setup_code 
+                    ? `${window.location.origin}${createPageUrl("ScreenPlayer")}?setup_code=${selectedScreen.setup_code}`
+                    : `${window.location.origin}${createPageUrl("ScreenPlayer")}?screen_id=${selectedScreen.device_id || selectedScreen.id}`;
                   window.open(playerUrl, "_blank");
                 }}
               >
@@ -324,9 +378,20 @@ export default function MyScreens() {
                 Open Player in New Tab
               </Button>
 
-              <p className="text-xs text-center text-slate-400">
-                Player URL: {window.location.origin}{createPageUrl("ScreenPlayer")}
-              </p>
+              <Button 
+                variant="outline"
+                className="w-full"
+                onClick={() => {
+                  const playerUrl = selectedScreen.setup_code 
+                    ? `${window.location.origin}${createPageUrl("ScreenPlayer")}?setup_code=${selectedScreen.setup_code}`
+                    : `${window.location.origin}${createPageUrl("ScreenPlayer")}`;
+                  navigator.clipboard.writeText(playerUrl);
+                  toast.success("Player URL copied!");
+                }}
+              >
+                <Copy className="w-4 h-4 mr-2" />
+                Copy Player URL
+              </Button>
             </div>
           )}
         </DialogContent>
