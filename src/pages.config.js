@@ -43,6 +43,8 @@ import FavoriteScreens from './pages/FavoriteScreens';
 import CampaignManager from './pages/CampaignManager';
 import AdminBookings from './pages/AdminBookings';
 import AdminWallet from './pages/AdminWallet';
+import AdminBlog from './pages/AdminBlog';
+import AdminScreenSlots from './pages/AdminScreenSlots';
 import __Layout from './Layout.jsx';
 
 
@@ -92,6 +94,8 @@ export const PAGES = {
     "CampaignManager": CampaignManager,
     "AdminBookings": AdminBookings,
     "AdminWallet": AdminWallet,
+    "AdminBlog": AdminBlog,
+    "AdminScreenSlots": AdminScreenSlots,
 }
 
 export const pagesConfig = {

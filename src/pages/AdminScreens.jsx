@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -18,7 +20,8 @@ import {
   Eye,
   X,
   Upload,
-  Save
+  Save,
+  LayoutGrid
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -346,6 +349,12 @@ export default function AdminScreens() {
                         </td>
                         <td className="p-4">
                           <div className="flex items-center gap-2">
+                            <Link to={createPageUrl(`AdminScreenSlots?id=${screen.id}`)}>
+                              <Button size="sm" variant="outline">
+                                <LayoutGrid className="w-4 h-4 mr-1" />
+                                Slots
+                              </Button>
+                            </Link>
                             <Button
                               size="sm"
                               variant="outline"
