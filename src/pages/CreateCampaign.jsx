@@ -36,6 +36,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import CreativePreview from "@/components/campaigns/CreativePreview";
 
 const STEPS = [
   { id: 1, name: "Details", icon: Calendar },
@@ -491,6 +492,20 @@ export default function CreateCampaign() {
                 <Label>Upload Your Ad Creative</Label>
                 <p className="text-sm text-slate-500">Supported: MP4, MOV, JPEG, PNG (max 50MB)</p>
               </div>
+
+              {/* Real-Time Preview Button */}
+              {formData.creative_url && (
+                <CreativePreview
+                  creativeUrl={formData.creative_url}
+                  creativeType={formData.creative_type}
+                  triggerButton={
+                    <Button variant="outline" className="w-full">
+                      <MonitorPlay className="w-4 h-4 mr-2" />
+                      Preview on Different Screens & Venues
+                    </Button>
+                  }
+                />
+              )}
 
               {formData.creative_url ? (
                 <div className="relative">
