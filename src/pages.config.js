@@ -21,6 +21,14 @@ import AdminTransactions from './pages/AdminTransactions';
 import AdRequests from './pages/AdRequests';
 import ScreenPlayer from './pages/ScreenPlayer';
 import HowItWorks from './pages/HowItWorks';
+import About from './pages/About';
+import Services from './pages/Services';
+import Contact from './pages/Contact';
+import ScreenLocations from './pages/ScreenLocations';
+import Blog from './pages/Blog';
+import HelpCenter from './pages/HelpCenter';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
 import __Layout from './Layout.jsx';
 
 
@@ -48,6 +56,14 @@ export const PAGES = {
     "AdRequests": AdRequests,
     "ScreenPlayer": ScreenPlayer,
     "HowItWorks": HowItWorks,
+    "About": About,
+    "Services": Services,
+    "Contact": Contact,
+    "ScreenLocations": ScreenLocations,
+    "Blog": Blog,
+    "HelpCenter": HelpCenter,
+    "Terms": Terms,
+    "Privacy": Privacy,
 }
 
 export const pagesConfig = {

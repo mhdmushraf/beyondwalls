@@ -75,22 +75,23 @@ export default function Home() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/25">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#2C3E50] to-[#667EEA] rounded-xl flex items-center justify-center shadow-lg">
               <MonitorPlay className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-xl bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
+            <span className="font-bold text-xl text-[#2C3E50]">
               BeyondWalls
             </span>
           </div>
           <div className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-slate-600 hover:text-slate-900 font-medium transition-colors">Features</a>
-            <a href="#venues" className="text-slate-600 hover:text-slate-900 font-medium transition-colors">Venues</a>
-            <Link to={createPageUrl("HowItWorks")} className="text-slate-600 hover:text-slate-900 font-medium transition-colors">How It Works</Link>
+            <a href="#features" className="text-slate-600 hover:text-[#2C3E50] font-medium transition-colors">Features</a>
+            <a href="#venues" className="text-slate-600 hover:text-[#2C3E50] font-medium transition-colors">Venues</a>
+            <Link to={createPageUrl("About")} className="text-slate-600 hover:text-[#2C3E50] font-medium transition-colors">About</Link>
+            <Link to={createPageUrl("Contact")} className="text-slate-600 hover:text-[#2C3E50] font-medium transition-colors">Contact</Link>
           </div>
           <div className="flex items-center gap-3">
             {isAuthenticated ? (
               <Link to={createPageUrl("AdvertiserDashboard")}>
-                <Button className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700">
+                <Button className="bg-gradient-to-r from-[#2C3E50] to-[#667EEA]">
                   Go to Dashboard
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
@@ -99,13 +100,13 @@ export default function Home() {
               <>
                 <Button 
                   variant="ghost" 
-                  className="hidden sm:flex"
+                  className="hidden sm:flex text-[#2C3E50]"
                   onClick={() => base44.auth.redirectToLogin()}
                 >
                   Sign In
                 </Button>
                 <Link to={createPageUrl("Register")}>
-                  <Button className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700">
+                  <Button className="bg-gradient-to-r from-[#2C3E50] to-[#667EEA]">
                     Get Started
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
@@ -118,18 +119,18 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-50 via-white to-indigo-50" />
-        <div className="absolute top-20 right-20 w-96 h-96 bg-violet-200 rounded-full blur-3xl opacity-30" />
-        <div className="absolute bottom-20 left-20 w-96 h-96 bg-indigo-200 rounded-full blur-3xl opacity-30" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#2C3E50]/5 via-white to-[#667EEA]/10" />
+        <div className="absolute top-20 right-20 w-96 h-96 bg-[#667EEA]/20 rounded-full blur-3xl opacity-30" />
+        <div className="absolute bottom-20 left-20 w-96 h-96 bg-[#F5D547]/20 rounded-full blur-3xl opacity-30" />
         
         <div className="max-w-7xl mx-auto relative">
           <div className="max-w-3xl">
-            <Badge className="bg-violet-100 text-violet-700 border-violet-200 px-4 py-1.5 text-sm font-medium mb-6">
+            <Badge className="bg-[#F5D547] text-[#2C3E50] px-4 py-1.5 text-sm font-medium mb-6">
               🚀 #1 DOOH Platform in UAE
             </Badge>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 leading-tight mb-6">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-[#2C3E50] leading-tight mb-6">
               Advertise on
-              <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent"> premium screens </span>
+              <span className="bg-gradient-to-r from-[#667EEA] to-[#2C3E50] bg-clip-text text-transparent"> premium screens </span>
               everywhere
             </h1>
             <p className="text-xl text-slate-600 mb-8 leading-relaxed">
@@ -138,15 +139,17 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link to={createPageUrl("Register")}>
-                <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 h-14 px-8 text-lg shadow-xl shadow-violet-500/25">
+                <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-[#2C3E50] to-[#667EEA] h-14 px-8 text-lg shadow-xl">
                   Start Advertising
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="w-full sm:w-auto h-14 px-8 text-lg border-2">
-                <Play className="w-5 h-5 mr-2" />
-                Watch Demo
-              </Button>
+              <Link to={createPageUrl("HowItWorks")}>
+                <Button size="lg" variant="outline" className="w-full sm:w-auto h-14 px-8 text-lg border-2 border-[#2C3E50] text-[#2C3E50]">
+                  <Play className="w-5 h-5 mr-2" />
+                  How It Works
+                </Button>
+              </Link>
             </div>
           </div>
 
@@ -157,7 +160,7 @@ export default function Home() {
                 key={index}
                 className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-slate-100 shadow-lg shadow-slate-200/50"
               >
-                <p className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
+                <p className="text-3xl md:text-4xl font-bold text-[#667EEA]">
                   {stat.value}
                 </p>
                 <p className="text-slate-600 mt-1">{stat.label}</p>
@@ -171,8 +174,8 @@ export default function Home() {
       <section id="features" className="py-24 px-6 bg-slate-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <Badge className="bg-violet-100 text-violet-700 border-violet-200 mb-4">Features</Badge>
-            <h2 className="text-4xl font-bold text-slate-900 mb-4">
+            <Badge className="bg-[#667EEA]/10 text-[#667EEA] mb-4">Features</Badge>
+            <h2 className="text-4xl font-bold text-[#2C3E50] mb-4">
               Everything you need to run successful campaigns
             </h2>
             <p className="text-xl text-slate-600 max-w-2xl mx-auto">
@@ -184,12 +187,12 @@ export default function Home() {
             {features.map((feature, index) => (
               <div 
                 key={index}
-                className="bg-white rounded-2xl p-8 border border-slate-100 hover:shadow-xl hover:shadow-violet-100 transition-all duration-300 group"
+                className="bg-white rounded-2xl p-8 border border-slate-100 hover:shadow-xl transition-all duration-300 group"
               >
-                <div className="w-14 h-14 bg-gradient-to-br from-violet-100 to-indigo-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <feature.icon className="w-7 h-7 text-violet-600" />
+                <div className="w-14 h-14 bg-gradient-to-br from-[#2C3E50] to-[#667EEA] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <feature.icon className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-3">{feature.title}</h3>
+                <h3 className="text-xl font-bold text-[#2C3E50] mb-3">{feature.title}</h3>
                 <p className="text-slate-600 leading-relaxed">{feature.description}</p>
               </div>
             ))}
@@ -201,8 +204,8 @@ export default function Home() {
       <section id="venues" className="py-24 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <Badge className="bg-indigo-100 text-indigo-700 border-indigo-200 mb-4">Venues</Badge>
-            <h2 className="text-4xl font-bold text-slate-900 mb-4">
+            <Badge className="bg-[#F5D547] text-[#2C3E50] mb-4">Venues</Badge>
+            <h2 className="text-4xl font-bold text-[#2C3E50] mb-4">
               Premium locations across the UAE
             </h2>
             <p className="text-xl text-slate-600 max-w-2xl mx-auto">
@@ -233,7 +236,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 px-6 bg-gradient-to-br from-violet-600 to-indigo-600 relative overflow-hidden">
+      <section className="py-24 px-6 bg-gradient-to-br from-[#2C3E50] to-[#667EEA] relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-white/5" style={{backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "20px 20px"}} />
         
         <div className="max-w-4xl mx-auto text-center relative">
@@ -245,7 +248,7 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to={createPageUrl("Register")}>
-              <Button size="lg" className="w-full sm:w-auto bg-white text-violet-600 hover:bg-slate-100 h-14 px-8 text-lg">
+              <Button size="lg" className="w-full sm:w-auto bg-[#F5D547] text-[#2C3E50] hover:bg-[#F5D547]/90 h-14 px-8 text-lg">
                 Start Free Trial
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
@@ -261,18 +264,52 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 bg-slate-900">
+      <footer className="py-12 px-6 bg-[#2C3E50]">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-indigo-500 rounded-xl flex items-center justify-center">
-                <MonitorPlay className="w-5 h-5 text-white" />
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-[#667EEA] to-[#F5D547] rounded-xl flex items-center justify-center">
+                  <MonitorPlay className="w-5 h-5 text-white" />
+                </div>
+                <span className="font-bold text-xl text-white">BeyondWalls</span>
               </div>
-              <span className="font-bold text-xl text-white">BeyondWalls</span>
+              <p className="text-slate-400 text-sm">The #1 self-serve DOOH advertising platform in the UAE.</p>
             </div>
+            <div>
+              <h4 className="font-semibold text-white mb-4">Company</h4>
+              <div className="space-y-2 text-sm">
+                <Link to={createPageUrl("About")} className="block text-slate-400 hover:text-white">About Us</Link>
+                <Link to={createPageUrl("Services")} className="block text-slate-400 hover:text-white">Services</Link>
+                <Link to={createPageUrl("Blog")} className="block text-slate-400 hover:text-white">Blog</Link>
+                <Link to={createPageUrl("Contact")} className="block text-slate-400 hover:text-white">Contact</Link>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold text-white mb-4">Resources</h4>
+              <div className="space-y-2 text-sm">
+                <Link to={createPageUrl("HowItWorks")} className="block text-slate-400 hover:text-white">How It Works</Link>
+                <Link to={createPageUrl("ScreenLocations")} className="block text-slate-400 hover:text-white">Screen Locations</Link>
+                <Link to={createPageUrl("HelpCenter")} className="block text-slate-400 hover:text-white">Help Center</Link>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold text-white mb-4">Contact</h4>
+              <div className="space-y-2 text-sm text-slate-400">
+                <p>info@beyondwalls.ae</p>
+                <p>+971 55 614 0067</p>
+                <p>Dubai, UAE</p>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-slate-700 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-slate-400 text-sm">
               © 2024 BeyondWalls. All rights reserved.
             </p>
+            <div className="flex gap-6 text-sm">
+              <Link to={createPageUrl("Terms")} className="text-slate-400 hover:text-white">Terms of Service</Link>
+              <Link to={createPageUrl("Privacy")} className="text-slate-400 hover:text-white">Privacy Policy</Link>
+            </div>
           </div>
         </div>
       </footer>

@@ -51,6 +51,14 @@ export default function AdvertiserDashboard() {
     enabled: !!user?.email
   });
 
+  // Auto-refresh wallet balance every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadUser();
+    }, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   const activeCampaigns = campaigns.filter(c => c.status === "active").length;
   const totalImpressions = campaigns.reduce((sum, c) => sum + (c.impressions || 0), 0);
   const totalSpent = campaigns.reduce((sum, c) => sum + (c.spend || 0), 0);

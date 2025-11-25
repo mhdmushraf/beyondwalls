@@ -1,0 +1,283 @@
+import React from "react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
+import {
+  MonitorPlay,
+  ArrowRight,
+  Target,
+  BarChart3,
+  Upload,
+  Clock,
+  Shield,
+  Zap,
+  Building2,
+  DollarSign,
+  Settings,
+  Wifi,
+  CheckCircle2,
+  Megaphone
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+
+export default function Services() {
+  const advertiserServices = [
+    {
+      icon: Target,
+      title: "Precision Targeting",
+      description: "Target by city, venue type, time of day, and audience demographics"
+    },
+    {
+      icon: Upload,
+      title: "Easy Creative Upload",
+      description: "Upload images or videos in seconds, preview before going live"
+    },
+    {
+      icon: BarChart3,
+      title: "Real-time Analytics",
+      description: "Track impressions, reach, and ROI with detailed dashboards"
+    },
+    {
+      icon: Clock,
+      title: "Flexible Scheduling",
+      description: "Choose specific time slots - morning, afternoon, evening, or peak hours"
+    },
+    {
+      icon: Shield,
+      title: "Brand Safety",
+      description: "Premium venues only - your brand in trusted environments"
+    },
+    {
+      icon: Zap,
+      title: "Fast Approval",
+      description: "Campaigns reviewed within 2-4 hours, go live the same day"
+    }
+  ];
+
+  const venueServices = [
+    {
+      icon: DollarSign,
+      title: "Passive Revenue",
+      description: "Earn 70% revenue share on all ads displayed on your screens"
+    },
+    {
+      icon: MonitorPlay,
+      title: "Easy Screen Setup",
+      description: "Web-based player works on any smart TV or display device"
+    },
+    {
+      icon: Settings,
+      title: "Full Control",
+      description: "Set your own rates, approve ad categories, manage schedules"
+    },
+    {
+      icon: Wifi,
+      title: "Remote Monitoring",
+      description: "Real-time status updates, offline alerts, and remote management"
+    },
+    {
+      icon: Shield,
+      title: "Secure & Reliable",
+      description: "PIN-protected screens with encrypted connections"
+    },
+    {
+      icon: BarChart3,
+      title: "Detailed Reports",
+      description: "Track earnings, impressions, and screen performance"
+    }
+  ];
+
+  const pricingPlans = [
+    {
+      name: "Starter",
+      price: "50",
+      unit: "AED/hr per screen",
+      description: "Perfect for small venues",
+      features: ["Up to 3 screens", "Basic analytics", "Email support", "Weekly payouts"]
+    },
+    {
+      name: "Professional",
+      price: "100",
+      unit: "AED/hr per screen",
+      description: "For growing businesses",
+      features: ["Up to 10 screens", "Advanced analytics", "Priority support", "Weekly payouts", "Custom time slots"],
+      popular: true
+    },
+    {
+      name: "Enterprise",
+      price: "Custom",
+      unit: "Contact us",
+      description: "For large venues and chains",
+      features: ["Unlimited screens", "Dedicated manager", "24/7 support", "Daily payouts", "API access", "White-label options"]
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <Link to={createPageUrl("Home")} className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#2C3E50] to-[#667EEA] rounded-xl flex items-center justify-center shadow-lg">
+              <MonitorPlay className="w-5 h-5 text-white" />
+            </div>
+            <span className="font-bold text-xl text-[#2C3E50]">BeyondWalls</span>
+          </Link>
+          <div className="hidden md:flex items-center gap-6">
+            <Link to={createPageUrl("Home")} className="text-slate-600 hover:text-[#2C3E50] font-medium">Home</Link>
+            <Link to={createPageUrl("About")} className="text-slate-600 hover:text-[#2C3E50] font-medium">About</Link>
+            <Link to={createPageUrl("Contact")} className="text-slate-600 hover:text-[#2C3E50] font-medium">Contact</Link>
+          </div>
+          <Link to={createPageUrl("Register")}>
+            <Button className="bg-gradient-to-r from-[#2C3E50] to-[#667EEA]">
+              Get Started <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </Link>
+        </div>
+      </nav>
+
+      {/* Hero */}
+      <section className="pt-32 pb-20 px-6 bg-gradient-to-br from-[#2C3E50]/5 via-white to-[#667EEA]/5">
+        <div className="max-w-4xl mx-auto text-center">
+          <Badge className="bg-[#F5D547] text-[#2C3E50] mb-6">Our Services</Badge>
+          <h1 className="text-4xl md:text-5xl font-bold text-[#2C3E50] mb-6">
+            Everything You Need for DOOH Success
+          </h1>
+          <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+            Whether you're an advertiser looking to reach audiences or a venue owner 
+            wanting to monetize screens, we've got you covered.
+          </p>
+        </div>
+      </section>
+
+      {/* For Advertisers */}
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <Badge className="bg-[#667EEA]/10 text-[#667EEA] mb-4">For Advertisers</Badge>
+            <h2 className="text-3xl font-bold text-[#2C3E50] mb-4">Powerful Advertising Tools</h2>
+            <p className="text-slate-600 max-w-2xl mx-auto">
+              Create impactful campaigns with our self-serve platform
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {advertiserServices.map((service, i) => (
+              <Card key={i} className="border-2 border-slate-100 hover:border-[#667EEA]/30 transition-colors">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#2C3E50] to-[#667EEA] rounded-xl flex items-center justify-center mb-4">
+                    <service.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-[#2C3E50] mb-2">{service.title}</h3>
+                  <p className="text-slate-600 text-sm">{service.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* For Venues */}
+      <section className="py-20 px-6 bg-slate-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <Badge className="bg-[#F5D547] text-[#2C3E50] mb-4">For Venue Owners</Badge>
+            <h2 className="text-3xl font-bold text-[#2C3E50] mb-4">Monetize Your Screens</h2>
+            <p className="text-slate-600 max-w-2xl mx-auto">
+              Turn your digital displays into a revenue stream
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {venueServices.map((service, i) => (
+              <Card key={i} className="border-0 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-[#F5D547] rounded-xl flex items-center justify-center mb-4">
+                    <service.icon className="w-6 h-6 text-[#2C3E50]" />
+                  </div>
+                  <h3 className="text-lg font-bold text-[#2C3E50] mb-2">{service.title}</h3>
+                  <p className="text-slate-600 text-sm">{service.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <Badge className="bg-[#667EEA]/10 text-[#667EEA] mb-4">Pricing</Badge>
+            <h2 className="text-3xl font-bold text-[#2C3E50] mb-4">Simple, Transparent Pricing</h2>
+            <p className="text-slate-600 max-w-2xl mx-auto">
+              No hidden fees. Pay only for what you use.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {pricingPlans.map((plan, i) => (
+              <Card key={i} className={`relative ${plan.popular ? 'border-2 border-[#667EEA] shadow-xl' : 'border-2 border-slate-100'}`}>
+                {plan.popular && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                    <Badge className="bg-[#667EEA] text-white">Most Popular</Badge>
+                  </div>
+                )}
+                <CardContent className="p-8">
+                  <h3 className="text-xl font-bold text-[#2C3E50] mb-2">{plan.name}</h3>
+                  <p className="text-slate-500 text-sm mb-4">{plan.description}</p>
+                  <div className="mb-6">
+                    <span className="text-4xl font-bold text-[#2C3E50]">{plan.price}</span>
+                    <span className="text-slate-500 text-sm ml-2">{plan.unit}</span>
+                  </div>
+                  <ul className="space-y-3 mb-8">
+                    {plan.features.map((feature, j) => (
+                      <li key={j} className="flex items-center gap-2 text-sm">
+                        <CheckCircle2 className="w-4 h-4 text-[#667EEA]" />
+                        <span className="text-slate-600">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link to={createPageUrl("Register")}>
+                    <Button className={`w-full ${plan.popular ? 'bg-gradient-to-r from-[#2C3E50] to-[#667EEA]' : 'bg-slate-100 text-[#2C3E50] hover:bg-slate-200'}`}>
+                      Get Started
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-20 px-6 bg-gradient-to-br from-[#2C3E50] to-[#667EEA]">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            Ready to Get Started?
+          </h2>
+          <p className="text-xl text-white/80 mb-8">
+            Join BeyondWalls today and transform your advertising
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to={createPageUrl("Register")}>
+              <Button size="lg" className="bg-[#F5D547] text-[#2C3E50] hover:bg-[#F5D547]/90">
+                <Megaphone className="w-5 h-5 mr-2" />
+                Start Free Trial
+              </Button>
+            </Link>
+            <Link to={createPageUrl("Contact")}>
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                <Building2 className="w-5 h-5 mr-2" />
+                Contact Sales
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-8 px-6 bg-[#2C3E50] text-center">
+        <p className="text-slate-400">© 2024 BeyondWalls. All rights reserved.</p>
+      </footer>
+    </div>
+  );
+}
