@@ -20,6 +20,7 @@ import AdminUsers from './pages/AdminUsers';
 import AdminTransactions from './pages/AdminTransactions';
 import AdRequests from './pages/AdRequests';
 import ScreenPlayer from './pages/ScreenPlayer';
+import HowItWorks from './pages/HowItWorks';
 import __Layout from './Layout.jsx';
 
 
@@ -46,6 +47,7 @@ export const PAGES = {
     "AdminTransactions": AdminTransactions,
     "AdRequests": AdRequests,
     "ScreenPlayer": ScreenPlayer,
+    "HowItWorks": HowItWorks,
 }
 
 export const pagesConfig = {
