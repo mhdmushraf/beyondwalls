@@ -361,7 +361,7 @@ BeyondWalls Team
     }
 
     try {
-      // Create booking
+      // Create booking with pending status - requires admin approval
       const booking = await base44.entities.AdSlotBooking.create({
         screen_id: selectedScreen.id,
         advertiser_id: user.email,
@@ -373,8 +373,18 @@ BeyondWalls Team
         end_date: format(endDate, "yyyy-MM-dd"),
         weeks_booked: formData.weeks,
         total_cost: totalCost,
-        status: "active",
+        status: "pending",
         campaign_name: formData.campaign_name
+      });
+
+      // Create admin notification for approval
+      await base44.entities.AdminNotification.create({
+        type: "campaign_approval",
+        title: "New Campaign Pending Approval",
+        message: `${user.full_name || user.email} submitted campaign "${formData.campaign_name}" for ${selectedScreen.name}`,
+        reference_id: booking.id,
+        reference_type: "AdSlotBooking",
+        status: "unread"
       });
 
       // Deduct from wallet
@@ -423,7 +433,7 @@ BeyondWalls Team
         console.log("Email sending failed, but booking succeeded");
       }
 
-      toast.success("Ad slot booked successfully! Confirmation email sent.");
+      toast.success("Booking submitted! Awaiting admin approval.");
       navigate(createPageUrl("MyBookings"));
     } catch (error) {
       toast.error("Failed to book slot");
