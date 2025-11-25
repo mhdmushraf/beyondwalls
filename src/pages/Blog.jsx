@@ -120,7 +120,8 @@ export default function Blog() {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredPosts.map((post) => (
-                <Card key={post.id} className="overflow-hidden hover:shadow-xl transition-shadow group cursor-pointer">
+                <Link key={post.id} to={createPageUrl(`BlogPost?id=${post.id}`)}>
+              <Card className="overflow-hidden hover:shadow-xl transition-shadow group cursor-pointer">
                   <div className="relative h-48 overflow-hidden">
                     {post.cover_image ? (
                       <img
@@ -166,6 +167,7 @@ export default function Blog() {
                     </div>
                   </CardContent>
                 </Card>
+              </Link>
               ))}
             </div>
           )}
