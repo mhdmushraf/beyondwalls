@@ -80,18 +80,18 @@ export default function Contact() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to={createPageUrl("Home")} className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#2C3E50] to-[#667EEA] rounded-xl flex items-center justify-center shadow-lg">
+            <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
               <MonitorPlay className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-xl text-[#2C3E50]">BeyondWalls</span>
+            <span className="font-bold text-xl text-slate-900">BeyondWalls</span>
           </Link>
           <div className="hidden md:flex items-center gap-6">
-            <Link to={createPageUrl("Home")} className="text-slate-600 hover:text-[#2C3E50] font-medium">Home</Link>
-            <Link to={createPageUrl("About")} className="text-slate-600 hover:text-[#2C3E50] font-medium">About</Link>
-            <Link to={createPageUrl("Services")} className="text-slate-600 hover:text-[#2C3E50] font-medium">Services</Link>
+            <Link to={createPageUrl("Home")} className="text-slate-600 hover:text-slate-900 font-medium">Home</Link>
+            <Link to={createPageUrl("About")} className="text-slate-600 hover:text-slate-900 font-medium">About</Link>
+            <Link to={createPageUrl("Services")} className="text-slate-600 hover:text-slate-900 font-medium">Services</Link>
           </div>
           <Link to={createPageUrl("Register")}>
-            <Button className="bg-gradient-to-r from-[#2C3E50] to-[#667EEA]">
+            <Button className="bg-gradient-to-r from-violet-600 to-indigo-600">
               Get Started <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </Link>
@@ -99,10 +99,10 @@ export default function Contact() {
       </nav>
 
       {/* Hero */}
-      <section className="pt-32 pb-20 px-6 bg-gradient-to-br from-[#2C3E50]/5 via-white to-[#667EEA]/5">
+      <section className="pt-32 pb-20 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50">
         <div className="max-w-4xl mx-auto text-center">
-          <Badge className="bg-[#F5D547] text-[#2C3E50] mb-6">Contact Us</Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-[#2C3E50] mb-6">
+          <Badge className="bg-amber-100 text-slate-900 mb-6">Contact Us</Badge>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
             Get in Touch
           </h1>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto">
@@ -118,7 +118,7 @@ export default function Contact() {
             {/* Contact Info */}
             <div className="space-y-6">
               <div>
-                <h2 className="text-2xl font-bold text-[#2C3E50] mb-4">Contact Information</h2>
+                <h2 className="text-2xl font-bold text-slate-900 mb-4">Contact Information</h2>
                 <p className="text-slate-600">
                   Reach out to us through any of these channels. We're here to help!
                 </p>
@@ -127,17 +127,17 @@ export default function Contact() {
               {contactInfo.map((info, i) => (
                 <Card key={i} className="border-0 shadow-md">
                   <CardContent className="p-4 flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-[#2C3E50] to-[#667EEA] rounded-xl flex items-center justify-center">
+                    <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center">
                       <info.icon className="w-5 h-5 text-white" />
                     </div>
                     <div>
                       <p className="text-sm text-slate-500">{info.title}</p>
                       {info.link ? (
-                        <a href={info.link} className="font-medium text-[#2C3E50] hover:text-[#667EEA]">
+                        <a href={info.link} className="font-medium text-slate-900 hover:text-violet-600">
                           {info.value}
                         </a>
                       ) : (
-                        <p className="font-medium text-[#2C3E50]">{info.value}</p>
+                        <p className="font-medium text-slate-900">{info.value}</p>
                       )}
                     </div>
                   </CardContent>
@@ -149,7 +149,7 @@ export default function Contact() {
                 <p className="text-sm text-slate-500 mb-4">Follow us on social media</p>
                 <div className="flex gap-3">
                   {["LinkedIn", "Twitter", "Instagram"].map((social, i) => (
-                    <Button key={i} variant="outline" size="sm" className="text-[#2C3E50]">
+                    <Button key={i} variant="outline" size="sm" className="text-slate-900">
                       {social}
                     </Button>
                   ))}
@@ -162,10 +162,10 @@ export default function Contact() {
               <Card className="border-0 shadow-xl">
                 <CardContent className="p-8">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 bg-[#F5D547] rounded-xl flex items-center justify-center">
-                      <MessageSquare className="w-5 h-5 text-[#2C3E50]" />
+                    <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                      <MessageSquare className="w-5 h-5 text-slate-900" />
                     </div>
-                    <h3 className="text-xl font-bold text-[#2C3E50]">Send us a Message</h3>
+                    <h3 className="text-xl font-bold text-slate-900">Send us a Message</h3>
                   </div>
 
                   <form onSubmit={handleSubmit} className="space-y-6">
@@ -234,7 +234,7 @@ export default function Contact() {
                     <Button
                       type="submit"
                       disabled={loading}
-                      className="w-full bg-gradient-to-r from-[#2C3E50] to-[#667EEA] h-12"
+                      className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 h-12"
                     >
                       {loading ? (
                         <>
@@ -259,7 +259,7 @@ export default function Contact() {
       {/* Map Placeholder */}
       <section className="py-20 px-6 bg-slate-50">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-gradient-to-br from-[#2C3E50] to-[#667EEA] rounded-2xl p-12 text-center text-white">
+          <div className="bg-gradient-to-br from-violet-600 to-indigo-600 rounded-2xl p-12 text-center text-white">
             <MapPin className="w-12 h-12 mx-auto mb-4 opacity-80" />
             <h3 className="text-2xl font-bold mb-2">Visit Our Office</h3>
             <p className="text-white/80 mb-6">Dubai, United Arab Emirates</p>
@@ -271,7 +271,7 @@ export default function Contact() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 bg-[#2C3E50] text-center">
+      <footer className="py-8 px-6 bg-slate-900 text-center">
         <p className="text-slate-400">© 2024 BeyondWalls. All rights reserved.</p>
       </footer>
     </div>

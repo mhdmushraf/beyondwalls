@@ -97,18 +97,18 @@ export default function Blog() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to={createPageUrl("Home")} className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#2C3E50] to-[#667EEA] rounded-xl flex items-center justify-center shadow-lg">
+            <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
               <MonitorPlay className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-xl text-[#2C3E50]">BeyondWalls</span>
+            <span className="font-bold text-xl text-slate-900">BeyondWalls</span>
           </Link>
           <div className="hidden md:flex items-center gap-6">
-            <Link to={createPageUrl("Home")} className="text-slate-600 hover:text-[#2C3E50] font-medium">Home</Link>
-            <Link to={createPageUrl("About")} className="text-slate-600 hover:text-[#2C3E50] font-medium">About</Link>
-            <Link to={createPageUrl("Contact")} className="text-slate-600 hover:text-[#2C3E50] font-medium">Contact</Link>
+            <Link to={createPageUrl("Home")} className="text-slate-600 hover:text-slate-900 font-medium">Home</Link>
+            <Link to={createPageUrl("About")} className="text-slate-600 hover:text-slate-900 font-medium">About</Link>
+            <Link to={createPageUrl("Contact")} className="text-slate-600 hover:text-slate-900 font-medium">Contact</Link>
           </div>
           <Link to={createPageUrl("Register")}>
-            <Button className="bg-gradient-to-r from-[#2C3E50] to-[#667EEA]">
+            <Button className="bg-gradient-to-r from-violet-600 to-indigo-600">
               Get Started <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </Link>
@@ -116,10 +116,10 @@ export default function Blog() {
       </nav>
 
       {/* Hero */}
-      <section className="pt-32 pb-12 px-6 bg-gradient-to-br from-[#2C3E50]/5 via-white to-[#667EEA]/5">
+      <section className="pt-32 pb-12 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50">
         <div className="max-w-4xl mx-auto text-center">
-          <Badge className="bg-[#F5D547] text-[#2C3E50] mb-6">Blog</Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-[#2C3E50] mb-6">
+          <Badge className="bg-amber-100 text-slate-900 mb-6">Blog</Badge>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
             Insights & Updates
           </h1>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto">
@@ -149,8 +149,8 @@ export default function Blog() {
                   size="sm"
                   onClick={() => setSelectedCategory(cat === "All" ? "all" : cat)}
                   className={selectedCategory === (cat === "All" ? "all" : cat) 
-                    ? "bg-gradient-to-r from-[#2C3E50] to-[#667EEA]" 
-                    : "text-[#2C3E50]"
+                    ? "bg-gradient-to-r from-violet-600 to-indigo-600" 
+                    : "text-slate-900"
                   }
                 >
                   {cat}
@@ -180,12 +180,12 @@ export default function Blog() {
                       alt={post.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
-                    <Badge className="absolute top-3 left-3 bg-[#F5D547] text-[#2C3E50]">
+                    <Badge className="absolute top-3 left-3 bg-amber-100 text-slate-900">
                       {post.category}
                     </Badge>
                   </div>
                   <CardContent className="p-5">
-                    <h3 className="text-lg font-bold text-[#2C3E50] mb-2 group-hover:text-[#667EEA] transition-colors">
+                    <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-violet-600 transition-colors">
                       {post.title}
                     </h3>
                     <p className="text-slate-600 text-sm mb-4 line-clamp-2">
@@ -216,7 +216,7 @@ export default function Blog() {
       </section>
 
       {/* Newsletter */}
-      <section className="py-20 px-6 bg-gradient-to-br from-[#2C3E50] to-[#667EEA]">
+      <section className="py-20 px-6 bg-gradient-to-br from-violet-600 to-indigo-600">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
             Subscribe to Our Newsletter
@@ -229,7 +229,7 @@ export default function Blog() {
               placeholder="Enter your email"
               className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
             />
-            <Button className="bg-[#F5D547] text-[#2C3E50] hover:bg-[#F5D547]/90">
+            <Button className="bg-amber-100 text-slate-900 hover:bg-amber-100/90">
               Subscribe
             </Button>
           </div>
@@ -237,7 +237,7 @@ export default function Blog() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 bg-[#2C3E50] text-center">
+      <footer className="py-8 px-6 bg-slate-900 text-center">
         <p className="text-slate-400">© 2024 BeyondWalls. All rights reserved.</p>
       </footer>
     </div>

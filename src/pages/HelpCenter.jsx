@@ -125,13 +125,13 @@ export default function HelpCenter() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to={createPageUrl("Home")} className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#2C3E50] to-[#667EEA] rounded-xl flex items-center justify-center shadow-lg">
+            <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
               <MonitorPlay className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-xl text-[#2C3E50]">BeyondWalls</span>
+            <span className="font-bold text-xl text-slate-900">BeyondWalls</span>
           </Link>
           <Link to={createPageUrl("Register")}>
-            <Button className="bg-gradient-to-r from-[#2C3E50] to-[#667EEA]">
+            <Button className="bg-gradient-to-r from-violet-600 to-indigo-600">
               Get Started <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </Link>
@@ -139,10 +139,10 @@ export default function HelpCenter() {
       </nav>
 
       {/* Hero */}
-      <section className="pt-32 pb-12 px-6 bg-gradient-to-br from-[#2C3E50]/5 via-white to-[#667EEA]/5">
+      <section className="pt-32 pb-12 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50">
         <div className="max-w-4xl mx-auto text-center">
-          <Badge className="bg-[#F5D547] text-[#2C3E50] mb-6">Help Center</Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-[#2C3E50] mb-6">
+          <Badge className="bg-amber-100 text-slate-900 mb-6">Help Center</Badge>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
             How Can We Help?
           </h1>
           <div className="relative max-w-xl mx-auto">
@@ -167,8 +167,8 @@ export default function HelpCenter() {
                 variant={selectedCategory === cat.id ? "default" : "outline"}
                 onClick={() => setSelectedCategory(cat.id)}
                 className={selectedCategory === cat.id 
-                  ? "bg-gradient-to-r from-[#2C3E50] to-[#667EEA]" 
-                  : "text-[#2C3E50]"
+                  ? "bg-gradient-to-r from-violet-600 to-indigo-600" 
+                  : "text-slate-900"
                 }
               >
                 <cat.icon className="w-4 h-4 mr-2" />
@@ -188,7 +188,7 @@ export default function HelpCenter() {
               <h3 className="text-xl font-semibold text-slate-700 mb-2">No results found</h3>
               <p className="text-slate-500 mb-6">Try adjusting your search or browse categories</p>
               <Link to={createPageUrl("Contact")}>
-                <Button className="bg-gradient-to-r from-[#2C3E50] to-[#667EEA]">
+                <Button className="bg-gradient-to-r from-violet-600 to-indigo-600">
                   Contact Support
                 </Button>
               </Link>
@@ -201,9 +201,9 @@ export default function HelpCenter() {
                     className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors"
                     onClick={() => setOpenFaq(openFaq === index ? null : index)}
                   >
-                    <span className="font-medium text-[#2C3E50] pr-4">{faq.question}</span>
+                    <span className="font-medium text-slate-900 pr-4">{faq.question}</span>
                     {openFaq === index ? (
-                      <ChevronUp className="w-5 h-5 text-[#667EEA] flex-shrink-0" />
+                      <ChevronUp className="w-5 h-5 text-violet-600 flex-shrink-0" />
                     ) : (
                       <ChevronDown className="w-5 h-5 text-slate-400 flex-shrink-0" />
                     )}
@@ -223,8 +223,8 @@ export default function HelpCenter() {
       {/* Contact CTA */}
       <section className="py-20 px-6 bg-slate-50">
         <div className="max-w-4xl mx-auto text-center">
-          <MessageSquare className="w-16 h-16 text-[#667EEA] mx-auto mb-6" />
-          <h2 className="text-2xl font-bold text-[#2C3E50] mb-4">
+          <MessageSquare className="w-16 h-16 text-violet-600 mx-auto mb-6" />
+          <h2 className="text-2xl font-bold text-slate-900 mb-4">
             Still Have Questions?
           </h2>
           <p className="text-slate-600 mb-8">
@@ -232,11 +232,11 @@ export default function HelpCenter() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to={createPageUrl("Contact")}>
-              <Button size="lg" className="bg-gradient-to-r from-[#2C3E50] to-[#667EEA]">
+              <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600">
                 Contact Support
               </Button>
             </Link>
-            <Button size="lg" variant="outline" className="text-[#2C3E50]">
+            <Button size="lg" variant="outline" className="text-slate-900">
               <a href="mailto:info@beyondwalls.ae">Email: info@beyondwalls.ae</a>
             </Button>
           </div>
@@ -244,7 +244,7 @@ export default function HelpCenter() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 bg-[#2C3E50] text-center">
+      <footer className="py-8 px-6 bg-slate-900 text-center">
         <p className="text-slate-400">© 2024 BeyondWalls. All rights reserved.</p>
       </footer>
     </div>
