@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
-import { format, addWeeks } from "date-fns";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { format, addWeeks, getDay, getHours, isWithinInterval, parseISO } from "date-fns";
 import {
   ArrowLeft,
   ArrowRight,
@@ -18,7 +18,9 @@ import {
   X,
   Calendar,
   Clock,
-  Eye
+  Eye,
+  AlertCircle,
+  Mail
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,12 +43,15 @@ import AIRecommendations from "@/components/recommendations/AIRecommendations";
 
 export default function BookSlot() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [user, setUser] = useState(null);
   const [step, setStep] = useState(1);
   const [selectedScreen, setSelectedScreen] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [checkingAvailability, setCheckingAvailability] = useState(false);
+  const [availabilityError, setAvailabilityError] = useState(null);
   const [filters, setFilters] = useState({ city: "", venue_type: "" });
   const [search, setSearch] = useState("");
 
@@ -118,6 +123,174 @@ export default function BookSlot() {
     return [1, 2, 3, 4, 5].filter(slot => !bookedSlots.includes(slot));
   };
 
+  // Dynamic pricing calculation
+  const calculateDynamicPrice = useMemo(() => {
+    if (!selectedScreen) return { dynamicPrice: 0, totalCost: 0, multiplier: 1 };
+    
+    const basePrice = selectedScreen.slot_price || 100;
+    const venue = venues.find(v => v.id === selectedScreen.venue_id);
+    
+    // Demand multiplier
+    const screenBookings = allBookings.filter(b => b.screen_id === selectedScreen.id && b.status === "active");
+    const occupancyRate = screenBookings.length / 5;
+    let demandMultiplier = 1;
+    if (occupancyRate >= 0.8) demandMultiplier = 1.3;
+    else if (occupancyRate >= 0.6) demandMultiplier = 1.15;
+    else if (occupancyRate >= 0.4) demandMultiplier = 1.0;
+    else if (occupancyRate >= 0.2) demandMultiplier = 0.9;
+    else demandMultiplier = 0.85;
+
+    // Time of day multiplier
+    const hour = getHours(formData.start_date);
+    let timeMultiplier = 1;
+    if (hour >= 11 && hour <= 14) timeMultiplier = 1.2;
+    else if (hour >= 17 && hour <= 21) timeMultiplier = 1.25;
+    else if (hour >= 6 && hour <= 9) timeMultiplier = 1.1;
+
+    // Day of week multiplier
+    const day = getDay(formData.start_date);
+    let dayMultiplier = 1;
+    if (day === 5 || day === 6) dayMultiplier = 1.15;
+    else if (day === 4) dayMultiplier = 1.1;
+
+    // Seasonal multiplier
+    const month = formData.start_date.getMonth();
+    let seasonMultiplier = 1;
+    if (month >= 10 || month <= 2) seasonMultiplier = 1.2;
+    else if (month >= 5 && month <= 8) seasonMultiplier = 0.85;
+
+    // Venue type multiplier
+    let venueMultiplier = 1;
+    if (venue) {
+      const premiumVenues = ["mall", "hotel", "hospital"];
+      if (premiumVenues.includes(venue.type)) venueMultiplier = 1.25;
+      else if (venue.avg_daily_footfall > 1000) venueMultiplier = 1.15;
+    }
+
+    // Custom pricing rules
+    let customMultiplier = 1;
+    pricingRules.filter(rule => rule.is_active).forEach(rule => {
+      if (rule.type === "seasonal" && rule.start_date && rule.end_date) {
+        try {
+          const start = parseISO(rule.start_date);
+          const end = parseISO(rule.end_date);
+          if (isWithinInterval(formData.start_date, { start, end })) {
+            customMultiplier *= rule.multiplier;
+          }
+        } catch (e) {}
+      }
+    });
+
+    const totalMultiplier = demandMultiplier * timeMultiplier * dayMultiplier * seasonMultiplier * venueMultiplier * customMultiplier;
+    const dynamicPrice = Math.round(basePrice * totalMultiplier);
+    const totalCost = dynamicPrice * formData.weeks;
+
+    return { dynamicPrice, totalCost, multiplier: totalMultiplier, basePrice };
+  }, [selectedScreen, formData.start_date, formData.weeks, allBookings, venues, pricingRules]);
+
+  // Real-time availability check
+  const checkSlotAvailability = async () => {
+    if (!selectedScreen || !selectedSlot) return true;
+    
+    setCheckingAvailability(true);
+    setAvailabilityError(null);
+    
+    try {
+      // Refresh bookings to get latest data
+      const latestBookings = await base44.entities.AdSlotBooking.filter({
+        screen_id: selectedScreen.id,
+        status: "active"
+      });
+      
+      const isSlotTaken = latestBookings.some(b => b.slot_number === selectedSlot);
+      
+      if (isSlotTaken) {
+        setAvailabilityError(`Slot ${selectedSlot} was just booked by another user. Please select a different slot.`);
+        queryClient.invalidateQueries({ queryKey: ["screen-bookings", selectedScreen.id] });
+        return false;
+      }
+      
+      // Check if screen is still online
+      const screenData = await base44.entities.Screen.filter({ id: selectedScreen.id });
+      if (screenData.length === 0 || screenData[0].status !== "online") {
+        setAvailabilityError("This screen is no longer available. Please select another screen.");
+        return false;
+      }
+      
+      return true;
+    } catch (error) {
+      setAvailabilityError("Failed to verify availability. Please try again.");
+      return false;
+    } finally {
+      setCheckingAvailability(false);
+    }
+  };
+
+  // Send confirmation emails
+  const sendConfirmationEmails = async (booking, screenOwner) => {
+    const venue = venues.find(v => v.id === selectedScreen.venue_id);
+    
+    // Email to advertiser
+    const advertiserEmailBody = `
+Dear ${user.full_name},
+
+Your ad slot booking has been confirmed! 🎉
+
+Booking Details:
+━━━━━━━━━━━━━━━━━━━━━━━━━
+📺 Screen: ${selectedScreen.name}
+📍 Venue: ${venue?.name || 'N/A'} - ${venue?.city || 'N/A'}
+🎯 Campaign: ${formData.campaign_name}
+📅 Duration: ${format(formData.start_date, "PPP")} to ${format(addWeeks(formData.start_date, formData.weeks), "PPP")}
+💰 Total Cost: AED ${calculateDynamicPrice.totalCost.toLocaleString()}
+━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Your ad will start displaying on ${format(formData.start_date, "PPP")}.
+
+Track your campaign performance in your dashboard.
+
+Best regards,
+BeyondWalls Team
+    `.trim();
+
+    await base44.integrations.Core.SendEmail({
+      to: user.email,
+      subject: `✅ Booking Confirmed: ${formData.campaign_name}`,
+      body: advertiserEmailBody
+    });
+
+    // Email to venue owner
+    if (screenOwner) {
+      const ownerShare = calculateDynamicPrice.totalCost * 0.7;
+      const ownerEmailBody = `
+Dear ${screenOwner.full_name},
+
+Great news! A new ad has been booked on your screen! 💰
+
+Booking Details:
+━━━━━━━━━━━━━━━━━━━━━━━━━
+📺 Screen: ${selectedScreen.name}
+🎯 Campaign: ${formData.campaign_name}
+📅 Duration: ${format(formData.start_date, "PPP")} to ${format(addWeeks(formData.start_date, formData.weeks), "PPP")}
+💵 Your Earnings: AED ${ownerShare.toLocaleString()} (70% revenue share)
+━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The earnings have been credited to your wallet.
+
+View your earnings in your dashboard.
+
+Best regards,
+BeyondWalls Team
+      `.trim();
+
+      await base44.integrations.Core.SendEmail({
+        to: screenOwner.email,
+        subject: `💰 New Booking on ${selectedScreen.name}`,
+        body: ownerEmailBody
+      });
+    }
+  };
+
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -146,8 +319,8 @@ export default function BookSlot() {
     }
   };
 
-  const totalCost = selectedScreen ? selectedScreen.slot_price * formData.weeks : 0;
   const endDate = addWeeks(formData.start_date, formData.weeks);
+  const { totalCost, dynamicPrice } = calculateDynamicPrice;
 
   const handleSubmit = async () => {
     if (totalCost > (user?.wallet_balance || 0)) {
@@ -156,9 +329,18 @@ export default function BookSlot() {
     }
 
     setLoading(true);
+    
+    // Final availability check before booking
+    const isAvailable = await checkSlotAvailability();
+    if (!isAvailable) {
+      setLoading(false);
+      setStep(2); // Go back to slot selection
+      return;
+    }
+
     try {
       // Create booking
-      await base44.entities.AdSlotBooking.create({
+      const booking = await base44.entities.AdSlotBooking.create({
         screen_id: selectedScreen.id,
         advertiser_id: user.email,
         slot_number: selectedSlot,
@@ -191,27 +373,35 @@ export default function BookSlot() {
       });
 
       // Credit screen owner
-      const screenOwner = await base44.entities.User.filter({ email: selectedScreen.owner_id });
-      if (screenOwner.length > 0) {
-        const owner = screenOwner[0];
+      let screenOwner = null;
+      const screenOwnerData = await base44.entities.User.filter({ email: selectedScreen.owner_id });
+      if (screenOwnerData.length > 0) {
+        screenOwner = screenOwnerData[0];
         const ownerShare = totalCost * 0.7; // 70% to screen owner
-        await base44.entities.User.update(owner.id, {
-          wallet_balance: (owner.wallet_balance || 0) + ownerShare,
-          total_earnings: (owner.total_earnings || 0) + ownerShare
+        await base44.entities.User.update(screenOwner.id, {
+          wallet_balance: (screenOwner.wallet_balance || 0) + ownerShare,
+          total_earnings: (screenOwner.total_earnings || 0) + ownerShare
         });
 
         await base44.entities.Transaction.create({
-          user_id: owner.email,
+          user_id: screenOwner.email,
           type: "earning",
           amount: ownerShare,
-          balance_after: (owner.wallet_balance || 0) + ownerShare,
+          balance_after: (screenOwner.wallet_balance || 0) + ownerShare,
           reference_id: selectedScreen.id,
           description: `Ad slot earning from ${selectedScreen.name}`,
           status: "completed"
         });
       }
 
-      toast.success("Ad slot booked successfully!");
+      // Send confirmation emails
+      try {
+        await sendConfirmationEmails(booking, screenOwner);
+      } catch (emailError) {
+        console.log("Email sending failed, but booking succeeded");
+      }
+
+      toast.success("Ad slot booked successfully! Confirmation email sent.");
       navigate(createPageUrl("MyBookings"));
     } catch (error) {
       toast.error("Failed to book slot");
@@ -368,9 +558,20 @@ export default function BookSlot() {
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Select Available Slot</CardTitle>
+              <CardTitle className="flex items-center justify-between">
+                <span>Select Available Slot</span>
+                <Badge variant="outline" className="font-normal">
+                  {getAvailableSlots().length} of 5 available
+                </Badge>
+              </CardTitle>
             </CardHeader>
             <CardContent>
+              {availabilityError && (
+                <div className="mb-4 p-3 bg-rose-50 border border-rose-200 rounded-lg flex items-start gap-2">
+                  <AlertCircle className="w-5 h-5 text-rose-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-rose-700">{availabilityError}</p>
+                </div>
+              )}
               <div className="grid grid-cols-5 gap-3">
                 {[1, 2, 3, 4, 5].map((slot) => {
                   const isBooked = !getAvailableSlots().includes(slot);
@@ -378,7 +579,10 @@ export default function BookSlot() {
                     <button
                       key={slot}
                       disabled={isBooked}
-                      onClick={() => setSelectedSlot(slot)}
+                      onClick={() => {
+                        setSelectedSlot(slot);
+                        setAvailabilityError(null);
+                      }}
                       className={`p-4 rounded-xl border-2 transition-all ${
                         isBooked 
                           ? "bg-slate-100 border-slate-200 cursor-not-allowed opacity-50"
@@ -395,6 +599,13 @@ export default function BookSlot() {
                   );
                 })}
               </div>
+              {getAvailableSlots().length === 0 && (
+                <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg text-center">
+                  <AlertCircle className="w-6 h-6 text-amber-600 mx-auto mb-2" />
+                  <p className="text-amber-800 font-medium">No slots available on this screen</p>
+                  <p className="text-amber-600 text-sm mt-1">Please select a different screen</p>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -569,16 +780,31 @@ export default function BookSlot() {
                   <div>
                     <p className="text-lg font-bold">Total Cost</p>
                     <p className="text-sm text-slate-500">
-                      AED {selectedScreen?.slot_price}/week × {formData.weeks} weeks
+                      AED {dynamicPrice}/week × {formData.weeks} weeks
+                      {calculateDynamicPrice.multiplier !== 1 && (
+                        <span className={calculateDynamicPrice.multiplier > 1 ? "text-rose-500 ml-1" : "text-emerald-500 ml-1"}>
+                          ({calculateDynamicPrice.multiplier > 1 ? "+" : ""}{((calculateDynamicPrice.multiplier - 1) * 100).toFixed(0)}% dynamic pricing)
+                        </span>
+                      )}
                     </p>
                   </div>
-                  <p className="text-3xl font-bold text-violet-600">AED {totalCost}</p>
+                  <p className="text-3xl font-bold text-violet-600">AED {totalCost.toLocaleString()}</p>
                 </div>
                 <div className="flex justify-between items-center mt-3 text-sm">
                   <span className="text-slate-500">Wallet Balance</span>
                   <span className={user?.wallet_balance >= totalCost ? "text-emerald-600" : "text-rose-600"}>
                     AED {user?.wallet_balance?.toLocaleString() || 0}
                   </span>
+                </div>
+                {user?.wallet_balance < totalCost && (
+                  <div className="mt-3 p-3 bg-rose-50 border border-rose-200 rounded-lg flex items-center gap-2">
+                    <AlertCircle className="w-5 h-5 text-rose-600" />
+                    <p className="text-sm text-rose-700">Insufficient balance. Please top up your wallet.</p>
+                  </div>
+                )}
+                <div className="mt-4 p-3 bg-violet-50 border border-violet-200 rounded-lg flex items-center gap-2">
+                  <Mail className="w-5 h-5 text-violet-600" />
+                  <p className="text-sm text-violet-700">Confirmation email will be sent to {user?.email}</p>
                 </div>
               </div>
             </CardContent>
@@ -591,13 +817,13 @@ export default function BookSlot() {
             </Button>
             <Button 
               onClick={handleSubmit}
-              disabled={loading || totalCost > (user?.wallet_balance || 0)}
+              disabled={loading || checkingAvailability || totalCost > (user?.wallet_balance || 0)}
               className="bg-gradient-to-r from-violet-600 to-indigo-600"
             >
-              {loading ? (
+              {loading || checkingAvailability ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Processing...
+                  {checkingAvailability ? "Checking availability..." : "Processing..."}
                 </>
               ) : (
                 <>
