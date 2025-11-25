@@ -29,6 +29,12 @@ import Blog from './pages/Blog';
 import HelpCenter from './pages/HelpCenter';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
+import PendingApproval from './pages/PendingApproval';
+import Dashboard from './pages/Dashboard';
+import BookSlot from './pages/BookSlot';
+import AdminUserApprovals from './pages/AdminUserApprovals';
+import Wallet from './pages/Wallet';
+import ManageOwnerSlots from './pages/ManageOwnerSlots';
 import __Layout from './Layout.jsx';
 
 
@@ -64,6 +70,12 @@ export const PAGES = {
     "HelpCenter": HelpCenter,
     "Terms": Terms,
     "Privacy": Privacy,
+    "PendingApproval": PendingApproval,
+    "Dashboard": Dashboard,
+    "BookSlot": BookSlot,
+    "AdminUserApprovals": AdminUserApprovals,
+    "Wallet": Wallet,
+    "ManageOwnerSlots": ManageOwnerSlots,
 }
 
 export const pagesConfig = {
