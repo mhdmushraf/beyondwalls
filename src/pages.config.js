@@ -42,6 +42,7 @@ import CampaignReport from './pages/CampaignReport';
 import FavoriteScreens from './pages/FavoriteScreens';
 import CampaignManager from './pages/CampaignManager';
 import AdminBookings from './pages/AdminBookings';
+import AdminWallet from './pages/AdminWallet';
 import __Layout from './Layout.jsx';
 
 
@@ -90,6 +91,7 @@ export const PAGES = {
     "FavoriteScreens": FavoriteScreens,
     "CampaignManager": CampaignManager,
     "AdminBookings": AdminBookings,
+    "AdminWallet": AdminWallet,
 }
 
 export const pagesConfig = {

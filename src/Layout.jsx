@@ -68,6 +68,7 @@ export default function Layout({ children, currentPageName }) {
         { name: "Campaigns", icon: Megaphone, page: "AdminCampaigns" },
         { name: "Venues", icon: Building2, page: "AdminVenues" },
         { name: "Screens", icon: MonitorPlay, page: "AdminScreens" },
+        { name: "Wallet System", icon: Wallet, page: "AdminWallet" },
         { name: "Transactions", icon: CreditCard, page: "AdminTransactions" },
         { name: "Dynamic Pricing", icon: CreditCard, page: "AdminPricing" },
       ];

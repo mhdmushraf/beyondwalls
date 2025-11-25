@@ -9,7 +9,10 @@ import {
   Building2,
   MapPin,
   Phone,
-  ExternalLink
+  ExternalLink,
+  Pencil,
+  Save,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +26,13 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
@@ -34,6 +44,9 @@ export default function AdminVenues() {
   const [selectedVenue, setSelectedVenue] = useState(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const [showRejectDialog, setShowRejectDialog] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editData, setEditData] = useState({});
+  const [saving, setSaving] = useState(false);
 
   const { data: venues = [], isLoading } = useQuery({
     queryKey: ["admin-venues"],
@@ -64,6 +77,38 @@ export default function AdminVenues() {
     });
     setShowRejectDialog(false);
     setSelectedVenue(null);
+  };
+
+  const handleEditVenue = (venue) => {
+    setSelectedVenue(venue);
+    setEditMode(true);
+    setEditData({
+      name: venue.name || "",
+      type: venue.type || "",
+      address: venue.address || "",
+      city: venue.city || "",
+      area: venue.area || "",
+      contact_name: venue.contact_name || "",
+      contact_phone: venue.contact_phone || "",
+      contact_email: venue.contact_email || "",
+      operating_hours: venue.operating_hours || "",
+      avg_daily_footfall: venue.avg_daily_footfall || 0,
+      status: venue.status || "pending"
+    });
+  };
+
+  const handleSaveVenue = async () => {
+    setSaving(true);
+    try {
+      await base44.entities.Venue.update(selectedVenue.id, editData);
+      queryClient.invalidateQueries({ queryKey: ["admin-venues"] });
+      toast.success("Venue updated successfully");
+      setEditMode(false);
+      setSelectedVenue(null);
+    } catch (e) {
+      toast.error("Failed to update venue");
+    }
+    setSaving(false);
   };
 
   const filteredVenues = venues.filter(venue => {
@@ -173,6 +218,13 @@ export default function AdminVenues() {
                         <div className="flex items-center gap-2">
                           <Button variant="ghost" size="icon" onClick={() => setSelectedVenue(venue)}>
                             <Eye className="w-4 h-4" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="icon"
+                            onClick={() => handleEditVenue(venue)}
+                          >
+                            <Pencil className="w-4 h-4" />
                           </Button>
                           {venue.status === "pending" && (
                             <>
@@ -315,6 +367,148 @@ export default function AdminVenues() {
             <Button variant="destructive" onClick={handleReject}>
               <XCircle className="w-4 h-4 mr-2" />
               Reject Venue
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Venue Dialog */}
+      <Dialog open={editMode} onOpenChange={() => { setEditMode(false); setSelectedVenue(null); }}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Venue</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Venue Name</Label>
+                <Input
+                  value={editData.name}
+                  onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Type</Label>
+                <Select value={editData.type} onValueChange={(v) => setEditData({ ...editData, type: v })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="restaurant">Restaurant</SelectItem>
+                    <SelectItem value="cafe">Cafe</SelectItem>
+                    <SelectItem value="mall">Mall</SelectItem>
+                    <SelectItem value="gym">Gym</SelectItem>
+                    <SelectItem value="coworking">Coworking</SelectItem>
+                    <SelectItem value="hotel">Hotel</SelectItem>
+                    <SelectItem value="hospital">Hospital</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Address</Label>
+              <Input
+                value={editData.address}
+                onChange={(e) => setEditData({ ...editData, address: e.target.value })}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>City</Label>
+                <Input
+                  value={editData.city}
+                  onChange={(e) => setEditData({ ...editData, city: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Area</Label>
+                <Input
+                  value={editData.area}
+                  onChange={(e) => setEditData({ ...editData, area: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Contact Name</Label>
+                <Input
+                  value={editData.contact_name}
+                  onChange={(e) => setEditData({ ...editData, contact_name: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Contact Phone</Label>
+                <Input
+                  value={editData.contact_phone}
+                  onChange={(e) => setEditData({ ...editData, contact_phone: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Contact Email</Label>
+                <Input
+                  value={editData.contact_email}
+                  onChange={(e) => setEditData({ ...editData, contact_email: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Operating Hours</Label>
+                <Input
+                  placeholder="e.g., 9AM-11PM"
+                  value={editData.operating_hours}
+                  onChange={(e) => setEditData({ ...editData, operating_hours: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Daily Footfall</Label>
+                <Input
+                  type="number"
+                  value={editData.avg_daily_footfall}
+                  onChange={(e) => setEditData({ ...editData, avg_daily_footfall: parseInt(e.target.value) || 0 })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <Select value={editData.status} onValueChange={(v) => setEditData({ ...editData, status: v })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="approved">Approved</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                    <SelectItem value="suspended">Suspended</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setEditMode(false); setSelectedVenue(null); }}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSaveVenue}
+              disabled={saving}
+              className="bg-violet-600 hover:bg-violet-700"
+            >
+              {saving ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              ) : (
+                <Save className="w-4 h-4 mr-2" />
+              )}
+              Save Changes
             </Button>
           </DialogFooter>
         </DialogContent>

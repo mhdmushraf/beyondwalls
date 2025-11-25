@@ -13,10 +13,16 @@ import {
   XCircle,
   QrCode,
   Copy,
-  Loader2
+  Loader2,
+  Pencil,
+  Eye,
+  X,
+  Upload,
+  Save
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -26,7 +32,15 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 
 export default function AdminScreens() {
@@ -34,6 +48,10 @@ export default function AdminScreens() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [approving, setApproving] = useState(null);
   const [showSetupCode, setShowSetupCode] = useState(null);
+  const [editScreen, setEditScreen] = useState(null);
+  const [editData, setEditData] = useState({});
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(null);
   const queryClient = useQueryClient();
 
   const generateSetupCode = () => {
@@ -80,6 +98,64 @@ export default function AdminScreens() {
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
     toast.success("Copied to clipboard!");
+  };
+
+  const handleEditScreen = (screen) => {
+    setEditScreen(screen);
+    setEditData({
+      name: screen.name || "",
+      slot_price: screen.slot_price || 0,
+      size: screen.size || "",
+      orientation: screen.orientation || "",
+      resolution: screen.resolution || "FHD",
+      status: screen.status || "",
+      owner_slot_1_url: screen.owner_slot_1_url || "",
+      owner_slot_1_type: screen.owner_slot_1_type || "image",
+      owner_slot_2_url: screen.owner_slot_2_url || "",
+      owner_slot_2_type: screen.owner_slot_2_type || "image",
+      owner_slot_3_url: screen.owner_slot_3_url || "",
+      owner_slot_3_type: screen.owner_slot_3_type || "image",
+    });
+  };
+
+  const handleSaveScreen = async () => {
+    setSaving(true);
+    try {
+      await base44.entities.Screen.update(editScreen.id, editData);
+      queryClient.invalidateQueries({ queryKey: ["admin-screens"] });
+      toast.success("Screen updated successfully");
+      setEditScreen(null);
+    } catch (e) {
+      toast.error("Failed to update screen");
+    }
+    setSaving(false);
+  };
+
+  const handleOwnerSlotUpload = async (slotNumber, e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const isVideo = file.type.startsWith("video/");
+    const isImage = file.type.startsWith("image/");
+
+    if (!isVideo && !isImage) {
+      toast.error("Please upload an image or video file");
+      return;
+    }
+
+    setUploading(slotNumber);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setEditData({
+        ...editData,
+        [`owner_slot_${slotNumber}_url`]: file_url,
+        [`owner_slot_${slotNumber}_type`]: isVideo ? "video" : "image"
+      });
+      toast.success("File uploaded");
+    } catch (error) {
+      toast.error("Failed to upload file");
+    }
+    setUploading(null);
   };
 
   const { data: screens = [], isLoading } = useQuery({
@@ -269,41 +345,48 @@ export default function AdminScreens() {
                           </p>
                         </td>
                         <td className="p-4">
-                          {screen.status === "pending_approval" ? (
-                            <div className="flex items-center gap-2">
-                              <Button
-                                size="sm"
-                                onClick={() => handleApprove(screen)}
-                                disabled={approving === screen.id}
-                                className="bg-emerald-600 hover:bg-emerald-700"
-                              >
-                                {approving === screen.id ? (
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                ) : (
-                                  <CheckCircle2 className="w-4 h-4" />
-                                )}
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                onClick={() => handleReject(screen)}
-                                disabled={approving === screen.id}
-                              >
-                                <XCircle className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          ) : screen.setup_code ? (
+                          <div className="flex items-center gap-2">
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => setShowSetupCode(screen)}
+                              onClick={() => handleEditScreen(screen)}
                             >
-                              <QrCode className="w-4 h-4 mr-1" />
-                              Code
+                              <Pencil className="w-4 h-4" />
                             </Button>
-                          ) : (
-                            <span className="text-slate-400">—</span>
-                          )}
+                            {screen.status === "pending_approval" ? (
+                              <>
+                                <Button
+                                  size="sm"
+                                  onClick={() => handleApprove(screen)}
+                                  disabled={approving === screen.id}
+                                  className="bg-emerald-600 hover:bg-emerald-700"
+                                >
+                                  {approving === screen.id ? (
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                  ) : (
+                                    <CheckCircle2 className="w-4 h-4" />
+                                  )}
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => handleReject(screen)}
+                                  disabled={approving === screen.id}
+                                >
+                                  <XCircle className="w-4 h-4" />
+                                </Button>
+                              </>
+                            ) : screen.setup_code ? (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setShowSetupCode(screen)}
+                              >
+                                <QrCode className="w-4 h-4 mr-1" />
+                                Code
+                              </Button>
+                            ) : null}
+                          </div>
                         </td>
                       </tr>
                     );
@@ -366,6 +449,164 @@ export default function AdminScreens() {
               </p>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+      {/* Edit Screen Dialog */}
+      <Dialog open={!!editScreen} onOpenChange={() => setEditScreen(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Screen</DialogTitle>
+          </DialogHeader>
+          
+          {editScreen && (
+            <div className="space-y-6">
+              {/* Basic Info */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Screen Name</Label>
+                  <Input
+                    value={editData.name}
+                    onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Slot Price (AED/week)</Label>
+                  <Input
+                    type="number"
+                    value={editData.slot_price}
+                    onChange={(e) => setEditData({ ...editData, slot_price: parseFloat(e.target.value) || 0 })}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label>Size</Label>
+                  <Select value={editData.size} onValueChange={(v) => setEditData({ ...editData, size: v })}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='32"'>32"</SelectItem>
+                      <SelectItem value='43"'>43"</SelectItem>
+                      <SelectItem value='55"'>55"</SelectItem>
+                      <SelectItem value='65"'>65"</SelectItem>
+                      <SelectItem value='75"'>75"</SelectItem>
+                      <SelectItem value='85+"'>85+"</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Orientation</Label>
+                  <Select value={editData.orientation} onValueChange={(v) => setEditData({ ...editData, orientation: v })}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="portrait">Portrait</SelectItem>
+                      <SelectItem value="landscape">Landscape</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Status</Label>
+                  <Select value={editData.status} onValueChange={(v) => setEditData({ ...editData, status: v })}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="online">Online</SelectItem>
+                      <SelectItem value="offline">Offline</SelectItem>
+                      <SelectItem value="maintenance">Maintenance</SelectItem>
+                      <SelectItem value="pending_setup">Pending Setup</SelectItem>
+                      <SelectItem value="pending_approval">Pending Approval</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Owner Ad Slots */}
+              <div className="border-t pt-4">
+                <h3 className="font-semibold text-slate-900 mb-4">Owner Ad Slots (Reserved)</h3>
+                <div className="grid grid-cols-3 gap-4">
+                  {[1, 2, 3].map((slot) => (
+                    <div key={slot} className="space-y-2">
+                      <Label>Slot {slot}</Label>
+                      <div className="border rounded-lg p-3 space-y-2">
+                        {editData[`owner_slot_${slot}_url`] ? (
+                          <div className="relative">
+                            {editData[`owner_slot_${slot}_type`] === "video" ? (
+                              <video 
+                                src={editData[`owner_slot_${slot}_url`]} 
+                                className="w-full h-24 object-cover rounded"
+                                controls
+                              />
+                            ) : (
+                              <img 
+                                src={editData[`owner_slot_${slot}_url`]} 
+                                className="w-full h-24 object-cover rounded"
+                                alt={`Slot ${slot}`}
+                              />
+                            )}
+                            <Button
+                              size="icon"
+                              variant="destructive"
+                              className="absolute top-1 right-1 w-6 h-6"
+                              onClick={() => setEditData({
+                                ...editData,
+                                [`owner_slot_${slot}_url`]: "",
+                                [`owner_slot_${slot}_type`]: "image"
+                              })}
+                            >
+                              <X className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <label className="block">
+                            <div className="border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:border-violet-300 transition-colors">
+                              {uploading === slot ? (
+                                <Loader2 className="w-6 h-6 animate-spin mx-auto text-violet-600" />
+                              ) : (
+                                <>
+                                  <Upload className="w-6 h-6 mx-auto text-slate-400" />
+                                  <p className="text-xs text-slate-500 mt-1">Upload</p>
+                                </>
+                              )}
+                            </div>
+                            <input
+                              type="file"
+                              className="hidden"
+                              accept="image/*,video/*"
+                              onChange={(e) => handleOwnerSlotUpload(slot, e)}
+                              disabled={uploading === slot}
+                            />
+                          </label>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditScreen(null)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSaveScreen}
+              disabled={saving}
+              className="bg-violet-600 hover:bg-violet-700"
+            >
+              {saving ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              ) : (
+                <Save className="w-4 h-4 mr-2" />
+              )}
+              Save Changes
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
