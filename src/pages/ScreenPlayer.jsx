@@ -169,9 +169,9 @@ export default function ScreenPlayer() {
 
   // Cycle through ads with animations
   useEffect(() => {
-    if (!authenticated || allAds.length === 0) return;
+    if (!authenticated || displayAds.length === 0) return;
     
-    const currentAd = allAds[currentAdIndex];
+    const currentAd = displayAds[currentAdIndex];
     const isVideo = currentAd?.creative_type === "video";
     
     // For videos, we handle transition via onEnded event
@@ -183,7 +183,7 @@ export default function ScreenPlayer() {
     }, AD_DURATION);
 
     return () => clearTimeout(timer);
-  }, [authenticated, allAds.length, currentAdIndex]);
+  }, [authenticated, displayAds.length, currentAdIndex]);
 
   const goToNextAd = () => {
     // Pick random animation for next transition
@@ -192,7 +192,7 @@ export default function ScreenPlayer() {
     setTransitioning(true);
     
     setTimeout(() => {
-      setCurrentAdIndex(prev => (prev + 1) % allAds.length);
+      setCurrentAdIndex(prev => (prev + 1) % displayAds.length);
       setTimeout(() => setTransitioning(false), 50);
     }, 400);
   };
@@ -433,15 +433,21 @@ export default function ScreenPlayer() {
                 </div>
                 <span className="font-bold text-white">BeyondWalls</span>
               </div>
-              <div className="flex items-center gap-2 text-emerald-400">
-                <Wifi className="w-4 h-4" />
-                <span className="text-sm">Connected</span>
+              <div className={`flex items-center gap-2 ${isOffline ? 'text-amber-400' : 'text-emerald-400'}`}>
+                {isOffline ? <WifiOff className="w-4 h-4" /> : <Wifi className="w-4 h-4" />}
+                <span className="text-sm">{isOffline ? 'Offline Mode' : 'Connected'}</span>
               </div>
             </div>
             <div className="flex items-center gap-4 text-white/60 text-sm">
               <span>{screen?.name}</span>
               <span className="text-white/40">|</span>
               <span>{screen?.device_id}</span>
+              {isOffline && lastSyncTime && (
+                <>
+                  <span className="text-white/40">|</span>
+                  <span className="text-amber-400">Last sync: {new Date(lastSyncTime).toLocaleTimeString()}</span>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -487,7 +493,7 @@ export default function ScreenPlayer() {
 
       {/* Ad Content */}
       <div className={`w-full h-screen flex items-center justify-center ad-container ${transitioning ? `transitioning ${animationType}` : ''}`}>
-        {allAds.length === 0 ? (
+        {displayAds.length === 0 ? (
           <div className="text-center text-white">
             <div className="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
               <MonitorPlay className="w-12 h-12 text-white/60" />
@@ -541,7 +547,7 @@ export default function ScreenPlayer() {
         <div className="absolute bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-black/80 to-transparent p-4">
           <div className="flex items-center justify-between max-w-7xl mx-auto">
             <div className="flex items-center gap-2">
-              {allAds.map((_, idx) => (
+              {displayAds.map((_, idx) => (
                 <div 
                   key={idx}
                   className={`w-2 h-2 rounded-full transition-all ${
@@ -577,7 +583,7 @@ export default function ScreenPlayer() {
         <div className="absolute bottom-16 left-4 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2">
           <p className="text-white text-sm font-medium">{currentAd.name}</p>
           <p className="text-white/60 text-xs">
-            {currentAdIndex + 1} of {allAds.length}
+            {currentAdIndex + 1} of {displayAds.length} {isOffline && '(Offline)'}
           </p>
         </div>
       )}
