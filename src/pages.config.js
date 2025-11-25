@@ -40,6 +40,7 @@ import AICampaignCreator from './pages/AICampaignCreator';
 import AdminPricing from './pages/AdminPricing';
 import CampaignReport from './pages/CampaignReport';
 import FavoriteScreens from './pages/FavoriteScreens';
+import CampaignManager from './pages/CampaignManager';
 import __Layout from './Layout.jsx';
 
 
@@ -86,6 +87,7 @@ export const PAGES = {
     "AdminPricing": AdminPricing,
     "CampaignReport": CampaignReport,
     "FavoriteScreens": FavoriteScreens,
+    "CampaignManager": CampaignManager,
 }
 
 export const pagesConfig = {
