@@ -83,7 +83,7 @@ export default function Layout({ children, currentPageName }) {
   const navItems = getNavItems();
 
   // Public pages without sidebar
-  if (["Home", "Login", "Register", "CompleteProfile"].includes(currentPageName)) {
+  if (["Home", "Login", "Register", "CompleteProfile", "ScreenPlayer"].includes(currentPageName)) {
     return <>{children}</>;
   }
 

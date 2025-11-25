@@ -11,7 +11,11 @@ import {
   Wifi,
   WifiOff,
   Settings,
-  Building2
+  Building2,
+  Play,
+  Copy,
+  ExternalLink,
+  Lock
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +23,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 import { format } from "date-fns";
 
 export default function MyScreens() {
@@ -26,6 +39,8 @@ export default function MyScreens() {
   const [user, setUser] = useState(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [selectedScreen, setSelectedScreen] = useState(null);
+  const [showPlayerDialog, setShowPlayerDialog] = useState(false);
 
   useEffect(() => {
     loadUser();
@@ -216,16 +231,106 @@ export default function MyScreens() {
                     </p>
                   )}
 
-                  <Button variant="outline" className="w-full">
-                    <Settings className="w-4 h-4 mr-2" />
-                    Manage Screen
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => {
+                        setSelectedScreen(screen);
+                        setShowPlayerDialog(true);
+                      }}
+                    >
+                      <Play className="w-4 h-4 mr-2" />
+                      Launch Player
+                    </Button>
+                    <Button variant="outline" size="icon">
+                      <Settings className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             );
           })}
         </div>
       )}
+
+      {/* Player Launch Dialog */}
+      <Dialog open={showPlayerDialog} onOpenChange={setShowPlayerDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <MonitorPlay className="w-5 h-5 text-violet-600" />
+              Launch Screen Player
+            </DialogTitle>
+            <DialogDescription>
+              Open this on your TV or display to start showing ads
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedScreen && (
+            <div className="space-y-4 py-4">
+              <div className="bg-slate-50 rounded-xl p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <Label className="text-slate-500">Screen ID</Label>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => {
+                      navigator.clipboard.writeText(selectedScreen.device_id || selectedScreen.id);
+                      toast.success("Copied to clipboard");
+                    }}
+                  >
+                    <Copy className="w-4 h-4 mr-1" />
+                    Copy
+                  </Button>
+                </div>
+                <p className="text-2xl font-mono font-bold text-slate-900 tracking-wider">
+                  {selectedScreen.device_id || selectedScreen.id.slice(-8).toUpperCase()}
+                </p>
+              </div>
+
+              {selectedScreen.player_pin && (
+                <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Lock className="w-4 h-4 text-amber-600" />
+                    <Label className="text-amber-700">PIN Protected</Label>
+                  </div>
+                  <p className="text-lg font-mono font-bold text-amber-900 tracking-widest">
+                    {selectedScreen.player_pin}
+                  </p>
+                </div>
+              )}
+
+              <div className="bg-violet-50 rounded-xl p-4 border border-violet-200">
+                <p className="text-sm text-violet-700 mb-3">
+                  <strong>How to connect:</strong>
+                </p>
+                <ol className="text-sm text-violet-600 space-y-2">
+                  <li>1. Open the Player URL on your TV browser</li>
+                  <li>2. Enter the Screen ID shown above</li>
+                  <li>3. Enter the PIN if required</li>
+                  <li>4. Click "Connect Screen" to start</li>
+                </ol>
+              </div>
+
+              <Button 
+                className="w-full h-12 bg-gradient-to-r from-violet-600 to-indigo-600"
+                onClick={() => {
+                  const playerUrl = `${window.location.origin}${createPageUrl("ScreenPlayer")}?screen_id=${selectedScreen.device_id || selectedScreen.id}`;
+                  window.open(playerUrl, "_blank");
+                }}
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Open Player in New Tab
+              </Button>
+
+              <p className="text-xs text-center text-slate-400">
+                Player URL: {window.location.origin}{createPageUrl("ScreenPlayer")}
+              </p>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
