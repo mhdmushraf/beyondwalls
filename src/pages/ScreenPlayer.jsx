@@ -29,8 +29,13 @@ export default function ScreenPlayer() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [connecting, setConnecting] = useState(false);
+  const [transitioning, setTransitioning] = useState(false);
+  const [animationType, setAnimationType] = useState("fade");
   const containerRef = useRef(null);
   const videoRef = useRef(null);
+
+  const AD_DURATION = 8000; // 8 seconds for images
+  const animations = ["fade", "slideLeft", "slideRight", "slideUp", "slideDown", "zoom", "flip", "blur"];
 
   // Get setup code or screen ID from URL
   useEffect(() => {
@@ -91,16 +96,39 @@ export default function ScreenPlayer() {
     }))
   ].filter(ad => ad.creative_url);
 
-  // Cycle through ads
+  // Cycle through ads with animations
   useEffect(() => {
     if (!authenticated || allAds.length === 0) return;
     
-    const interval = setInterval(() => {
-      setCurrentAdIndex(prev => (prev + 1) % allAds.length);
-    }, 15000); // 15 seconds per ad
+    const currentAd = allAds[currentAdIndex];
+    const isVideo = currentAd?.creative_type === "video";
+    
+    // For videos, we handle transition via onEnded event
+    if (isVideo) return;
+    
+    // For images, use fixed duration
+    const timer = setTimeout(() => {
+      goToNextAd();
+    }, AD_DURATION);
 
-    return () => clearInterval(interval);
-  }, [authenticated, allAds.length]);
+    return () => clearTimeout(timer);
+  }, [authenticated, allAds.length, currentAdIndex]);
+
+  const goToNextAd = () => {
+    // Pick random animation for next transition
+    const randomAnim = animations[Math.floor(Math.random() * animations.length)];
+    setAnimationType(randomAnim);
+    setTransitioning(true);
+    
+    setTimeout(() => {
+      setCurrentAdIndex(prev => (prev + 1) % allAds.length);
+      setTimeout(() => setTransitioning(false), 50);
+    }, 400);
+  };
+
+  const handleVideoEnded = () => {
+    goToNextAd();
+  };
 
   // Send heartbeat
   useEffect(() => {
@@ -348,8 +376,46 @@ export default function ScreenPlayer() {
         </div>
       )}
 
+      {/* Animation Styles */}
+      <style>{`
+        .ad-container {
+          transition: all 0.4s ease-in-out;
+        }
+        .ad-container.transitioning.fade {
+          opacity: 0;
+        }
+        .ad-container.transitioning.slideLeft {
+          transform: translateX(-100%);
+          opacity: 0;
+        }
+        .ad-container.transitioning.slideRight {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        .ad-container.transitioning.slideUp {
+          transform: translateY(-100%);
+          opacity: 0;
+        }
+        .ad-container.transitioning.slideDown {
+          transform: translateY(100%);
+          opacity: 0;
+        }
+        .ad-container.transitioning.zoom {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+        .ad-container.transitioning.flip {
+          transform: rotateY(90deg);
+          opacity: 0;
+        }
+        .ad-container.transitioning.blur {
+          filter: blur(20px);
+          opacity: 0;
+        }
+      `}</style>
+
       {/* Ad Content */}
-      <div className="w-full h-screen flex items-center justify-center">
+      <div className={`w-full h-screen flex items-center justify-center ad-container ${transitioning ? `transitioning ${animationType}` : ''}`}>
         {allAds.length === 0 ? (
           <div className="text-center text-white">
             <div className="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
@@ -370,15 +436,27 @@ export default function ScreenPlayer() {
           currentAd.creative_type === "video" ? (
             <video
               ref={videoRef}
+              key={currentAd.id}
               src={currentAd.creative_url}
               className="w-full h-full object-contain"
               autoPlay
-              loop
               muted={isMuted}
               playsInline
+              onEnded={handleVideoEnded}
+              onLoadedMetadata={(e) => {
+                // If video is longer than max duration, set up a timeout
+                if (e.target.duration > AD_DURATION / 1000) {
+                  setTimeout(() => {
+                    if (videoRef.current) {
+                      goToNextAd();
+                    }
+                  }, AD_DURATION);
+                }
+              }}
             />
           ) : (
             <img
+              key={currentAd.id}
               src={currentAd.creative_url}
               alt={currentAd.name}
               className="w-full h-full object-contain"
