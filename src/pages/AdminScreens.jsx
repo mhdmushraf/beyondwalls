@@ -282,7 +282,7 @@ export default function AdminScreens() {
               <thead className="bg-slate-50 border-b">
                 <tr>
                   <th className="text-left p-4 font-medium text-slate-600">Screen</th>
-                  <th className="text-left p-4 font-medium text-slate-600">Screen ID</th>
+                  <th className="text-left p-4 font-medium text-slate-600">Device ID</th>
                   <th className="text-left p-4 font-medium text-slate-600">PIN</th>
                   <th className="text-left p-4 font-medium text-slate-600">Venue</th>
                   <th className="text-left p-4 font-medium text-slate-600">Specs</th>
@@ -322,19 +322,23 @@ export default function AdminScreens() {
                           </div>
                         </td>
                         <td className="p-4">
-                          <div className="flex items-center gap-1">
-                            <code className="text-xs bg-slate-100 px-2 py-1 rounded font-mono text-slate-700">
-                              {screen.id?.substring(0, 8) || "—"}
-                            </code>
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              className="h-6 w-6"
-                              onClick={() => copyToClipboard(screen.id)}
-                            >
-                              <Copy className="w-3 h-3" />
-                            </Button>
-                          </div>
+                          {screen.device_id ? (
+                            <div className="flex items-center gap-1">
+                              <code className="text-xs bg-slate-100 px-2 py-1 rounded font-mono text-slate-700">
+                                {screen.device_id}
+                              </code>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="h-6 w-6"
+                                onClick={() => copyToClipboard(screen.device_id)}
+                              >
+                                <Copy className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          ) : (
+                            <span className="text-xs text-slate-400">—</span>
+                          )}
                         </td>
                         <td className="p-4">
                           {screen.player_pin ? (
