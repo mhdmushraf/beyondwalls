@@ -31,41 +31,11 @@ export default function ScreenPlayer() {
   const [connecting, setConnecting] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
   const [animationType, setAnimationType] = useState("fade");
-  const [isOffline, setIsOffline] = useState(!navigator.onLine);
-  const [lastSyncTime, setLastSyncTime] = useState(null);
-  const [cachedAds, setCachedAds] = useState([]);
   const containerRef = useRef(null);
   const videoRef = useRef(null);
 
   const AD_DURATION = 8000; // 8 seconds for images
-  const OFFLINE_MAX_HOURS = 24;
   const animations = ["fade", "slideLeft", "slideRight", "slideUp", "slideDown", "zoom", "flip", "blur"];
-
-  // Monitor online/offline status
-  useEffect(() => {
-    const handleOnline = () => {
-      setIsOffline(false);
-      // Sync with cloud when back online
-      if (authenticated && screen?.id) {
-        refetchBookings();
-        refetchCampaigns();
-        setLastSyncTime(new Date().toISOString());
-        localStorage.setItem(`bw_last_sync_${screen.id}`, new Date().toISOString());
-      }
-    };
-    
-    const handleOffline = () => {
-      setIsOffline(true);
-    };
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, [authenticated, screen?.id]);
 
   // Get setup code or screen ID from URL
   useEffect(() => {
@@ -126,52 +96,11 @@ export default function ScreenPlayer() {
     }))
   ].filter(ad => ad.creative_url);
 
-  // Cache ads to localStorage for offline playback
-  useEffect(() => {
-    if (authenticated && screen?.id && allAds.length > 0 && !isOffline) {
-      const cacheData = {
-        ads: allAds,
-        cachedAt: new Date().toISOString(),
-        screenId: screen.id
-      };
-      localStorage.setItem(`bw_cached_ads_${screen.id}`, JSON.stringify(cacheData));
-      setCachedAds(allAds);
-      setLastSyncTime(new Date().toISOString());
-      localStorage.setItem(`bw_last_sync_${screen.id}`, new Date().toISOString());
-    }
-  }, [allAds.length, authenticated, screen?.id, isOffline]);
-
-  // Load cached ads on mount or when offline
-  useEffect(() => {
-    if (authenticated && screen?.id) {
-      const cached = localStorage.getItem(`bw_cached_ads_${screen.id}`);
-      const lastSync = localStorage.getItem(`bw_last_sync_${screen.id}`);
-      
-      if (cached) {
-        const cacheData = JSON.parse(cached);
-        const cachedAt = new Date(cacheData.cachedAt);
-        const hoursSinceCached = (Date.now() - cachedAt.getTime()) / (1000 * 60 * 60);
-        
-        // Only use cache if within 24 hours
-        if (hoursSinceCached <= OFFLINE_MAX_HOURS) {
-          setCachedAds(cacheData.ads);
-        }
-      }
-      
-      if (lastSync) {
-        setLastSyncTime(lastSync);
-      }
-    }
-  }, [authenticated, screen?.id]);
-
-  // Get ads to display (use cached if offline)
-  const displayAds = isOffline && cachedAds.length > 0 ? cachedAds : allAds.length > 0 ? allAds : cachedAds;
-
   // Cycle through ads with animations
   useEffect(() => {
-    if (!authenticated || displayAds.length === 0) return;
+    if (!authenticated || allAds.length === 0) return;
     
-    const currentAd = displayAds[currentAdIndex];
+    const currentAd = allAds[currentAdIndex];
     const isVideo = currentAd?.creative_type === "video";
     
     // For videos, we handle transition via onEnded event
@@ -183,7 +112,7 @@ export default function ScreenPlayer() {
     }, AD_DURATION);
 
     return () => clearTimeout(timer);
-  }, [authenticated, displayAds.length, currentAdIndex]);
+  }, [authenticated, allAds.length, currentAdIndex]);
 
   const goToNextAd = () => {
     // Pick random animation for next transition
@@ -192,7 +121,7 @@ export default function ScreenPlayer() {
     setTransitioning(true);
     
     setTimeout(() => {
-      setCurrentAdIndex(prev => (prev + 1) % displayAds.length);
+      setCurrentAdIndex(prev => (prev + 1) % allAds.length);
       setTimeout(() => setTransitioning(false), 50);
     }, 400);
   };
@@ -296,7 +225,7 @@ export default function ScreenPlayer() {
     }
   };
 
-  const currentAd = displayAds[currentAdIndex];
+  const currentAd = allAds[currentAdIndex];
 
   // Login Screen
   if (!authenticated) {
@@ -422,7 +351,7 @@ export default function ScreenPlayer() {
       ref={containerRef}
       className="min-h-screen bg-black relative overflow-hidden"
     >
-      {/* Status Bar - Hidden in fullscreen */}
+      {/* Status Bar */}
       {!isFullscreen && (
         <div className="absolute top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/80 to-transparent p-4">
           <div className="flex items-center justify-between max-w-7xl mx-auto">
@@ -433,21 +362,15 @@ export default function ScreenPlayer() {
                 </div>
                 <span className="font-bold text-white">BeyondWalls</span>
               </div>
-              <div className={`flex items-center gap-2 ${isOffline ? 'text-amber-400' : 'text-emerald-400'}`}>
-                {isOffline ? <WifiOff className="w-4 h-4" /> : <Wifi className="w-4 h-4" />}
-                <span className="text-sm">{isOffline ? 'Offline Mode' : 'Connected'}</span>
+              <div className="flex items-center gap-2 text-emerald-400">
+                <Wifi className="w-4 h-4" />
+                <span className="text-sm">Connected</span>
               </div>
             </div>
             <div className="flex items-center gap-4 text-white/60 text-sm">
               <span>{screen?.name}</span>
               <span className="text-white/40">|</span>
               <span>{screen?.device_id}</span>
-              {isOffline && lastSyncTime && (
-                <>
-                  <span className="text-white/40">|</span>
-                  <span className="text-amber-400">Last sync: {new Date(lastSyncTime).toLocaleTimeString()}</span>
-                </>
-              )}
             </div>
           </div>
         </div>
@@ -493,7 +416,7 @@ export default function ScreenPlayer() {
 
       {/* Ad Content */}
       <div className={`w-full h-screen flex items-center justify-center ad-container ${transitioning ? `transitioning ${animationType}` : ''}`}>
-        {displayAds.length === 0 ? (
+        {allAds.length === 0 ? (
           <div className="text-center text-white">
             <div className="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
               <MonitorPlay className="w-12 h-12 text-white/60" />
@@ -547,7 +470,7 @@ export default function ScreenPlayer() {
         <div className="absolute bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-black/80 to-transparent p-4">
           <div className="flex items-center justify-between max-w-7xl mx-auto">
             <div className="flex items-center gap-2">
-              {displayAds.map((_, idx) => (
+              {allAds.map((_, idx) => (
                 <div 
                   key={idx}
                   className={`w-2 h-2 rounded-full transition-all ${
@@ -578,12 +501,12 @@ export default function ScreenPlayer() {
         </div>
       )}
 
-      {/* Campaign Info Overlay - Hidden in fullscreen */}
+      {/* Campaign Info Overlay */}
       {!isFullscreen && currentAd && (
         <div className="absolute bottom-16 left-4 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2">
           <p className="text-white text-sm font-medium">{currentAd.name}</p>
           <p className="text-white/60 text-xs">
-            {currentAdIndex + 1} of {displayAds.length} {isOffline && '(Offline)'}
+            {currentAdIndex + 1} of {allAds.length}
           </p>
         </div>
       )}
