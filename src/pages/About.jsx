@@ -8,7 +8,9 @@ import {
   Award,
   CheckCircle2,
   Building2,
-  Megaphone
+  Megaphone,
+  MapPin,
+  Trophy
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -41,17 +43,15 @@ export default function About() {
   ];
 
   const milestones = [
-    { year: "2022", title: "Founded", description: "BeyondWalls was born with a vision to revolutionize DOOH" },
-    { year: "2023", title: "100+ Screens", description: "Reached our first major milestone of 100 active screens" },
-    { year: "2024", title: "500+ Screens", description: "Expanded to 500+ screens across premium venues" },
-    { year: "2025", title: "UAE Leader", description: "Became the #1 self-serve DOOH platform in the UAE" }
+    { year: "2024", title: "Founded", description: "BeyondWalls was born with a vision to revolutionize DOOH advertising" },
+    { year: "2024", title: "in5 Dubai", description: "Joined in5 Dubai incubator program under TECOM Group" },
+    { year: "2025", title: "Soft Launch", description: "Attracted 8 venue partners and 25+ advertisers with $25,000+ in pending bookings" },
+    { year: "2025", title: "Global Recognition Award", description: "Received 2025 Global Recognition Award for innovation in DOOH sector" }
   ];
 
   const team = [
-    { name: "Mohammed Al Rashid", role: "CEO & Founder", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop" },
-    { name: "Sarah Ahmed", role: "COO", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop" },
-    { name: "Omar Hassan", role: "CTO", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" },
-    { name: "Fatima Al Ali", role: "Head of Sales", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop" }
+    { name: "Muhammed Musharaf", role: "CEO & Founder", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" },
+    { name: "Muhammed Shafi", role: "COO", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop" }
   ];
 
   return (
@@ -159,6 +159,78 @@ export default function About() {
         </div>
       </section>
 
+      {/* Award Section */}
+      <section className="py-20 px-6 bg-amber-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center gap-8">
+            <div className="w-32 h-32 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center flex-shrink-0">
+              <Trophy className="w-16 h-16 text-white" />
+            </div>
+            <div>
+              <Badge className="bg-amber-200 text-amber-800 mb-4">2025 Global Recognition Award</Badge>
+              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
+                Award-Winning Innovation in DOOH Advertising
+              </h2>
+              <p className="text-slate-600">
+                Beyond Walls has received a 2025 Global Recognition Award for its approach to restructuring 
+                the out-of-home advertising sector through technology and an accessible business model. 
+                Our platform eliminates obstacles that have historically prevented small and medium-sized 
+                businesses from participating in physical advertising by reducing campaign launch times 
+                from weeks to under 30 minutes and cutting entry costs by more than 90%.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* in5 Dubai Section */}
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <Badge className="bg-violet-100 text-violet-600 mb-4">Backed by in5 Dubai</Badge>
+              <h2 className="text-3xl font-bold text-slate-900 mb-6">
+                Part of Dubai's Premier Innovation Hub
+              </h2>
+              <p className="text-slate-600 mb-4">
+                BeyondWalls is proud to be an in5 Dubai incubator startup, part of the TECOM Group ecosystem. 
+                in5 is Dubai's leading innovation hub that enables tech, media, and design entrepreneurs 
+                to transform their ideas into successful businesses.
+              </p>
+              <p className="text-slate-600 mb-6">
+                Being part of in5 gives us access to world-class facilities, mentorship, and a vibrant 
+                community of innovators in Dubai Internet City - the region's largest technology hub.
+              </p>
+              <div className="flex items-center gap-3 text-slate-700">
+                <MapPin className="w-5 h-5 text-violet-600" />
+                <span>in5 - Dubai Internet City - Dubai - United Arab Emirates</span>
+              </div>
+            </div>
+            <div className="bg-gradient-to-br from-violet-100 to-indigo-100 rounded-2xl p-8">
+              <h3 className="text-xl font-bold text-slate-900 mb-4">Platform Highlights</h3>
+              <div className="space-y-4">
+                <div className="bg-white rounded-xl p-4">
+                  <p className="text-2xl font-bold text-violet-600">8+</p>
+                  <p className="text-slate-600">Venue Partners</p>
+                </div>
+                <div className="bg-white rounded-xl p-4">
+                  <p className="text-2xl font-bold text-violet-600">25+</p>
+                  <p className="text-slate-600">Advertisers on Waitlist</p>
+                </div>
+                <div className="bg-white rounded-xl p-4">
+                  <p className="text-2xl font-bold text-violet-600">$25,000+</p>
+                  <p className="text-slate-600">Pending Bookings</p>
+                </div>
+                <div className="bg-white rounded-xl p-4">
+                  <p className="text-2xl font-bold text-violet-600">70/30</p>
+                  <p className="text-slate-600">Revenue Split (Venue/Platform)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Team */}
       <section className="py-20 px-6 bg-slate-50">
         <div className="max-w-6xl mx-auto">
@@ -166,16 +238,38 @@ export default function About() {
             <Badge className="bg-violet-100 text-violet-600 mb-4">Our Team</Badge>
             <h2 className="text-3xl font-bold text-slate-900">Meet the Leadership</h2>
           </div>
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
             {team.map((member, i) => (
               <Card key={i} className="border-0 shadow-lg overflow-hidden">
-                <img src={member.image} alt={member.name} className="w-full h-48 object-cover" />
+                <img src={member.image} alt={member.name} className="w-full h-56 object-cover" />
                 <CardContent className="p-4 text-center">
                   <h3 className="font-bold text-slate-900">{member.name}</h3>
                   <p className="text-sm text-slate-500">{member.role}</p>
                 </CardContent>
               </Card>
             ))}
+          </div>
+          {/* Social Links */}
+          <div className="mt-12 text-center">
+            <p className="text-slate-500 mb-4">Follow us on social media</p>
+            <div className="flex justify-center gap-4">
+              <a href="https://x.com/BeyondWallsae" target="_blank" rel="noopener noreferrer" 
+                 className="w-10 h-10 bg-slate-900 text-white rounded-full flex items-center justify-center hover:bg-slate-700 transition-colors">
+                𝕏
+              </a>
+              <a href="https://www.instagram.com/beyondwallsae/" target="_blank" rel="noopener noreferrer"
+                 className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-full flex items-center justify-center hover:opacity-80 transition-opacity">
+                IG
+              </a>
+              <a href="https://www.youtube.com/@BeyondWallsAE" target="_blank" rel="noopener noreferrer"
+                 className="w-10 h-10 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700 transition-colors">
+                YT
+              </a>
+              <a href="https://www.facebook.com/beyondwallsae" target="_blank" rel="noopener noreferrer"
+                 className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors">
+                FB
+              </a>
+            </div>
           </div>
         </div>
       </section>
