@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import StatsCard from "@/components/dashboard/StatsCard";
 import CampaignCard from "@/components/dashboard/CampaignCard";
+import AICampaignOptimizer from "@/components/campaigns/AICampaignOptimizer";
 import { format } from "date-fns";
 
 export default function AdvertiserDashboard() {
@@ -243,6 +244,9 @@ export default function AdvertiserDashboard() {
               )}
             </CardContent>
           </Card>
+
+          {/* AI Campaign Optimizer */}
+          <AICampaignOptimizer userId={user?.email} compact={true} />
 
           {/* Quick Actions */}
           <Card>
