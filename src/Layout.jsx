@@ -78,6 +78,7 @@ export default function Layout({ children, currentPageName }) {
       // Unified dashboard for all users (both advertiser and venue owner)
       const items = [
           { name: "Dashboard", icon: LayoutDashboard, page: "Dashboard" },
+          { name: "Analytics", icon: LayoutDashboard, page: "AnalyticsDashboard" },
           { name: "AI Campaign", icon: Megaphone, page: "AICampaignCreator" },
           { name: "Book Ad Slot", icon: Plus, page: "BookSlot" },
           { name: "Favorites", icon: MonitorPlay, page: "FavoriteScreens" },
