@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { base44 } from "@/api/base44Client";
+import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
 import {
   Search,
   Calendar,
   User,
-  Clock
+  Clock,
+  FileText,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,75 +23,33 @@ export default function Blog() {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  const categories = ["All", "Industry News", "Tips & Tricks", "Case Studies", "Product Updates"];
+  const categories = ["All", "Industry News", "Tips & Tricks", "Case Studies", "Product Updates", "Guides"];
 
-  const blogPosts = [
-    {
-      id: 1,
-      title: "The Future of Digital Out-of-Home Advertising in the UAE",
-      excerpt: "Explore how DOOH is transforming the advertising landscape in the Middle East and what it means for businesses.",
-      image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600&h=400&fit=crop",
-      category: "Industry News",
-      author: "Sarah Ahmed",
-      date: "Nov 20, 2024",
-      readTime: "5 min read"
-    },
-    {
-      id: 2,
-      title: "5 Tips for Creating Effective Screen Ads",
-      excerpt: "Learn the best practices for designing eye-catching advertisements that convert viewers into customers.",
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop",
-      category: "Tips & Tricks",
-      author: "Omar Hassan",
-      date: "Nov 18, 2024",
-      readTime: "4 min read"
-    },
-    {
-      id: 3,
-      title: "How Café Milano Increased Footfall by 30%",
-      excerpt: "A deep dive into how one of our venue partners leveraged BeyondWalls to boost their business.",
-      image: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&h=400&fit=crop",
-      category: "Case Studies",
-      author: "Fatima Al Ali",
-      date: "Nov 15, 2024",
-      readTime: "6 min read"
-    },
-    {
-      id: 4,
-      title: "New Feature: Real-time Campaign Analytics",
-      excerpt: "Introducing our latest dashboard update with live impression tracking and detailed performance metrics.",
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop",
-      category: "Product Updates",
-      author: "Tech Team",
-      date: "Nov 12, 2024",
-      readTime: "3 min read"
-    },
-    {
-      id: 5,
-      title: "Why Location Matters: Targeting the Right Audience",
-      excerpt: "Understanding the importance of venue selection and how to maximize your campaign's reach.",
-      image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&h=400&fit=crop",
-      category: "Tips & Tricks",
-      author: "Sarah Ahmed",
-      date: "Nov 10, 2024",
-      readTime: "5 min read"
-    },
-    {
-      id: 6,
-      title: "DOOH vs Traditional Billboards: A Comparison",
-      excerpt: "Discover why digital screens are becoming the preferred choice for modern advertisers.",
-      image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&h=400&fit=crop",
-      category: "Industry News",
-      author: "Omar Hassan",
-      date: "Nov 8, 2024",
-      readTime: "7 min read"
-    }
-  ];
+  const categoryMap = {
+    "Industry News": "industry-news",
+    "Tips & Tricks": "tips",
+    "Case Studies": "case-studies",
+    "Product Updates": "product-updates",
+    "Guides": "guides"
+  };
+
+  const categoryLabels = {
+    "industry-news": "Industry News",
+    "tips": "Tips & Tricks",
+    "case-studies": "Case Studies",
+    "product-updates": "Product Updates",
+    "guides": "Guides"
+  };
+
+  const { data: blogPosts = [], isLoading } = useQuery({
+    queryKey: ["public-blog-posts"],
+    queryFn: () => base44.entities.BlogPost.filter({ status: "published" }, "-published_at")
+  });
 
   const filteredPosts = blogPosts.filter(post => {
-    const matchesSearch = post.title.toLowerCase().includes(search.toLowerCase()) ||
-                         post.excerpt.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || post.category === selectedCategory;
+    const matchesSearch = post.title?.toLowerCase().includes(search.toLowerCase()) ||
+                         post.excerpt?.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = selectedCategory === "all" || post.category === categoryMap[selectedCategory];
     return matchesSearch && matchesCategory;
   });
 
@@ -143,9 +106,14 @@ export default function Blog() {
       {/* Blog Posts */}
       <section className="py-12 px-6">
         <div className="max-w-6xl mx-auto">
-          {filteredPosts.length === 0 ? (
+          {isLoading ? (
             <div className="text-center py-16">
-              <Search className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+              <Loader2 className="w-12 h-12 text-violet-600 animate-spin mx-auto mb-4" />
+              <p className="text-slate-500">Loading articles...</p>
+            </div>
+          ) : filteredPosts.length === 0 ? (
+            <div className="text-center py-16">
+              <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-slate-700 mb-2">No articles found</h3>
               <p className="text-slate-500">Try adjusting your search or filters</p>
             </div>
@@ -154,13 +122,19 @@ export default function Blog() {
               {filteredPosts.map((post) => (
                 <Card key={post.id} className="overflow-hidden hover:shadow-xl transition-shadow group cursor-pointer">
                   <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={post.image}
-                      alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
+                    {post.cover_image ? (
+                      <img
+                        src={post.cover_image}
+                        alt={post.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-violet-100 to-indigo-100 flex items-center justify-center">
+                        <FileText className="w-12 h-12 text-violet-300" />
+                      </div>
+                    )}
                     <Badge className="absolute top-3 left-3 bg-amber-100 text-slate-900">
-                      {post.category}
+                      {categoryLabels[post.category] || post.category}
                     </Badge>
                   </div>
                   <CardContent className="p-5">
@@ -174,16 +148,16 @@ export default function Blog() {
                       <div className="flex items-center gap-4">
                         <span className="flex items-center gap-1">
                           <User className="w-3 h-3" />
-                          {post.author}
+                          {post.author_name || "Admin"}
                         </span>
                         <span className="flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
-                          {post.date}
+                          {post.published_at ? format(new Date(post.published_at), "MMM d, yyyy") : format(new Date(post.created_date), "MMM d, yyyy")}
                         </span>
                       </div>
                       <span className="flex items-center gap-1">
                         <Clock className="w-3 h-3" />
-                        {post.readTime}
+                        {post.read_time || 1} min read
                       </span>
                     </div>
                   </CardContent>
