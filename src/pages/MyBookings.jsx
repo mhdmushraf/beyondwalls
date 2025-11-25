@@ -12,7 +12,8 @@ import {
   Plus,
   Eye,
   Search,
-  BarChart3
+  BarChart3,
+  Settings
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -102,12 +103,20 @@ export default function MyBookings() {
               </div>
               <div className="mt-3 pt-3 border-t flex items-center justify-between">
                 <p className="font-semibold text-violet-600">AED {booking.total_cost}</p>
-                <Link to={createPageUrl(`CampaignReport?id=${booking.id}`)}>
-                  <Button variant="outline" size="sm">
-                    <BarChart3 className="w-4 h-4 mr-1" />
-                    Report
-                  </Button>
-                </Link>
+                <div className="flex items-center gap-2">
+                  <Link to={createPageUrl(`CampaignManager?id=${booking.id}`)}>
+                    <Button variant="outline" size="sm">
+                      <Settings className="w-4 h-4 mr-1" />
+                      Manage
+                    </Button>
+                  </Link>
+                  <Link to={createPageUrl(`CampaignReport?id=${booking.id}`)}>
+                    <Button variant="outline" size="sm">
+                      <BarChart3 className="w-4 h-4 mr-1" />
+                      Report
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
