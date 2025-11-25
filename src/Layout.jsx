@@ -64,6 +64,7 @@ export default function Layout({ children, currentPageName }) {
         { name: "Dashboard", icon: LayoutDashboard, page: "AdminDashboard" },
         { name: "User Approvals", icon: UserCheck, page: "AdminUserApprovals" },
         { name: "Users", icon: Users, page: "AdminUsers" },
+        { name: "Ad Bookings", icon: Megaphone, page: "AdminBookings" },
         { name: "Campaigns", icon: Megaphone, page: "AdminCampaigns" },
         { name: "Venues", icon: Building2, page: "AdminVenues" },
         { name: "Screens", icon: MonitorPlay, page: "AdminScreens" },
