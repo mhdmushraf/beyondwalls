@@ -84,14 +84,13 @@ export default function Layout({ children, currentPageName }) {
           { name: "Book Ad Slot", icon: Plus, page: "BookSlot" },
           { name: "My Bookings", icon: Megaphone, page: "MyBookings" },
           { name: "Wallet", icon: Wallet, page: "Wallet" },
+          { name: "My Venues", icon: Building2, page: "MyVenues" },
+          { name: "My Screens", icon: MonitorPlay, page: "MyScreens" },
         ];
-      
-      // Add venue/screen management if user is venue owner
+
+      // Add owner-specific options if user is venue owner
       if (user?.is_venue_owner) {
         items.push(
-          { name: "My Venues", icon: Building2, page: "MyVenues" },
-          { name: "Add Venue", icon: Plus, page: "AddVenue" },
-          { name: "My Screens", icon: MonitorPlay, page: "MyScreens" },
           { name: "My Ad Slots", icon: Settings, page: "ManageOwnerSlots" },
         );
       }
