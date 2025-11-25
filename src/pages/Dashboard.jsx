@@ -13,7 +13,8 @@ import {
   ArrowDownRight,
   TrendingUp,
   Eye,
-  Calendar
+  Calendar,
+  Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -96,10 +97,10 @@ export default function Dashboard() {
               </Button>
             </Link>
           )}
-          <Link to={createPageUrl("BookSlot")}>
+          <Link to={createPageUrl("AICampaignCreator")}>
             <Button className="bg-gradient-to-r from-violet-600 to-indigo-600">
-              <Megaphone className="w-4 h-4 mr-2" />
-              Book Ad Slot
+              <Sparkles className="w-4 h-4 mr-2" />
+              AI Campaign
             </Button>
           </Link>
         </div>
@@ -241,12 +242,20 @@ export default function Dashboard() {
                 <div className="text-center py-8">
                   <Megaphone className="w-12 h-12 text-slate-300 mx-auto mb-3" />
                   <p className="text-slate-500 mb-4">No ad bookings yet</p>
-                  <Link to={createPageUrl("BookSlot")}>
-                    <Button>
-                      <Plus className="w-4 h-4 mr-2" />
-                      Book Your First Slot
-                    </Button>
-                  </Link>
+                  <div className="flex gap-3 justify-center">
+                    <Link to={createPageUrl("AICampaignCreator")}>
+                      <Button className="bg-gradient-to-r from-violet-600 to-indigo-600">
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        AI Campaign
+                      </Button>
+                    </Link>
+                    <Link to={createPageUrl("BookSlot")}>
+                      <Button variant="outline">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Manual Booking
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-3">

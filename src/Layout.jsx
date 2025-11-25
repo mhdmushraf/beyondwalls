@@ -66,11 +66,12 @@ export default function Layout({ children, currentPageName }) {
     } else {
       // Unified dashboard for all users (both advertiser and venue owner)
       const items = [
-        { name: "Dashboard", icon: LayoutDashboard, page: "Dashboard" },
-        { name: "Book Ad Slot", icon: Plus, page: "BookSlot" },
-        { name: "My Bookings", icon: Megaphone, page: "MyBookings" },
-        { name: "Wallet", icon: Wallet, page: "Wallet" },
-      ];
+          { name: "Dashboard", icon: LayoutDashboard, page: "Dashboard" },
+          { name: "AI Campaign", icon: Megaphone, page: "AICampaignCreator" },
+          { name: "Book Ad Slot", icon: Plus, page: "BookSlot" },
+          { name: "My Bookings", icon: Megaphone, page: "MyBookings" },
+          { name: "Wallet", icon: Wallet, page: "Wallet" },
+        ];
       
       // Add venue/screen management if user is venue owner
       if (user?.is_venue_owner) {
