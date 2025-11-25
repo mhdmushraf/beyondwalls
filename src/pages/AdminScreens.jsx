@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import {
   Search,
@@ -8,7 +8,12 @@ import {
   Wifi,
   WifiOff,
   Building2,
-  Activity
+  Activity,
+  CheckCircle2,
+  XCircle,
+  QrCode,
+  Copy,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,10 +21,66 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 export default function AdminScreens() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [approving, setApproving] = useState(null);
+  const [showSetupCode, setShowSetupCode] = useState(null);
+  const queryClient = useQueryClient();
+
+  const generateSetupCode = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = 'BW-';
+    for (let i = 0; i < 8; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+  };
+
+  const handleApprove = async (screen) => {
+    setApproving(screen.id);
+    try {
+      const setupCode = generateSetupCode();
+      await base44.entities.Screen.update(screen.id, {
+        status: "pending_setup",
+        setup_code: setupCode,
+        setup_code_generated_at: new Date().toISOString(),
+        approved_at: new Date().toISOString()
+      });
+      queryClient.invalidateQueries({ queryKey: ["admin-screens"] });
+      toast.success("Screen approved! Setup code generated.");
+      setShowSetupCode({ ...screen, setup_code: setupCode });
+    } catch (e) {
+      toast.error("Failed to approve screen");
+    }
+    setApproving(null);
+  };
+
+  const handleReject = async (screen) => {
+    if (!confirm("Are you sure you want to reject this screen?")) return;
+    setApproving(screen.id);
+    try {
+      await base44.entities.Screen.delete(screen.id);
+      queryClient.invalidateQueries({ queryKey: ["admin-screens"] });
+      toast.success("Screen rejected and removed");
+    } catch (e) {
+      toast.error("Failed to reject screen");
+    }
+    setApproving(null);
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    toast.success("Copied to clipboard!");
+  };
 
   const { data: screens = [], isLoading } = useQuery({
     queryKey: ["admin-screens"],
@@ -46,8 +107,11 @@ export default function AdminScreens() {
     online: "bg-emerald-100 text-emerald-700",
     offline: "bg-slate-100 text-slate-700",
     maintenance: "bg-amber-100 text-amber-700",
-    pending_setup: "bg-blue-100 text-blue-700"
+    pending_setup: "bg-blue-100 text-blue-700",
+    pending_approval: "bg-amber-100 text-amber-700"
   };
+
+  const pendingCount = screens.filter(s => s.status === "pending_approval").length;
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
@@ -116,9 +180,17 @@ export default function AdminScreens() {
         <Tabs value={statusFilter} onValueChange={setStatusFilter}>
           <TabsList>
             <TabsTrigger value="all">All</TabsTrigger>
+            <TabsTrigger value="pending_approval" className="relative">
+              Pending
+              {pendingCount > 0 && (
+                <span className="ml-1 bg-amber-500 text-white text-xs rounded-full px-1.5">
+                  {pendingCount}
+                </span>
+              )}
+            </TabsTrigger>
             <TabsTrigger value="online">Online</TabsTrigger>
             <TabsTrigger value="offline">Offline</TabsTrigger>
-            <TabsTrigger value="maintenance">Maintenance</TabsTrigger>
+            <TabsTrigger value="pending_setup">Setup</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
@@ -136,6 +208,7 @@ export default function AdminScreens() {
                   <th className="text-left p-4 font-medium text-slate-600">Rate</th>
                   <th className="text-left p-4 font-medium text-slate-600">Status</th>
                   <th className="text-left p-4 font-medium text-slate-600">Last Seen</th>
+                  <th className="text-left p-4 font-medium text-slate-600">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -195,6 +268,43 @@ export default function AdminScreens() {
                             }
                           </p>
                         </td>
+                        <td className="p-4">
+                          {screen.status === "pending_approval" ? (
+                            <div className="flex items-center gap-2">
+                              <Button
+                                size="sm"
+                                onClick={() => handleApprove(screen)}
+                                disabled={approving === screen.id}
+                                className="bg-emerald-600 hover:bg-emerald-700"
+                              >
+                                {approving === screen.id ? (
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                  <CheckCircle2 className="w-4 h-4" />
+                                )}
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => handleReject(screen)}
+                                disabled={approving === screen.id}
+                              >
+                                <XCircle className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          ) : screen.setup_code ? (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setShowSetupCode(screen)}
+                            >
+                              <QrCode className="w-4 h-4 mr-1" />
+                              Code
+                            </Button>
+                          ) : (
+                            <span className="text-slate-400">—</span>
+                          )}
+                        </td>
                       </tr>
                     );
                   })
@@ -204,6 +314,60 @@ export default function AdminScreens() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Setup Code Dialog */}
+      <Dialog open={!!showSetupCode} onOpenChange={() => setShowSetupCode(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Screen Setup Code</DialogTitle>
+          </DialogHeader>
+          {showSetupCode && (
+            <div className="space-y-6">
+              <div className="text-center">
+                <p className="text-sm text-slate-500 mb-2">{showSetupCode.name}</p>
+                <div className="bg-slate-100 rounded-xl p-6">
+                  <p className="text-3xl font-mono font-bold tracking-wider text-slate-900">
+                    {showSetupCode.setup_code}
+                  </p>
+                </div>
+              </div>
+
+              {/* QR Code Placeholder - displays the setup URL */}
+              <div className="bg-gradient-to-br from-violet-50 to-indigo-50 rounded-xl p-4 text-center">
+                <div className="w-32 h-32 bg-white rounded-lg mx-auto mb-3 flex items-center justify-center border-2 border-dashed border-violet-200">
+                  <QrCode className="w-16 h-16 text-violet-300" />
+                </div>
+                <p className="text-xs text-slate-500">
+                  Scan QR or enter code in BeyondWalls Player
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Button
+                  onClick={() => copyToClipboard(showSetupCode.setup_code)}
+                  className="w-full"
+                  variant="outline"
+                >
+                  <Copy className="w-4 h-4 mr-2" />
+                  Copy Setup Code
+                </Button>
+                <Button
+                  onClick={() => copyToClipboard(`${window.location.origin}/ScreenPlayer?setup_code=${showSetupCode.setup_code}`)}
+                  className="w-full bg-violet-600 hover:bg-violet-700"
+                >
+                  <Copy className="w-4 h-4 mr-2" />
+                  Copy Player URL
+                </Button>
+              </div>
+
+              <p className="text-xs text-slate-500 text-center">
+                The venue owner can use this code to set up their screen player. 
+                Once connected, the screen will automatically go online.
+              </p>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

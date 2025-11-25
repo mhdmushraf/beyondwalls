@@ -19,6 +19,8 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function ScreenPlayer() {
   const [screenId, setScreenId] = useState("");
+  const [setupCode, setSetupCode] = useState("");
+  const [authMode, setAuthMode] = useState("setup_code"); // "setup_code" or "screen_id"
   const [pin, setPin] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
   const [screen, setScreen] = useState(null);
@@ -26,14 +28,22 @@ export default function ScreenPlayer() {
   const [currentAdIndex, setCurrentAdIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+  const [connecting, setConnecting] = useState(false);
   const containerRef = useRef(null);
   const videoRef = useRef(null);
 
-  // Get screen ID from URL
+  // Get setup code or screen ID from URL
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get("setup_code");
     const id = urlParams.get("screen_id");
-    if (id) setScreenId(id);
+    if (code) {
+      setSetupCode(code);
+      setAuthMode("setup_code");
+    } else if (id) {
+      setScreenId(id);
+      setAuthMode("screen_id");
+    }
   }, []);
 
   // Fetch campaigns for this screen
@@ -86,32 +96,49 @@ export default function ScreenPlayer() {
 
   const handleAuthenticate = async () => {
     setError("");
-    
-    if (!screenId) {
-      setError("Please enter a screen ID");
-      return;
-    }
+    setConnecting(true);
 
     try {
       const screens = await base44.entities.Screen.list();
-      const foundScreen = screens.find(s => 
-        s.device_id === screenId || s.id === screenId
-      );
+      let foundScreen = null;
 
-      if (!foundScreen) {
-        setError("Screen not found. Check your screen ID.");
-        return;
-      }
-
-      if (foundScreen.player_pin && foundScreen.player_pin !== pin) {
-        setError("Invalid PIN. Please try again.");
-        return;
+      if (authMode === "setup_code") {
+        if (!setupCode) {
+          setError("Please enter a setup code");
+          setConnecting(false);
+          return;
+        }
+        foundScreen = screens.find(s => s.setup_code === setupCode.toUpperCase());
+        if (!foundScreen) {
+          setError("Invalid setup code. Please check and try again.");
+          setConnecting(false);
+          return;
+        }
+      } else {
+        if (!screenId) {
+          setError("Please enter a screen ID");
+          setConnecting(false);
+          return;
+        }
+        foundScreen = screens.find(s => 
+          s.device_id === screenId || s.id === screenId
+        );
+        if (!foundScreen) {
+          setError("Screen not found. Check your screen ID.");
+          setConnecting(false);
+          return;
+        }
+        if (foundScreen.player_pin && foundScreen.player_pin !== pin) {
+          setError("Invalid PIN. Please try again.");
+          setConnecting(false);
+          return;
+        }
       }
 
       setScreen(foundScreen);
       setAuthenticated(true);
 
-      // Update screen status
+      // Update screen status to online
       await base44.entities.Screen.update(foundScreen.id, {
         status: "online",
         player_active: true,
@@ -121,6 +148,7 @@ export default function ScreenPlayer() {
     } catch (e) {
       setError("Failed to connect. Please try again.");
     }
+    setConnecting(false);
   };
 
   const toggleFullscreen = () => {
@@ -151,31 +179,71 @@ export default function ScreenPlayer() {
               <p className="text-white/60">Connect your screen to start displaying ads</p>
             </div>
 
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-white/80">Screen ID</label>
-                <Input
-                  placeholder="e.g., BW-CAF-001"
-                  value={screenId}
-                  onChange={(e) => setScreenId(e.target.value.toUpperCase())}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-white/40 h-12 text-lg"
-                />
-              </div>
+            {/* Auth Mode Toggle */}
+            <div className="flex bg-white/10 rounded-lg p-1 mb-6">
+              <button
+                onClick={() => setAuthMode("setup_code")}
+                className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all ${
+                  authMode === "setup_code" 
+                    ? "bg-violet-600 text-white" 
+                    : "text-white/60 hover:text-white"
+                }`}
+              >
+                Setup Code
+              </button>
+              <button
+                onClick={() => setAuthMode("screen_id")}
+                className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all ${
+                  authMode === "screen_id" 
+                    ? "bg-violet-600 text-white" 
+                    : "text-white/60 hover:text-white"
+                }`}
+              >
+                Screen ID
+              </button>
+            </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-white/80 flex items-center gap-2">
-                  <Lock className="w-4 h-4" />
-                  PIN Code (if set)
-                </label>
-                <Input
-                  type="password"
-                  placeholder="6-digit PIN"
-                  value={pin}
-                  onChange={(e) => setPin(e.target.value)}
-                  maxLength={6}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-white/40 h-12 text-lg tracking-widest"
-                />
-              </div>
+            <div className="space-y-4">
+              {authMode === "setup_code" ? (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-white/80">Setup Code</label>
+                  <Input
+                    placeholder="e.g., BW-ABCD1234"
+                    value={setupCode}
+                    onChange={(e) => setSetupCode(e.target.value.toUpperCase())}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-white/40 h-14 text-xl text-center tracking-wider font-mono"
+                  />
+                  <p className="text-xs text-white/40 text-center">
+                    Enter the setup code provided by your admin
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-white/80">Screen ID</label>
+                    <Input
+                      placeholder="e.g., BW-CAF-001"
+                      value={screenId}
+                      onChange={(e) => setScreenId(e.target.value.toUpperCase())}
+                      className="bg-white/10 border-white/20 text-white placeholder:text-white/40 h-12 text-lg"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-white/80 flex items-center gap-2">
+                      <Lock className="w-4 h-4" />
+                      PIN Code (if set)
+                    </label>
+                    <Input
+                      type="password"
+                      placeholder="6-digit PIN"
+                      value={pin}
+                      onChange={(e) => setPin(e.target.value)}
+                      maxLength={6}
+                      className="bg-white/10 border-white/20 text-white placeholder:text-white/40 h-12 text-lg tracking-widest"
+                    />
+                  </div>
+                </>
+              )}
 
               {error && (
                 <div className="flex items-center gap-2 text-red-400 bg-red-500/10 p-3 rounded-lg">
@@ -186,15 +254,28 @@ export default function ScreenPlayer() {
 
               <Button 
                 onClick={handleAuthenticate}
+                disabled={connecting}
                 className="w-full h-12 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-lg"
               >
-                <Wifi className="w-5 h-5 mr-2" />
-                Connect Screen
+                {connecting ? (
+                  <>
+                    <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+                    Connecting...
+                  </>
+                ) : (
+                  <>
+                    <Wifi className="w-5 h-5 mr-2" />
+                    Connect Screen
+                  </>
+                )}
               </Button>
             </div>
 
             <p className="text-center text-white/40 text-sm mt-6">
-              Find your Screen ID in the BeyondWalls dashboard
+              {authMode === "setup_code" 
+                ? "Get your setup code from the BeyondWalls dashboard after screen approval"
+                : "Find your Screen ID in the BeyondWalls dashboard"
+              }
             </p>
           </CardContent>
         </Card>
