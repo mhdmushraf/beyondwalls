@@ -87,14 +87,34 @@ export default function AddScreen() {
     setLoading(true);
 
     try {
+      // Generate player PIN
+      const pin = Math.floor(100000 + Math.random() * 900000).toString();
+      
       await base44.entities.Screen.create({
         ...formData,
+        owner_id: user.email,
+        slot_price: parseFloat(formData.hourly_rate) || 0,
         hourly_rate: parseFloat(formData.hourly_rate) || 0,
-        status: "pending_setup",
-        avg_daily_views: 0
+        player_pin: pin,
+        status: "pending_approval",
+        avg_daily_views: 0,
+        total_slots: 8,
+        owner_slots: 3,
+        available_slots: 5,
+        is_public: true
       });
 
-      toast.success("Screen added successfully!");
+      // Notify admin
+      await base44.entities.AdminNotification.create({
+        type: "new_screen",
+        title: "New Screen Added",
+        message: `${user.full_name} added a new screen: ${formData.name}`,
+        reference_id: user.email,
+        reference_type: "screen",
+        status: "unread"
+      });
+
+      toast.success("Screen submitted for approval!");
       navigate(createPageUrl("MyScreens"));
     } catch (error) {
       toast.error("Failed to add screen");

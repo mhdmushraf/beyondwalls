@@ -94,29 +94,40 @@ export default function CompleteProfile() {
         account_type: accountType,
         user_role: userRole,
         profile_complete: true,
-        verification_status: "pending"
+        approval_status: "pending",
+        is_advertiser: true,
+        is_venue_owner: userRole === "venue_owner",
+        wallet_balance: 0,
+        total_earnings: 0,
+        total_spent: 0
       };
 
       if (accountType === "individual") {
-        updateData.emirates_id_front_url = formData.emirates_id_front_url;
-        updateData.emirates_id_back_url = formData.emirates_id_back_url;
+        updateData.emirates_id_url = formData.emirates_id_front_url;
       } else {
         updateData.company_name = formData.company_name;
         updateData.trade_license_url = formData.trade_license_url;
-        updateData.authorized_person_name = formData.authorized_person_name;
-        updateData.authorized_person_role = formData.authorized_person_role;
-        updateData.emirates_id_front_url = formData.emirates_id_front_url;
-        updateData.emirates_id_back_url = formData.emirates_id_back_url;
+        updateData.emirates_id_url = formData.emirates_id_front_url;
       }
 
       await base44.auth.updateMe(updateData);
+      
+      // Create admin notification for new user
+      await base44.entities.AdminNotification.create({
+        type: "new_user",
+        title: "New User Registration",
+        message: `${user?.full_name || "A new user"} has registered and is pending approval`,
+        reference_id: user?.email,
+        reference_type: "user",
+        status: "unread"
+      });
       
       // Clear session storage
       sessionStorage.removeItem("registration_account_type");
       sessionStorage.removeItem("registration_user_role");
       
-      toast.success("Profile completed successfully!");
-      redirectToDashboard(userRole);
+      toast.success("Profile submitted for approval!");
+      navigate(createPageUrl("PendingApproval"));
     } catch (error) {
       toast.error("Failed to save profile");
     } finally {
