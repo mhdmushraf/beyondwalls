@@ -14,8 +14,12 @@ import {
   Menu,
   X,
   ChevronDown,
+  ChevronRight,
   Bell,
-  Plus
+  Plus,
+  Shield,
+  UserCheck,
+  CreditCard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +35,7 @@ import { Badge } from "@/components/ui/badge";
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [adminMenuOpen, setAdminMenuOpen] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -56,12 +61,19 @@ export default function Layout({ children, currentPageName }) {
     if (userRole === "admin") {
       return [
         { name: "Dashboard", icon: LayoutDashboard, page: "AdminDashboard" },
-        { name: "User Approvals", icon: Users, page: "AdminUserApprovals" },
-        { name: "Campaigns", icon: Megaphone, page: "AdminCampaigns" },
-        { name: "Venues", icon: Building2, page: "AdminVenues" },
-        { name: "Screens", icon: MonitorPlay, page: "AdminScreens" },
-        { name: "Users", icon: Users, page: "AdminUsers" },
-        { name: "Transactions", icon: Wallet, page: "AdminTransactions" },
+        { 
+          name: "Admin Panel", 
+          icon: Shield, 
+          isGroup: true,
+          children: [
+            { name: "User Approvals", icon: UserCheck, page: "AdminUserApprovals" },
+            { name: "Users", icon: Users, page: "AdminUsers" },
+            { name: "Campaigns", icon: Megaphone, page: "AdminCampaigns" },
+            { name: "Venues", icon: Building2, page: "AdminVenues" },
+            { name: "Screens", icon: MonitorPlay, page: "AdminScreens" },
+            { name: "Transactions", icon: CreditCard, page: "AdminTransactions" },
+          ]
+        },
       ];
     } else {
       // Unified dashboard for all users (both advertiser and venue owner)
@@ -150,6 +162,54 @@ export default function Layout({ children, currentPageName }) {
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
             {navItems.map((item) => {
+              if (item.isGroup) {
+                const isChildActive = item.children?.some(child => currentPageName === child.page);
+                return (
+                  <div key={item.name}>
+                    <button
+                      onClick={() => setAdminMenuOpen(!adminMenuOpen)}
+                      className={`
+                        w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200
+                        ${isChildActive 
+                          ? 'bg-violet-100 text-violet-700' 
+                          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                        }
+                      `}
+                    >
+                      <div className="flex items-center gap-3">
+                        <item.icon className={`w-5 h-5 ${isChildActive ? 'text-violet-600' : 'text-slate-500'}`} />
+                        {item.name}
+                      </div>
+                      <ChevronRight className={`w-4 h-4 transition-transform ${adminMenuOpen ? 'rotate-90' : ''}`} />
+                    </button>
+                    {adminMenuOpen && (
+                      <div className="ml-4 mt-1 space-y-1 border-l-2 border-slate-200 pl-4">
+                        {item.children.map((child) => {
+                          const isActive = currentPageName === child.page;
+                          return (
+                            <Link
+                              key={child.page}
+                              to={createPageUrl(child.page)}
+                              onClick={() => setSidebarOpen(false)}
+                              className={`
+                                flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                                ${isActive 
+                                  ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md' 
+                                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                                }
+                              `}
+                            >
+                              <child.icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-500'}`} />
+                              {child.name}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+              
               const isActive = currentPageName === item.page;
               return (
                 <Link
