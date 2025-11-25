@@ -56,9 +56,10 @@ export default function Layout({ children, currentPageName }) {
   };
 
   const getNavItems = () => {
-    const userRole = user?.user_role || "advertiser";
+    const userRole = user?.user_role;
+    const isAdmin = userRole === "admin" || user?.role === "admin";
 
-    if (userRole === "admin") {
+    if (isAdmin) {
       return [
         { name: "Dashboard", icon: LayoutDashboard, page: "AdminDashboard" },
         { name: "User Approvals", icon: UserCheck, page: "AdminUserApprovals" },
