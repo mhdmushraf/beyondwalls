@@ -42,6 +42,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import CreativePreview from "@/components/campaigns/CreativePreview";
 
 export default function AICampaignCreator() {
   const navigate = useNavigate();
@@ -699,6 +700,18 @@ Generate the following recommendations:
                   <h2 className="text-xl font-bold text-slate-900">Ad Creative</h2>
                   <p className="text-slate-500">Upload your own or let AI generate one</p>
                 </div>
+              </div>
+
+              {/* Real-Time Preview */}
+              <div className="mb-6">
+                <Label className="mb-3 block">Real-Time Preview</Label>
+                <CreativePreview
+                  creativeUrl={campaignData.creative_url}
+                  creativeType={campaignData.creative_type}
+                  headline={campaignData.headline}
+                  description={campaignData.description}
+                  inline={true}
+                />
               </div>
 
               {/* Creative Options */}
