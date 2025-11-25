@@ -345,15 +345,18 @@ export default function AdminBlog() {
 
             <div className="space-y-2">
               <Label>Content</Label>
-              <ReactQuill
-                value={formData.content}
-                onChange={(v) => setFormData({ ...formData, content: v })}
-                className="h-64"
-              />
+              <div className="bg-white rounded-lg border">
+                <ReactQuill
+                  theme="snow"
+                  value={formData.content}
+                  onChange={(v) => setFormData({ ...formData, content: v })}
+                  style={{ minHeight: "250px" }}
+                />
+              </div>
             </div>
           </div>
 
-          <DialogFooter className="mt-16 gap-2">
+          <DialogFooter className="mt-4 gap-2">
             <Button variant="outline" onClick={() => setShowEditor(false)}>
               Cancel
             </Button>
