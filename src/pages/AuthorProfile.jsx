@@ -23,6 +23,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
+import CommentSection from "@/components/blog/CommentSection";
 
 export default function AuthorProfile() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -174,7 +175,8 @@ export default function AuthorProfile() {
                   ) : (
                     <div className="grid md:grid-cols-2 gap-6">
                       {blogPosts.map((post) => (
-                        <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow group">
+                      <Link key={post.id} to={createPageUrl(`BlogPost?id=${post.id}`)}>
+                        <Card className="overflow-hidden hover:shadow-lg transition-shadow group">
                           <div className="relative h-40 overflow-hidden">
                             {post.cover_image ? (
                               <img
@@ -210,6 +212,7 @@ export default function AuthorProfile() {
                             </div>
                           </CardContent>
                         </Card>
+                      </Link>
                       ))}
                     </div>
                   )}
