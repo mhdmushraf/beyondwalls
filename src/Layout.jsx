@@ -36,7 +36,6 @@ import { Badge } from "@/components/ui/badge";
 
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [adminMenuOpen, setAdminMenuOpen] = useState(true);
   const navigate = useNavigate();
@@ -52,7 +51,6 @@ export default function Layout({ children, currentPageName }) {
     } catch (e) {
       console.log("User not logged in");
     }
-    setLoading(false);
   };
 
   const handleLogout = () => {
@@ -105,15 +103,6 @@ export default function Layout({ children, currentPageName }) {
   // Public pages without sidebar
   if (["Home", "Login", "Register", "CompleteProfile", "ScreenPlayer", "About", "Services", "Contact", "ScreenLocations", "Blog", "HelpCenter", "Terms", "Privacy", "HowItWorks", "PendingApproval", "BlogPost", "AuthorProfile"].includes(currentPageName)) {
     return <>{children}</>;
-  }
-
-  // Wait for user data to load before rendering sidebar
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
   }
 
   return (
