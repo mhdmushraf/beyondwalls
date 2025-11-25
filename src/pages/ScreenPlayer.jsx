@@ -31,11 +31,82 @@ export default function ScreenPlayer() {
   const [connecting, setConnecting] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
   const [animationType, setAnimationType] = useState("fade");
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const [lastSyncTime, setLastSyncTime] = useState(null);
+  const [cachedAds, setCachedAds] = useState([]);
   const containerRef = useRef(null);
   const videoRef = useRef(null);
 
   const AD_DURATION = 8000; // 8 seconds for images
+  const OFFLINE_MAX_HOURS = 24;
   const animations = ["fade", "slideLeft", "slideRight", "slideUp", "slideDown", "zoom", "flip", "blur"];
+
+  // Monitor online/offline status
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOffline(false);
+      // Sync with cloud when back online
+      if (authenticated && screen?.id) {
+        refetchBookings();
+        refetchCampaigns();
+        setLastSyncTime(new Date().toISOString());
+        localStorage.setItem(`bw_last_sync_${screen.id}`, new Date().toISOString());
+      }
+    };
+    
+    const handleOffline = () => {
+      setIsOffline(true);
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [authenticated, screen?.id]);
+
+  // Cache ads to localStorage for offline playback
+  useEffect(() => {
+    if (authenticated && screen?.id && allAds.length > 0 && !isOffline) {
+      const cacheData = {
+        ads: allAds,
+        cachedAt: new Date().toISOString(),
+        screenId: screen.id
+      };
+      localStorage.setItem(`bw_cached_ads_${screen.id}`, JSON.stringify(cacheData));
+      setCachedAds(allAds);
+      setLastSyncTime(new Date().toISOString());
+      localStorage.setItem(`bw_last_sync_${screen.id}`, new Date().toISOString());
+    }
+  }, [allAds, authenticated, screen?.id, isOffline]);
+
+  // Load cached ads on mount or when offline
+  useEffect(() => {
+    if (authenticated && screen?.id) {
+      const cached = localStorage.getItem(`bw_cached_ads_${screen.id}`);
+      const lastSync = localStorage.getItem(`bw_last_sync_${screen.id}`);
+      
+      if (cached) {
+        const cacheData = JSON.parse(cached);
+        const cachedAt = new Date(cacheData.cachedAt);
+        const hoursSinceCached = (Date.now() - cachedAt.getTime()) / (1000 * 60 * 60);
+        
+        // Only use cache if within 24 hours
+        if (hoursSinceCached <= OFFLINE_MAX_HOURS) {
+          setCachedAds(cacheData.ads);
+        }
+      }
+      
+      if (lastSync) {
+        setLastSyncTime(lastSync);
+      }
+    }
+  }, [authenticated, screen?.id]);
+
+  // Get ads to display (use cached if offline)
+  const displayAds = isOffline && cachedAds.length > 0 ? cachedAds : allAds.length > 0 ? allAds : cachedAds;
 
   // Get setup code or screen ID from URL
   useEffect(() => {
