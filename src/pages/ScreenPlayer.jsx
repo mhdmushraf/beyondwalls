@@ -126,9 +126,6 @@ export default function ScreenPlayer() {
     }))
   ].filter(ad => ad.creative_url);
 
-  // Get ads to display (use cached if offline)
-  const displayAds = isOffline && cachedAds.length > 0 ? cachedAds : allAds.length > 0 ? allAds : cachedAds;
-
   // Cache ads to localStorage for offline playback
   useEffect(() => {
     if (authenticated && screen?.id && allAds.length > 0 && !isOffline) {
