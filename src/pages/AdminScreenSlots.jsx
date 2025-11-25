@@ -175,31 +175,41 @@ export default function AdminScreenSlots() {
 
   const handleCancelBooking = async (booking) => {
     if (!confirm("Cancel this booking? The advertiser will be refunded.")) return;
+    
+    setSaving(true);
     try {
+      // Update booking status to cancelled
       await base44.entities.AdSlotBooking.update(booking.id, { status: "cancelled" });
       
       // Refund advertiser
       const advertiserUsers = await base44.entities.User.filter({ email: booking.advertiser_id });
       if (advertiserUsers.length > 0) {
         const advertiser = advertiserUsers[0];
+        const newBalance = (advertiser.wallet_balance || 0) + (booking.total_cost || 0);
+        
         await base44.entities.User.update(advertiser.id, {
-          wallet_balance: (advertiser.wallet_balance || 0) + booking.total_cost
+          wallet_balance: newBalance
         });
+        
         await base44.entities.Transaction.create({
           user_id: booking.advertiser_id,
           type: "refund",
-          amount: booking.total_cost,
-          balance_after: (advertiser.wallet_balance || 0) + booking.total_cost,
+          amount: booking.total_cost || 0,
+          balance_after: newBalance,
           reference_id: booking.id,
           description: `Refund for cancelled booking on ${screen?.name}`,
           status: "completed"
         });
       }
 
-      queryClient.invalidateQueries({ queryKey: ["screen-bookings", screenId] });
+      await queryClient.invalidateQueries({ queryKey: ["screen-bookings", screenId] });
+      await queryClient.refetchQueries({ queryKey: ["screen-bookings", screenId] });
       toast.success("Booking cancelled and refunded");
     } catch (error) {
-      toast.error("Failed to cancel booking");
+      console.error("Cancel booking error:", error);
+      toast.error("Failed to cancel booking: " + (error.message || "Unknown error"));
+    } finally {
+      setSaving(false);
     }
   };
 
