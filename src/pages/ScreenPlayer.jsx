@@ -351,7 +351,7 @@ export default function ScreenPlayer() {
       ref={containerRef}
       className="min-h-screen bg-black relative overflow-hidden"
     >
-      {/* Status Bar */}
+      {/* Status Bar - Hidden in fullscreen */}
       {!isFullscreen && (
         <div className="absolute top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/80 to-transparent p-4">
           <div className="flex items-center justify-between max-w-7xl mx-auto">
@@ -501,7 +501,7 @@ export default function ScreenPlayer() {
         </div>
       )}
 
-      {/* Campaign Info Overlay */}
+      {/* Campaign Info Overlay - Hidden in fullscreen */}
       {!isFullscreen && currentAd && (
         <div className="absolute bottom-16 left-4 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2">
           <p className="text-white text-sm font-medium">{currentAd.name}</p>
