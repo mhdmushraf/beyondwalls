@@ -37,6 +37,7 @@ import { toast } from "sonner";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import PricingCalculator from "@/components/pricing/PricingCalculator";
+import AIRecommendations from "@/components/recommendations/AIRecommendations";
 
 export default function BookSlot() {
   const navigate = useNavigate();
@@ -252,6 +253,18 @@ export default function BookSlot() {
       {/* Step 1: Select Screen */}
       {step === 1 && (
         <div className="space-y-6">
+          {/* AI Recommendations */}
+          <AIRecommendations
+            user={user}
+            screens={screens}
+            venues={venues}
+            currentBookings={existingBookings}
+            onSelectScreen={(screen) => {
+              setSelectedScreen(screen);
+              setStep(2);
+            }}
+          />
+
           <div className="flex flex-wrap gap-4">
             <div className="relative flex-1 min-w-[200px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
