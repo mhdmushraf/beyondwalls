@@ -36,6 +36,7 @@ import {
 import { toast } from "sonner";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import PricingCalculator from "@/components/pricing/PricingCalculator";
 
 export default function BookSlot() {
   const navigate = useNavigate();
@@ -86,6 +87,16 @@ export default function BookSlot() {
       status: "active" 
     }),
     enabled: !!selectedScreen
+  });
+
+  const { data: allBookings = [] } = useQuery({
+    queryKey: ["all-bookings"],
+    queryFn: () => base44.entities.AdSlotBooking.filter({ status: "active" })
+  });
+
+  const { data: pricingRules = [] } = useQuery({
+    queryKey: ["pricing-rules"],
+    queryFn: () => base44.entities.PricingRule.list()
   });
 
   const filteredScreens = screens.filter(screen => {
@@ -464,6 +475,19 @@ export default function BookSlot() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Dynamic Pricing Calculator */}
+          {selectedScreen && (
+            <PricingCalculator
+              basePrice={selectedScreen.slot_price || 100}
+              screen={selectedScreen}
+              venue={venues.find(v => v.id === selectedScreen.venue_id)}
+              pricingRules={pricingRules}
+              bookings={allBookings}
+              selectedDate={formData.start_date}
+              weeks={formData.weeks}
+            />
+          )}
 
           <div className="flex justify-between">
             <Button variant="outline" onClick={() => setStep(1)}>
