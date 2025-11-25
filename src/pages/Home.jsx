@@ -85,7 +85,7 @@ export default function Home() {
           <div className="hidden md:flex items-center gap-8">
             <a href="#features" className="text-slate-600 hover:text-slate-900 font-medium transition-colors">Features</a>
             <a href="#venues" className="text-slate-600 hover:text-slate-900 font-medium transition-colors">Venues</a>
-            <a href="#pricing" className="text-slate-600 hover:text-slate-900 font-medium transition-colors">Pricing</a>
+            <Link to={createPageUrl("HowItWorks")} className="text-slate-600 hover:text-slate-900 font-medium transition-colors">How It Works</Link>
           </div>
           <div className="flex items-center gap-3">
             {isAuthenticated ? (
