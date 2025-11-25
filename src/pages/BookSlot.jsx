@@ -20,7 +20,8 @@ import {
   Clock,
   Eye,
   AlertCircle,
-  Mail
+  Mail,
+  Star
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -104,6 +105,27 @@ export default function BookSlot() {
     queryKey: ["pricing-rules"],
     queryFn: () => base44.entities.PricingRule.list()
   });
+
+  const { data: favorites = [], refetch: refetchFavorites } = useQuery({
+    queryKey: ["favorites", user?.email],
+    queryFn: () => base44.entities.FavoriteScreen.filter({ user_id: user?.email }),
+    enabled: !!user?.email
+  });
+
+  const isFavorite = (screenId) => favorites.some(f => f.screen_id === screenId);
+
+  const toggleFavorite = async (e, screenId) => {
+    e.stopPropagation();
+    const existing = favorites.find(f => f.screen_id === screenId);
+    if (existing) {
+      await base44.entities.FavoriteScreen.delete(existing.id);
+      toast.success("Removed from favorites");
+    } else {
+      await base44.entities.FavoriteScreen.create({ user_id: user.email, screen_id: screenId });
+      toast.success("Added to favorites");
+    }
+    refetchFavorites();
+  };
 
   const filteredScreens = screens.filter(screen => {
     const venue = venues.find(v => v.id === screen.venue_id);
@@ -508,7 +530,19 @@ BeyondWalls Team
                         <MonitorPlay className="w-7 h-7 text-violet-600" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-slate-900 truncate">{screen.name}</h3>
+                        <div className="flex items-start justify-between">
+                          <h3 className="font-semibold text-slate-900 truncate">{screen.name}</h3>
+                          <button
+                            onClick={(e) => toggleFavorite(e, screen.id)}
+                            className={`p-1 rounded-full transition-colors ${
+                              isFavorite(screen.id) 
+                                ? "text-amber-500 hover:bg-amber-50" 
+                                : "text-slate-300 hover:text-amber-500 hover:bg-amber-50"
+                            }`}
+                          >
+                            <Star className={`w-5 h-5 ${isFavorite(screen.id) ? "fill-current" : ""}`} />
+                          </button>
+                        </div>
                         <p className="text-sm text-slate-500 truncate">{venue?.name}</p>
                         <div className="flex items-center gap-2 mt-1 text-xs text-slate-400">
                           <MapPin className="w-3 h-3" />

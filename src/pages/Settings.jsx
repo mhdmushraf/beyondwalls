@@ -21,6 +21,7 @@ import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
 export default function Settings() {
@@ -31,7 +32,10 @@ export default function Settings() {
   const [formData, setFormData] = useState({
     phone: "",
     address: "",
-    company_name: ""
+    company_name: "",
+    billing_address: "",
+    tax_id: "",
+    payment_method: ""
   });
 
   useEffect(() => {
@@ -45,7 +49,10 @@ export default function Settings() {
       setFormData({
         phone: userData.phone || "",
         address: userData.address || "",
-        company_name: userData.company_name || ""
+        company_name: userData.company_name || "",
+        billing_address: userData.billing_address || "",
+        tax_id: userData.tax_id || "",
+        payment_method: userData.payment_method || ""
       });
     } catch (e) {
       base44.auth.redirectToLogin();
@@ -99,6 +106,7 @@ export default function Settings() {
       <Tabs defaultValue="profile" className="space-y-6">
         <TabsList className="bg-white border border-slate-200 p-1">
           <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="billing">Billing</TabsTrigger>
           <TabsTrigger value="security">Security</TabsTrigger>
           <TabsTrigger value="notifications">Notifications</TabsTrigger>
         </TabsList>
@@ -237,6 +245,95 @@ export default function Settings() {
                 <>
                   <CheckCircle2 className="w-4 h-4 mr-2" />
                   Save Changes
+                </>
+              )}
+            </Button>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="billing" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Building2 className="w-5 h-5 text-violet-600" />
+                Billing Information
+              </CardTitle>
+              <CardDescription>Manage your billing details for invoices</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label>Billing Address</Label>
+                <Textarea
+                  placeholder="Enter your billing address"
+                  value={formData.billing_address}
+                  onChange={(e) => setFormData({ ...formData, billing_address: e.target.value })}
+                  rows={3}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Tax ID / VAT Number</Label>
+                  <Input
+                    placeholder="e.g., AE12345678"
+                    value={formData.tax_id}
+                    onChange={(e) => setFormData({ ...formData, tax_id: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Preferred Payment Method</Label>
+                  <Input
+                    placeholder="e.g., Bank Transfer, Credit Card"
+                    value={formData.payment_method}
+                    onChange={(e) => setFormData({ ...formData, payment_method: e.target.value })}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Wallet Balance</CardTitle>
+              <CardDescription>Your current advertising budget</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-violet-50 to-indigo-50 rounded-xl">
+                <div>
+                  <p className="text-sm text-slate-500">Available Balance</p>
+                  <p className="text-3xl font-bold text-violet-600">AED {user?.wallet_balance?.toLocaleString() || 0}</p>
+                </div>
+                <Button className="bg-gradient-to-r from-violet-600 to-indigo-600">
+                  Top Up Wallet
+                </Button>
+              </div>
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                <div className="p-4 bg-slate-50 rounded-xl">
+                  <p className="text-sm text-slate-500">Total Spent</p>
+                  <p className="text-xl font-bold text-slate-900">AED {user?.total_spent?.toLocaleString() || 0}</p>
+                </div>
+                <div className="p-4 bg-slate-50 rounded-xl">
+                  <p className="text-sm text-slate-500">Total Earnings</p>
+                  <p className="text-xl font-bold text-emerald-600">AED {user?.total_earnings?.toLocaleString() || 0}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="flex justify-end">
+            <Button 
+              onClick={handleSave}
+              disabled={loading}
+              className="bg-gradient-to-r from-violet-600 to-indigo-600"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 className="w-4 h-4 mr-2" />
+                  Save Billing Info
                 </>
               )}
             </Button>

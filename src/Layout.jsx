@@ -82,6 +82,7 @@ export default function Layout({ children, currentPageName }) {
           { name: "Dashboard", icon: LayoutDashboard, page: "Dashboard" },
           { name: "AI Campaign", icon: Megaphone, page: "AICampaignCreator" },
           { name: "Book Ad Slot", icon: Plus, page: "BookSlot" },
+          { name: "Favorites", icon: MonitorPlay, page: "FavoriteScreens" },
           { name: "My Bookings", icon: Megaphone, page: "MyBookings" },
           { name: "Wallet", icon: Wallet, page: "Wallet" },
           { name: "My Venues", icon: Building2, page: "MyVenues" },
