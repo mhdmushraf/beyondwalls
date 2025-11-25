@@ -47,7 +47,6 @@ import AdminBlog from './pages/AdminBlog';
 import AdminScreenSlots from './pages/AdminScreenSlots';
 import AuthorProfile from './pages/AuthorProfile';
 import BlogPost from './pages/BlogPost';
-import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -101,7 +100,6 @@ export const PAGES = {
     "AdminScreenSlots": AdminScreenSlots,
     "AuthorProfile": AuthorProfile,
     "BlogPost": BlogPost,
-    "AnalyticsDashboard": AnalyticsDashboard,
 }
 
 export const pagesConfig = {
