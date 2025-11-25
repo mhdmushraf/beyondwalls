@@ -35,6 +35,7 @@ import BookSlot from './pages/BookSlot';
 import AdminUserApprovals from './pages/AdminUserApprovals';
 import Wallet from './pages/Wallet';
 import ManageOwnerSlots from './pages/ManageOwnerSlots';
+import MyBookings from './pages/MyBookings';
 import __Layout from './Layout.jsx';
 
 
@@ -76,6 +77,7 @@ export const PAGES = {
     "AdminUserApprovals": AdminUserApprovals,
     "Wallet": Wallet,
     "ManageOwnerSlots": ManageOwnerSlots,
+    "MyBookings": MyBookings,
 }
 
 export const pagesConfig = {

@@ -56,34 +56,39 @@ export default function Layout({ children, currentPageName }) {
     if (userRole === "admin") {
       return [
         { name: "Dashboard", icon: LayoutDashboard, page: "AdminDashboard" },
+        { name: "User Approvals", icon: Users, page: "AdminUserApprovals" },
         { name: "Campaigns", icon: Megaphone, page: "AdminCampaigns" },
         { name: "Venues", icon: Building2, page: "AdminVenues" },
         { name: "Screens", icon: MonitorPlay, page: "AdminScreens" },
         { name: "Users", icon: Users, page: "AdminUsers" },
         { name: "Transactions", icon: Wallet, page: "AdminTransactions" },
       ];
-    } else if (userRole === "venue_owner") {
-      return [
-        { name: "Dashboard", icon: LayoutDashboard, page: "VenueDashboard" },
-        { name: "My Venues", icon: Building2, page: "MyVenues" },
-        { name: "Screens", icon: MonitorPlay, page: "MyScreens" },
-        { name: "Earnings", icon: Wallet, page: "VenueEarnings" },
-        { name: "Ad Requests", icon: Megaphone, page: "AdRequests" },
-      ];
     } else {
-      return [
-        { name: "Dashboard", icon: LayoutDashboard, page: "AdvertiserDashboard" },
-        { name: "My Campaigns", icon: Megaphone, page: "MyCampaigns" },
-        { name: "Create Ad", icon: Plus, page: "CreateCampaign" },
-        { name: "Wallet", icon: Wallet, page: "AdvertiserWallet" },
+      // Unified dashboard for all users (both advertiser and venue owner)
+      const items = [
+        { name: "Dashboard", icon: LayoutDashboard, page: "Dashboard" },
+        { name: "Book Ad Slot", icon: Plus, page: "BookSlot" },
+        { name: "My Bookings", icon: Megaphone, page: "MyBookings" },
+        { name: "Wallet", icon: Wallet, page: "Wallet" },
       ];
+      
+      // Add venue/screen management if user is venue owner
+      if (user?.is_venue_owner) {
+        items.push(
+          { name: "My Venues", icon: Building2, page: "MyVenues" },
+          { name: "My Screens", icon: MonitorPlay, page: "MyScreens" },
+          { name: "My Ad Slots", icon: Settings, page: "ManageOwnerSlots" },
+        );
+      }
+      
+      return items;
     }
   };
 
   const navItems = getNavItems();
 
   // Public pages without sidebar
-  if (["Home", "Login", "Register", "CompleteProfile", "ScreenPlayer", "About", "Services", "Contact", "ScreenLocations", "Blog", "HelpCenter", "Terms", "Privacy", "HowItWorks"].includes(currentPageName)) {
+  if (["Home", "Login", "Register", "CompleteProfile", "ScreenPlayer", "About", "Services", "Contact", "ScreenLocations", "Blog", "HelpCenter", "Terms", "Privacy", "HowItWorks", "PendingApproval"].includes(currentPageName)) {
     return <>{children}</>;
   }
 
