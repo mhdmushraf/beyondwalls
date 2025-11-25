@@ -282,6 +282,8 @@ export default function AdminScreens() {
               <thead className="bg-slate-50 border-b">
                 <tr>
                   <th className="text-left p-4 font-medium text-slate-600">Screen</th>
+                  <th className="text-left p-4 font-medium text-slate-600">Screen ID</th>
+                  <th className="text-left p-4 font-medium text-slate-600">PIN</th>
                   <th className="text-left p-4 font-medium text-slate-600">Venue</th>
                   <th className="text-left p-4 font-medium text-slate-600">Specs</th>
                   <th className="text-left p-4 font-medium text-slate-600">Rate</th>
@@ -293,11 +295,11 @@ export default function AdminScreens() {
               <tbody>
                 {isLoading ? (
                   <tr>
-                    <td colSpan={6} className="p-8 text-center text-slate-500">Loading...</td>
+                    <td colSpan={9} className="p-8 text-center text-slate-500">Loading...</td>
                   </tr>
                 ) : filteredScreens.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="p-8 text-center text-slate-500">No screens found</td>
+                    <td colSpan={9} className="p-8 text-center text-slate-500">No screens found</td>
                   </tr>
                 ) : (
                   filteredScreens.map((screen) => {
@@ -318,6 +320,40 @@ export default function AdminScreens() {
                               <p className="text-sm text-slate-500">{screen.device_type}</p>
                             </div>
                           </div>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center gap-1">
+                            <code className="text-xs bg-slate-100 px-2 py-1 rounded font-mono text-slate-700">
+                              {screen.id?.substring(0, 8) || "—"}
+                            </code>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-6 w-6"
+                              onClick={() => copyToClipboard(screen.id)}
+                            >
+                              <Copy className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          {screen.player_pin ? (
+                            <div className="flex items-center gap-1">
+                              <code className="text-xs bg-violet-100 px-2 py-1 rounded font-mono text-violet-700">
+                                {screen.player_pin}
+                              </code>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="h-6 w-6"
+                                onClick={() => copyToClipboard(screen.player_pin)}
+                              >
+                                <Copy className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          ) : (
+                            <span className="text-xs text-slate-400">—</span>
+                          )}
                         </td>
                         <td className="p-4">
                           <p className="text-sm text-slate-900">{venue?.name || "—"}</p>
