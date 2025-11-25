@@ -167,6 +167,9 @@ export default function ScreenPlayer() {
     }))
   ].filter(ad => ad.creative_url);
 
+  // Get ads to display (use cached if offline)
+  const displayAds = isOffline && cachedAds.length > 0 ? cachedAds : allAds.length > 0 ? allAds : cachedAds;
+
   // Cycle through ads with animations
   useEffect(() => {
     if (!authenticated || displayAds.length === 0) return;
@@ -296,7 +299,7 @@ export default function ScreenPlayer() {
     }
   };
 
-  const currentAd = allAds[currentAdIndex];
+  const currentAd = displayAds[currentAdIndex];
 
   // Login Screen
   if (!authenticated) {
