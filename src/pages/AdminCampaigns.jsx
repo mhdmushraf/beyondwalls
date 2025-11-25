@@ -42,6 +42,26 @@ export default function AdminCampaigns() {
     queryFn: () => base44.entities.Campaign.list("-created_date")
   });
 
+  const { data: screens = [] } = useQuery({
+    queryKey: ["all-screens"],
+    queryFn: () => base44.entities.Screen.list()
+  });
+
+  const { data: users = [] } = useQuery({
+    queryKey: ["all-users"],
+    queryFn: () => base44.entities.User.list()
+  });
+
+  const getScreenNames = (screenIds) => {
+    if (!screenIds || screenIds.length === 0) return "—";
+    return screenIds.map(id => screens.find(s => s.id === id)?.name || id).join(", ");
+  };
+
+  const getAdvertiserName = (email) => {
+    const user = users.find(u => u.email === email);
+    return user?.full_name || email;
+  };
+
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Campaign.update(id, data),
     onSuccess: () => {
@@ -156,12 +176,17 @@ export default function AdminCampaigns() {
                           )}
                           <div>
                             <p className="font-medium text-slate-900">{campaign.name}</p>
-                            <p className="text-sm text-slate-500">{campaign.screen_ids?.length || 0} screens</p>
+                            <p className="text-sm text-slate-500 truncate max-w-[200px]" title={getScreenNames(campaign.screen_ids)}>
+                              {getScreenNames(campaign.screen_ids)}
+                            </p>
                           </div>
                         </div>
                       </td>
                       <td className="p-4">
-                        <p className="text-sm text-slate-900">{campaign.advertiser_id}</p>
+                        <div>
+                          <p className="text-sm font-medium text-slate-900">{getAdvertiserName(campaign.advertiser_id)}</p>
+                          <p className="text-xs text-slate-500">{campaign.advertiser_id}</p>
+                        </div>
                       </td>
                       <td className="p-4">
                         <p className="text-sm text-slate-900">
@@ -231,7 +256,8 @@ export default function AdminCampaigns() {
                 </div>
                 <div>
                   <Label className="text-slate-500">Advertiser</Label>
-                  <p className="font-medium">{selectedCampaign.advertiser_id}</p>
+                  <p className="font-medium">{getAdvertiserName(selectedCampaign.advertiser_id)}</p>
+                  <p className="text-sm text-slate-500">{selectedCampaign.advertiser_id}</p>
                 </div>
                 <div>
                   <Label className="text-slate-500">Duration</Label>
@@ -246,7 +272,7 @@ export default function AdminCampaigns() {
                 </div>
                 <div>
                   <Label className="text-slate-500">Screens</Label>
-                  <p className="font-medium">{selectedCampaign.screen_ids?.length || 0} selected</p>
+                  <p className="font-medium">{getScreenNames(selectedCampaign.screen_ids)}</p>
                 </div>
                 <div>
                   <Label className="text-slate-500">Time Slots</Label>
