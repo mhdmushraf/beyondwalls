@@ -57,24 +57,17 @@ export default function Layout({ children, currentPageName }) {
 
   const getNavItems = () => {
     const userRole = user?.user_role || "advertiser";
-    
+
     if (userRole === "admin") {
       return [
         { name: "Dashboard", icon: LayoutDashboard, page: "AdminDashboard" },
-        { 
-          name: "Admin Panel", 
-          icon: Shield, 
-          isGroup: true,
-          children: [
-            { name: "User Approvals", icon: UserCheck, page: "AdminUserApprovals" },
-            { name: "Users", icon: Users, page: "AdminUsers" },
-            { name: "Campaigns", icon: Megaphone, page: "AdminCampaigns" },
-            { name: "Venues", icon: Building2, page: "AdminVenues" },
-            { name: "Screens", icon: MonitorPlay, page: "AdminScreens" },
-            { name: "Transactions", icon: CreditCard, page: "AdminTransactions" },
-            { name: "Dynamic Pricing", icon: CreditCard, page: "AdminPricing" },
-          ]
-        },
+        { name: "User Approvals", icon: UserCheck, page: "AdminUserApprovals" },
+        { name: "Users", icon: Users, page: "AdminUsers" },
+        { name: "Campaigns", icon: Megaphone, page: "AdminCampaigns" },
+        { name: "Venues", icon: Building2, page: "AdminVenues" },
+        { name: "Screens", icon: MonitorPlay, page: "AdminScreens" },
+        { name: "Transactions", icon: CreditCard, page: "AdminTransactions" },
+        { name: "Dynamic Pricing", icon: CreditCard, page: "AdminPricing" },
       ];
     } else {
       // Unified dashboard for all users (both advertiser and venue owner)
