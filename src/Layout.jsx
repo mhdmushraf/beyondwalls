@@ -19,7 +19,8 @@ import {
   Plus,
   Shield,
   UserCheck,
-  CreditCard
+  CreditCard,
+  PiggyBank
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
