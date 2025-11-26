@@ -2,10 +2,12 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
+import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
 
 export default function Terms() {
   return (
     <div className="min-h-screen bg-white">
+      <SEOHead {...PAGE_SEO.terms} />
       <PublicNav />
 
       {/* Hero */}

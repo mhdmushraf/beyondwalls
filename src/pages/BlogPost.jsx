@@ -20,6 +20,7 @@ import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
 import CommentSection from "@/components/blog/CommentSection";
 import NewsletterSignup from "@/components/NewsletterSignup";
+import SEOHead from "@/components/SEOHead";
 
 export default function BlogPost() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -41,8 +42,45 @@ export default function BlogPost() {
 
   const post = posts[0];
 
+  const blogSEO = post ? {
+    title: post.title,
+    description: post.excerpt || post.content?.substring(0, 160),
+    image: post.cover_image,
+    url: `/blog/${post.id}`,
+    type: "article",
+    article: {
+      publishedTime: post.published_at,
+      modifiedTime: post.updated_date,
+      author: post.author_name,
+      section: categoryLabels[post.category] || post.category,
+      tags: post.tags || []
+    },
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": post.title,
+      "description": post.excerpt,
+      "image": post.cover_image,
+      "author": {
+        "@type": "Person",
+        "name": post.author_name || "BeyondWalls"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "BeyondWalls",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://beyondwalls.ae/logo.png"
+        }
+      },
+      "datePublished": post.published_at,
+      "dateModified": post.updated_date || post.published_at
+    }
+  } : {};
+
   return (
     <div className="min-h-screen bg-white">
+      {post && <SEOHead {...blogSEO} />}
       <PublicNav />
 
       <div className="pt-24 pb-12 px-6">
