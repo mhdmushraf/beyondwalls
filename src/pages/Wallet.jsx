@@ -53,17 +53,29 @@ export default function Wallet() {
     enabled: !!user?.email
   });
 
-  // Calculate earnings from transactions (more accurate than user.total_earnings)
-  const calculatedEarnings = transactions
+  // Calculate all values from transactions for accuracy
+  const totalTopUps = transactions
+    .filter(t => t.type === "top_up" && t.status === "completed")
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+  const totalEarnings = transactions
     .filter(t => t.type === "earning" && t.status === "completed")
     .reduce((sum, t) => sum + (t.amount || 0), 0);
   
-  const calculatedSpent = transactions
+  const totalSpent = transactions
     .filter(t => t.type === "ad_spend" && t.status === "completed")
     .reduce((sum, t) => sum + (t.amount || 0), 0);
 
-  const totalEarnings = calculatedEarnings || user?.total_earnings || 0;
-  const totalSpent = calculatedSpent || user?.total_spent || 0;
+  const totalWithdrawals = transactions
+    .filter(t => t.type === "withdrawal" && t.status === "completed")
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+  const totalRefunds = transactions
+    .filter(t => t.type === "refund" && t.status === "completed")
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+  // Calculate actual balance from transactions
+  const calculatedBalance = totalTopUps + totalEarnings + totalRefunds - totalSpent - totalWithdrawals;
 
   const handleTopUp = async () => {
     const topUpAmount = parseFloat(amount);
@@ -106,7 +118,7 @@ export default function Wallet() {
       toast.error("Minimum withdrawal is AED 100");
       return;
     }
-    if (withdrawAmount > (user?.wallet_balance || 0)) {
+    if (withdrawAmount > calculatedBalance) {
       toast.error("Insufficient balance");
       return;
     }
@@ -168,7 +180,7 @@ export default function Wallet() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
               <p className="text-white/70 mb-1">Available Balance</p>
-              <p className="text-5xl font-bold">AED {(user.wallet_balance || 0).toLocaleString()}</p>
+              <p className="text-5xl font-bold">AED {calculatedBalance.toLocaleString()}</p>
               <div className="flex gap-8 mt-6">
                 <div>
                   <p className="text-white/70 text-sm">Total Earnings</p>
@@ -348,7 +360,7 @@ export default function Wallet() {
           <div className="space-y-4">
             <p className="text-slate-600">
               Available for withdrawal: <span className="font-bold text-emerald-600">
-                AED {(user.wallet_balance || 0).toLocaleString()}
+                AED {calculatedBalance.toLocaleString()}
               </span>
             </p>
             <Input
