@@ -15,7 +15,8 @@ import {
   Target,
   TrendingUp,
   Eye,
-  DollarSign
+  DollarSign,
+  LayoutDashboard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,6 +25,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ABTestManager from "@/components/campaigns/ABTestManager";
 import PerformanceForecast from "@/components/campaigns/PerformanceForecast";
 import BudgetGoals from "@/components/campaigns/BudgetGoals";
+import CampaignControls from "@/components/campaigns/CampaignControls";
+import AllCampaignsReport from "@/components/campaigns/AllCampaignsReport";
 
 export default function CampaignManager() {
   const navigate = useNavigate();
@@ -76,6 +79,44 @@ export default function CampaignManager() {
     queryFn: () => base44.entities.AdSlotBooking.filter({ status: "completed" })
   });
 
+  const { data: allMyBookings = [], refetch: refetchBookings } = useQuery({
+    queryKey: ["all-my-bookings", user?.email],
+    queryFn: () => base44.entities.AdSlotBooking.filter({ advertiser_id: user?.email }),
+    enabled: !!user?.email
+  });
+
+  const { data: allScreens = [] } = useQuery({
+    queryKey: ["all-screens"],
+    queryFn: () => base44.entities.Screen.list()
+  });
+
+  const { data: allVenues = [] } = useQuery({
+    queryKey: ["all-venues"],
+    queryFn: () => base44.entities.Venue.list()
+  });
+
+  // If no booking ID, show all campaigns report
+  if (!bookingId) {
+    return (
+      <div className="p-6 lg:p-8 max-w-7xl mx-auto">
+        <div className="flex items-center gap-4 mb-6">
+          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <div className="flex-1">
+            <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Campaign Dashboard</h1>
+            <p className="text-slate-500">Overview of all your campaigns</p>
+          </div>
+        </div>
+        <AllCampaignsReport 
+          bookings={allMyBookings} 
+          screens={allScreens} 
+          venues={allVenues} 
+        />
+      </div>
+    );
+  }
+
   if (!booking) {
     return (
       <div className="p-6 lg:p-8 flex items-center justify-center min-h-[400px]">
@@ -86,6 +127,7 @@ export default function CampaignManager() {
 
   const daysRemaining = differenceInDays(parseISO(booking.end_date), new Date());
   const isActive = booking.status === "active";
+  const isPaused = booking.status === "paused";
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
@@ -98,6 +140,10 @@ export default function CampaignManager() {
           <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Campaign Manager</h1>
           <p className="text-slate-500">{booking.campaign_name}</p>
         </div>
+        <Button variant="outline" onClick={() => navigate(createPageUrl("CampaignManager"))}>
+          <LayoutDashboard className="w-4 h-4 mr-2" />
+          All Campaigns
+        </Button>
         <Button variant="outline" onClick={() => navigate(createPageUrl(`CampaignReport?id=${bookingId}`))}>
           <BarChart3 className="w-4 h-4 mr-2" />
           View Report
@@ -128,7 +174,9 @@ export default function CampaignManager() {
                   <span>{venue?.city}</span>
                 </div>
                 <div className="flex items-center gap-3 mt-2">
-                  <Badge variant={isActive ? "default" : "secondary"}>{booking.status}</Badge>
+                  <Badge variant={isActive ? "default" : isPaused ? "secondary" : "outline"}>
+                    {booking.status}
+                  </Badge>
                   <span className="text-sm text-slate-500">
                     <Calendar className="w-4 h-4 inline mr-1" />
                     {format(parseISO(booking.start_date), "MMM d")} - {format(parseISO(booking.end_date), "MMM d, yyyy")}
@@ -153,6 +201,16 @@ export default function CampaignManager() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Campaign Controls */}
+      <div className="mb-6">
+        <CampaignControls 
+          booking={booking} 
+          screen={screen} 
+          venue={venue}
+          onUpdate={refetchBookings}
+        />
+      </div>
 
       {/* Tabs */}
       <Tabs defaultValue="creatives" className="space-y-6">
