@@ -8,7 +8,8 @@ import {
   MonitorPlay,
   Loader2,
   CheckCircle2,
-  Building2
+  Building2,
+  MapPin
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import OwnerSlotsUploader from "@/components/screens/OwnerSlotsUploader";
+import LocationPicker from "@/components/maps/LocationPicker";
 
 const SCREEN_SIZES = [
   { value: "32\"", label: "32 inch" },
@@ -55,7 +57,9 @@ export default function AddScreen() {
     location_in_venue: "",
     hourly_rate: "",
     device_type: "",
-    device_id: ""
+    device_id: "",
+    latitude: null,
+    longitude: null
   });
 
   const [ownerSlots, setOwnerSlots] = useState({
@@ -100,6 +104,14 @@ export default function AddScreen() {
       // Generate player PIN
       const pin = Math.floor(100000 + Math.random() * 900000).toString();
       
+      // Also update venue coordinates if screen has location
+      if (formData.latitude && formData.longitude && formData.venue_id) {
+        await base44.entities.Venue.update(formData.venue_id, {
+          latitude: formData.latitude,
+          longitude: formData.longitude
+        });
+      }
+
       await base44.entities.Screen.create({
         ...formData,
         ...ownerSlots,
@@ -270,6 +282,22 @@ export default function AddScreen() {
                 onChange={(e) => setFormData({ ...formData, location_in_venue: e.target.value })}
               />
             </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-xl mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-violet-600" />
+              Screen Location on Map
+            </CardTitle>
+            <CardDescription>Select the exact location of your screen on the map</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <LocationPicker
+              value={formData.latitude && formData.longitude ? { latitude: formData.latitude, longitude: formData.longitude } : null}
+              onChange={(coords) => setFormData({ ...formData, latitude: coords.latitude, longitude: coords.longitude })}
+            />
           </CardContent>
         </Card>
 
