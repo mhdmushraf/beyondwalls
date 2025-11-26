@@ -48,6 +48,7 @@ import AdminScreenSlots from './pages/AdminScreenSlots';
 import AuthorProfile from './pages/AuthorProfile';
 import BlogPost from './pages/BlogPost';
 import LogoGenerator from './pages/LogoGenerator';
+import BookingPending from './pages/BookingPending';
 import __Layout from './Layout.jsx';
 
 
@@ -102,6 +103,7 @@ export const PAGES = {
     "AuthorProfile": AuthorProfile,
     "BlogPost": BlogPost,
     "LogoGenerator": LogoGenerator,
+    "BookingPending": BookingPending,
 }
 
 export const pagesConfig = {
