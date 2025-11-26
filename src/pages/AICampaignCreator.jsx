@@ -105,6 +105,7 @@ export default function AICampaignCreator() {
 
   useEffect(() => {
     loadUser();
+    loadTemplate();
   }, []);
 
   const loadUser = async () => {
@@ -113,6 +114,36 @@ export default function AICampaignCreator() {
       setUser(userData);
     } catch (e) {
       base44.auth.redirectToLogin();
+    }
+  };
+
+  const loadTemplate = () => {
+    const savedTemplate = sessionStorage.getItem("campaignTemplate");
+    if (savedTemplate) {
+      try {
+        const template = JSON.parse(savedTemplate);
+        setBusinessInfo(prev => ({
+          ...prev,
+          campaign_goal: template.goal || "awareness",
+          budget: template.budget_range?.min?.toString() || ""
+        }));
+        setCampaignData(prev => ({
+          ...prev,
+          name: template.name || "",
+          goal: template.goal || "awareness",
+          target_venue_types: template.target_venue_types || [],
+          time_slots: template.time_slots || [],
+          headline: template.headline_template || "",
+          description: template.description_template || ""
+        }));
+        setDemographics(prev => ({
+          ...prev,
+          ...template.target_demographics
+        }));
+        sessionStorage.removeItem("campaignTemplate");
+      } catch (e) {
+        console.error("Failed to load template:", e);
+      }
     }
   };
 
