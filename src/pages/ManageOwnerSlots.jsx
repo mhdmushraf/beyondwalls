@@ -12,7 +12,9 @@ import {
   X,
   Clock,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Download,
+  DollarSign
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -25,6 +27,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import InvoiceDownloadButton from "@/components/invoices/InvoiceGenerator";
 
 export default function ManageOwnerSlots() {
   const navigate = useNavigate();
@@ -58,6 +62,20 @@ export default function ManageOwnerSlots() {
     queryKey: ["my-screens-for-slots", user?.email],
     queryFn: () => base44.entities.Screen.filter({ owner_id: user?.email }),
     enabled: !!user?.email
+  });
+
+  const { data: venues = [] } = useQuery({
+    queryKey: ["all-venues"],
+    queryFn: () => base44.entities.Venue.list()
+  });
+
+  const { data: screenBookings = [] } = useQuery({
+    queryKey: ["screen-bookings", selectedScreen?.id],
+    queryFn: () => base44.entities.AdSlotBooking.filter({ 
+      screen_id: selectedScreen?.id,
+      status: "active"
+    }),
+    enabled: !!selectedScreen?.id
   });
 
   useEffect(() => {
@@ -242,73 +260,153 @@ export default function ManageOwnerSlots() {
       </Card>
 
       {selectedScreen && (
-        <>
-          {/* Update Status */}
-          <Card className={`mb-6 ${canUpdateSlots() ? "border-emerald-200 bg-emerald-50" : "border-amber-200 bg-amber-50"}`}>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                {canUpdateSlots() ? (
+        <Tabs defaultValue="slots" className="mt-6">
+          <TabsList>
+            <TabsTrigger value="slots">My Ad Slots</TabsTrigger>
+            <TabsTrigger value="earnings">
+              Earnings ({screenBookings.length} campaigns)
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="slots" className="mt-6">
+            {/* Update Status */}
+            <Card className={`mb-6 ${canUpdateSlots() ? "border-emerald-200 bg-emerald-50" : "border-amber-200 bg-amber-50"}`}>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  {canUpdateSlots() ? (
+                    <>
+                      <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                      <p className="text-emerald-800">You can update your slots now</p>
+                    </>
+                  ) : (
+                    <>
+                      <Clock className="w-5 h-5 text-amber-600" />
+                      <p className="text-amber-800">
+                        You can update your slots again in <strong>{daysUntilUpdate()} days</strong>
+                      </p>
+                    </>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Info Card */}
+            <Card className="mb-6 border-violet-200 bg-violet-50">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-violet-600 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-violet-800">Your Free Ad Slots</p>
+                    <p className="text-sm text-violet-700 mt-1">
+                      As a screen owner, you get 3 free slots to advertise your business. 
+                      Show your menu, promotions, or any content you want. These slots can be 
+                      updated once per week.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Slot Uploaders */}
+            <div className="grid md:grid-cols-3 gap-4 mb-6">
+              <SlotUploader slotNum={1} />
+              <SlotUploader slotNum={2} />
+              <SlotUploader slotNum={3} />
+            </div>
+
+            {/* Save Button */}
+            <div className="flex justify-end">
+              <Button
+                onClick={handleSave}
+                disabled={saving || !canUpdateSlots()}
+                className="bg-gradient-to-r from-violet-600 to-indigo-600"
+              >
+                {saving ? (
                   <>
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                    <p className="text-emerald-800">You can update your slots now</p>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Saving...
                   </>
                 ) : (
                   <>
-                    <Clock className="w-5 h-5 text-amber-600" />
-                    <p className="text-amber-800">
-                      You can update your slots again in <strong>{daysUntilUpdate()} days</strong>
-                    </p>
+                    <CheckCircle2 className="w-4 h-4 mr-2" />
+                    Save Changes
                   </>
                 )}
-              </div>
-            </CardContent>
-          </Card>
+              </Button>
+            </div>
+          </TabsContent>
 
-          {/* Info Card */}
-          <Card className="mb-6 border-violet-200 bg-violet-50">
-            <CardContent className="p-4">
-              <div className="flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-violet-600 mt-0.5" />
-                <div>
-                  <p className="font-medium text-violet-800">Your Free Ad Slots</p>
-                  <p className="text-sm text-violet-700 mt-1">
-                    As a screen owner, you get 3 free slots to advertise your business. 
-                    Show your menu, promotions, or any content you want. These slots can be 
-                    updated once per week.
-                  </p>
+          <TabsContent value="earnings" className="mt-6">
+            {/* Earnings Summary */}
+            <Card className="mb-6 bg-gradient-to-r from-emerald-500 to-teal-600 text-white">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-emerald-100 text-sm">Total Earnings from {selectedScreen.name}</p>
+                    <p className="text-3xl font-bold mt-1">
+                      AED {screenBookings.reduce((sum, b) => sum + ((b.total_cost || 0) * 0.7), 0).toLocaleString()}
+                    </p>
+                    <p className="text-emerald-100 text-sm mt-1">70% revenue share</p>
+                  </div>
+                  <DollarSign className="w-12 h-12 text-emerald-200" />
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Active Campaigns with Invoice Download */}
+            <h3 className="font-semibold text-slate-900 mb-4">Active Campaigns on This Screen</h3>
+            {screenBookings.length === 0 ? (
+              <Card>
+                <CardContent className="py-12 text-center">
+                  <MonitorPlay className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                  <p className="text-slate-500">No active campaigns on this screen</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                {screenBookings.map((booking) => {
+                  const venue = venues.find(v => v.id === selectedScreen.venue_id);
+                  const venueShare = (booking.total_cost || 0) * 0.7;
+                  
+                  return (
+                    <Card key={booking.id}>
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className="w-16 h-16 bg-slate-100 rounded-lg overflow-hidden">
+                              {booking.creative_type === "video" ? (
+                                <video src={booking.creative_url} className="w-full h-full object-cover" />
+                              ) : (
+                                <img src={booking.creative_url} className="w-full h-full object-cover" alt="" />
+                              )}
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-slate-900">{booking.campaign_name}</h4>
+                              <p className="text-sm text-slate-500">{booking.start_date} - {booking.end_date}</p>
+                              <div className="flex items-center gap-3 mt-1">
+                                <Badge variant="secondary">Slot #{booking.slot_number}</Badge>
+                                <span className="text-emerald-600 font-semibold">
+                                  +AED {venueShare.toLocaleString()}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <InvoiceDownloadButton 
+                            type="venue" 
+                            booking={booking} 
+                            screen={selectedScreen} 
+                            venue={venue} 
+                            user={user} 
+                          />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Slot Uploaders */}
-          <div className="grid md:grid-cols-3 gap-4 mb-6">
-            <SlotUploader slotNum={1} />
-            <SlotUploader slotNum={2} />
-            <SlotUploader slotNum={3} />
-          </div>
-
-          {/* Save Button */}
-          <div className="flex justify-end">
-            <Button
-              onClick={handleSave}
-              disabled={saving || !canUpdateSlots()}
-              className="bg-gradient-to-r from-violet-600 to-indigo-600"
-            >
-              {saving ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <CheckCircle2 className="w-4 h-4 mr-2" />
-                  Save Changes
-                </>
-              )}
-            </Button>
-          </div>
-        </>
+            )}
+          </TabsContent>
+        </Tabs>
       )}
 
       {screens.length === 0 && (
