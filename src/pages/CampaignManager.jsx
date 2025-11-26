@@ -16,7 +16,8 @@ import {
   TrendingUp,
   Eye,
   DollarSign,
-  LayoutDashboard
+  LayoutDashboard,
+  PieChart
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,6 +28,7 @@ import PerformanceForecast from "@/components/campaigns/PerformanceForecast";
 import BudgetGoals from "@/components/campaigns/BudgetGoals";
 import CampaignControls from "@/components/campaigns/CampaignControls";
 import AllCampaignsReport from "@/components/campaigns/AllCampaignsReport";
+import CampaignAnalytics from "@/components/campaigns/CampaignAnalytics";
 
 export default function CampaignManager() {
   const navigate = useNavigate();
@@ -213,8 +215,12 @@ export default function CampaignManager() {
       </div>
 
       {/* Tabs */}
-      <Tabs defaultValue="creatives" className="space-y-6">
+      <Tabs defaultValue="analytics" className="space-y-6">
         <TabsList className="bg-white border">
+          <TabsTrigger value="analytics" className="flex items-center gap-2">
+            <PieChart className="w-4 h-4" />
+            Analytics
+          </TabsTrigger>
           <TabsTrigger value="creatives" className="flex items-center gap-2">
             <FlaskConical className="w-4 h-4" />
             A/B Testing
@@ -228,6 +234,14 @@ export default function CampaignManager() {
             Budget Goals
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="analytics">
+          <CampaignAnalytics 
+            booking={booking}
+            screen={screen}
+            venue={venue}
+          />
+        </TabsContent>
 
         <TabsContent value="creatives">
           <ABTestManager 
