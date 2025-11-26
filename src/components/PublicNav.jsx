@@ -14,8 +14,12 @@ export default function PublicNav() {
   }, []);
 
   const checkAuth = async () => {
-    const auth = await base44.auth.isAuthenticated();
-    setIsAuthenticated(auth);
+    try {
+      const auth = await base44.auth.isAuthenticated();
+      setIsAuthenticated(auth);
+    } catch (e) {
+      setIsAuthenticated(false);
+    }
   };
 
   const navLinks = [
