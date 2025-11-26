@@ -124,6 +124,98 @@ export default function AdminCRM() {
     queryFn: () => base44.entities.User.list("-created_date")
   });
 
+  const handleSendEmail = async () => {
+    if (!emailForm.subject || !emailForm.message) {
+      toast.error("Subject and message are required");
+      return;
+    }
+    if (selectedUsers.length === 0) {
+      toast.error("Please select at least one recipient");
+      return;
+    }
+
+    setSendingEmail(true);
+    try {
+      for (const userEmail of selectedUsers) {
+        const recipient = users.find(u => u.email === userEmail);
+        await base44.integrations.Core.SendEmail({
+          to: userEmail,
+          subject: emailForm.subject,
+          body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Digital Advertising Platform
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dear ${recipient?.full_name || "Valued Customer"},
+
+${emailForm.message}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BeyondWalls - Advertise Beyond Boundaries
+www.beyondwalls.ae
+
+To unsubscribe, reply with "UNSUBSCRIBE"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          `.trim()
+        });
+
+        // Update last email sent
+        await base44.entities.User.update(recipient.id, {
+          last_email_sent: new Date().toISOString()
+        });
+      }
+
+      toast.success(`Email sent to ${selectedUsers.length} recipients`);
+      setShowEmailDialog(false);
+      setSelectedUsers([]);
+      setEmailForm({ subject: "", message: "", type: "newsletter" });
+      queryClient.invalidateQueries({ queryKey: ["crm-users"] });
+    } catch (error) {
+      toast.error("Failed to send some emails");
+    }
+    setSendingEmail(false);
+  };
+
+  const toggleUserSelection = (email) => {
+    setSelectedUsers(prev => 
+      prev.includes(email) 
+        ? prev.filter(e => e !== email)
+        : [...prev, email]
+    );
+  };
+
+  const selectAllUsers = (userList) => {
+    const emails = userList.map(u => u.email);
+    setSelectedUsers(emails);
+  };
+
+  const newsletterTemplates = [
+    {
+      name: "New Features",
+      subject: "🚀 Exciting New Features on BeyondWalls!",
+      message: "We're excited to announce new features that will help you get more out of your advertising campaigns!\n\n✨ AI-Powered Campaign Creation\n📊 Enhanced Analytics Dashboard\n🎯 Better Targeting Options\n\nLog in now to explore these features and boost your advertising performance."
+    },
+    {
+      name: "Special Offer",
+      subject: "💰 Exclusive Offer: Get 20% Extra on Your Next Top-up!",
+      message: "For a limited time, we're offering 20% bonus credit on all wallet top-ups!\n\nTop up AED 1,000 → Get AED 1,200\nTop up AED 5,000 → Get AED 6,000\nTop up AED 10,000 → Get AED 12,000\n\nThis offer expires soon. Don't miss out!"
+    },
+    {
+      name: "Join Invitation",
+      subject: "📺 Start Advertising on Premium Screens Across UAE!",
+      message: "You're invited to join BeyondWalls - the UAE's leading self-serve DOOH advertising platform!\n\n🏢 500+ Premium Screens\n📍 50+ Premium Venues\n💰 Flexible Pricing\n📊 Real-time Analytics\n\nCreate your free account today and start reaching thousands of customers!"
+    }
+  ];
+
+  const applyTemplate = (template) => {
+    setEmailForm({
+      ...emailForm,
+      subject: template.subject,
+      message: template.message
+    });
+  };
+
   const filteredLeads = leads.filter(lead => {
     const matchesSearch = lead.name?.toLowerCase().includes(search.toLowerCase()) ||
                          lead.email?.toLowerCase().includes(search.toLowerCase()) ||
@@ -339,6 +431,15 @@ www.beyondwalls.ae
           <p className="text-slate-500">Manage leads and create user accounts</p>
         </div>
         <div className="flex gap-3">
+          {activeTab === "users" && selectedUsers.length > 0 && (
+            <Button 
+              variant="outline"
+              onClick={() => setShowEmailDialog(true)}
+            >
+              <Mail className="w-4 h-4 mr-2" />
+              Email ({selectedUsers.length})
+            </Button>
+          )}
           <Button 
             variant="outline"
             onClick={() => openCreateUser()}
@@ -429,44 +530,60 @@ www.beyondwalls.ae
         </Card>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <Input
-            placeholder="Search leads..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="new">New</SelectItem>
-            <SelectItem value="contacted">Contacted</SelectItem>
-            <SelectItem value="qualified">Qualified</SelectItem>
-            <SelectItem value="negotiating">Negotiating</SelectItem>
-            <SelectItem value="converted">Converted</SelectItem>
-            <SelectItem value="lost">Lost</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select value={typeFilter} onValueChange={setTypeFilter}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Types</SelectItem>
-            <SelectItem value="advertiser">Advertisers</SelectItem>
-            <SelectItem value="venue_owner">Venue Owners</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      {/* Tabs for Leads vs Users */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
+        <TabsList>
+          <TabsTrigger value="leads" className="gap-2">
+            <Target className="w-4 h-4" />
+            Leads ({leads.length})
+          </TabsTrigger>
+          <TabsTrigger value="users" className="gap-2">
+            <Users className="w-4 h-4" />
+            Existing Users ({users.length})
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
 
-      {/* Leads List */}
+      {activeTab === "leads" && (
+        <>
+          {/* Filters */}
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Input
+                placeholder="Search leads..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="new">New</SelectItem>
+                <SelectItem value="contacted">Contacted</SelectItem>
+                <SelectItem value="qualified">Qualified</SelectItem>
+                <SelectItem value="negotiating">Negotiating</SelectItem>
+                <SelectItem value="converted">Converted</SelectItem>
+                <SelectItem value="lost">Lost</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={typeFilter} onValueChange={setTypeFilter}>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="advertiser">Advertisers</SelectItem>
+                <SelectItem value="venue_owner">Venue Owners</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Leads List */}
       <Card>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
@@ -625,6 +742,148 @@ www.beyondwalls.ae
           </div>
         </CardContent>
       </Card>
+        </>
+      )}
+
+      {activeTab === "users" && (
+        <>
+          {/* User Filters */}
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Input
+                placeholder="Search users..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Button 
+              variant="outline"
+              onClick={() => selectAllUsers(users.filter(u => u.user_role !== "admin"))}
+            >
+              Select All
+            </Button>
+            <Button 
+              variant="outline"
+              onClick={() => setSelectedUsers([])}
+            >
+              Clear Selection
+            </Button>
+          </div>
+
+          {/* Users List for Email */}
+          <Card>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-slate-50 border-b">
+                    <tr>
+                      <th className="p-4 w-12">
+                        <input 
+                          type="checkbox"
+                          checked={selectedUsers.length === users.filter(u => u.user_role !== "admin").length}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              selectAllUsers(users.filter(u => u.user_role !== "admin"));
+                            } else {
+                              setSelectedUsers([]);
+                            }
+                          }}
+                          className="w-4 h-4 rounded border-slate-300"
+                        />
+                      </th>
+                      <th className="text-left p-4 font-medium text-slate-600">User</th>
+                      <th className="text-left p-4 font-medium text-slate-600">Contact</th>
+                      <th className="text-left p-4 font-medium text-slate-600">Role</th>
+                      <th className="text-left p-4 font-medium text-slate-600">Last Email</th>
+                      <th className="text-left p-4 font-medium text-slate-600">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.filter(u => u.user_role !== "admin").filter(u => 
+                      u.full_name?.toLowerCase().includes(search.toLowerCase()) ||
+                      u.email?.toLowerCase().includes(search.toLowerCase())
+                    ).map((u) => (
+                      <tr key={u.id} className={`border-b hover:bg-slate-50 ${selectedUsers.includes(u.email) ? "bg-violet-50" : ""}`}>
+                        <td className="p-4">
+                          <input 
+                            type="checkbox"
+                            checked={selectedUsers.includes(u.email)}
+                            onChange={() => toggleUserSelection(u.email)}
+                            className="w-4 h-4 rounded border-slate-300"
+                          />
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center gap-3">
+                            <Avatar className="w-10 h-10">
+                              <AvatarFallback className="bg-violet-100 text-violet-700">
+                                {u.full_name?.charAt(0) || "?"}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p className="font-medium text-slate-900">{u.full_name}</p>
+                              {u.company_name && (
+                                <p className="text-sm text-slate-500">{u.company_name}</p>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-sm text-slate-600">
+                              <Mail className="w-3 h-3" />
+                              {u.email}
+                            </div>
+                            {u.phone && (
+                              <div className="flex items-center gap-2 text-sm text-slate-500">
+                                <Phone className="w-3 h-3" />
+                                {u.phone}
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <Badge variant="outline" className={
+                            u.user_role === "venue_owner" 
+                              ? "border-indigo-200 text-indigo-700" 
+                              : "border-violet-200 text-violet-700"
+                          }>
+                            {u.user_role === "venue_owner" ? "Venue Owner" : "Advertiser"}
+                          </Badge>
+                        </td>
+                        <td className="p-4">
+                          {u.last_email_sent ? (
+                            <span className="text-sm text-slate-500">
+                              {formatDistanceToNow(new Date(u.last_email_sent), { addSuffix: true })}
+                            </span>
+                          ) : (
+                            <span className="text-sm text-slate-400">Never</span>
+                          )}
+                        </td>
+                        <td className="p-4">
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => {
+                              setSelectedUsers([u.email]);
+                              setShowEmailDialog(true);
+                            }}
+                            className="h-8"
+                          >
+                            <Mail className="w-3 h-3 mr-1" />
+                            Email
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </>
+      )}
 
       {/* Add/Edit Lead Dialog */}
       <Dialog open={showLeadDialog} onOpenChange={setShowLeadDialog}>
@@ -777,6 +1036,86 @@ www.beyondwalls.ae
             >
               {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
               {editingLead ? "Update Lead" : "Add Lead"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Send Email Dialog */}
+      <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Newspaper className="w-5 h-5 text-violet-600" />
+              Send Email to {selectedUsers.length} Recipient{selectedUsers.length > 1 ? "s" : ""}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            {/* Templates */}
+            <div>
+              <Label className="mb-2 block">Quick Templates</Label>
+              <div className="flex gap-2 flex-wrap">
+                {newsletterTemplates.map((template, idx) => (
+                  <Button
+                    key={idx}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => applyTemplate(template)}
+                    className="text-xs"
+                  >
+                    <Sparkles className="w-3 h-3 mr-1" />
+                    {template.name}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <Label>Subject *</Label>
+              <Input
+                value={emailForm.subject}
+                onChange={(e) => setEmailForm({...emailForm, subject: e.target.value})}
+                placeholder="Email subject..."
+              />
+            </div>
+            <div>
+              <Label>Message *</Label>
+              <Textarea
+                value={emailForm.message}
+                onChange={(e) => setEmailForm({...emailForm, message: e.target.value})}
+                placeholder="Write your message..."
+                rows={8}
+              />
+            </div>
+
+            {/* Recipients Preview */}
+            <div className="p-3 bg-slate-50 rounded-lg">
+              <p className="text-sm font-medium text-slate-700 mb-2">Recipients:</p>
+              <div className="flex flex-wrap gap-1 max-h-20 overflow-y-auto">
+                {selectedUsers.slice(0, 10).map(email => (
+                  <Badge key={email} variant="secondary" className="text-xs">
+                    {email}
+                  </Badge>
+                ))}
+                {selectedUsers.length > 10 && (
+                  <Badge variant="secondary" className="text-xs">
+                    +{selectedUsers.length - 10} more
+                  </Badge>
+                )}
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEmailDialog(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSendEmail}
+              disabled={sendingEmail}
+              className="bg-gradient-to-r from-violet-600 to-indigo-600"
+            >
+              {sendingEmail ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Send className="w-4 h-4 mr-2" />}
+              Send Email
             </Button>
           </DialogFooter>
         </DialogContent>
