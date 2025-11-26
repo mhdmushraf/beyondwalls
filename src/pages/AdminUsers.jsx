@@ -15,7 +15,9 @@ import {
   XCircle,
   Wallet,
   Plus,
-  Loader2
+  Loader2,
+  Settings,
+  UserPlus
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,6 +43,62 @@ export default function AdminUsers() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [walletAmount, setWalletAmount] = useState("");
   const [walletLoading, setWalletLoading] = useState(false);
+  const [showAdminDialog, setShowAdminDialog] = useState(false);
+  const [adminForm, setAdminForm] = useState({
+    permissions: []
+  });
+
+  const availablePermissions = [
+    { value: "all", label: "Full Access", description: "Access to all admin features" },
+    { value: "dashboard", label: "Dashboard", description: "View admin dashboard" },
+    { value: "users", label: "Users", description: "Manage users and approvals" },
+    { value: "bookings", label: "Bookings", description: "Manage ad bookings and campaigns" },
+    { value: "venues", label: "Venues", description: "Manage venues" },
+    { value: "screens", label: "Screens", description: "Manage screens" },
+    { value: "wallet", label: "Wallet", description: "Manage wallets and transactions" },
+    { value: "pricing", label: "Pricing", description: "Manage dynamic pricing" },
+    { value: "blog", label: "Blog", description: "Manage blog posts" },
+    { value: "crm", label: "CRM", description: "Access CRM and leads" }
+  ];
+
+  const handleOpenAdminDialog = (user = null) => {
+    setSelectedUser(user);
+    setAdminForm({
+      permissions: user?.admin_permissions || []
+    });
+    setShowAdminDialog(true);
+  };
+
+  const handleSaveAdminPermissions = async () => {
+    if (!selectedUser) return;
+    setWalletLoading(true);
+    try {
+      await base44.entities.User.update(selectedUser.id, {
+        role: "admin",
+        user_role: "admin",
+        admin_permissions: adminForm.permissions
+      });
+      toast.success("Admin permissions updated");
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+      setShowAdminDialog(false);
+    } catch (error) {
+      toast.error("Failed to update permissions");
+    }
+    setWalletLoading(false);
+  };
+
+  const togglePermission = (perm) => {
+    if (perm === "all") {
+      setAdminForm({ permissions: adminForm.permissions.includes("all") ? [] : ["all"] });
+    } else {
+      const newPerms = adminForm.permissions.filter(p => p !== "all");
+      if (newPerms.includes(perm)) {
+        setAdminForm({ permissions: newPerms.filter(p => p !== perm) });
+      } else {
+        setAdminForm({ permissions: [...newPerms, perm] });
+      }
+    }
+  };
 
   const { data: users = [], isLoading } = useQuery({
     queryKey: ["admin-users"],
@@ -108,9 +166,18 @@ export default function AdminUsers() {
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">User Management</h1>
-        <p className="text-slate-500 mt-1">View and manage platform users</p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">User Management</h1>
+          <p className="text-slate-500 mt-1">View and manage platform users</p>
+        </div>
+        <Button 
+          onClick={() => handleOpenAdminDialog(null)}
+          className="bg-gradient-to-r from-violet-600 to-indigo-600"
+        >
+          <UserPlus className="w-4 h-4 mr-2" />
+          Create Admin
+        </Button>
       </div>
 
       {/* Stats */}
@@ -272,22 +339,32 @@ export default function AdminUsers() {
                         </Badge>
                       </td>
                       <td className="p-4">
-                        <div className="flex items-center gap-2">
-                          <p className="font-medium text-slate-900">
-                            AED {user.wallet_balance?.toLocaleString() || 0}
-                          </p>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => handleAddWallet(user)}
-                            className="h-7 px-2"
-                          >
-                            <Plus className="w-3 h-3 mr-1" />
-                            Add
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
+                                                <div className="flex items-center gap-2">
+                                                  <p className="font-medium text-slate-900">
+                                                    AED {user.wallet_balance?.toLocaleString() || 0}
+                                                  </p>
+                                                  <Button 
+                                                    variant="outline" 
+                                                    size="sm"
+                                                    onClick={() => handleAddWallet(user)}
+                                                    className="h-7 px-2"
+                                                  >
+                                                    <Plus className="w-3 h-3 mr-1" />
+                                                    Add
+                                                  </Button>
+                                                  {(user.user_role === "admin" || user.role === "admin") && (
+                                                    <Button 
+                                                      variant="outline" 
+                                                      size="sm"
+                                                      onClick={() => handleOpenAdminDialog(user)}
+                                                      className="h-7 px-2"
+                                                    >
+                                                      <Settings className="w-3 h-3" />
+                                                    </Button>
+                                                  )}
+                                                </div>
+                                              </td>
+                                            </tr>
                   ))
                 )}
               </tbody>
@@ -345,6 +422,78 @@ export default function AdminUsers() {
                 <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Adding...</>
               ) : (
                 <><Plus className="w-4 h-4 mr-2" /> Add Balance</>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Admin Permissions Dialog */}
+      <Dialog open={showAdminDialog} onOpenChange={setShowAdminDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Shield className="w-5 h-5 text-violet-600" />
+              {selectedUser ? "Edit Admin Permissions" : "Create Admin User"}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            {selectedUser && (
+              <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
+                <Avatar>
+                  <AvatarImage src={selectedUser?.avatar_url} />
+                  <AvatarFallback className="bg-violet-500 text-white">
+                    {selectedUser?.full_name?.charAt(0) || "U"}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="font-medium">{selectedUser?.full_name}</p>
+                  <p className="text-sm text-slate-500">{selectedUser?.email}</p>
+                </div>
+              </div>
+            )}
+
+            <div>
+              <Label className="mb-3 block">Permissions</Label>
+              <div className="space-y-2 max-h-60 overflow-y-auto">
+                {availablePermissions.map((perm) => (
+                  <label
+                    key={perm.value}
+                    className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
+                      adminForm.permissions.includes(perm.value) || (perm.value !== "all" && adminForm.permissions.includes("all"))
+                        ? "border-violet-500 bg-violet-50"
+                        : "border-slate-200 hover:border-slate-300"
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={adminForm.permissions.includes(perm.value) || (perm.value !== "all" && adminForm.permissions.includes("all"))}
+                      onChange={() => togglePermission(perm.value)}
+                      disabled={perm.value !== "all" && adminForm.permissions.includes("all")}
+                      className="mt-1"
+                    />
+                    <div>
+                      <p className="font-medium text-slate-900">{perm.label}</p>
+                      <p className="text-xs text-slate-500">{perm.description}</p>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAdminDialog(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSaveAdminPermissions}
+              disabled={walletLoading || adminForm.permissions.length === 0}
+              className="bg-gradient-to-r from-violet-600 to-indigo-600"
+            >
+              {walletLoading ? (
+                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving...</>
+              ) : (
+                <><Shield className="w-4 h-4 mr-2" /> Save Permissions</>
               )}
             </Button>
           </DialogFooter>
