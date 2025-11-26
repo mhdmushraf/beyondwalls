@@ -83,31 +83,36 @@ export default function AdminBookings() {
   const handleApprove = async (booking) => {
     setProcessing(true);
     try {
+      const totalCost = booking.total_cost || 0;
+      const venueShare = totalCost * 0.7; // 70% to venue owner
+      const platformShare = totalCost * 0.3; // 30% to BeyondWalls
+
       await base44.entities.AdSlotBooking.update(booking.id, {
         status: "active",
         approved_at: new Date().toISOString(),
-        approved_by: user.email
+        approved_by: user.email,
+        venue_share: venueShare,
+        platform_share: platformShare
       });
 
-      // Credit screen owner NOW (after approval)
+      // Credit screen owner NOW (after approval) - 70% share
       const screen = screens.find(s => s.id === booking.screen_id);
       if (screen?.owner_id) {
         const ownerData = await base44.entities.User.filter({ email: screen.owner_id });
         if (ownerData.length > 0) {
           const owner = ownerData[0];
-          const ownerShare = (booking.total_cost || 0) * 0.7;
           await base44.entities.User.update(owner.id, {
-            wallet_balance: (owner.wallet_balance || 0) + ownerShare,
-            total_earnings: (owner.total_earnings || 0) + ownerShare
+            wallet_balance: (owner.wallet_balance || 0) + venueShare,
+            total_earnings: (owner.total_earnings || 0) + venueShare
           });
 
           await base44.entities.Transaction.create({
             user_id: owner.email,
             type: "earning",
-            amount: ownerShare,
-            balance_after: (owner.wallet_balance || 0) + ownerShare,
+            amount: venueShare,
+            balance_after: (owner.wallet_balance || 0) + venueShare,
             reference_id: booking.id,
-            description: `Ad slot earning: ${booking.campaign_name}`,
+            description: `Ad slot earning (70%): ${booking.campaign_name}`,
             status: "completed"
           });
 
@@ -115,7 +120,7 @@ export default function AdminBookings() {
           const venue = venues.find(v => v.id === screen.venue_id);
           await base44.integrations.Core.SendEmail({
             to: owner.email,
-            subject: `💰 New Earning: AED ${ownerShare.toLocaleString()} | BeyondWalls`,
+            subject: `💰 New Earning: AED ${venueShare.toLocaleString()} | BeyondWalls`,
             body: `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         BEYONDWALLS
@@ -133,9 +138,11 @@ Venue: ${venue?.name || 'N/A'}
 Campaign: ${booking.campaign_name}
 Duration: ${booking.start_date} - ${booking.end_date}
 
-💵 Your Share (70%): AED ${ownerShare.toLocaleString()}
+Campaign Value: AED ${totalCost.toLocaleString()}
+💵 Your Share (70%): AED ${venueShare.toLocaleString()}
 
 The earnings have been credited to your wallet.
+Download your earnings statement from My Bookings.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 BeyondWalls - Advertise Beyond Boundaries
@@ -143,6 +150,35 @@ BeyondWalls - Advertise Beyond Boundaries
           });
         }
       }
+
+      // Credit BeyondWalls Platform Wallet - 30% share
+      const platformWallets = await base44.entities.PlatformWallet.list();
+      if (platformWallets.length === 0) {
+        // Create platform wallet if doesn't exist
+        await base44.entities.PlatformWallet.create({
+          name: "BeyondWalls Platform",
+          balance: platformShare,
+          total_revenue: platformShare,
+          total_tax_collected: 0
+        });
+      } else {
+        const platformWallet = platformWallets[0];
+        await base44.entities.PlatformWallet.update(platformWallet.id, {
+          balance: (platformWallet.balance || 0) + platformShare,
+          total_revenue: (platformWallet.total_revenue || 0) + platformShare
+        });
+      }
+
+      // Create platform transaction record
+      await base44.entities.Transaction.create({
+        user_id: "platform@beyondwalls.ae",
+        type: "earning",
+        amount: platformShare,
+        balance_after: platformShare,
+        reference_id: booking.id,
+        description: `Platform commission (30%): ${booking.campaign_name}`,
+        status: "completed"
+      });
 
       // Send approval email to advertiser
       await base44.integrations.Core.SendEmail({
@@ -163,9 +199,12 @@ Your campaign "${booking.campaign_name}" has been approved and is now LIVE!
 Start Date: ${booking.start_date}
 End Date: ${booking.end_date}
 
+Investment: AED ${totalCost.toLocaleString()}
+
 Your ad is now displaying on screens across our network.
 
 📊 Track your campaign performance in your dashboard.
+📄 Download your invoice from My Bookings.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Thank you for advertising with BeyondWalls!
