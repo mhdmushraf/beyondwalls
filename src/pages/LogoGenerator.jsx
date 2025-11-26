@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { Download, Loader2, RefreshCw, MonitorPlay, Sparkles } from "lucide-react";
+import { Download, Loader2, RefreshCw, MonitorPlay, Sparkles, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -163,6 +163,129 @@ export default function LogoGenerator() {
     }, 'image/png');
   };
 
+  const downloadAsPDF = (type) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    if (type === 'icon') {
+      canvas.width = 256;
+      canvas.height = 256;
+      
+      const gradient = ctx.createLinearGradient(0, 0, 256, 256);
+      gradient.addColorStop(0, '#8B5CF6');
+      gradient.addColorStop(1, '#6366F1');
+      
+      ctx.beginPath();
+      ctx.roundRect(0, 0, 256, 256, 48);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+      
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 12;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      
+      ctx.beginPath();
+      ctx.roundRect(60, 60, 136, 100, 8);
+      ctx.stroke();
+      
+      ctx.beginPath();
+      ctx.moveTo(128, 160);
+      ctx.lineTo(128, 185);
+      ctx.stroke();
+      
+      ctx.beginPath();
+      ctx.moveTo(95, 185);
+      ctx.lineTo(161, 185);
+      ctx.stroke();
+      
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.moveTo(115, 95);
+      ctx.lineTo(115, 135);
+      ctx.lineTo(150, 115);
+      ctx.closePath();
+      ctx.fill();
+      
+    } else {
+      canvas.width = 400;
+      canvas.height = 100;
+      
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, 400, 100);
+      
+      const gradient = ctx.createLinearGradient(10, 10, 90, 90);
+      gradient.addColorStop(0, '#8B5CF6');
+      gradient.addColorStop(1, '#6366F1');
+      
+      ctx.beginPath();
+      ctx.roundRect(10, 15, 70, 70, 14);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+      
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.roundRect(22, 28, 46, 34, 3);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(45, 62);
+      ctx.lineTo(45, 72);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(32, 72);
+      ctx.lineTo(58, 72);
+      ctx.stroke();
+      
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.moveTo(38, 38);
+      ctx.lineTo(38, 52);
+      ctx.lineTo(52, 45);
+      ctx.closePath();
+      ctx.fill();
+      
+      ctx.font = 'bold 32px system-ui, -apple-system, sans-serif';
+      const textGradient = ctx.createLinearGradient(95, 0, 380, 0);
+      textGradient.addColorStop(0, '#8B5CF6');
+      textGradient.addColorStop(1, '#6366F1');
+      ctx.fillStyle = textGradient;
+      ctx.fillText('BeyondWalls', 95, 62);
+    }
+    
+    const imgData = canvas.toDataURL('image/png');
+    
+    // Create PDF manually using basic structure
+    const pdfWidth = type === 'icon' ? 256 : 400;
+    const pdfHeight = type === 'icon' ? 256 : 100;
+    
+    // Create an HTML document for printing as PDF
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>BeyondWalls ${type === 'icon' ? 'Icon' : 'Logo'}</title>
+        <style>
+          @page { size: ${type === 'icon' ? '256px 256px' : '400px 100px'}; margin: 0; }
+          body { margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; }
+          img { max-width: 100%; height: auto; }
+        </style>
+      </head>
+      <body>
+        <img src="${imgData}" />
+        <script>
+          window.onload = function() {
+            window.print();
+            window.onafterprint = function() { window.close(); };
+          };
+        </script>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6 lg:p-8">
       <div className="max-w-6xl mx-auto">
@@ -185,9 +308,14 @@ export default function LogoGenerator() {
                   <MonitorPlay className="w-8 h-8 text-white" />
                 </div>
                 <p className="text-xs text-slate-500 mb-2">Icon</p>
-                <Button size="sm" variant="outline" onClick={() => downloadCurrentLogo('icon')}>
-                  <Download className="w-3 h-3 mr-1" /> Download
-                </Button>
+                <div className="flex gap-1">
+                  <Button size="sm" variant="outline" onClick={() => downloadCurrentLogo('icon')}>
+                    <Download className="w-3 h-3 mr-1" /> PNG
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => downloadAsPDF('icon')}>
+                    <FileText className="w-3 h-3 mr-1" /> PDF
+                  </Button>
+                </div>
               </div>
               
               {/* Full Logo */}
@@ -201,9 +329,14 @@ export default function LogoGenerator() {
                   </span>
                 </div>
                 <p className="text-xs text-slate-500 mb-2">Full Logo</p>
-                <Button size="sm" variant="outline" onClick={() => downloadCurrentLogo('full')}>
-                  <Download className="w-3 h-3 mr-1" /> Download
-                </Button>
+                <div className="flex gap-1">
+                  <Button size="sm" variant="outline" onClick={() => downloadCurrentLogo('full')}>
+                    <Download className="w-3 h-3 mr-1" /> PNG
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => downloadAsPDF('full')}>
+                    <FileText className="w-3 h-3 mr-1" /> PDF
+                  </Button>
+                </div>
               </div>
             </div>
           </CardContent>
