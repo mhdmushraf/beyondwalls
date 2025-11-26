@@ -78,6 +78,14 @@ export default function AdminWallet() {
   const totalEarningsAmount = earnings.reduce((sum, t) => sum + t.amount, 0);
   const pendingWithdrawals = withdrawals.filter(t => t.status === "pending").reduce((sum, t) => sum + t.amount, 0);
 
+  // Calculate earnings per user from transactions
+  const earningsByUser = {};
+  transactions
+    .filter(t => t.type === "earning" && t.status === "completed")
+    .forEach(t => {
+      earningsByUser[t.user_id] = (earningsByUser[t.user_id] || 0) + (t.amount || 0);
+    });
+
   // Filter users by search
   const filteredUsers = users.filter(u => 
     u.full_name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -283,7 +291,7 @@ export default function AdminWallet() {
                       </TableCell>
                       <TableCell className="text-right">
                         <span className="text-blue-600">
-                          AED {(u.total_earnings || 0).toLocaleString()}
+                          AED {(earningsByUser[u.email] || u.total_earnings || 0).toLocaleString()}
                         </span>
                       </TableCell>
                     </TableRow>
