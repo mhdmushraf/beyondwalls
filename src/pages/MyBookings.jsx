@@ -13,13 +13,15 @@ import {
   Eye,
   Search,
   BarChart3,
-  Settings
+  Settings,
+  Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import InvoiceDownloadButton from "@/components/invoices/InvoiceGenerator";
 
 export default function MyBookings() {
   const [user, setUser] = useState(null);
@@ -49,6 +51,11 @@ export default function MyBookings() {
     queryFn: () => base44.entities.Screen.list()
   });
 
+  const { data: venues = [] } = useQuery({
+    queryKey: ["all-venues"],
+    queryFn: () => base44.entities.Venue.list()
+  });
+
   const activeBookings = bookings.filter(b => b.status === "active");
   const pendingBookings = bookings.filter(b => b.status === "pending");
   const completedBookings = bookings.filter(b => b.status === "completed");
@@ -59,6 +66,7 @@ export default function MyBookings() {
 
   const BookingCard = ({ booking }) => {
     const screen = screens.find(s => s.id === booking.screen_id);
+    const venue = screen ? venues.find(v => v.id === screen.venue_id) : null;
     
     return (
       <Card className="hover:shadow-lg transition-shadow">
@@ -104,6 +112,15 @@ export default function MyBookings() {
               <div className="mt-3 pt-3 border-t flex items-center justify-between">
                 <p className="font-semibold text-violet-600">AED {booking.total_cost}</p>
                 <div className="flex items-center gap-2">
+                  {booking.status === "active" && (
+                    <InvoiceDownloadButton 
+                      type="advertiser" 
+                      booking={booking} 
+                      screen={screen} 
+                      venue={venue} 
+                      user={user} 
+                    />
+                  )}
                   <Link to={createPageUrl(`CampaignManager?id=${booking.id}`)}>
                     <Button variant="outline" size="sm">
                       <Settings className="w-4 h-4 mr-1" />
