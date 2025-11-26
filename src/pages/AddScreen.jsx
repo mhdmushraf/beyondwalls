@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import OwnerSlotsUploader from "@/components/screens/OwnerSlotsUploader";
 
 const SCREEN_SIZES = [
   { value: "32\"", label: "32 inch" },
@@ -55,6 +56,15 @@ export default function AddScreen() {
     hourly_rate: "",
     device_type: "",
     device_id: ""
+  });
+
+  const [ownerSlots, setOwnerSlots] = useState({
+    owner_slot_1_url: "",
+    owner_slot_1_type: "image",
+    owner_slot_2_url: "",
+    owner_slot_2_type: "image",
+    owner_slot_3_url: "",
+    owner_slot_3_type: "image"
   });
 
   // Get venue_id from URL if provided
@@ -92,6 +102,7 @@ export default function AddScreen() {
       
       await base44.entities.Screen.create({
         ...formData,
+        ...ownerSlots,
         owner_id: user.email,
         slot_price: parseFloat(formData.hourly_rate) || 0,
         hourly_rate: parseFloat(formData.hourly_rate) || 0,
@@ -101,7 +112,8 @@ export default function AddScreen() {
         total_slots: 8,
         owner_slots: 3,
         available_slots: 5,
-        is_public: true
+        is_public: true,
+        owner_slots_last_updated: new Date().toISOString()
       });
 
       // Notify admin
@@ -301,13 +313,22 @@ export default function AddScreen() {
           </CardContent>
         </Card>
 
+        {/* Owner Slots Section */}
+        <div className="mb-6">
+          <OwnerSlotsUploader 
+            slots={ownerSlots}
+            onChange={setOwnerSlots}
+            required={true}
+          />
+        </div>
+
         <div className="flex justify-end gap-4">
           <Button type="button" variant="outline" onClick={() => navigate(-1)}>
             Cancel
           </Button>
           <Button 
             type="submit"
-            disabled={loading || !formData.venue_id || !formData.name || !formData.size || !formData.hourly_rate || !formData.device_type}
+            disabled={loading || !formData.venue_id || !formData.name || !formData.size || !formData.hourly_rate || !formData.device_type || !ownerSlots.owner_slot_1_url || !ownerSlots.owner_slot_2_url || !ownerSlots.owner_slot_3_url}
             className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700"
           >
             {loading ? (
