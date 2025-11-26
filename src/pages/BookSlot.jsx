@@ -248,70 +248,7 @@ export default function BookSlot() {
     }
   };
 
-  // Send confirmation emails
-  const sendConfirmationEmails = async (booking, screenOwner) => {
-    const venue = venues.find(v => v.id === selectedScreen.venue_id);
-    
-    // Email to advertiser
-    const advertiserEmailBody = `
-Dear ${user.full_name},
-
-Your ad slot booking has been confirmed! 🎉
-
-Booking Details:
-━━━━━━━━━━━━━━━━━━━━━━━━━
-📺 Screen: ${selectedScreen.name}
-📍 Venue: ${venue?.name || 'N/A'} - ${venue?.city || 'N/A'}
-🎯 Campaign: ${formData.campaign_name}
-📅 Duration: ${format(formData.start_date, "PPP")} to ${format(addWeeks(formData.start_date, formData.weeks), "PPP")}
-💰 Total Cost: AED ${calculateDynamicPrice.totalCost.toLocaleString()}
-━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Your ad will start displaying on ${format(formData.start_date, "PPP")}.
-
-Track your campaign performance in your dashboard.
-
-Best regards,
-BeyondWalls Team
-    `.trim();
-
-    await base44.integrations.Core.SendEmail({
-      to: user.email,
-      subject: `✅ Booking Confirmed: ${formData.campaign_name}`,
-      body: advertiserEmailBody
-    });
-
-    // Email to venue owner
-    if (screenOwner) {
-      const ownerShare = calculateDynamicPrice.totalCost * 0.7;
-      const ownerEmailBody = `
-Dear ${screenOwner.full_name},
-
-Great news! A new ad has been booked on your screen! 💰
-
-Booking Details:
-━━━━━━━━━━━━━━━━━━━━━━━━━
-📺 Screen: ${selectedScreen.name}
-🎯 Campaign: ${formData.campaign_name}
-📅 Duration: ${format(formData.start_date, "PPP")} to ${format(addWeeks(formData.start_date, formData.weeks), "PPP")}
-💵 Your Earnings: AED ${ownerShare.toLocaleString()} (70% revenue share)
-━━━━━━━━━━━━━━━━━━━━━━━━━
-
-The earnings have been credited to your wallet.
-
-View your earnings in your dashboard.
-
-Best regards,
-BeyondWalls Team
-      `.trim();
-
-      await base44.integrations.Core.SendEmail({
-        to: screenOwner.email,
-        subject: `💰 New Booking on ${selectedScreen.name}`,
-        body: ownerEmailBody
-      });
-    }
-  };
+  
 
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
