@@ -53,6 +53,18 @@ export default function Wallet() {
     enabled: !!user?.email
   });
 
+  // Calculate earnings from transactions (more accurate than user.total_earnings)
+  const calculatedEarnings = transactions
+    .filter(t => t.type === "earning" && t.status === "completed")
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
+  
+  const calculatedSpent = transactions
+    .filter(t => t.type === "ad_spend" && t.status === "completed")
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+  const totalEarnings = calculatedEarnings || user?.total_earnings || 0;
+  const totalSpent = calculatedSpent || user?.total_spent || 0;
+
   const handleTopUp = async () => {
     const topUpAmount = parseFloat(amount);
     if (!topUpAmount || topUpAmount < 50) {
@@ -161,13 +173,13 @@ export default function Wallet() {
                 <div>
                   <p className="text-white/70 text-sm">Total Earnings</p>
                   <p className="text-2xl font-semibold text-emerald-300">
-                    +AED {(user.total_earnings || 0).toLocaleString()}
+                    +AED {totalEarnings.toLocaleString()}
                   </p>
                 </div>
                 <div>
                   <p className="text-white/70 text-sm">Total Spent</p>
                   <p className="text-2xl font-semibold text-rose-300">
-                    -AED {(user.total_spent || 0).toLocaleString()}
+                    -AED {totalSpent.toLocaleString()}
                   </p>
                 </div>
               </div>
@@ -181,7 +193,7 @@ export default function Wallet() {
                 <Plus className="w-5 h-5 mr-2" />
                 Add Funds
               </Button>
-              {(user.total_earnings || 0) > 0 && (
+              {totalEarnings > 0 && (
                 <Button 
                   size="lg"
                   variant="outline"
@@ -208,7 +220,7 @@ export default function Wallet() {
               <div>
                 <p className="text-sm text-slate-500">Screen Earnings</p>
                 <p className="text-lg font-bold text-emerald-600">
-                  AED {(user.total_earnings || 0).toLocaleString()}
+                  AED {totalEarnings.toLocaleString()}
                 </p>
               </div>
             </div>
@@ -223,7 +235,7 @@ export default function Wallet() {
               <div>
                 <p className="text-sm text-slate-500">Ad Spending</p>
                 <p className="text-lg font-bold text-rose-600">
-                  AED {(user.total_spent || 0).toLocaleString()}
+                  AED {totalSpent.toLocaleString()}
                 </p>
               </div>
             </div>
@@ -238,7 +250,7 @@ export default function Wallet() {
               <div>
                 <p className="text-sm text-slate-500">Net Balance</p>
                 <p className="text-lg font-bold text-violet-600">
-                  AED {((user.total_earnings || 0) - (user.total_spent || 0)).toLocaleString()}
+                  AED {(totalEarnings - totalSpent).toLocaleString()}
                 </p>
               </div>
             </div>
