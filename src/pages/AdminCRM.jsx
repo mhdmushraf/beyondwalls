@@ -25,7 +25,9 @@ import {
   Loader2,
   ChevronDown,
   MoreVertical,
-  Send
+  Send,
+  Newspaper,
+  Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -89,6 +91,15 @@ export default function AdminCRM() {
     user_role: "advertiser",
     temp_password: ""
   });
+  const [showEmailDialog, setShowEmailDialog] = useState(false);
+  const [emailForm, setEmailForm] = useState({
+    subject: "",
+    message: "",
+    type: "newsletter"
+  });
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [sendingEmail, setSendingEmail] = useState(false);
+  const [activeTab, setActiveTab] = useState("leads");
 
   useEffect(() => {
     loadUser();

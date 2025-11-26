@@ -61,22 +61,26 @@ export default function Layout({ children, currentPageName }) {
     const isAdmin = userRole === "admin" || user?.role === "admin";
 
     if (isAdmin) {
-                return [
-                  { name: "Dashboard", icon: LayoutDashboard, page: "AdminDashboard" },
-                  { name: "User Approvals", icon: UserCheck, page: "AdminUserApprovals" },
-                  { name: "Users", icon: Users, page: "AdminUsers" },
-                  { name: "Ad Bookings", icon: Megaphone, page: "AdminBookings" },
-                  { name: "Campaigns", icon: Megaphone, page: "AdminCampaigns" },
-                  { name: "Venues", icon: Building2, page: "AdminVenues" },
-                  { name: "Screens", icon: MonitorPlay, page: "AdminScreens" },
-                  { name: "Wallet System", icon: Wallet, page: "AdminWallet" },
-                  { name: "Transactions", icon: CreditCard, page: "AdminTransactions" },
-                  { name: "Dynamic Pricing", icon: CreditCard, page: "AdminPricing" },
-                                { name: "Platform Revenue", icon: PiggyBank, page: "AdminPlatformWallet" },
-                                { name: "Blog", icon: Megaphone, page: "AdminBlog" },
-                                { name: "CRM", icon: Users, page: "AdminCRM" },
-                                { name: "Logo Generator", icon: Settings, page: "LogoGenerator" },
-                ];
+                const permissions = user?.admin_permissions || ["all"];
+                const hasPermission = (perm) => permissions.includes("all") || permissions.includes(perm);
+
+                const adminItems = [];
+                if (hasPermission("all") || hasPermission("dashboard")) adminItems.push({ name: "Dashboard", icon: LayoutDashboard, page: "AdminDashboard" });
+                if (hasPermission("all") || hasPermission("users")) adminItems.push({ name: "User Approvals", icon: UserCheck, page: "AdminUserApprovals" });
+                if (hasPermission("all") || hasPermission("users")) adminItems.push({ name: "Users", icon: Users, page: "AdminUsers" });
+                if (hasPermission("all") || hasPermission("bookings")) adminItems.push({ name: "Ad Bookings", icon: Megaphone, page: "AdminBookings" });
+                if (hasPermission("all") || hasPermission("bookings")) adminItems.push({ name: "Campaigns", icon: Megaphone, page: "AdminCampaigns" });
+                if (hasPermission("all") || hasPermission("venues")) adminItems.push({ name: "Venues", icon: Building2, page: "AdminVenues" });
+                if (hasPermission("all") || hasPermission("screens")) adminItems.push({ name: "Screens", icon: MonitorPlay, page: "AdminScreens" });
+                if (hasPermission("all") || hasPermission("wallet")) adminItems.push({ name: "Wallet System", icon: Wallet, page: "AdminWallet" });
+                if (hasPermission("all") || hasPermission("wallet")) adminItems.push({ name: "Transactions", icon: CreditCard, page: "AdminTransactions" });
+                if (hasPermission("all") || hasPermission("pricing")) adminItems.push({ name: "Dynamic Pricing", icon: CreditCard, page: "AdminPricing" });
+                if (hasPermission("all") || hasPermission("wallet")) adminItems.push({ name: "Platform Revenue", icon: PiggyBank, page: "AdminPlatformWallet" });
+                if (hasPermission("all") || hasPermission("blog")) adminItems.push({ name: "Blog", icon: Megaphone, page: "AdminBlog" });
+                if (hasPermission("all") || hasPermission("crm")) adminItems.push({ name: "CRM", icon: Users, page: "AdminCRM" });
+                if (hasPermission("all")) adminItems.push({ name: "Logo Generator", icon: Settings, page: "LogoGenerator" });
+
+                return adminItems;
     } else {
       // Unified dashboard for all users (both advertiser and venue owner)
       const items = [
