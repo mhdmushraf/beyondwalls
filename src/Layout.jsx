@@ -20,7 +20,8 @@ import {
   Shield,
   UserCheck,
   CreditCard,
-  PiggyBank
+  PiggyBank,
+  TrendingUp
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -88,15 +89,16 @@ export default function Layout({ children, currentPageName }) {
     } else {
       // Unified dashboard for all users (both advertiser and venue owner)
       const items = [
-          { name: "Dashboard", icon: LayoutDashboard, page: "Dashboard" },
-          { name: "AI Campaign", icon: Megaphone, page: "AICampaignCreator" },
-          { name: "Book Ad Slot", icon: Plus, page: "BookSlot" },
-          { name: "Favorites", icon: MonitorPlay, page: "FavoriteScreens" },
-          { name: "My Bookings", icon: Megaphone, page: "MyBookings" },
-          { name: "Wallet", icon: Wallet, page: "Wallet" },
-          { name: "My Venues", icon: Building2, page: "MyVenues" },
-          { name: "My Screens", icon: MonitorPlay, page: "MyScreens" },
-        ];
+                      { name: "Dashboard", icon: LayoutDashboard, page: "Dashboard" },
+                      { name: "Advertiser Hub", icon: TrendingUp, page: "AdvertiserHub" },
+                      { name: "AI Campaign", icon: Megaphone, page: "AICampaignCreator" },
+                      { name: "Book Ad Slot", icon: Plus, page: "BookSlot" },
+                      { name: "Favorites", icon: MonitorPlay, page: "FavoriteScreens" },
+                      { name: "My Bookings", icon: Megaphone, page: "MyBookings" },
+                      { name: "Wallet", icon: Wallet, page: "Wallet" },
+                      { name: "My Venues", icon: Building2, page: "MyVenues" },
+                      { name: "My Screens", icon: MonitorPlay, page: "MyScreens" },
+                    ];
 
       // Add owner-specific options if user is venue owner
       if (user?.is_venue_owner) {

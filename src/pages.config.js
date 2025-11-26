@@ -52,6 +52,7 @@ import BookingPending from './pages/BookingPending';
 import AdminPlatformWallet from './pages/AdminPlatformWallet';
 import AdminCRM from './pages/AdminCRM';
 import AdminDefaultContent from './pages/AdminDefaultContent';
+import AdvertiserHub from './pages/AdvertiserHub';
 import __Layout from './Layout.jsx';
 
 
@@ -110,6 +111,7 @@ export const PAGES = {
     "AdminPlatformWallet": AdminPlatformWallet,
     "AdminCRM": AdminCRM,
     "AdminDefaultContent": AdminDefaultContent,
+    "AdvertiserHub": AdvertiserHub,
 }
 
 export const pagesConfig = {
