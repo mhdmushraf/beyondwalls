@@ -51,6 +51,7 @@ import LogoGenerator from './pages/LogoGenerator';
 import BookingPending from './pages/BookingPending';
 import AdminPlatformWallet from './pages/AdminPlatformWallet';
 import AdminCRM from './pages/AdminCRM';
+import AdminDefaultContent from './pages/AdminDefaultContent';
 import __Layout from './Layout.jsx';
 
 
@@ -108,6 +109,7 @@ export const PAGES = {
     "BookingPending": BookingPending,
     "AdminPlatformWallet": AdminPlatformWallet,
     "AdminCRM": AdminCRM,
+    "AdminDefaultContent": AdminDefaultContent,
 }
 
 export const pagesConfig = {
