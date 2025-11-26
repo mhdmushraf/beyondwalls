@@ -24,6 +24,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
+import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
 
 export default function HowItWorks() {
   const [openFaq, setOpenFaq] = useState(null);
@@ -217,6 +218,7 @@ export default function HowItWorks() {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEOHead {...PAGE_SEO.howItWorks} />
       <PublicNav />
 
       {/* Hero Section */}

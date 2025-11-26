@@ -21,6 +21,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
+import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
 
 export default function Services() {
   const advertiserServices = [
@@ -116,6 +117,7 @@ export default function Services() {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEOHead {...PAGE_SEO.services} />
       <PublicNav />
 
       {/* Hero */}

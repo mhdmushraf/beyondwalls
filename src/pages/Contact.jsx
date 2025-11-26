@@ -26,6 +26,7 @@ import {
 import { toast } from "sonner";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
+import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
 
 export default function Contact() {
   const [loading, setLoading] = useState(false);
@@ -76,6 +77,7 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEOHead {...PAGE_SEO.contact} />
       <PublicNav />
 
       {/* Hero */}

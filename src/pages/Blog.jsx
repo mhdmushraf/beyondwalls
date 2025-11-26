@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
 import NewsletterSignup from "@/components/NewsletterSignup";
+import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
 
 export default function Blog() {
   const [search, setSearch] = useState("");
@@ -56,6 +57,7 @@ export default function Blog() {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEOHead {...PAGE_SEO.blog} />
       <PublicNav />
 
       {/* Hero */}
