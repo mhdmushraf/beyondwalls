@@ -65,14 +65,32 @@ export default function Dashboard() {
 
   const { data: transactions = [] } = useQuery({
     queryKey: ["my-transactions"],
-    queryFn: () => base44.entities.Transaction.filter({ user_id: user?.email }, "-created_date", 10),
+    queryFn: () => base44.entities.Transaction.filter({ user_id: user?.email }, "-created_date"),
     enabled: !!user?.email
   });
 
   const activeBookings = bookings.filter(b => b.status === "active");
   const onlineScreens = screens.filter(s => s.status === "online");
-  const totalEarnings = user?.total_earnings || 0;
-  const totalSpent = user?.total_spent || 0;
+  
+  // Calculate from actual transactions for accuracy
+  const totalEarnings = transactions
+    .filter(t => t.type === "earning" && t.status === "completed")
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
+  
+  const totalSpent = transactions
+    .filter(t => t.type === "ad_spend" && t.status === "completed")
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
+  
+  const totalTopUps = transactions
+    .filter(t => t.type === "top_up" && t.status === "completed")
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
+  
+  const totalWithdrawals = transactions
+    .filter(t => t.type === "withdrawal" && t.status === "completed")
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
+  
+  // Calculated balance: topups + earnings - spent - withdrawals
+  const calculatedBalance = totalTopUps + totalEarnings - totalSpent - totalWithdrawals;
 
   if (!user) return null;
 
@@ -112,7 +130,7 @@ export default function Dashboard() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
               <p className="text-white/70 text-sm mb-1">Wallet Balance</p>
-              <p className="text-4xl font-bold">AED {(user.wallet_balance || 0).toLocaleString()}</p>
+              <p className="text-4xl font-bold">AED {calculatedBalance.toLocaleString()}</p>
               <div className="flex gap-6 mt-4">
                 <div>
                   <p className="text-white/70 text-xs">Total Earnings</p>
