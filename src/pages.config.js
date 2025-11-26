@@ -47,6 +47,7 @@ import AdminBlog from './pages/AdminBlog';
 import AdminScreenSlots from './pages/AdminScreenSlots';
 import AuthorProfile from './pages/AuthorProfile';
 import BlogPost from './pages/BlogPost';
+import LogoGenerator from './pages/LogoGenerator';
 import __Layout from './Layout.jsx';
 
 
@@ -100,6 +101,7 @@ export const PAGES = {
     "AdminScreenSlots": AdminScreenSlots,
     "AuthorProfile": AuthorProfile,
     "BlogPost": BlogPost,
+    "LogoGenerator": LogoGenerator,
 }
 
 export const pagesConfig = {
