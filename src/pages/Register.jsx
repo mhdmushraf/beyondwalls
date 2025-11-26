@@ -9,7 +9,11 @@ import {
   User,
   Building2,
   Megaphone,
-  CheckCircle2
+  CheckCircle2,
+  Sparkles,
+  Tv2,
+  Wallet,
+  BarChart3
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -31,23 +35,93 @@ export default function Register() {
     base44.auth.redirectToLogin(createPageUrl("CompleteProfile"));
   };
 
+  const benefits = {
+    advertiser: [
+      { icon: Tv2, text: "Access 500+ premium screens" },
+      { icon: Sparkles, text: "AI-powered campaign creation" },
+      { icon: BarChart3, text: "Real-time analytics & reporting" },
+    ],
+    venue_owner: [
+      { icon: Wallet, text: "Earn 70% revenue share" },
+      { icon: MonitorPlay, text: "Easy screen management" },
+      { icon: BarChart3, text: "Track earnings in real-time" },
+    ]
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-indigo-50 flex flex-col">
-      {/* Header */}
-      <div className="p-6">
-        <Link to={createPageUrl("Home")} className="inline-flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/25">
-            <MonitorPlay className="w-5 h-5 text-white" />
+    <div className="min-h-screen flex">
+      {/* Left Side - Visual */}
+      <div className="hidden lg:flex lg:w-5/12 bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 relative overflow-hidden">
+        {/* Animated Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute -top-20 -left-20 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
+          <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl" />
+          
+          {/* Floating Cards Animation */}
+          <div className="absolute top-1/4 right-10 w-48 h-32 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 transform rotate-6 animate-pulse" />
+          <div className="absolute bottom-1/3 left-10 w-56 h-36 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 transform -rotate-3" />
+        </div>
+
+        <div className="relative z-10 flex flex-col justify-between p-10 text-white w-full">
+          {/* Logo */}
+          <Link to={createPageUrl("Home")} className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/30">
+              <MonitorPlay className="w-6 h-6 text-white" />
+            </div>
+            <span className="font-bold text-xl">BeyondWalls</span>
+          </Link>
+
+          {/* Main Message */}
+          <div className="space-y-6">
+            <div>
+              <p className="text-violet-200 font-medium mb-2">Join the Revolution</p>
+              <h1 className="text-4xl font-bold leading-tight">
+                Start Your<br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-200 to-white">
+                  DOOH Journey
+                </span>
+              </h1>
+            </div>
+            <p className="text-lg text-violet-200 max-w-sm">
+              {userRole === "advertiser" 
+                ? "Reach thousands of customers with stunning digital displays across premium venues in the UAE."
+                : "Turn your screens into revenue generators. Join our network and start earning today."}
+            </p>
+
+            {/* Dynamic Benefits */}
+            <div className="space-y-3 pt-4">
+              {benefits[userRole].map((benefit, index) => (
+                <div key={index} className="flex items-center gap-3 text-white/90">
+                  <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                    <benefit.icon className="w-4 h-4" />
+                  </div>
+                  <span className="font-medium">{benefit.text}</span>
+                </div>
+              ))}
+            </div>
           </div>
-          <span className="font-bold text-xl bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
-            BeyondWalls
-          </span>
-        </Link>
+
+          {/* Footer */}
+          <p className="text-violet-300 text-sm">
+            Trusted by 100+ businesses in UAE
+          </p>
+        </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center p-6">
-        <div className="w-full max-w-lg">
+      {/* Right Side - Form */}
+      <div className="w-full lg:w-7/12 flex flex-col bg-gradient-to-br from-slate-50 to-white">
+        {/* Mobile Header */}
+        <div className="lg:hidden p-6 bg-gradient-to-r from-violet-600 to-indigo-600">
+          <Link to={createPageUrl("Home")} className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+              <MonitorPlay className="w-5 h-5 text-white" />
+            </div>
+            <span className="font-bold text-xl text-white">BeyondWalls</span>
+          </Link>
+        </div>
+
+        <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
+          <div className="w-full max-w-md">
           {/* Progress */}
           <div className="flex items-center gap-3 mb-8">
             <div className={`flex-1 h-1.5 rounded-full ${step >= 1 ? 'bg-violet-600' : 'bg-slate-200'}`} />
@@ -192,16 +266,23 @@ export default function Register() {
 
                 <p className="text-center text-sm text-slate-500 mt-4">
                   Already have an account?{" "}
-                  <button 
-                    onClick={() => base44.auth.redirectToLogin()}
+                  <Link 
+                    to={createPageUrl("Login")}
                     className="text-violet-600 font-medium hover:underline"
                   >
                     Sign in
-                  </button>
+                  </Link>
                 </p>
               </CardContent>
             </Card>
           )}
+
+          {/* Trust Indicator */}
+          <div className="mt-8 text-center">
+            <p className="text-xs text-slate-400">
+              🔒 Your data is secure with us. We never share your information.
+            </p>
+          </div>
         </div>
       </div>
     </div>
