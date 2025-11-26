@@ -9,7 +9,10 @@ import {
   Building2,
   Search,
   Users,
-  Clock
+  Clock,
+  X,
+  Map,
+  List
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,14 +26,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
 import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
+
+// Fix for default marker icons in react-leaflet
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+});
+
+// Custom marker icon
+const screenIcon = new L.Icon({
+  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png",
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
 
 export default function ScreenLocations() {
   const [search, setSearch] = useState("");
   const [cityFilter, setCityFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
+  const [viewMode, setViewMode] = useState("map"); // "map" or "list"
+  const [selectedVenue, setSelectedVenue] = useState(null);
 
   const { data: venues = [], isLoading } = useQuery({
     queryKey: ["public-venues"],
@@ -50,7 +76,11 @@ export default function ScreenLocations() {
     return matchesSearch && matchesCity && matchesType;
   });
 
+  // Venues with coordinates for map
+  const venuesWithCoords = filteredVenues.filter(v => v.latitude && v.longitude);
+
   const getScreenCount = (venueId) => screens.filter(s => s.venue_id === venueId).length;
+  const getVenueScreens = (venueId) => screens.filter(s => s.venue_id === venueId);
 
   const cities = [...new Set(venues.map(v => v.city).filter(Boolean))];
   const venueTypes = [...new Set(venues.map(v => v.type).filter(Boolean))];
@@ -64,6 +94,10 @@ export default function ScreenLocations() {
     hotel: "Hotel",
     hospital: "Hospital"
   };
+
+  // UAE center coordinates
+  const uaeCenter = [24.4539, 54.3773];
+  const defaultZoom = 7;
 
   return (
     <div className="min-h-screen bg-white">
@@ -138,11 +172,152 @@ export default function ScreenLocations() {
                 ))}
               </SelectContent>
             </Select>
+            <div className="flex border rounded-lg overflow-hidden">
+              <Button
+                variant={viewMode === "map" ? "default" : "ghost"}
+                size="sm"
+                className={viewMode === "map" ? "bg-violet-600 rounded-none" : "rounded-none"}
+                onClick={() => setViewMode("map")}
+              >
+                <Map className="w-4 h-4 mr-1" />
+                Map
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "default" : "ghost"}
+                size="sm"
+                className={viewMode === "list" ? "bg-violet-600 rounded-none" : "rounded-none"}
+                onClick={() => setViewMode("list")}
+              >
+                <List className="w-4 h-4 mr-1" />
+                List
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Venues Grid */}
+      {/* Map View */}
+      {viewMode === "map" && (
+        <section className="px-6 py-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="relative rounded-2xl overflow-hidden shadow-xl border border-slate-200" style={{ height: "600px" }}>
+              <MapContainer
+                center={uaeCenter}
+                zoom={defaultZoom}
+                style={{ height: "100%", width: "100%" }}
+                scrollWheelZoom={true}
+                zoomControl={true}
+              >
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                {venuesWithCoords.map((venue) => (
+                  <Marker
+                    key={venue.id}
+                    position={[venue.latitude, venue.longitude]}
+                    icon={screenIcon}
+                    eventHandlers={{
+                      click: () => setSelectedVenue(venue)
+                    }}
+                  >
+                    <Popup>
+                      <div className="p-2 min-w-[200px]">
+                        <h3 className="font-bold text-slate-900">{venue.name}</h3>
+                        <p className="text-sm text-slate-500">{typeLabels[venue.type] || venue.type}</p>
+                        <p className="text-sm text-slate-600 mt-1">{venue.area}, {venue.city}</p>
+                        <div className="flex items-center gap-1 mt-2 text-violet-600 font-medium text-sm">
+                          <MonitorPlay className="w-4 h-4" />
+                          {getScreenCount(venue.id)} Screens
+                        </div>
+                        <Button
+                          size="sm"
+                          className="w-full mt-3 bg-violet-600 hover:bg-violet-700"
+                          onClick={() => setSelectedVenue(venue)}
+                        >
+                          View Details
+                        </Button>
+                      </div>
+                    </Popup>
+                  </Marker>
+                ))}
+              </MapContainer>
+
+              {/* Venue Detail Panel */}
+              {selectedVenue && (
+                <div className="absolute top-4 right-4 bg-white rounded-xl shadow-2xl p-5 w-80 z-[1000] max-h-[550px] overflow-y-auto">
+                  <button
+                    onClick={() => setSelectedVenue(null)}
+                    className="absolute top-3 right-3 p-1 hover:bg-slate-100 rounded-full"
+                  >
+                    <X className="w-5 h-5 text-slate-500" />
+                  </button>
+                  <img
+                    src={selectedVenue.image_url || "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=200&fit=crop"}
+                    alt={selectedVenue.name}
+                    className="w-full h-32 object-cover rounded-lg mb-4"
+                  />
+                  <Badge className="bg-amber-100 text-slate-900 mb-2">
+                    {typeLabels[selectedVenue.type] || selectedVenue.type}
+                  </Badge>
+                  <h3 className="text-lg font-bold text-slate-900">{selectedVenue.name}</h3>
+                  <p className="text-sm text-slate-500 mt-1">
+                    {selectedVenue.area}, {selectedVenue.city}
+                  </p>
+                  
+                  <div className="mt-4 space-y-2 text-sm">
+                    <div className="flex items-center gap-2 text-slate-600">
+                      <Users className="w-4 h-4 text-violet-600" />
+                      {selectedVenue.avg_daily_footfall?.toLocaleString() || "N/A"} daily visitors
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-600">
+                      <Clock className="w-4 h-4 text-violet-600" />
+                      {selectedVenue.operating_hours || "N/A"}
+                    </div>
+                  </div>
+
+                  {/* Screens List */}
+                  <div className="mt-4">
+                    <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
+                      <MonitorPlay className="w-4 h-4 text-violet-600" />
+                      {getScreenCount(selectedVenue.id)} Available Screens
+                    </h4>
+                    <div className="space-y-2">
+                      {getVenueScreens(selectedVenue.id).map((screen) => (
+                        <div key={screen.id} className="bg-slate-50 rounded-lg p-3">
+                          <p className="font-medium text-slate-900">{screen.name}</p>
+                          <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
+                            <span>{screen.size}</span>
+                            <span>•</span>
+                            <span>{screen.orientation}</span>
+                            <span>•</span>
+                            <span className="text-violet-600 font-medium">AED {screen.slot_price}/week</span>
+                          </div>
+                        </div>
+                      ))}
+                      {getScreenCount(selectedVenue.id) === 0 && (
+                        <p className="text-sm text-slate-500">No screens listed yet</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <Link to={createPageUrl("Register")}>
+                    <Button className="w-full mt-4 bg-gradient-to-r from-violet-600 to-indigo-600">
+                      Advertise Here
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </div>
+            <p className="text-center text-sm text-slate-500 mt-4">
+              Showing {venuesWithCoords.length} venues with map coordinates. Click on markers to view details.
+            </p>
+          </div>
+        </section>
+      )}
+
+      {/* Venues Grid (List View) */}
+      {viewMode === "list" && (
       <section className="py-12 px-6">
         <div className="max-w-6xl mx-auto">
           {isLoading ? (
@@ -209,6 +384,7 @@ export default function ScreenLocations() {
           )}
         </div>
       </section>
+      )}
 
       {/* CTA */}
       <section className="py-20 px-6 bg-gradient-to-br from-violet-600 to-indigo-600">

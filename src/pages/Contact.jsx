@@ -64,8 +64,8 @@ export default function Contact() {
     {
       icon: MapPin,
       title: "Address",
-      value: "Dubai, United Arab Emirates",
-      link: null
+      value: "in5 - Dubai Internet City, Dubai, UAE",
+      link: "https://maps.google.com/?q=in5+Dubai+Internet+City"
     },
     {
       icon: Clock,
@@ -238,16 +238,36 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* Map Placeholder */}
+      {/* Google Map */}
       <section className="py-20 px-6 bg-slate-50">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-gradient-to-br from-violet-600 to-indigo-600 rounded-2xl p-12 text-center text-white">
-            <MapPin className="w-12 h-12 mx-auto mb-4 opacity-80" />
-            <h3 className="text-2xl font-bold mb-2">Visit Our Office</h3>
-            <p className="text-white/80 mb-6">Dubai, United Arab Emirates</p>
-            <Button variant="outline" className="border-white text-white hover:bg-white/10">
-              Get Directions
-            </Button>
+          <div className="text-center mb-8">
+            <h3 className="text-2xl font-bold text-slate-900 mb-2">Visit Our Office</h3>
+            <p className="text-slate-600">in5 - Dubai Internet City, Dubai, UAE</p>
+          </div>
+          <div className="rounded-2xl overflow-hidden shadow-xl">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3613.168!2d55.1544!3d25.0957!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f6b5402c126e3%3A0xb9511e6655c46d7c!2sin5%20Tech%20Innovation%20Centre!5e0!3m2!1sen!2sae!4v1700000000000!5m2!1sen!2sae"
+              width="100%"
+              height="450"
+              style={{ border: 0 }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="BeyondWalls Office Location - in5 Dubai Internet City"
+            />
+          </div>
+          <div className="mt-6 text-center">
+            <a
+              href="https://maps.google.com/?q=in5+Dubai+Internet+City+Dubai"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button className="bg-gradient-to-r from-violet-600 to-indigo-600">
+                <MapPin className="w-4 h-4 mr-2" />
+                Get Directions
+              </Button>
+            </a>
           </div>
         </div>
       </section>
