@@ -72,8 +72,9 @@ export default function Layout({ children, currentPageName }) {
                   { name: "Wallet System", icon: Wallet, page: "AdminWallet" },
                   { name: "Transactions", icon: CreditCard, page: "AdminTransactions" },
                   { name: "Dynamic Pricing", icon: CreditCard, page: "AdminPricing" },
-                  { name: "Blog", icon: Megaphone, page: "AdminBlog" },
-                  { name: "Logo Generator", icon: Settings, page: "LogoGenerator" },
+                                { name: "Platform Revenue", icon: PiggyBank, page: "AdminPlatformWallet" },
+                                { name: "Blog", icon: Megaphone, page: "AdminBlog" },
+                                { name: "Logo Generator", icon: Settings, page: "LogoGenerator" },
                 ];
     } else {
       // Unified dashboard for all users (both advertiser and venue owner)

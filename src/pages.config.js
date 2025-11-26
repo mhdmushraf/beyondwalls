@@ -49,6 +49,7 @@ import AuthorProfile from './pages/AuthorProfile';
 import BlogPost from './pages/BlogPost';
 import LogoGenerator from './pages/LogoGenerator';
 import BookingPending from './pages/BookingPending';
+import AdminPlatformWallet from './pages/AdminPlatformWallet';
 import __Layout from './Layout.jsx';
 
 
@@ -104,6 +105,7 @@ export const PAGES = {
     "BlogPost": BlogPost,
     "LogoGenerator": LogoGenerator,
     "BookingPending": BookingPending,
+    "AdminPlatformWallet": AdminPlatformWallet,
 }
 
 export const pagesConfig = {
