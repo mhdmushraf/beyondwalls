@@ -61,19 +61,20 @@ export default function Layout({ children, currentPageName }) {
     const isAdmin = userRole === "admin" || user?.role === "admin";
 
     if (isAdmin) {
-      return [
-        { name: "Dashboard", icon: LayoutDashboard, page: "AdminDashboard" },
-        { name: "User Approvals", icon: UserCheck, page: "AdminUserApprovals" },
-        { name: "Users", icon: Users, page: "AdminUsers" },
-        { name: "Ad Bookings", icon: Megaphone, page: "AdminBookings" },
-        { name: "Campaigns", icon: Megaphone, page: "AdminCampaigns" },
-        { name: "Venues", icon: Building2, page: "AdminVenues" },
-        { name: "Screens", icon: MonitorPlay, page: "AdminScreens" },
-        { name: "Wallet System", icon: Wallet, page: "AdminWallet" },
-        { name: "Transactions", icon: CreditCard, page: "AdminTransactions" },
-        { name: "Dynamic Pricing", icon: CreditCard, page: "AdminPricing" },
-        { name: "Blog", icon: Megaphone, page: "AdminBlog" },
-      ];
+                return [
+                  { name: "Dashboard", icon: LayoutDashboard, page: "AdminDashboard" },
+                  { name: "User Approvals", icon: UserCheck, page: "AdminUserApprovals" },
+                  { name: "Users", icon: Users, page: "AdminUsers" },
+                  { name: "Ad Bookings", icon: Megaphone, page: "AdminBookings" },
+                  { name: "Campaigns", icon: Megaphone, page: "AdminCampaigns" },
+                  { name: "Venues", icon: Building2, page: "AdminVenues" },
+                  { name: "Screens", icon: MonitorPlay, page: "AdminScreens" },
+                  { name: "Wallet System", icon: Wallet, page: "AdminWallet" },
+                  { name: "Transactions", icon: CreditCard, page: "AdminTransactions" },
+                  { name: "Dynamic Pricing", icon: CreditCard, page: "AdminPricing" },
+                  { name: "Blog", icon: Megaphone, page: "AdminBlog" },
+                  { name: "Logo Generator", icon: Settings, page: "LogoGenerator" },
+                ];
     } else {
       // Unified dashboard for all users (both advertiser and venue owner)
       const items = [
