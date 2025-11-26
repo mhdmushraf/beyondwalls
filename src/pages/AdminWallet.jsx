@@ -57,10 +57,8 @@ export default function AdminWallet() {
     queryFn: () => base44.entities.Transaction.list("-created_date", 200)
   });
 
-  // Calculate totals
-  const totalWalletBalance = users.reduce((sum, u) => sum + (u.wallet_balance || 0), 0);
-  const totalSpent = users.reduce((sum, u) => sum + (u.total_spent || 0), 0);
-  const totalEarnings = users.reduce((sum, u) => sum + (u.total_earnings || 0), 0);
+  // Calculate totals from transactions (more accurate)
+  const totalWalletBalance = totalTopUps + totalEarningsAmount - totalAdSpend - withdrawals.filter(t => t.status === "completed").reduce((sum, t) => sum + t.amount, 0);
   
   // Platform revenue (30% of ad spend)
   const platformRevenue = transactions
@@ -78,13 +76,29 @@ export default function AdminWallet() {
   const totalEarningsAmount = earnings.reduce((sum, t) => sum + t.amount, 0);
   const pendingWithdrawals = withdrawals.filter(t => t.status === "pending").reduce((sum, t) => sum + t.amount, 0);
 
-  // Calculate earnings per user from transactions
+  // Calculate earnings and spending per user from transactions
   const earningsByUser = {};
-  transactions
-    .filter(t => t.type === "earning" && t.status === "completed")
-    .forEach(t => {
+  const spendingByUser = {};
+  const topUpsByUser = {};
+  const withdrawalsByUser = {};
+  
+  transactions.forEach(t => {
+    if (t.status !== "completed") return;
+    if (t.type === "earning") {
       earningsByUser[t.user_id] = (earningsByUser[t.user_id] || 0) + (t.amount || 0);
-    });
+    } else if (t.type === "ad_spend") {
+      spendingByUser[t.user_id] = (spendingByUser[t.user_id] || 0) + (t.amount || 0);
+    } else if (t.type === "top_up") {
+      topUpsByUser[t.user_id] = (topUpsByUser[t.user_id] || 0) + (t.amount || 0);
+    } else if (t.type === "withdrawal") {
+      withdrawalsByUser[t.user_id] = (withdrawalsByUser[t.user_id] || 0) + (t.amount || 0);
+    }
+  });
+  
+  // Calculate actual balance per user
+  const calculateUserBalance = (email) => {
+    return (topUpsByUser[email] || 0) + (earningsByUser[email] || 0) - (spendingByUser[email] || 0) - (withdrawalsByUser[email] || 0);
+  };
 
   // Filter users by search
   const filteredUsers = users.filter(u => 
@@ -280,18 +294,18 @@ export default function AdminWallet() {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        <span className={`font-semibold ${(u.wallet_balance || 0) > 0 ? "text-emerald-600" : "text-slate-500"}`}>
-                          AED {(u.wallet_balance || 0).toLocaleString()}
+                        <span className={`font-semibold ${calculateUserBalance(u.email) > 0 ? "text-emerald-600" : "text-slate-500"}`}>
+                          AED {calculateUserBalance(u.email).toLocaleString()}
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
                         <span className="text-violet-600">
-                          AED {(u.total_spent || 0).toLocaleString()}
+                          AED {(spendingByUser[u.email] || 0).toLocaleString()}
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
                         <span className="text-blue-600">
-                          AED {(earningsByUser[u.email] || u.total_earnings || 0).toLocaleString()}
+                          AED {(earningsByUser[u.email] || 0).toLocaleString()}
                         </span>
                       </TableCell>
                     </TableRow>
