@@ -88,9 +88,13 @@ export default function Dashboard() {
   const totalWithdrawals = transactions
     .filter(t => t.type === "withdrawal" && t.status === "completed")
     .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+  const totalRefunds = transactions
+    .filter(t => t.type === "refund" && t.status === "completed")
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
   
-  // Calculated balance: topups + earnings - spent - withdrawals
-  const calculatedBalance = totalTopUps + totalEarnings - totalSpent - totalWithdrawals;
+  // Calculated balance: topups + earnings + refunds - spent - withdrawals
+  const calculatedBalance = totalTopUps + totalEarnings + totalRefunds - totalSpent - totalWithdrawals;
 
   if (!user) return null;
 
