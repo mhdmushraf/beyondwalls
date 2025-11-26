@@ -43,6 +43,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import CreativePreview from "@/components/campaigns/CreativePreview";
+import CampaignGoalSelector from "@/components/campaigns/CampaignGoalSelector";
+import DemographicsSelector from "@/components/campaigns/DemographicsSelector";
+import AIOptimizationPanel from "@/components/campaigns/AIOptimizationPanel";
 
 export default function AICampaignCreator() {
   const navigate = useNavigate();
@@ -57,8 +60,18 @@ export default function AICampaignCreator() {
     business_name: "",
     product_service: "",
     target_audience: "",
-    campaign_goal: "awareness", // awareness, sales, traffic, event
-    budget: ""
+    campaign_goal: "awareness",
+    target_kpi: "",
+    budget: "",
+    daily_budget: ""
+  });
+
+  // Demographics targeting
+  const [demographics, setDemographics] = useState({
+    age_groups: [],
+    gender: "all",
+    interests: [],
+    income_level: "any"
   });
 
   // AI-generated suggestions
@@ -69,18 +82,26 @@ export default function AICampaignCreator() {
     name: "",
     headline: "",
     description: "",
+    goal: "awareness",
+    target_kpi: null,
     target_cities: [],
     target_venue_types: [],
-    target_demographics: [],
+    target_demographics: {},
     screen_ids: [],
     time_slots: [],
     start_date: null,
     end_date: null,
     creative_url: "",
     creative_type: "",
+    budget: 0,
+    daily_budget: 0,
     suggested_price: 0,
-    duration_seconds: 15
+    duration_seconds: 15,
+    auto_optimize: true
   });
+
+  // Draft campaign for review
+  const [draftCampaign, setDraftCampaign] = useState(null);
 
   useEffect(() => {
     loadUser();
@@ -243,17 +264,23 @@ Generate the following recommendations:
       setCampaignData(prev => ({
         ...prev,
         name: `${businessInfo.business_name} - ${businessInfo.campaign_goal} Campaign`,
+        goal: businessInfo.campaign_goal,
+        target_kpi: businessInfo.target_kpi,
         headline: response.ad_copy_variations?.[0]?.headline || "",
         description: response.ad_copy_variations?.[0]?.description || "",
         target_cities: response.recommended_cities || [],
         target_venue_types: response.recommended_venue_types?.map(v => v.type) || [],
+        target_demographics: demographics,
         time_slots: response.time_slots?.map(t => t.slot) || [],
         start_date: new Date(),
         end_date: addDays(new Date(), response.campaign_duration_days || 7),
-        suggested_price: response.pricing_strategy?.recommended_daily_budget * (response.campaign_duration_days || 7) || 0
+        budget: parseFloat(businessInfo.budget) || 0,
+        daily_budget: parseFloat(businessInfo.daily_budget) || 0,
+        suggested_price: response.pricing_strategy?.recommended_daily_budget * (response.campaign_duration_days || 7) || 0,
+        auto_optimize: true
       }));
 
-      setStep(2);
+      setStep(3);
       toast.success("AI recommendations generated!");
     } catch (error) {
       console.error(error);
@@ -341,19 +368,30 @@ Generate the following recommendations:
       await base44.entities.Campaign.create({
         name: campaignData.name,
         advertiser_id: user.email,
+        goal: campaignData.goal,
+        target_kpi: campaignData.target_kpi ? parseFloat(campaignData.target_kpi) : null,
         start_date: format(campaignData.start_date, 'yyyy-MM-dd'),
         end_date: format(campaignData.end_date, 'yyyy-MM-dd'),
         time_slots: campaignData.time_slots,
         target_cities: campaignData.target_cities,
         target_venue_types: campaignData.target_venue_types,
+        target_demographics: campaignData.target_demographics,
         screen_ids: selectedScreenIds,
         creative_url: campaignData.creative_url,
         creative_type: campaignData.creative_type,
+        headline: campaignData.headline,
+        description: campaignData.description,
         duration_seconds: campaignData.duration_seconds,
+        budget: campaignData.budget,
+        daily_budget: campaignData.daily_budget,
         total_cost: totalCost,
         status: "pending_approval",
         impressions: 0,
-        spend: 0
+        clicks: 0,
+        conversions: 0,
+        spend: 0,
+        ai_suggestions: aiSuggestions,
+        auto_optimize: campaignData.auto_optimize
       });
 
       toast.success("Campaign created successfully!");
@@ -387,26 +425,41 @@ Generate the following recommendations:
       {/* Progress */}
       <div className="mb-8">
         <div className="flex items-center gap-4 mb-2">
-          <span className="text-sm font-medium text-slate-600">Step {step} of 3</span>
-          <Progress value={(step / 3) * 100} className="flex-1 h-2" />
+          <span className="text-sm font-medium text-slate-600">Step {step} of 4</span>
+          <Progress value={(step / 4) * 100} className="flex-1 h-2" />
+        </div>
+        <div className="flex gap-2">
+          {["Goals & Budget", "Targeting", "AI Recommendations", "Creative & Launch"].map((label, i) => (
+            <div
+              key={i}
+              className={`flex-1 text-center text-xs py-1 rounded ${
+                step > i + 1 ? "bg-violet-100 text-violet-700" :
+                step === i + 1 ? "bg-violet-600 text-white" :
+                "bg-slate-100 text-slate-500"
+              }`}
+            >
+              {label}
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Step 1: Business Info */}
+      {/* Step 1: Goals & Budget */}
       {step === 1 && (
         <Card className="border-0 shadow-xl">
           <CardContent className="p-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center">
-                <Lightbulb className="w-6 h-6 text-white" />
+                <Target className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-slate-900">Tell us about your business</h2>
-                <p className="text-slate-500">AI will generate personalized recommendations</p>
+                <h2 className="text-xl font-bold text-slate-900">Campaign Goals & Budget</h2>
+                <p className="text-slate-500">Define your objectives and AI will optimize for them</p>
               </div>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
+              {/* Business Info */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label>Business Name</Label>
@@ -417,79 +470,123 @@ Generate the following recommendations:
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Campaign Goal</Label>
-                  <Select
-                    value={businessInfo.campaign_goal}
-                    onValueChange={(v) => setBusinessInfo({ ...businessInfo, campaign_goal: v })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="awareness">Brand Awareness</SelectItem>
-                      <SelectItem value="sales">Drive Sales</SelectItem>
-                      <SelectItem value="traffic">Increase Foot Traffic</SelectItem>
-                      <SelectItem value="event">Promote Event</SelectItem>
-                      <SelectItem value="launch">Product Launch</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Label>Product or Service</Label>
+                  <Input
+                    placeholder="e.g., Mediterranean healthy food delivery"
+                    value={businessInfo.product_service}
+                    onChange={(e) => setBusinessInfo({ ...businessInfo, product_service: e.target.value })}
+                  />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label>Product or Service Description</Label>
-                <Textarea
-                  placeholder="Describe what you're advertising... e.g., 'We offer healthy Mediterranean cuisine with fresh ingredients, daily specials, and fast delivery. Known for our signature falafel wraps and fresh smoothies.'"
-                  className="h-24"
-                  value={businessInfo.product_service}
-                  onChange={(e) => setBusinessInfo({ ...businessInfo, product_service: e.target.value })}
-                />
-              </div>
+              {/* Goal Selector */}
+              <CampaignGoalSelector
+                selectedGoal={businessInfo.campaign_goal}
+                targetKpi={businessInfo.target_kpi}
+                onGoalChange={(goal) => setBusinessInfo({ ...businessInfo, campaign_goal: goal })}
+                onKpiChange={(kpi) => setBusinessInfo({ ...businessInfo, target_kpi: kpi })}
+              />
 
-              <div className="space-y-2">
-                <Label>Target Audience</Label>
-                <Textarea
-                  placeholder="Who do you want to reach? e.g., 'Health-conscious professionals aged 25-45, gym-goers, office workers looking for quick healthy lunch options'"
-                  className="h-20"
-                  value={businessInfo.target_audience}
-                  onChange={(e) => setBusinessInfo({ ...businessInfo, target_audience: e.target.value })}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Budget (AED) - Optional</Label>
-                <Input
-                  type="number"
-                  placeholder="e.g., 5000"
-                  value={businessInfo.budget}
-                  onChange={(e) => setBusinessInfo({ ...businessInfo, budget: e.target.value })}
-                />
+              {/* Budget */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label>Total Campaign Budget (AED)</Label>
+                  <Input
+                    type="number"
+                    placeholder="e.g., 5000"
+                    value={businessInfo.budget}
+                    onChange={(e) => setBusinessInfo({ ...businessInfo, budget: e.target.value })}
+                  />
+                  <p className="text-xs text-slate-500">AI will optimize spend within this budget</p>
+                </div>
+                <div className="space-y-2">
+                  <Label>Daily Budget Cap (AED) - Optional</Label>
+                  <Input
+                    type="number"
+                    placeholder="e.g., 500"
+                    value={businessInfo.daily_budget}
+                    onChange={(e) => setBusinessInfo({ ...businessInfo, daily_budget: e.target.value })}
+                  />
+                  <p className="text-xs text-slate-500">Maximum spend per day</p>
+                </div>
               </div>
 
               <Button
-                onClick={generateAISuggestions}
-                disabled={aiLoading || !businessInfo.product_service}
-                className="w-full h-14 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-lg"
+                onClick={() => setStep(2)}
+                disabled={!businessInfo.product_service || !businessInfo.budget}
+                className="w-full h-12 bg-gradient-to-r from-violet-600 to-indigo-600"
               >
-                {aiLoading ? (
-                  <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    AI is analyzing...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-5 h-5 mr-2" />
-                    Generate AI Recommendations
-                  </>
-                )}
+                Continue to Targeting
+                <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </div>
           </CardContent>
         </Card>
       )}
 
-      {/* Step 2: AI Suggestions Review */}
-      {step === 2 && aiSuggestions && (
+      {/* Step 2: Targeting */}
+      {step === 2 && (
+        <Card className="border-0 shadow-xl">
+          <CardContent className="p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center">
+                <Users className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-slate-900">Target Audience & Demographics</h2>
+                <p className="text-slate-500">Define who you want to reach</p>
+              </div>
+            </div>
+
+            <div className="space-y-8">
+              {/* Audience Description */}
+              <div className="space-y-2">
+                <Label>Describe Your Target Audience</Label>
+                <Textarea
+                  placeholder="e.g., Health-conscious professionals aged 25-45, gym-goers, office workers looking for quick healthy lunch options"
+                  className="h-20"
+                  value={businessInfo.target_audience}
+                  onChange={(e) => setBusinessInfo({ ...businessInfo, target_audience: e.target.value })}
+                />
+              </div>
+
+              {/* Demographics Selector */}
+              <DemographicsSelector
+                demographics={demographics}
+                onChange={setDemographics}
+              />
+
+              {/* Navigation */}
+              <div className="flex justify-between">
+                <Button variant="outline" onClick={() => setStep(1)}>
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back
+                </Button>
+                <Button
+                  onClick={generateAISuggestions}
+                  disabled={aiLoading}
+                  className="bg-gradient-to-r from-violet-600 to-indigo-600"
+                >
+                  {aiLoading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      AI is analyzing...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-5 h-5 mr-2" />
+                      Generate AI Recommendations
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Step 3: AI Suggestions Review */}
+      {step === 3 && aiSuggestions && (
         <div className="space-y-6">
           {/* Demographics Card */}
           <Card className="border-0 shadow-lg">
@@ -672,12 +769,12 @@ Generate the following recommendations:
 
           {/* Navigation */}
           <div className="flex justify-between">
-            <Button variant="outline" onClick={() => setStep(1)}>
+            <Button variant="outline" onClick={() => setStep(2)}>
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
             <Button
-              onClick={() => setStep(3)}
+              onClick={() => setStep(4)}
               className="bg-gradient-to-r from-violet-600 to-indigo-600"
             >
               Continue to Creative
@@ -687,8 +784,8 @@ Generate the following recommendations:
         </div>
       )}
 
-      {/* Step 3: Creative & Launch */}
-      {step === 3 && (
+      {/* Step 4: Creative & Launch */}
+      {step === 4 && (
         <div className="space-y-6">
           <Card className="border-0 shadow-xl">
             <CardContent className="p-8">
@@ -835,29 +932,74 @@ Generate the following recommendations:
                 </div>
               </div>
 
+              {/* AI Optimization Panel */}
+              {draftCampaign && (
+                <Card className="border-0 shadow-lg">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-indigo-500 rounded-lg flex items-center justify-center">
+                        <Sparkles className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-slate-900">AI Performance Optimization</h3>
+                        <p className="text-sm text-slate-500">Get real-time recommendations</p>
+                      </div>
+                    </div>
+                    <AIOptimizationPanel
+                      campaign={draftCampaign}
+                      onUpdate={async (updates) => {
+                        setDraftCampaign({ ...draftCampaign, ...updates });
+                      }}
+                    />
+                  </CardContent>
+                </Card>
+              )}
+
               {/* Actions */}
               <div className="flex justify-between">
-                <Button variant="outline" onClick={() => setStep(2)}>
+                <Button variant="outline" onClick={() => setStep(3)}>
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back
                 </Button>
-                <Button
-                  onClick={handleSubmit}
-                  disabled={loading || !campaignData.creative_url}
-                  className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Creating...
-                    </>
-                  ) : (
-                    <>
-                      <Zap className="w-4 h-4 mr-2" />
-                      Launch Campaign
-                    </>
-                  )}
-                </Button>
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setDraftCampaign({
+                        ...campaignData,
+                        goal: businessInfo.campaign_goal,
+                        target_kpi: businessInfo.target_kpi,
+                        budget: parseFloat(businessInfo.budget) || 0,
+                        daily_budget: parseFloat(businessInfo.daily_budget) || 0,
+                        target_demographics: demographics,
+                        ai_suggestions: aiSuggestions,
+                        status: "draft"
+                      });
+                      toast.success("Draft saved for review");
+                    }}
+                    disabled={!campaignData.creative_url}
+                  >
+                    <Clock className="w-4 h-4 mr-2" />
+                    Save Draft
+                  </Button>
+                  <Button
+                    onClick={handleSubmit}
+                    disabled={loading || !campaignData.creative_url}
+                    className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Creating...
+                      </>
+                    ) : (
+                      <>
+                        <Zap className="w-4 h-4 mr-2" />
+                        Submit for Approval
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
