@@ -50,6 +50,7 @@ import BlogPost from './pages/BlogPost';
 import LogoGenerator from './pages/LogoGenerator';
 import BookingPending from './pages/BookingPending';
 import AdminPlatformWallet from './pages/AdminPlatformWallet';
+import AdminCRM from './pages/AdminCRM';
 import __Layout from './Layout.jsx';
 
 
@@ -106,6 +107,7 @@ export const PAGES = {
     "LogoGenerator": LogoGenerator,
     "BookingPending": BookingPending,
     "AdminPlatformWallet": AdminPlatformWallet,
+    "AdminCRM": AdminCRM,
 }
 
 export const pagesConfig = {
