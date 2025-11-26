@@ -404,37 +404,88 @@ BeyondWalls Team
         status: "completed"
       });
 
-      // Credit screen owner
-      let screenOwner = null;
-      const screenOwnerData = await base44.entities.User.filter({ email: selectedScreen.owner_id });
-      if (screenOwnerData.length > 0) {
-        screenOwner = screenOwnerData[0];
-        const ownerShare = totalCost * 0.7; // 70% to screen owner
-        await base44.entities.User.update(screenOwner.id, {
-          wallet_balance: (screenOwner.wallet_balance || 0) + ownerShare,
-          total_earnings: (screenOwner.total_earnings || 0) + ownerShare
-        });
-
-        await base44.entities.Transaction.create({
-          user_id: screenOwner.email,
-          type: "earning",
-          amount: ownerShare,
-          balance_after: (screenOwner.wallet_balance || 0) + ownerShare,
-          reference_id: selectedScreen.id,
-          description: `Ad slot earning from ${selectedScreen.name}`,
-          status: "completed"
-        });
-      }
-
-      // Send confirmation emails
+      // Send pending approval email to advertiser
+      const venue = venues.find(v => v.id === selectedScreen.venue_id);
       try {
-        await sendConfirmationEmails(booking, screenOwner);
+        await base44.integrations.Core.SendEmail({
+          to: user.email,
+          subject: `🎯 Booking Confirmed - Pending Approval | BeyondWalls`,
+          body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Digital Out-of-Home Advertising
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dear ${user.full_name || "Valued Advertiser"},
+
+Thank you for choosing BeyondWalls! Your ad booking has been successfully submitted and is now pending approval from our team.
+
+📋 BOOKING DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 Campaign: ${formData.campaign_name}
+📺 Screen: ${selectedScreen.name}
+📍 Venue: ${venue?.name || 'N/A'} - ${venue?.city || 'N/A'}
+🎰 Slot: #${selectedSlot}
+📅 Duration: ${format(formData.start_date, "PPP")} to ${format(endDate, "PPP")}
+💰 Total Cost: AED ${totalCost.toLocaleString()}
+
+⏳ STATUS: PENDING APPROVAL
+━━━━━━━━━━━━━━━━━━━━━━━━━
+Our team will review your campaign within 24-48 hours. You will receive an email notification once your campaign is approved.
+
+💡 WHAT'S NEXT?
+• Our team reviews your creative content
+• You'll receive approval confirmation via email
+• Your ad goes live on the scheduled start date
+
+📊 Track your campaign status anytime in your dashboard.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Need help? Contact us at info@beyondwalls.ae
+Phone: +971 55 614 0067
+
+BeyondWalls - Advertise Beyond Boundaries
+www.beyondwalls.ae
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          `.trim()
+        });
       } catch (emailError) {
         console.log("Email sending failed, but booking succeeded");
       }
 
+      // Send notification email to admin
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: "info@beyondwalls.ae",
+          subject: `🔔 New Campaign Pending Approval: ${formData.campaign_name}`,
+          body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ADMIN NOTIFICATION - NEW BOOKING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+A new campaign requires your approval.
+
+📋 CAMPAIGN DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+Campaign: ${formData.campaign_name}
+Advertiser: ${user.full_name || user.email}
+Email: ${user.email}
+Screen: ${selectedScreen.name}
+Venue: ${venue?.name || 'N/A'}
+Duration: ${format(formData.start_date, "PPP")} to ${format(endDate, "PPP")}
+Total Value: AED ${totalCost.toLocaleString()}
+
+Please review and approve/reject this campaign in the admin dashboard.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          `.trim()
+        });
+      } catch (emailError) {
+        console.log("Admin notification email failed");
+      }
+
       toast.success("Booking submitted! Awaiting admin approval.");
-      navigate(createPageUrl("MyBookings"));
+      navigate(createPageUrl("BookingPending") + `?booking_id=${booking.id}`);
     } catch (error) {
       toast.error("Failed to book slot");
     } finally {

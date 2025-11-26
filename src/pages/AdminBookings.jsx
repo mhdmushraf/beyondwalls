@@ -89,11 +89,89 @@ export default function AdminBookings() {
         approved_by: user.email
       });
 
-      // Send approval email
+      // Credit screen owner NOW (after approval)
+      const screen = screens.find(s => s.id === booking.screen_id);
+      if (screen?.owner_id) {
+        const ownerData = await base44.entities.User.filter({ email: screen.owner_id });
+        if (ownerData.length > 0) {
+          const owner = ownerData[0];
+          const ownerShare = (booking.total_cost || 0) * 0.7;
+          await base44.entities.User.update(owner.id, {
+            wallet_balance: (owner.wallet_balance || 0) + ownerShare,
+            total_earnings: (owner.total_earnings || 0) + ownerShare
+          });
+
+          await base44.entities.Transaction.create({
+            user_id: owner.email,
+            type: "earning",
+            amount: ownerShare,
+            balance_after: (owner.wallet_balance || 0) + ownerShare,
+            reference_id: booking.id,
+            description: `Ad slot earning: ${booking.campaign_name}`,
+            status: "completed"
+          });
+
+          // Send earning notification to venue owner
+          const venue = venues.find(v => v.id === screen.venue_id);
+          await base44.integrations.Core.SendEmail({
+            to: owner.email,
+            subject: `💰 New Earning: AED ${ownerShare.toLocaleString()} | BeyondWalls`,
+            body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Venue Partner Earnings
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dear ${owner.full_name || "Valued Partner"},
+
+Great news! A new ad campaign has been approved on your screen! 🎉
+
+💰 EARNINGS CREDITED
+━━━━━━━━━━━━━━━━━━━━━━━━━
+Screen: ${screen.name}
+Venue: ${venue?.name || 'N/A'}
+Campaign: ${booking.campaign_name}
+Duration: ${booking.start_date} - ${booking.end_date}
+
+💵 Your Share (70%): AED ${ownerShare.toLocaleString()}
+
+The earnings have been credited to your wallet.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BeyondWalls - Advertise Beyond Boundaries
+            `.trim()
+          });
+        }
+      }
+
+      // Send approval email to advertiser
       await base44.integrations.Core.SendEmail({
         to: booking.advertiser_id,
-        subject: `✅ Campaign Approved: ${booking.campaign_name}`,
-        body: `Your campaign "${booking.campaign_name}" has been approved and is now live!\n\nYour ad will be displayed from ${booking.start_date} to ${booking.end_date}.\n\nThank you for advertising with BeyondWalls!`
+        subject: `✅ Campaign Approved: ${booking.campaign_name} | BeyondWalls`,
+        body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Digital Out-of-Home Advertising
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎉 CONGRATULATIONS!
+
+Your campaign "${booking.campaign_name}" has been approved and is now LIVE!
+
+📅 CAMPAIGN SCHEDULE
+━━━━━━━━━━━━━━━━━━━━━━━━━
+Start Date: ${booking.start_date}
+End Date: ${booking.end_date}
+
+Your ad is now displaying on screens across our network.
+
+📊 Track your campaign performance in your dashboard.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Thank you for advertising with BeyondWalls!
+www.beyondwalls.ae
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        `.trim()
       });
 
       // Update notification
