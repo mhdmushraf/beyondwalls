@@ -4,8 +4,8 @@ const DEFAULT_SEO = {
   siteName: "BeyondWalls",
   siteUrl: "https://beyondwalls.ae",
   defaultTitle: "BeyondWalls - #1 Digital Out-of-Home Advertising Platform in UAE",
-  defaultDescription: "Book premium digital screens in cafés, malls, gyms & coworking spaces across the UAE. Self-serve DOOH advertising platform with real-time analytics. Start advertising in minutes.",
-  defaultImage: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&h=630&fit=crop",
+  defaultDescription: "BeyondWalls is UAE's leading DOOH platform. Book digital screens in cafés, malls & gyms. 500+ screens, real-time analytics, instant activation. Advertisers reach millions, venues earn 70% revenue.",
+  defaultImage: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&h=630&fit=crop&q=80",
   twitterHandle: "@BeyondWallsae",
   locale: "en_AE"
 };
@@ -50,16 +50,20 @@ export default function SEOHead({
     setMetaTag("viewport", "width=device-width, initial-scale=1.0");
     setMetaTag("theme-color", "#7c3aed");
 
-    // Open Graph Tags
+    // Open Graph Tags (for Facebook, WhatsApp, LinkedIn, etc.)
     setMetaTag("og:title", fullTitle, true);
     setMetaTag("og:description", metaDescription, true);
     setMetaTag("og:image", metaImage, true);
+    setMetaTag("og:image:alt", "BeyondWalls - Digital Advertising Platform", true);
     setMetaTag("og:image:width", "1200", true);
     setMetaTag("og:image:height", "630", true);
     setMetaTag("og:url", canonicalUrl, true);
     setMetaTag("og:type", type, true);
     setMetaTag("og:site_name", DEFAULT_SEO.siteName, true);
     setMetaTag("og:locale", DEFAULT_SEO.locale, true);
+    
+    // WhatsApp specific
+    setMetaTag("og:image:secure_url", metaImage, true);
 
     // Twitter Card Tags
     setMetaTag("twitter:card", "summary_large_image");
@@ -139,15 +143,16 @@ export default function SEOHead({
 export const PAGE_SEO = {
   home: {
     title: null, // Uses default
-    description: "BeyondWalls is the UAE's #1 self-serve digital out-of-home advertising platform. Book premium screens in cafés, malls, gyms & coworking spaces. Real-time analytics, instant activation, 500+ screens.",
+    description: "BeyondWalls is UAE's #1 self-serve DOOH advertising platform. Book premium digital screens in 500+ cafés, malls, gyms & coworking spaces across Dubai, Abu Dhabi & Sharjah. Advertisers reach millions daily, venues earn 70% revenue share. Start in minutes!",
     keywords: "DOOH advertising UAE, digital signage Dubai, outdoor advertising platform, screen advertising, digital billboard UAE, café advertising, mall advertising Dubai, gym advertising",
     url: "/",
+    image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&h=630&fit=crop&q=80",
     structuredData: {
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "BeyondWalls",
       "url": "https://beyondwalls.ae",
-      "description": "UAE's #1 Digital Out-of-Home Advertising Platform",
+      "description": "UAE's #1 Digital Out-of-Home Advertising Platform - Book screens in cafés, malls & gyms",
       "potentialAction": {
         "@type": "SearchAction",
         "target": "https://beyondwalls.ae/search?q={search_term_string}",
