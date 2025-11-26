@@ -78,8 +78,48 @@ export default function ScreenPlayer() {
     refetchInterval: 60000 // Refresh every minute
   });
 
-  // Combine bookings and campaigns for display
-  const allAds = [
+  // Fetch default content from platform settings
+  const { data: platformSettings = [] } = useQuery({
+    queryKey: ["platform-settings"],
+    queryFn: () => base44.entities.PlatformSettings.list(),
+    enabled: authenticated
+  });
+
+  const defaultContentUrl = platformSettings.find(s => s.setting_key === "default_screen_content_url")?.setting_value || "";
+  const defaultContentType = platformSettings.find(s => s.setting_key === "default_screen_content_type")?.setting_value || "image";
+
+  // Build owner slots array from screen data
+  const ownerSlots = [];
+  if (screen?.owner_slot_1_url) {
+    ownerSlots.push({ 
+      id: "owner-1", 
+      name: "Owner Slot 1", 
+      creative_url: screen.owner_slot_1_url, 
+      creative_type: screen.owner_slot_1_type || "image",
+      type: "owner"
+    });
+  }
+  if (screen?.owner_slot_2_url) {
+    ownerSlots.push({ 
+      id: "owner-2", 
+      name: "Owner Slot 2", 
+      creative_url: screen.owner_slot_2_url, 
+      creative_type: screen.owner_slot_2_type || "image",
+      type: "owner"
+    });
+  }
+  if (screen?.owner_slot_3_url) {
+    ownerSlots.push({ 
+      id: "owner-3", 
+      name: "Owner Slot 3", 
+      creative_url: screen.owner_slot_3_url, 
+      creative_type: screen.owner_slot_3_type || "image",
+      type: "owner"
+    });
+  }
+
+  // Build advertiser ads array
+  const advertiserAds = [
     ...bookings.map(b => ({ 
       id: b.id, 
       name: b.campaign_name || "Ad Slot", 
@@ -95,6 +135,54 @@ export default function ScreenPlayer() {
       type: "campaign"
     }))
   ].filter(ad => ad.creative_url);
+
+  // Build interleaved playlist: Ad1 -> Owner1 -> Ad2 -> Owner2 -> Ad3 -> Owner3 -> Ad4 -> Ad5 -> repeat
+  const buildPlaylist = () => {
+    const playlist = [];
+    const adCount = advertiserAds.length;
+    const ownerCount = ownerSlots.length;
+    
+    if (adCount === 0 && ownerCount === 0) {
+      // No content, will show default
+      return [];
+    }
+    
+    if (adCount === 0) {
+      // Only owner slots
+      return [...ownerSlots];
+    }
+    
+    if (ownerCount === 0) {
+      // Only advertiser ads
+      return [...advertiserAds];
+    }
+
+    // Interleave: pattern is Ad, Owner, Ad, Owner, Ad, Owner, Ad, Ad (then repeat)
+    // For up to 5 ad slots and 3 owner slots
+    let adIndex = 0;
+    let ownerIndex = 0;
+    
+    // Slot 1: Ad
+    if (adIndex < adCount) playlist.push(advertiserAds[adIndex++]);
+    // Slot 2: Owner
+    if (ownerIndex < ownerCount) playlist.push(ownerSlots[ownerIndex++]);
+    // Slot 3: Ad
+    if (adIndex < adCount) playlist.push(advertiserAds[adIndex++]);
+    // Slot 4: Owner
+    if (ownerIndex < ownerCount) playlist.push(ownerSlots[ownerIndex++]);
+    // Slot 5: Ad
+    if (adIndex < adCount) playlist.push(advertiserAds[adIndex++]);
+    // Slot 6: Owner
+    if (ownerIndex < ownerCount) playlist.push(ownerSlots[ownerIndex++]);
+    // Slot 7: Ad
+    if (adIndex < adCount) playlist.push(advertiserAds[adIndex++]);
+    // Slot 8: Ad
+    if (adIndex < adCount) playlist.push(advertiserAds[adIndex++]);
+
+    return playlist;
+  };
+
+  const allAds = buildPlaylist();
 
   // Cycle through ads with animations
   useEffect(() => {
@@ -417,21 +505,41 @@ export default function ScreenPlayer() {
       {/* Ad Content */}
       <div className={`w-full h-screen flex items-center justify-center ad-container ${transitioning ? `transitioning ${animationType}` : ''}`}>
         {allAds.length === 0 ? (
-          <div className="text-center text-white">
-            <div className="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <MonitorPlay className="w-12 h-12 text-white/60" />
+          // Show default content if available, otherwise show waiting message
+          defaultContentUrl ? (
+            defaultContentType === "video" ? (
+              <video
+                src={defaultContentUrl}
+                className="w-full h-full object-contain"
+                autoPlay
+                loop
+                muted={isMuted}
+                playsInline
+              />
+            ) : (
+              <img
+                src={defaultContentUrl}
+                alt="Default Content"
+                className="w-full h-full object-contain"
+              />
+            )
+          ) : (
+            <div className="text-center text-white">
+              <div className="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <MonitorPlay className="w-12 h-12 text-white/60" />
+              </div>
+              <h2 className="text-2xl font-bold mb-2">No Active Campaigns</h2>
+              <p className="text-white/60">Waiting for approved ads to be scheduled...</p>
+              <Button 
+                variant="ghost" 
+                className="mt-6 text-white/60"
+                onClick={() => { refetchBookings(); refetchCampaigns(); }}
+              >
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Refresh
+              </Button>
             </div>
-            <h2 className="text-2xl font-bold mb-2">No Active Campaigns</h2>
-            <p className="text-white/60">Waiting for approved ads to be scheduled...</p>
-            <Button 
-              variant="ghost" 
-              className="mt-6 text-white/60"
-              onClick={() => { refetchBookings(); refetchCampaigns(); }}
-            >
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Refresh
-            </Button>
-          </div>
+          )
         ) : currentAd?.creative_url ? (
           currentAd.creative_type === "video" ? (
             <video
