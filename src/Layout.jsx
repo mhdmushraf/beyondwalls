@@ -74,6 +74,7 @@ export default function Layout({ children, currentPageName }) {
                   { name: "Dynamic Pricing", icon: CreditCard, page: "AdminPricing" },
                                 { name: "Platform Revenue", icon: PiggyBank, page: "AdminPlatformWallet" },
                                 { name: "Blog", icon: Megaphone, page: "AdminBlog" },
+                                { name: "CRM", icon: Users, page: "AdminCRM" },
                                 { name: "Logo Generator", icon: Settings, page: "LogoGenerator" },
                 ];
     } else {
