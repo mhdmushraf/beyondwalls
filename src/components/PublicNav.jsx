@@ -27,7 +27,7 @@ export default function PublicNav() {
     { name: "About", page: "About" },
     { name: "Services", page: "Services" },
     { name: "Screen Locations", page: "ScreenLocations" },
-    { name: "For Companies", page: "Connect" },
+    { name: "Connect", page: "Connect", highlight: true },
     { name: "Blog", page: "Blog" },
     { name: "Help Center", page: "HelpCenter" },
     { name: "Contact", page: "Contact" },
@@ -51,9 +51,13 @@ export default function PublicNav() {
             <Link 
               key={link.name} 
               to={createPageUrl(link.page)} 
-              className="text-slate-600 hover:text-violet-600 font-medium transition-colors text-sm whitespace-nowrap"
+              className={`font-medium transition-colors text-sm whitespace-nowrap ${
+                link.highlight 
+                  ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white px-3 py-1.5 rounded-full hover:from-violet-700 hover:to-indigo-700" 
+                  : "text-slate-600 hover:text-violet-600"
+              }`}
             >
-              {link.name}
+              {link.highlight ? "✨ Connect" : link.name}
             </Link>
           ))}
         </div>
@@ -101,10 +105,14 @@ export default function PublicNav() {
             <Link 
               key={link.name} 
               to={createPageUrl(link.page)} 
-              className="block text-slate-600 hover:text-violet-600 hover:bg-violet-50 font-medium py-2.5 px-3 rounded-lg transition-colors"
+              className={`block font-medium py-2.5 px-3 rounded-lg transition-colors ${
+                link.highlight 
+                  ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white" 
+                  : "text-slate-600 hover:text-violet-600 hover:bg-violet-50"
+              }`}
               onClick={() => setMobileMenuOpen(false)}
             >
-              {link.name}
+              {link.highlight ? "✨ Connect" : link.name}
             </Link>
           ))}
         </div>
