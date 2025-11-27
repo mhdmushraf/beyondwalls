@@ -54,6 +54,7 @@ import AdminCRM from './pages/AdminCRM';
 import AdminDefaultContent from './pages/AdminDefaultContent';
 import AdvertiserHub from './pages/AdvertiserHub';
 import Connect from './pages/Connect';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -114,6 +115,7 @@ export const PAGES = {
     "AdminDefaultContent": AdminDefaultContent,
     "AdvertiserHub": AdvertiserHub,
     "Connect": Connect,
+    "AnalyticsDashboard": AnalyticsDashboard,
 }
 
 export const pagesConfig = {
