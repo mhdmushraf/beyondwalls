@@ -19,7 +19,8 @@ import {
   Clock,
   Settings,
   PieChart,
-  Megaphone
+  Megaphone,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -101,7 +102,16 @@ export default function AdvertiserHub() {
     navigate(createPageUrl("AICampaignCreator"));
   };
 
-  if (!user) return null;
+  if (!user) {
+    return (
+      <div className="p-6 lg:p-8 flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <Loader2 className="w-10 h-10 text-violet-600 animate-spin mx-auto mb-4" />
+          <p className="text-slate-500">Loading advertiser hub...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 lg:p-8">
