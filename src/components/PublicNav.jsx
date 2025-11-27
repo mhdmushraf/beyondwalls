@@ -27,9 +27,9 @@ export default function PublicNav() {
     { name: "About", page: "About" },
     { name: "Services", page: "Services" },
     { name: "Screen Locations", page: "ScreenLocations" },
+    { name: "For Companies", page: "Connect" },
     { name: "Blog", page: "Blog" },
     { name: "Help Center", page: "HelpCenter" },
-    { name: "How It Works", page: "HowItWorks" },
     { name: "Contact", page: "Contact" },
   ];
 

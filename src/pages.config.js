@@ -53,6 +53,7 @@ import AdminPlatformWallet from './pages/AdminPlatformWallet';
 import AdminCRM from './pages/AdminCRM';
 import AdminDefaultContent from './pages/AdminDefaultContent';
 import AdvertiserHub from './pages/AdvertiserHub';
+import Connect from './pages/Connect';
 import __Layout from './Layout.jsx';
 
 
@@ -112,6 +113,7 @@ export const PAGES = {
     "AdminCRM": AdminCRM,
     "AdminDefaultContent": AdminDefaultContent,
     "AdvertiserHub": AdvertiserHub,
+    "Connect": Connect,
 }
 
 export const pagesConfig = {
