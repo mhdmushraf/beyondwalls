@@ -57,24 +57,25 @@ export default function AdminWallet() {
     queryFn: () => base44.entities.Transaction.list("-created_date", 200)
   });
 
-  // Calculate totals from transactions (more accurate)
-  const totalWalletBalance = totalTopUps + totalEarningsAmount - totalAdSpend - withdrawals.filter(t => t.status === "completed").reduce((sum, t) => sum + t.amount, 0);
-  
-  // Platform revenue (30% of ad spend)
-  const platformRevenue = transactions
-    .filter(t => t.type === "ad_spend" && t.status === "completed")
-    .reduce((sum, t) => sum + (t.amount * 0.3), 0);
-
   // Transaction stats
   const topUps = transactions.filter(t => t.type === "top_up" && t.status === "completed");
   const adSpends = transactions.filter(t => t.type === "ad_spend" && t.status === "completed");
   const earnings = transactions.filter(t => t.type === "earning" && t.status === "completed");
   const withdrawals = transactions.filter(t => t.type === "withdrawal");
 
-  const totalTopUps = topUps.reduce((sum, t) => sum + t.amount, 0);
-  const totalAdSpend = adSpends.reduce((sum, t) => sum + t.amount, 0);
-  const totalEarningsAmount = earnings.reduce((sum, t) => sum + t.amount, 0);
-  const pendingWithdrawals = withdrawals.filter(t => t.status === "pending").reduce((sum, t) => sum + t.amount, 0);
+  const totalTopUps = topUps.reduce((sum, t) => sum + (t.amount || 0), 0);
+  const totalAdSpend = adSpends.reduce((sum, t) => sum + (t.amount || 0), 0);
+  const totalEarningsAmount = earnings.reduce((sum, t) => sum + (t.amount || 0), 0);
+  const pendingWithdrawals = withdrawals.filter(t => t.status === "pending").reduce((sum, t) => sum + (t.amount || 0), 0);
+  const completedWithdrawals = withdrawals.filter(t => t.status === "completed").reduce((sum, t) => sum + (t.amount || 0), 0);
+
+  // Calculate totals from transactions (more accurate)
+  const totalWalletBalance = totalTopUps + totalEarningsAmount - totalAdSpend - completedWithdrawals;
+  
+  // Platform revenue (30% of ad spend)
+  const platformRevenue = transactions
+    .filter(t => t.type === "ad_spend" && t.status === "completed")
+    .reduce((sum, t) => sum + ((t.amount || 0) * 0.3), 0);
 
   // Calculate earnings and spending per user from transactions
   const earningsByUser = {};
