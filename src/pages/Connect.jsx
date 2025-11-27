@@ -155,26 +155,26 @@ Goals: ${formData.goals || "Not specified"}
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6 bg-gradient-to-br from-violet-600 via-indigo-600 to-purple-700 text-white relative overflow-hidden">
+      <section className="pt-24 pb-16 px-6 bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 text-white relative overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl" />
+          <div className="absolute top-20 left-10 w-72 h-72 bg-violet-500/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
         </div>
         
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="flex items-center gap-2 mb-6">
-            <Handshake className="w-6 h-6 text-white/80" />
-            <span className="text-white/80 font-semibold">B2B Partner Program</span>
+            <Handshake className="w-6 h-6 text-violet-400" />
+            <span className="text-violet-400 font-semibold">B2B Partner Program</span>
           </div>
           
           <h1 className="text-4xl lg:text-6xl font-bold mb-6 leading-tight">
             Beyond Walls Connect:<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-violet-200">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-indigo-400">
               The Partner Network for DOOH Growth
             </span>
           </h1>
           
-          <p className="text-xl text-white/90 max-w-3xl mb-8">
+          <p className="text-xl text-slate-300 max-w-3xl mb-8">
             Unlock the power of our marketplace. Connect your screens to thousands of ready-to-advertise businesses and earn <span className="text-white font-bold">85% revenue share</span> on all new sales we generate for you.
           </p>
 
@@ -195,9 +195,9 @@ Goals: ${formData.goals || "Not specified"}
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {stats.map((stat, i) => (
-              <div key={i} className="text-center p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+              <div key={i} className="text-center p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
                 <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
-                <div className="text-white/70 text-sm">{stat.label}</div>
+                <div className="text-slate-400 text-sm">{stat.label}</div>
               </div>
             ))}
           </div>
