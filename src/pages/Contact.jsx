@@ -27,6 +27,7 @@ import { toast } from "sonner";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
 import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
+import PublicAIChatWidget from "@/components/chat/PublicAIChatWidget";
 
 export default function Contact() {
   const [loading, setLoading] = useState(false);
