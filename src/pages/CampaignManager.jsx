@@ -17,7 +17,8 @@ import {
   Eye,
   DollarSign,
   LayoutDashboard,
-  PieChart
+  PieChart,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -96,6 +97,17 @@ export default function CampaignManager() {
     queryKey: ["all-venues"],
     queryFn: () => base44.entities.Venue.list()
   });
+
+  if (!user) {
+    return (
+      <div className="p-6 lg:p-8 flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <Loader2 className="w-10 h-10 text-violet-600 animate-spin mx-auto mb-4" />
+          <p className="text-slate-500">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   // If no booking ID, show all campaigns report
   if (!bookingId) {
