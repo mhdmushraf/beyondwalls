@@ -187,7 +187,7 @@ Goals: ${formData.goals || "Not specified"}
               Join the Network Now
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-            <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10">
+            <Button size="lg" className="border-2 border-white bg-transparent text-white hover:bg-white hover:text-slate-900">
               Schedule a Demo
             </Button>
           </div>
