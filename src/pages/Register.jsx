@@ -32,7 +32,7 @@ export default function Register() {
     sessionStorage.setItem("registration_user_role", userRole);
     
     // Redirect to login/register with callback to complete profile
-    base44.auth.redirectToLogin(createPageUrl("CompleteProfile"));
+    base44.auth.redirectToLogin(createPageUrl("CompleteProfile") + "?signup=true");
   };
 
   const benefits = {
