@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
 import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
+import PublicAIChatWidget from "@/components/chat/PublicAIChatWidget";
 
 export default function Home() {
   const stats = [
@@ -207,6 +208,7 @@ export default function Home() {
       </section>
 
       <PublicFooter />
+      <PublicAIChatWidget />
     </div>
   );
 }

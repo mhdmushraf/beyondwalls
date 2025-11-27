@@ -21,7 +21,8 @@ import {
   UserCheck,
   CreditCard,
   PiggyBank,
-  TrendingUp
+  TrendingUp,
+  BarChart3
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -89,9 +90,10 @@ export default function Layout({ children, currentPageName }) {
     } else {
       // Unified dashboard for all users (both advertiser and venue owner)
       const items = [
-                      { name: "Dashboard", icon: LayoutDashboard, page: "Dashboard" },
-                      { name: "Advertiser Hub", icon: TrendingUp, page: "AdvertiserHub" },
-                      { name: "AI Campaign", icon: Megaphone, page: "AICampaignCreator" },
+                                  { name: "Dashboard", icon: LayoutDashboard, page: "Dashboard" },
+                                  { name: "Advertiser Hub", icon: TrendingUp, page: "AdvertiserHub" },
+                                  { name: "Analytics", icon: BarChart3, page: "AnalyticsDashboard" },
+                                  { name: "AI Campaign", icon: Megaphone, page: "AICampaignCreator" },
                       { name: "Book Ad Slot", icon: Plus, page: "BookSlot" },
                       { name: "Favorites", icon: MonitorPlay, page: "FavoriteScreens" },
                       { name: "My Bookings", icon: Megaphone, page: "MyBookings" },
