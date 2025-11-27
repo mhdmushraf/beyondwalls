@@ -27,10 +27,10 @@ export default function PublicNav() {
     { name: "About", page: "About" },
     { name: "Services", page: "Services" },
     { name: "Screen Locations", page: "ScreenLocations" },
-    { name: "Connect", page: "Connect", highlight: true },
     { name: "Blog", page: "Blog" },
     { name: "Help Center", page: "HelpCenter" },
     { name: "Contact", page: "Contact" },
+    { name: "Connect", page: "Connect", highlight: true },
   ];
 
   return (
