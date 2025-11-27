@@ -78,6 +78,7 @@ export default function Layout({ children, currentPageName }) {
                 if (hasPermission("all") || hasPermission("venues")) adminItems.push({ name: "Venues", icon: Building2, page: "AdminVenues" });
                 if (hasPermission("all") || hasPermission("screens")) adminItems.push({ name: "Screens", icon: MonitorPlay, page: "AdminScreens" });
                 if (hasPermission("all") || hasPermission("wallet")) adminItems.push({ name: "Wallet System", icon: Wallet, page: "AdminWallet" });
+                      if (hasPermission("all") || hasPermission("wallet")) adminItems.push({ name: "Wallet Requests", icon: CreditCard, page: "AdminWalletRequests" });
                 if (hasPermission("all") || hasPermission("wallet")) adminItems.push({ name: "Transactions", icon: CreditCard, page: "AdminTransactions" });
                 if (hasPermission("all") || hasPermission("pricing")) adminItems.push({ name: "Dynamic Pricing", icon: CreditCard, page: "AdminPricing" });
                 if (hasPermission("all") || hasPermission("wallet")) adminItems.push({ name: "Platform Revenue", icon: PiggyBank, page: "AdminPlatformWallet" });

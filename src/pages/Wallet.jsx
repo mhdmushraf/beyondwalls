@@ -10,7 +10,13 @@ import {
   Building2,
   TrendingUp,
   Download,
-  Loader2
+  Loader2,
+  Upload,
+  FileText,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  ExternalLink
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,6 +39,8 @@ export default function Wallet() {
   const [showWithdraw, setShowWithdraw] = useState(false);
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [receiptUrl, setReceiptUrl] = useState("");
 
   useEffect(() => {
     loadUser();
@@ -52,6 +60,35 @@ export default function Wallet() {
     queryFn: () => base44.entities.Transaction.filter({ user_id: user?.email }, "-created_date"),
     enabled: !!user?.email
   });
+
+  const { data: walletRequests = [], refetch: refetchRequests } = useQuery({
+    queryKey: ["wallet-requests", user?.email],
+    queryFn: () => base44.entities.WalletRequest.filter({ user_id: user?.email }, "-created_date"),
+    enabled: !!user?.email
+  });
+
+  const handleReceiptUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (!file.type.includes("pdf") && !file.type.includes("image")) {
+      toast.error("Please upload a PDF or image file");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setReceiptUrl(file_url);
+      toast.success("Receipt uploaded");
+    } catch (error) {
+      toast.error("Failed to upload receipt");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const pendingRequests = walletRequests.filter(r => r.status === "pending");
 
   // Calculate all values from transactions for accuracy
   const totalTopUps = transactions
@@ -83,30 +120,39 @@ export default function Wallet() {
       toast.error("Minimum top-up is AED 50");
       return;
     }
+    if (!receiptUrl) {
+      toast.error("Please upload bank transfer receipt");
+      return;
+    }
 
     setLoading(true);
     try {
-      const newBalance = (user.wallet_balance || 0) + topUpAmount;
-      
-      await base44.auth.updateMe({ wallet_balance: newBalance });
-      
-      await base44.entities.Transaction.create({
+      await base44.entities.WalletRequest.create({
         user_id: user.email,
-        type: "top_up",
+        user_name: user.full_name,
+        request_type: "top_up",
         amount: topUpAmount,
-        balance_after: newBalance,
-        description: "Wallet top-up",
-        status: "completed",
-        payment_method: "credit_card"
+        receipt_url: receiptUrl,
+        request_date: new Date().toISOString(),
+        status: "pending"
       });
 
-      setUser({ ...user, wallet_balance: newBalance });
+      await base44.entities.AdminNotification.create({
+        type: "withdrawal_request",
+        title: "New Top-up Request",
+        message: `${user.full_name || user.email} requested top-up of AED ${topUpAmount}`,
+        reference_id: user.email,
+        reference_type: "WalletRequest"
+      });
+
       refetch();
-      toast.success("Wallet topped up successfully!");
+      refetchRequests();
+      toast.success("Top-up request submitted! Admin will review your receipt.");
       setShowTopUp(false);
       setAmount("");
+      setReceiptUrl("");
     } catch (error) {
-      toast.error("Top-up failed");
+      toast.error("Failed to submit request");
     } finally {
       setLoading(false);
     }
@@ -125,35 +171,30 @@ export default function Wallet() {
 
     setLoading(true);
     try {
-      const newBalance = (user.wallet_balance || 0) - withdrawAmount;
-      
-      await base44.auth.updateMe({ wallet_balance: newBalance });
-      
-      await base44.entities.Transaction.create({
+      await base44.entities.WalletRequest.create({
         user_id: user.email,
-        type: "withdrawal",
+        user_name: user.full_name,
+        request_type: "withdrawal",
         amount: withdrawAmount,
-        balance_after: newBalance,
-        description: "Withdrawal to bank account",
+        request_date: new Date().toISOString(),
         status: "pending"
       });
 
-      // Notify admin
       await base44.entities.AdminNotification.create({
         type: "withdrawal_request",
         title: "New Withdrawal Request",
-        message: `${user.full_name} requested withdrawal of AED ${withdrawAmount}`,
+        message: `${user.full_name || user.email} requested withdrawal of AED ${withdrawAmount}`,
         reference_id: user.email,
-        reference_type: "user"
+        reference_type: "WalletRequest"
       });
 
-      setUser({ ...user, wallet_balance: newBalance });
       refetch();
-      toast.success("Withdrawal request submitted!");
+      refetchRequests();
+      toast.success("Withdrawal request submitted! Admin will process your request.");
       setShowWithdraw(false);
       setAmount("");
     } catch (error) {
-      toast.error("Withdrawal failed");
+      toast.error("Failed to submit request");
     } finally {
       setLoading(false);
     }
@@ -230,6 +271,21 @@ export default function Wallet() {
         </CardContent>
       </Card>
 
+      {/* Pending Requests Alert */}
+      {pendingRequests.length > 0 && (
+        <Card className="mb-8 border-amber-200 bg-amber-50">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <Clock className="w-5 h-5 text-amber-600" />
+              <div>
+                <p className="font-medium text-amber-800">You have {pendingRequests.length} pending request(s)</p>
+                <p className="text-sm text-amber-600">Admin will review and process your requests soon.</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <Card>
@@ -303,6 +359,7 @@ export default function Wallet() {
               <TabsTrigger value="all">All</TabsTrigger>
               <TabsTrigger value="earnings">Earnings</TabsTrigger>
               <TabsTrigger value="spending">Spending</TabsTrigger>
+              <TabsTrigger value="requests">My Requests</TabsTrigger>
             </TabsList>
 
             <TabsContent value="all">
@@ -314,23 +371,45 @@ export default function Wallet() {
             <TabsContent value="spending">
               <TransactionList transactions={spending} />
             </TabsContent>
+            <TabsContent value="requests">
+              <RequestList requests={walletRequests} />
+            </TabsContent>
           </Tabs>
         </CardContent>
       </Card>
 
       {/* Top Up Dialog */}
-      <Dialog open={showTopUp} onOpenChange={setShowTopUp}>
-        <DialogContent>
+      <Dialog open={showTopUp} onOpenChange={(open) => { setShowTopUp(open); if (!open) { setAmount(""); setReceiptUrl(""); } }}>
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Add Funds</DialogTitle>
+            <DialogTitle>Add Funds Request</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-700">
+                <strong>How it works:</strong> Transfer the amount to our bank account, upload the receipt, and our admin will verify and add funds to your wallet.
+              </p>
+            </div>
+
+            <div className="p-4 bg-slate-50 rounded-lg space-y-2">
+              <p className="text-sm font-medium text-slate-700">Bank Details:</p>
+              <p className="text-sm text-slate-600">Bank: Emirates NBD</p>
+              <p className="text-sm text-slate-600">Account: BeyondWalls FZ LLC</p>
+              <p className="text-sm text-slate-600">IBAN: AE12 3456 7890 1234 5678 901</p>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700">Request Date</label>
+              <Input value={format(new Date(), "PPP")} disabled className="mt-1 bg-slate-50" />
+            </div>
+
             <div className="grid grid-cols-5 gap-2">
               {quickAmounts.map((amt) => (
                 <Button
                   key={amt}
                   variant={amount === String(amt) ? "default" : "outline"}
                   onClick={() => setAmount(String(amt))}
+                  size="sm"
                 >
                   {amt}
                 </Button>
@@ -346,27 +425,69 @@ export default function Wallet() {
               />
               <p className="text-sm text-slate-500 mt-1">Minimum: AED 50</p>
             </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700">Bank Transfer Receipt *</label>
+              {receiptUrl ? (
+                <div className="mt-2 p-3 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-emerald-600" />
+                    <span className="text-sm text-emerald-700">Receipt uploaded</span>
+                  </div>
+                  <Button variant="ghost" size="sm" onClick={() => setReceiptUrl("")}>
+                    <XCircle className="w-4 h-4" />
+                  </Button>
+                </div>
+              ) : (
+                <label className="block mt-2">
+                  <div className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all ${
+                    uploading ? "border-violet-300 bg-violet-50" : "border-slate-200 hover:border-violet-300"
+                  }`}>
+                    {uploading ? (
+                      <Loader2 className="w-6 h-6 text-violet-600 animate-spin mx-auto" />
+                    ) : (
+                      <>
+                        <Upload className="w-6 h-6 text-slate-400 mx-auto mb-2" />
+                        <p className="text-sm text-slate-600">Upload PDF or image</p>
+                      </>
+                    )}
+                  </div>
+                  <input type="file" className="hidden" accept=".pdf,image/*" onChange={handleReceiptUpload} />
+                </label>
+              )}
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowTopUp(false)}>Cancel</Button>
             <Button 
               onClick={handleTopUp}
-              disabled={loading || !amount}
+              disabled={loading || !amount || !receiptUrl}
               className="bg-gradient-to-r from-violet-600 to-indigo-600"
             >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : `Add AED ${amount || 0}`}
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : `Submit Request`}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
       {/* Withdraw Dialog */}
-      <Dialog open={showWithdraw} onOpenChange={setShowWithdraw}>
+      <Dialog open={showWithdraw} onOpenChange={(open) => { setShowWithdraw(open); if (!open) setAmount(""); }}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Withdraw Funds</DialogTitle>
+            <DialogTitle>Withdrawal Request</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
+            <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+              <p className="text-sm text-amber-700">
+                <strong>Note:</strong> Your withdrawal request will be reviewed by admin. Funds will be transferred to your registered bank account within 3-5 business days after approval.
+              </p>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700">Request Date</label>
+              <Input value={format(new Date(), "PPP")} disabled className="mt-1 bg-slate-50" />
+            </div>
+
             <p className="text-slate-600">
               Available for withdrawal: <span className="font-bold text-emerald-600">
                 AED {calculatedBalance.toLocaleString()}
@@ -380,17 +501,17 @@ export default function Wallet() {
               className="text-lg"
             />
             <p className="text-sm text-slate-500">
-              Minimum withdrawal: AED 100. Funds will be transferred to your registered bank account within 3-5 business days.
+              Minimum withdrawal: AED 100
             </p>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowWithdraw(false)}>Cancel</Button>
             <Button 
               onClick={handleWithdraw}
-              disabled={loading || !amount}
+              disabled={loading || !amount || parseFloat(amount) > calculatedBalance}
               variant="destructive"
             >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : `Withdraw AED ${amount || 0}`}
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : `Submit Request`}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -447,6 +568,79 @@ function TransactionList({ transactions }) {
           </div>
         </div>
       ))}
+    </div>
+  );
+}
+
+function RequestList({ requests }) {
+  if (requests.length === 0) {
+    return (
+      <div className="text-center py-8">
+        <FileText className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+        <p className="text-slate-500">No requests yet</p>
+      </div>
+    );
+  }
+
+  const statusColors = {
+    pending: "bg-amber-100 text-amber-700",
+    approved: "bg-emerald-100 text-emerald-700",
+    rejected: "bg-rose-100 text-rose-700"
+  };
+
+  const statusIcons = {
+    pending: Clock,
+    approved: CheckCircle2,
+    rejected: XCircle
+  };
+
+  return (
+    <div className="space-y-3">
+      {requests.map((req) => {
+        const StatusIcon = statusIcons[req.status] || Clock;
+        return (
+          <div key={req.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+            <div className="flex items-center gap-4">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                req.request_type === "top_up" ? "bg-emerald-100" : "bg-amber-100"
+              }`}>
+                {req.request_type === "top_up" ? (
+                  <ArrowDownRight className="w-5 h-5 text-emerald-600" />
+                ) : (
+                  <ArrowUpRight className="w-5 h-5 text-amber-600" />
+                )}
+              </div>
+              <div>
+                <p className="font-medium text-slate-900">
+                  {req.request_type === "top_up" ? "Top-up Request" : "Withdrawal Request"}
+                </p>
+                <p className="text-sm text-slate-500">
+                  {req.request_date && format(new Date(req.request_date), "MMM d, yyyy • h:mm a")}
+                </p>
+                {req.admin_notes && (
+                  <p className="text-xs text-slate-400 mt-1">Note: {req.admin_notes}</p>
+                )}
+              </div>
+            </div>
+            <div className="text-right flex items-center gap-3">
+              {req.receipt_url && (
+                <a href={req.receipt_url} target="_blank" rel="noopener noreferrer">
+                  <Button variant="ghost" size="sm">
+                    <ExternalLink className="w-4 h-4" />
+                  </Button>
+                </a>
+              )}
+              <div>
+                <p className="font-semibold text-slate-900">AED {req.amount?.toLocaleString()}</p>
+                <Badge className={`${statusColors[req.status]} text-xs`}>
+                  <StatusIcon className="w-3 h-3 mr-1" />
+                  {req.status}
+                </Badge>
+              </div>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

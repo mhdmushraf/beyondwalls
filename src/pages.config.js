@@ -55,6 +55,7 @@ import AdminDefaultContent from './pages/AdminDefaultContent';
 import AdvertiserHub from './pages/AdvertiserHub';
 import Connect from './pages/Connect';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import AdminWalletRequests from './pages/AdminWalletRequests';
 import __Layout from './Layout.jsx';
 
 
@@ -116,6 +117,7 @@ export const PAGES = {
     "AdvertiserHub": AdvertiserHub,
     "Connect": Connect,
     "AnalyticsDashboard": AnalyticsDashboard,
+    "AdminWalletRequests": AdminWalletRequests,
 }
 
 export const pagesConfig = {
