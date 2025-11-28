@@ -353,13 +353,15 @@ export default function ARFeatureSection() {
               Limited slots available for pilot program partners.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to={createPageUrl("Contact")}>
-                <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8 text-lg">
-                  Join Premium Waitlist
-                  <Crown className="w-5 h-5 ml-2" />
-                </Button>
-              </Link>
-              <Link to={createPageUrl("Services")}>
+              <Button 
+                size="lg" 
+                className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8 text-lg"
+                onClick={() => setShowWaitlistModal(true)}
+              >
+                Join Premium Waitlist
+                <Crown className="w-5 h-5 ml-2" />
+              </Button>
+              <Link to={createPageUrl("ARPremium")}>
                 <Button size="lg" className="h-14 px-8 text-lg border-2 border-white bg-transparent text-white hover:bg-white hover:text-violet-600">
                   Learn More About Premium
                 </Button>
