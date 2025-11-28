@@ -320,7 +320,7 @@ export default function Layout({ children, currentPageName }) {
               <DropdownMenuTrigger asChild>
                 <button className="w-full flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-xl hover:bg-slate-50 transition-colors">
                   <Avatar className="w-9 h-9 sm:w-10 sm:h-10 flex-shrink-0">
-                    <AvatarImage src={user?.avatar_url} />
+                    <AvatarImage src={user?.profile_image || user?.avatar_url} />
                     <AvatarFallback className="bg-gradient-to-br from-violet-500 to-indigo-500 text-white font-medium text-sm">
                       {user?.full_name?.charAt(0) || "U"}
                     </AvatarFallback>

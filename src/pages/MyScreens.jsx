@@ -36,6 +36,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import LiveScreenPreview from "@/components/previews/LiveScreenPreview";
 
 export default function MyScreens() {
   const navigate = useNavigate();
@@ -79,6 +80,32 @@ export default function MyScreens() {
     },
     enabled: venues.length > 0
   });
+
+  const { data: allBookings = [] } = useQuery({
+    queryKey: ["screen-bookings-for-preview"],
+    queryFn: () => base44.entities.AdSlotBooking.filter({ status: "active" }),
+    refetchInterval: 30000 // Refresh every 30 seconds
+  });
+
+  // Get all active ads for a screen
+  const getScreenSlots = (screen) => {
+    const slots = [];
+    
+    // Add owner slots
+    if (screen?.owner_slot_1_url) slots.push({ url: screen.owner_slot_1_url, type: screen.owner_slot_1_type || "image", name: "Owner Ad 1" });
+    if (screen?.owner_slot_2_url) slots.push({ url: screen.owner_slot_2_url, type: screen.owner_slot_2_type || "image", name: "Owner Ad 2" });
+    if (screen?.owner_slot_3_url) slots.push({ url: screen.owner_slot_3_url, type: screen.owner_slot_3_type || "image", name: "Owner Ad 3" });
+    
+    // Add booked ads
+    const screenBookings = allBookings.filter(b => b.screen_id === screen.id);
+    screenBookings.forEach(b => {
+      if (b.creative_url) {
+        slots.push({ url: b.creative_url, type: b.creative_type || "image", name: b.campaign_name || "Ad" });
+      }
+    });
+    
+    return slots;
+  };
 
   const filteredScreens = screens.filter(screen => {
     const venue = venues.find(v => v.id === screen.venue_id);
@@ -197,10 +224,25 @@ export default function MyScreens() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredScreens.map((screen) => {
             const venue = venues.find(v => v.id === screen.venue_id);
+            const screenSlots = getScreenSlots(screen);
             
             return (
               <Card key={screen.id} className="hover:shadow-lg transition-shadow">
                 <CardContent className="p-6">
+                  {/* Live Preview - Always show if there are slots */}
+                  <div className="mb-4">
+                    {screenSlots.length > 0 ? (
+                      <LiveScreenPreview slots={screenSlots} size="small" />
+                    ) : (
+                      <div className="h-32 bg-slate-900 rounded-lg flex items-center justify-center">
+                        <div className="text-center text-slate-500">
+                          <MonitorPlay className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                          <p className="text-xs">No ads configured</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="flex items-start justify-between mb-4">
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                       screen.status === "online" ? "bg-emerald-100" : "bg-slate-100"
@@ -283,9 +325,11 @@ export default function MyScreens() {
                         )}
                       </Button>
                     )}
-                    <Button variant="outline" size="icon">
-                      <Settings className="w-4 h-4" />
-                    </Button>
+                    <Link to={createPageUrl("ManageOwnerSlots") + `?screen_id=${screen.id}`}>
+                      <Button variant="outline" size="icon">
+                        <Settings className="w-4 h-4" />
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>

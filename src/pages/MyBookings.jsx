@@ -23,6 +23,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import InvoiceDownloadButton from "@/components/invoices/InvoiceGenerator";
+import LiveScreenPreview from "@/components/previews/LiveScreenPreview";
 
 export default function MyBookings() {
   const [user, setUser] = useState(null);
@@ -70,23 +71,52 @@ export default function MyBookings() {
     b.campaign_name?.toLowerCase().includes(search.toLowerCase())
   );
 
+  // Get all active ads for a screen to show in preview
+  const getScreenActiveAds = (screenId) => {
+    const screenBookings = bookings.filter(b => b.screen_id === screenId && b.status === "active");
+    const screen = screens.find(s => s.id === screenId);
+    const slots = [];
+    
+    // Add owner slots
+    if (screen?.owner_slot_1_url) slots.push({ url: screen.owner_slot_1_url, type: screen.owner_slot_1_type || "image", name: "Owner Ad 1" });
+    if (screen?.owner_slot_2_url) slots.push({ url: screen.owner_slot_2_url, type: screen.owner_slot_2_type || "image", name: "Owner Ad 2" });
+    if (screen?.owner_slot_3_url) slots.push({ url: screen.owner_slot_3_url, type: screen.owner_slot_3_type || "image", name: "Owner Ad 3" });
+    
+    // Add booked ads
+    screenBookings.forEach(b => {
+      if (b.creative_url) {
+        slots.push({ url: b.creative_url, type: b.creative_type || "image", name: b.campaign_name || "Campaign" });
+      }
+    });
+    
+    return slots;
+  };
+
   const BookingCard = ({ booking }) => {
     const screen = screens.find(s => s.id === booking.screen_id);
     const venue = screen ? venues.find(v => v.id === screen.venue_id) : null;
+    const screenSlots = booking.status === "active" ? getScreenActiveAds(booking.screen_id) : [];
     
     return (
       <Card className="hover:shadow-lg transition-shadow">
         <CardContent className="p-3 sm:p-4">
-          <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
-            <div className="w-full sm:w-16 h-32 sm:h-16 bg-violet-100 rounded-xl flex items-center justify-center flex-shrink-0">
-              {booking.creative_url ? (
-                booking.creative_type === "video" ? (
-                  <video src={booking.creative_url} className="w-full h-full object-cover rounded-xl" />
-                ) : (
-                  <img src={booking.creative_url} className="w-full h-full object-cover rounded-xl" alt="" />
-                )
+          <div className="flex flex-col lg:flex-row items-start gap-3 sm:gap-4">
+            {/* Live Preview for active bookings - show running screen */}
+            <div className="w-full lg:w-48 flex-shrink-0">
+              {booking.status === "active" && screenSlots.length > 0 ? (
+                <LiveScreenPreview slots={screenSlots} size="small" />
               ) : (
-                <Megaphone className="w-8 h-8 text-violet-600" />
+                <div className="h-32 bg-slate-100 rounded-xl flex items-center justify-center overflow-hidden">
+                  {booking.creative_url ? (
+                    booking.creative_type === "video" ? (
+                      <video src={booking.creative_url} className="w-full h-full object-cover" muted />
+                    ) : (
+                      <img src={booking.creative_url} className="w-full h-full object-cover" alt="" />
+                    )
+                  ) : (
+                    <Megaphone className="w-8 h-8 text-violet-400" />
+                  )}
+                </div>
               )}
             </div>
             <div className="flex-1 min-w-0 w-full">
