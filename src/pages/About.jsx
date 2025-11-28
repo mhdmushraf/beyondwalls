@@ -453,12 +453,10 @@ export default function About() {
                 Partner With Us
               </Button>
             </Link>
-            <a href="mailto:partnership@beyondwalls.ae">
-              <Button size="lg" className="border-2 border-amber-400 bg-amber-400/20 text-white hover:bg-amber-400 hover:text-slate-900 h-14 px-8">
-                <TrendingUp className="w-5 h-5 mr-2" />
-                Investor Inquiries
-              </Button>
-            </a>
+            <Button size="lg" className="border-2 border-amber-400 bg-amber-400/20 text-white hover:bg-amber-400 hover:text-slate-900 h-14 px-8" onClick={() => window.location.href = 'mailto:partnership@beyondwalls.ae'}>
+              <TrendingUp className="w-5 h-5 mr-2" />
+              Investor Inquiries
+            </Button>
           </div>
           <p className="text-white/60 mt-8 text-sm">
             Contact: partnership@beyondwalls.ae | +971 55 614 0067

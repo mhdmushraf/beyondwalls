@@ -637,12 +637,10 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <a href="mailto:partnership@beyondwalls.ae">
-                <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600 h-14 px-8">
-                  Investor Inquiries
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </a>
+              <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600 h-14 px-8" onClick={() => window.location.href = 'mailto:partnership@beyondwalls.ae'}>
+                Investor Inquiries
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-100">
