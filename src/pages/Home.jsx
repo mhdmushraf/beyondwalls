@@ -21,7 +21,8 @@ import {
   MapPin,
   Wallet,
   PieChart,
-  Award
+  Award,
+  Rocket
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -672,18 +673,22 @@ export default function Home() {
         </div>
         <div className="absolute top-10 right-10 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
         <div className="absolute bottom-10 left-10 w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl" />
-        
+
         <div className="max-w-4xl mx-auto text-center relative">
+          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+            <Rocket className="w-5 h-5 text-white" />
+            <span className="text-white font-medium">Official Launch: January 2026</span>
+          </div>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to Grow Beyond Traditional Advertising?
           </h2>
           <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
-            Join 100+ businesses already reaching millions of viewers daily across UAE's premium venues
+            Be among the first to access UAE's most innovative DOOH platform. Early adopters get priority access and special rates.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to={createPageUrl("Register")}>
               <Button size="lg" className="w-full sm:w-auto bg-white text-violet-600 hover:bg-slate-100 h-14 px-8 text-lg shadow-xl">
-                Start Advertising Free
+                Get Early Access
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
@@ -693,7 +698,7 @@ export default function Home() {
               </Button>
             </Link>
           </div>
-          <p className="text-white/60 mt-6 text-sm">No credit card required • Setup in 5 minutes</p>
+          <p className="text-white/60 mt-6 text-sm">No credit card required • Setup in 5 minutes • Cancel anytime</p>
         </div>
       </section>
 
