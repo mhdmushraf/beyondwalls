@@ -13,7 +13,10 @@ import {
   Loader2,
   Save,
   X,
-  ExternalLink
+  ExternalLink,
+  Sparkles,
+  Settings,
+  RefreshCw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,6 +39,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function AdminBlog() {
   const [user, setUser] = useState(null);
@@ -44,6 +49,10 @@ export default function AdminBlog() {
   const [editingPost, setEditingPost] = useState(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const [autoGenEnabled, setAutoGenEnabled] = useState(false);
+  const [autoGenCategory, setAutoGenCategory] = useState("industry-news");
+  const [savingSettings, setSavingSettings] = useState(false);
   const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState({
@@ -73,6 +82,23 @@ export default function AdminBlog() {
     queryKey: ["blog-posts"],
     queryFn: () => base44.entities.BlogPost.list("-created_date")
   });
+
+  const { data: blogSettings = [] } = useQuery({
+    queryKey: ["blog-settings"],
+    queryFn: () => base44.entities.PlatformSettings.filter({ setting_key: "auto_blog_generation" })
+  });
+
+  useEffect(() => {
+    if (blogSettings.length > 0) {
+      try {
+        const settings = JSON.parse(blogSettings[0].setting_value);
+        setAutoGenEnabled(settings.enabled || false);
+        setAutoGenCategory(settings.category || "industry-news");
+      } catch (e) {
+        console.log("Failed to parse blog settings");
+      }
+    }
+  }, [blogSettings]);
 
   const filteredPosts = posts.filter(p =>
     p.title?.toLowerCase().includes(search.toLowerCase())
@@ -182,6 +208,106 @@ export default function AdminBlog() {
     "guides": "Guides"
   };
 
+  const handleSaveAutoGenSettings = async () => {
+    setSavingSettings(true);
+    try {
+      const settingsData = JSON.stringify({
+        enabled: autoGenEnabled,
+        category: autoGenCategory,
+        last_updated: new Date().toISOString()
+      });
+
+      if (blogSettings.length > 0) {
+        await base44.entities.PlatformSettings.update(blogSettings[0].id, {
+          setting_value: settingsData
+        });
+      } else {
+        await base44.entities.PlatformSettings.create({
+          setting_key: "auto_blog_generation",
+          setting_value: settingsData,
+          setting_type: "json",
+          description: "Auto blog generation settings"
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: ["blog-settings"] });
+      toast.success("Auto-generation settings saved");
+    } catch (error) {
+      toast.error("Failed to save settings");
+    }
+    setSavingSettings(false);
+  };
+
+  const generateAIBlog = async () => {
+    setGenerating(true);
+    try {
+      const topics = {
+        "industry-news": "latest trends and news in digital out-of-home (DOOH) advertising, programmatic advertising, or digital signage industry in UAE and globally",
+        "tips": "practical tips for businesses to maximize their DOOH advertising ROI, best practices for screen advertising, or venue marketing strategies",
+        "case-studies": "a fictional but realistic case study of a business that successfully used DOOH advertising to grow their brand awareness or sales in UAE",
+        "product-updates": "new features and improvements in digital advertising platforms, screen technology advancements, or audience measurement innovations",
+        "guides": "comprehensive guide on topics like 'How to Choose the Right Venues for Your Ad Campaign', 'Understanding DOOH Metrics', or 'Creating Effective Digital Signage Content'"
+      };
+
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt: `You are a professional content writer for BeyondWalls, UAE's leading DOOH (Digital Out-of-Home) advertising platform. 
+
+Write a high-quality, engaging blog post about ${topics[autoGenCategory]}.
+
+The blog should:
+- Be informative and valuable for business owners and marketers
+- Include relevant statistics and insights
+- Be optimized for SEO with relevant keywords
+- Have a professional yet approachable tone
+- Be relevant to the UAE market when applicable
+- Be approximately 800-1200 words
+
+Generate a complete blog post with title, excerpt, and content.`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            title: { type: "string", description: "Catchy, SEO-friendly title (max 60 chars)" },
+            excerpt: { type: "string", description: "Brief summary for preview (max 160 chars)" },
+            content: { type: "string", description: "Full blog content in markdown format" },
+            tags: { type: "array", items: { type: "string" }, description: "3-5 relevant tags" }
+          }
+        }
+      });
+
+      // Generate cover image
+      const imagePrompt = `Professional blog header image for article titled "${response.title}". Modern, corporate style with violet/indigo color scheme. Digital advertising, technology, business theme. Clean, minimalist design suitable for a tech company blog.`;
+      
+      let coverImage = "";
+      try {
+        const { url } = await base44.integrations.Core.GenerateImage({ prompt: imagePrompt });
+        coverImage = url;
+      } catch (e) {
+        console.log("Image generation failed, continuing without image");
+      }
+
+      const postData = {
+        title: response.title,
+        excerpt: response.excerpt,
+        content: response.content,
+        cover_image: coverImage,
+        category: autoGenCategory,
+        tags: response.tags || [],
+        slug: generateSlug(response.title),
+        author_id: user.email,
+        author_name: "BeyondWalls Team",
+        read_time: Math.ceil(response.content.split(" ").length / 200),
+        status: "draft"
+      };
+
+      await base44.entities.BlogPost.create(postData);
+      queryClient.invalidateQueries({ queryKey: ["blog-posts"] });
+      toast.success("AI blog post generated! Review and publish when ready.");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to generate blog post");
+    }
+    setGenerating(false);
+  };
+
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-8">
@@ -189,25 +315,105 @@ export default function AdminBlog() {
           <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Blog Management</h1>
           <p className="text-slate-500">Create and manage blog posts for the public website</p>
         </div>
-        <Button onClick={handleNewPost} className="bg-violet-600 hover:bg-violet-700">
-          <Plus className="w-4 h-4 mr-2" />
-          New Post
-        </Button>
-      </div>
-
-      <div className="mb-6">
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <Input
-            placeholder="Search posts..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-10"
-          />
+        <div className="flex gap-2">
+          <Button onClick={generateAIBlog} variant="outline" disabled={generating}>
+            {generating ? (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              <Sparkles className="w-4 h-4 mr-2" />
+            )}
+            Generate with AI
+          </Button>
+          <Button onClick={handleNewPost} className="bg-violet-600 hover:bg-violet-700">
+            <Plus className="w-4 h-4 mr-2" />
+            New Post
+          </Button>
         </div>
       </div>
 
-      <div className="grid gap-4">
+      <Tabs defaultValue="posts" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="posts">Blog Posts</TabsTrigger>
+          <TabsTrigger value="settings" className="flex items-center gap-2">
+            <Settings className="w-4 h-4" />
+            Auto-Generation Settings
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="settings">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-violet-600" />
+                Automatic Blog Generation
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                <div>
+                  <p className="font-medium text-slate-900">Enable Daily Auto-Generation</p>
+                  <p className="text-sm text-slate-500">
+                    AI will automatically create a new blog post draft every day
+                  </p>
+                </div>
+                <Switch
+                  checked={autoGenEnabled}
+                  onCheckedChange={setAutoGenEnabled}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Default Category for Auto-Generated Posts</Label>
+                <Select value={autoGenCategory} onValueChange={setAutoGenCategory}>
+                  <SelectTrigger className="w-full max-w-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="industry-news">Industry News</SelectItem>
+                    <SelectItem value="tips">Tips & Tricks</SelectItem>
+                    <SelectItem value="case-studies">Case Studies</SelectItem>
+                    <SelectItem value="product-updates">Product Updates</SelectItem>
+                    <SelectItem value="guides">Guides</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="bg-violet-50 border border-violet-200 rounded-xl p-4">
+                <p className="text-sm text-violet-800">
+                  <strong>Note:</strong> Auto-generated posts are saved as drafts. You'll need to review and publish them manually to ensure quality. Posts are generated once daily and include AI-generated cover images.
+                </p>
+              </div>
+
+              <Button 
+                onClick={handleSaveAutoGenSettings} 
+                disabled={savingSettings}
+                className="bg-violet-600 hover:bg-violet-700"
+              >
+                {savingSettings ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4 mr-2" />
+                )}
+                Save Settings
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="posts">
+          <div className="mb-6">
+            <div className="relative max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Input
+                placeholder="Search posts..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-4">
         {isLoading ? (
           <Card>
             <CardContent className="py-12 text-center">
@@ -265,7 +471,9 @@ export default function AdminBlog() {
             </Card>
           ))
         )}
-      </div>
+          </div>
+        </TabsContent>
+      </Tabs>
 
       {/* Blog Editor Dialog */}
       <Dialog open={showEditor} onOpenChange={setShowEditor}>
