@@ -22,7 +22,8 @@ import {
   CreditCard,
   PiggyBank,
   TrendingUp,
-  BarChart3
+  BarChart3,
+  Zap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -98,6 +99,7 @@ export default function Layout({ children, currentPageName }) {
                       { name: "Book Ad Slot", icon: Plus, page: "BookSlot" },
                       { name: "Favorites", icon: MonitorPlay, page: "FavoriteScreens" },
                       { name: "My Bookings", icon: Megaphone, page: "MyBookings" },
+            { name: "Auto-Booking", icon: Zap, page: "AutoBooking" },
                       { name: "Wallet", icon: Wallet, page: "Wallet" },
                       { name: "My Venues", icon: Building2, page: "MyVenues" },
                       { name: "My Screens", icon: MonitorPlay, page: "MyScreens" },

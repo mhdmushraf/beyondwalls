@@ -57,6 +57,7 @@ import Connect from './pages/Connect';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import AdminWalletRequests from './pages/AdminWalletRequests';
 import NotFound from './pages/NotFound';
+import AutoBooking from './pages/AutoBooking';
 import __Layout from './Layout.jsx';
 
 
@@ -120,6 +121,7 @@ export const PAGES = {
     "AnalyticsDashboard": AnalyticsDashboard,
     "AdminWalletRequests": AdminWalletRequests,
     "NotFound": NotFound,
+    "AutoBooking": AutoBooking,
 }
 
 export const pagesConfig = {
