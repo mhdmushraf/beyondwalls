@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import DocumentPreview from "@/components/DocumentPreview";
 
 export default function AdminUserApprovals() {
   const [selectedUser, setSelectedUser] = useState(null);
@@ -257,27 +258,14 @@ export default function AdminUserApprovals() {
                 </div>
               </div>
               
-              {selectedUser.emirates_id_url && (
-                <div>
-                  <p className="text-sm text-slate-500 mb-2">Emirates ID</p>
-                  <a href={selectedUser.emirates_id_url} target="_blank" rel="noopener noreferrer" 
-                     className="text-violet-600 hover:underline flex items-center gap-2">
-                    <FileText className="w-4 h-4" />
-                    View Document
-                  </a>
-                </div>
-              )}
-              
-              {selectedUser.trade_license_url && (
-                <div>
-                  <p className="text-sm text-slate-500 mb-2">Trade License</p>
-                  <a href={selectedUser.trade_license_url} target="_blank" rel="noopener noreferrer"
-                     className="text-violet-600 hover:underline flex items-center gap-2">
-                    <FileText className="w-4 h-4" />
-                    View Document
-                  </a>
-                </div>
-              )}
+              <div className="flex flex-wrap gap-3">
+                {selectedUser.emirates_id_url && (
+                  <DocumentPreview url={selectedUser.emirates_id_url} title="Emirates ID" />
+                )}
+                {selectedUser.trade_license_url && (
+                  <DocumentPreview url={selectedUser.trade_license_url} title="Trade License" />
+                )}
+              </div>
             </div>
           )}
           <DialogFooter>
