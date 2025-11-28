@@ -75,10 +75,15 @@ export default function AnalyticsDashboard() {
 
   const loadUser = async () => {
     try {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) {
+        base44.auth.redirectToLogin(createPageUrl("AnalyticsDashboard"));
+        return;
+      }
       const userData = await base44.auth.me();
       setUser(userData);
     } catch (e) {
-      base44.auth.redirectToLogin();
+      base44.auth.redirectToLogin(createPageUrl("AnalyticsDashboard"));
     }
   };
 
