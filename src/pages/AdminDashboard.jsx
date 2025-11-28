@@ -15,15 +15,19 @@ import {
   Clock,
   CheckCircle2,
   XCircle,
-  Activity
+  Activity,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import StatsCard from "@/components/dashboard/StatsCard";
+import AdminOnboarding from "@/components/admin/AdminOnboarding";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
+  const [showOnboarding, setShowOnboarding] = useState(true);
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     loadUser();
@@ -47,10 +51,22 @@ export default function AdminDashboard() {
       }
       
       setUser(userData);
+      setAuthChecked(true);
     } catch (e) {
       base44.auth.redirectToLogin(createPageUrl("AdminDashboard"));
     }
   };
+
+  if (!authChecked) {
+    return (
+      <div className="p-6 lg:p-8 flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <Loader2 className="w-10 h-10 text-violet-600 animate-spin mx-auto mb-4" />
+          <p className="text-slate-500">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   const { data: users = [] } = useQuery({
     queryKey: ["all-users"],
@@ -93,6 +109,11 @@ export default function AdminDashboard() {
         </h1>
         <p className="text-slate-500 mt-1">Overview of platform activity</p>
       </div>
+
+      {/* Onboarding Checklist */}
+      {showOnboarding && (
+        <AdminOnboarding onDismiss={() => setShowOnboarding(false)} />
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">

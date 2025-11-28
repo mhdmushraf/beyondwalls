@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import AdminNotifications from "@/components/admin/AdminNotifications";
 
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
@@ -198,9 +199,13 @@ export default function Layout({ children, currentPageName }) {
             BeyondWalls
           </span>
         </div>
-        <Button variant="ghost" size="icon">
-          <Bell className="w-5 h-5 text-slate-600" />
-        </Button>
+        {(user?.user_role === "admin" || user?.role === "admin") ? (
+          <AdminNotifications />
+        ) : (
+          <Button variant="ghost" size="icon">
+            <Bell className="w-5 h-5 text-slate-600" />
+          </Button>
+        )}
       </div>
 
       {/* Mobile Sidebar Overlay */}
