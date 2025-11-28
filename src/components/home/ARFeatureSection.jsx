@@ -270,8 +270,8 @@ export default function ARFeatureSection() {
             {arFeatures.map((feature, i) => (
               <Card key={i} className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm hover:border-violet-500/50 transition-all group">
                 <CardContent className="p-6">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-${feature.color}-500/20 group-hover:scale-110 transition-transform`}>
-                    <feature.icon className={`w-6 h-6 text-${feature.color}-400`} />
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-violet-500/20 group-hover:scale-110 transition-transform">
+                    <feature.icon className="w-6 h-6 text-violet-400" />
                   </div>
                   <h4 className="font-semibold text-white mb-2">{feature.title}</h4>
                   <p className="text-slate-400 text-sm">{feature.description}</p>
