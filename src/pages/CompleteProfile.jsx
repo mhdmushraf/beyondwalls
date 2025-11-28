@@ -37,6 +37,7 @@ export default function CompleteProfile() {
   const [step, setStep] = useState(1);
   
   const [formData, setFormData] = useState({
+    full_name: "",
     phone: "",
     address: "",
     avatar_url: "",
@@ -100,6 +101,7 @@ export default function CompleteProfile() {
 
     try {
       const updateData = {
+        full_name: formData.full_name,
         phone: formData.phone,
         address: formData.address,
         avatar_url: formData.avatar_url,
@@ -153,7 +155,7 @@ export default function CompleteProfile() {
   };
 
   const canProceed = () => {
-    if (step === 1) return formData.avatar_url && formData.phone && isValidPhone();
+    if (step === 1) return formData.full_name && formData.avatar_url && formData.phone && isValidPhone();
     if (step === 2 && accountType === "company") return formData.company_name;
     if (step === 2 && accountType === "individual") return formData.emirates_id_front_url;
     if (step === 3 && accountType === "company") return formData.emirates_id_front_url;
@@ -431,6 +433,21 @@ export default function CompleteProfile() {
                         </div>
 
                         <div className="space-y-4">
+                          {/* Full Name Field */}
+                          <div className="space-y-2">
+                            <Label htmlFor="full_name">Full Name <span className="text-rose-500">*</span></Label>
+                            <div className="relative">
+                              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                              <Input
+                                id="full_name"
+                                placeholder="Enter your full name"
+                                value={formData.full_name}
+                                onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                                className="h-12 text-lg pl-10"
+                              />
+                            </div>
+                          </div>
+
                           <UAEPhoneInput
                             value={formData.phone}
                             onChange={(phone) => setFormData({ ...formData, phone })}
