@@ -14,7 +14,8 @@ import {
   SlidersHorizontal,
   X,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Check
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -66,7 +67,10 @@ export default function AdvancedScreenSearch({
   favorites,
   onSelectScreen,
   onToggleFavorite,
-  selectedScreen
+  selectedScreen,
+  multiSelect = false,
+  selectedScreens = [],
+  onToggleScreen
 }) {
   const [viewMode, setViewMode] = useState("list");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
@@ -197,20 +201,45 @@ export default function AdvancedScreenSearch({
   // Map center - UAE
   const mapCenter = [25.2048, 55.2708];
 
+  const isScreenSelected = (screenId) => {
+    if (multiSelect) {
+      return selectedScreens.some(s => s.id === screenId);
+    }
+    return selectedScreen?.id === screenId;
+  };
+
+  const handleScreenClick = (screen) => {
+    if (multiSelect && onToggleScreen) {
+      onToggleScreen(screen);
+    } else {
+      onSelectScreen(screen);
+    }
+  };
+
   const ScreenCard = ({ screen }) => {
     const venue = venues.find(v => v.id === screen.venue_id);
     const availability = getScreenAvailability(screen.id);
+    const selected = isScreenSelected(screen.id);
     
     return (
       <Card 
         className={`cursor-pointer transition-all hover:shadow-lg active:scale-[0.98] ${
-          selectedScreen?.id === screen.id ? "ring-2 ring-violet-600" : ""
+          selected ? "ring-2 ring-violet-600 bg-violet-50" : ""
         }`}
-        onClick={() => onSelectScreen(screen)}
+        onClick={() => handleScreenClick(screen)}
       >
         <CardContent className="p-3 sm:p-4">
           <div className="flex items-start gap-2 sm:gap-3">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-violet-100 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+            {multiSelect && (
+              <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 mt-1 ${
+                selected ? "bg-violet-600 border-violet-600" : "border-slate-300"
+              }`}>
+                {selected && <Check className="w-3 h-3 text-white" />}
+              </div>
+            )}
+            <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0 ${
+              selected ? "bg-violet-200" : "bg-violet-100"
+            }`}>
               <MonitorPlay className="w-5 h-5 sm:w-6 sm:h-6 text-violet-600" />
             </div>
             <div className="flex-1 min-w-0">
@@ -510,6 +539,11 @@ export default function AdvancedScreenSearch({
 
         <div className="ml-auto text-xs sm:text-sm text-slate-500 whitespace-nowrap">
           {filteredScreens.length} screens
+          {multiSelect && selectedScreens.length > 0 && (
+            <span className="ml-2 text-violet-600 font-medium">
+              ({selectedScreens.length} selected)
+            </span>
+          )}
         </div>
       </div>
 
@@ -567,10 +601,10 @@ export default function AdvancedScreenSearch({
                           </div>
                           <Button
                             size="sm"
-                            className="w-full mt-2 bg-violet-600"
-                            onClick={() => onSelectScreen(screen)}
+                            className={`w-full mt-2 ${isScreenSelected(screen.id) ? "bg-emerald-600" : "bg-violet-600"}`}
+                            onClick={() => handleScreenClick(screen)}
                           >
-                            Select Screen
+                            {isScreenSelected(screen.id) ? "Selected ✓" : "Select Screen"}
                           </Button>
                         </div>
                       </Popup>
