@@ -53,8 +53,8 @@ export default function Contact() {
     {
       icon: Mail,
       title: "Email",
-      value: "info@beyondwalls.ae",
-      link: "mailto:info@beyondwalls.ae"
+      value: "hello@beyondwalls.ae",
+      link: "mailto:hello@beyondwalls.ae"
     },
     {
       icon: Phone,

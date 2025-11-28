@@ -224,7 +224,7 @@ export default function HelpCenter() {
               </Button>
             </Link>
             <Button size="lg" variant="outline" className="text-slate-900">
-              <a href="mailto:info@beyondwalls.ae">Email: info@beyondwalls.ae</a>
+              <a href="mailto:support@beyondwalls.ae">Email: support@beyondwalls.ae</a>
             </Button>
           </div>
         </div>
