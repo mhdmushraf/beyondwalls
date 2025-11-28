@@ -283,13 +283,6 @@ export default function About() {
               </div>
             </div>
             <div className="bg-gradient-to-br from-violet-100 to-indigo-100 rounded-2xl p-8">
-              <div className="flex items-center justify-center mb-6">
-                <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6925a3bad1f286c6fe7d00ba/700c3204b_image.png" 
-                  alt="in5 Dubai" 
-                  className="h-16 object-contain"
-                />
-              </div>
               <h3 className="text-xl font-bold text-slate-900 mb-4 text-center">Platform Highlights</h3>
               <div className="space-y-4">
                 <div className="bg-white rounded-xl p-4">
