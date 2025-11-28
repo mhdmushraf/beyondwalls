@@ -70,12 +70,10 @@ export default function CompleteProfile() {
   };
 
   const redirectToDashboard = (role) => {
-    if (role === "venue_owner") {
-      navigate(createPageUrl("VenueDashboard"));
-    } else if (role === "admin") {
+    if (role === "admin") {
       navigate(createPageUrl("AdminDashboard"));
     } else {
-      navigate(createPageUrl("AdvertiserDashboard"));
+      navigate(createPageUrl("Dashboard"));
     }
   };
 
