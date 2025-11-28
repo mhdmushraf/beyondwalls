@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
@@ -20,6 +20,7 @@ import {
   BarChart3,
   ArrowRight
 } from "lucide-react";
+import InvestorInquiryModal from "@/components/InvestorInquiryModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +30,8 @@ import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
 import PublicAIChatWidget from "@/components/chat/PublicAIChatWidget";
 
 export default function About() {
+  const [showInvestorModal, setShowInvestorModal] = useState(false);
+  
   const values = [
     {
       icon: Target,
@@ -453,7 +456,7 @@ export default function About() {
                 Partner With Us
               </Button>
             </Link>
-            <Button size="lg" className="border-2 border-amber-400 bg-amber-400/20 text-white hover:bg-amber-400 hover:text-slate-900 h-14 px-8" onClick={() => window.location.href = 'mailto:partnership@beyondwalls.ae'}>
+            <Button size="lg" className="border-2 border-amber-400 bg-amber-400/20 text-white hover:bg-amber-400 hover:text-slate-900 h-14 px-8" onClick={() => setShowInvestorModal(true)}>
               <TrendingUp className="w-5 h-5 mr-2" />
               Investor Inquiries
             </Button>
@@ -466,6 +469,7 @@ export default function About() {
 
       <PublicFooter />
       <PublicAIChatWidget />
+      <InvestorInquiryModal open={showInvestorModal} onClose={() => setShowInvestorModal(false)} />
     </div>
   );
 }

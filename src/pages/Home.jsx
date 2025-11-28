@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
@@ -24,6 +24,7 @@ import {
   Award,
   Rocket
 } from "lucide-react";
+import InvestorInquiryModal from "@/components/InvestorInquiryModal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -33,6 +34,8 @@ import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
 import PublicAIChatWidget from "@/components/chat/PublicAIChatWidget";
 
 export default function Home() {
+  const [showInvestorModal, setShowInvestorModal] = useState(false);
+  
   const stats = [
     { value: "500+", label: "Active Screens", icon: MonitorPlay },
     { value: "1M+", label: "Daily Impressions", icon: TrendingUp },
@@ -637,7 +640,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600 h-14 px-8" onClick={() => window.location.href = 'mailto:partnership@beyondwalls.ae'}>
+              <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600 h-14 px-8" onClick={() => setShowInvestorModal(true)}>
                 Investor Inquiries
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
@@ -702,6 +705,7 @@ export default function Home() {
 
       <PublicFooter />
       <PublicAIChatWidget />
+      <InvestorInquiryModal open={showInvestorModal} onClose={() => setShowInvestorModal(false)} />
     </div>
   );
 }
