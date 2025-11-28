@@ -45,10 +45,11 @@ export default function About() {
   ];
 
   const milestones = [
-    { year: "2024", title: "Founded", description: "BeyondWalls was born with a vision to revolutionize DOOH advertising" },
-    { year: "2024", title: "in5 Dubai", description: "Joined in5 Dubai incubator program under TECOM Group" },
-    { year: "2025", title: "Soft Launch", description: "Attracted 8 venue partners and 25+ advertisers with $25,000+ in pending bookings" },
-    { year: "2025", title: "Global Recognition Award", description: "Received 2025 Global Recognition Award for innovation in DOOH sector" }
+    { year: "Jun 2025", title: "The Idea is Born", description: "BeyondWalls concept was created with a vision to revolutionize DOOH advertising in the UAE" },
+    { year: "Nov 2025", title: "Global Recognition Award", description: "Received 2025 Global Recognition Award for innovation in the DOOH advertising sector" },
+    { year: "Dec 2025", title: "in5 Dubai Incubator", description: "Officially incorporated under in5 Dubai incubator program, part of TECOM Group ecosystem" },
+    { year: "Dec 2025", title: "Soft Launch", description: "Platform soft launch with 8+ venue partners and 25+ advertisers on waitlist" },
+    { year: "Jan 2026", title: "Official Launch", description: "Grand official launch of BeyondWalls platform across UAE" }
   ];
 
   const team = [
@@ -85,7 +86,7 @@ export default function About() {
                 Democratizing Outdoor Advertising
               </h2>
               <p className="text-slate-600 mb-4">
-                BeyondWalls was founded with a simple belief: every business deserves access to 
+                BeyondWalls was born in June 2025 with a simple belief: every business deserves access to 
                 premium advertising spaces, and every venue should be able to monetize their screens effortlessly.
               </p>
               <p className="text-slate-600 mb-6">
@@ -166,17 +167,20 @@ export default function About() {
       <section className="py-20 px-6 bg-amber-50">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row items-center gap-8">
-            <div className="w-32 h-32 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center flex-shrink-0">
+            <div className="w-32 h-32 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-xl shadow-amber-500/30">
               <Trophy className="w-16 h-16 text-white" />
             </div>
             <div>
-              <Badge className="bg-amber-200 text-amber-800 mb-4">2025 Global Recognition Award</Badge>
+              <Badge className="bg-amber-200 text-amber-800 mb-4">November 2025 • Global Recognition Award</Badge>
               <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
                 Award-Winning Innovation in DOOH Advertising
               </h2>
+              <p className="text-slate-600 mb-4">
+                In November 2025, BeyondWalls received the prestigious Global Recognition Award for its innovative 
+                approach to restructuring the out-of-home advertising sector through technology and an accessible 
+                business model.
+              </p>
               <p className="text-slate-600">
-                Beyond Walls has received a 2025 Global Recognition Award for its approach to restructuring 
-                the out-of-home advertising sector through technology and an accessible business model. 
                 Our platform eliminates obstacles that have historically prevented small and medium-sized 
                 businesses from participating in physical advertising by reducing campaign launch times 
                 from weeks to under 30 minutes and cutting entry costs by more than 90%.
@@ -191,26 +195,40 @@ export default function About() {
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <Badge className="bg-violet-100 text-violet-600 mb-4">Backed by in5 Dubai</Badge>
+              <div className="flex items-center gap-4 mb-6">
+                <img 
+                  src="https://in5.ae/wp-content/uploads/2021/04/in5-logo.png" 
+                  alt="in5 Dubai Logo" 
+                  className="h-12 object-contain"
+                />
+                <Badge className="bg-violet-100 text-violet-600">Official Partner</Badge>
+              </div>
               <h2 className="text-3xl font-bold text-slate-900 mb-6">
-                Part of Dubai's Premier Innovation Hub
+                Incubated by in5 Dubai
               </h2>
               <p className="text-slate-600 mb-4">
-                BeyondWalls is proud to be an in5 Dubai incubator startup, part of the TECOM Group ecosystem. 
-                in5 is Dubai's leading innovation hub that enables tech, media, and design entrepreneurs 
-                to transform their ideas into successful businesses.
+                As of December 2025, BeyondWalls is officially incorporated under the in5 Dubai incubator program, 
+                part of the prestigious TECOM Group ecosystem. in5 is Dubai's leading innovation hub that enables 
+                tech, media, and design entrepreneurs to transform their ideas into successful businesses.
               </p>
               <p className="text-slate-600 mb-6">
-                Being part of in5 gives us access to world-class facilities, mentorship, and a vibrant 
-                community of innovators in Dubai Internet City - the region's largest technology hub.
+                Being part of in5 gives us access to world-class facilities, mentorship from industry experts, 
+                and a vibrant community of innovators in Dubai Internet City - the region's largest technology hub.
               </p>
               <div className="flex items-center gap-3 text-slate-700">
                 <MapPin className="w-5 h-5 text-violet-600" />
-                <span>in5 - Dubai Internet City - Dubai - United Arab Emirates</span>
+                <span>in5 Tech - Dubai Internet City - Dubai - UAE</span>
               </div>
             </div>
             <div className="bg-gradient-to-br from-violet-100 to-indigo-100 rounded-2xl p-8">
-              <h3 className="text-xl font-bold text-slate-900 mb-4">Platform Highlights</h3>
+              <div className="flex items-center justify-center mb-6">
+                <img 
+                  src="https://in5.ae/wp-content/uploads/2021/04/in5-logo.png" 
+                  alt="in5 Dubai" 
+                  className="h-16 object-contain opacity-80"
+                />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-4 text-center">Platform Highlights</h3>
               <div className="space-y-4">
                 <div className="bg-white rounded-xl p-4">
                   <p className="text-2xl font-bold text-violet-600">8+</p>
