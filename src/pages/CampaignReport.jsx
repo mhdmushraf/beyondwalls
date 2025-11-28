@@ -14,7 +14,12 @@ import {
   Clock,
   DollarSign,
   Target,
-  Users
+  Users,
+  MapPin,
+  Phone,
+  Globe,
+  QrCode,
+  Share2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -136,8 +141,16 @@ export default function CampaignReport() {
 
   // Cost per thousand views (CPM style for DOOH)
   const costPerThousandViews = totalScreenViews > 0 ? ((booking?.total_cost || 0) / totalScreenViews * 1000).toFixed(2) : 0;
-  // Cost per visitor reached
+  // Cost per visitor reached (CPV)
   const costPerVisitor = totalFootfall > 0 ? ((booking?.total_cost || 0) / totalFootfall).toFixed(3) : 0;
+  
+  // Conversion tracking estimates
+  const estimatedWebsiteVisits = Math.floor(totalScreenViews * 0.02); // 2% conversion estimate
+  const estimatedCalls = Math.floor(totalScreenViews * 0.005); // 0.5% call estimate
+  const estimatedQRScans = Math.floor(totalScreenViews * 0.01); // 1% QR scan estimate
+  const totalConversions = estimatedWebsiteVisits + estimatedCalls + estimatedQRScans;
+  const conversionRate = totalScreenViews > 0 ? ((totalConversions / totalScreenViews) * 100).toFixed(2) : 0;
+  const costPerConversion = totalConversions > 0 ? ((booking?.total_cost || 0) / totalConversions).toFixed(2) : 0;
 
   if (!booking) {
     return (
@@ -260,11 +273,72 @@ export default function CampaignReport() {
         </Card>
       </div>
 
+      {/* Extended Metrics */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <Card className="bg-gradient-to-br from-violet-50 to-indigo-50 border-violet-200">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-violet-600">Est. Reach</p>
+                <p className="text-2xl font-bold text-violet-900">{totalFootfall.toLocaleString()}</p>
+                <p className="text-xs text-violet-500 mt-1">Based on venue footfall</p>
+              </div>
+              <div className="w-10 h-10 bg-violet-200 rounded-xl flex items-center justify-center">
+                <Target className="w-5 h-5 text-violet-700" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-emerald-600">Cost Per Visitor</p>
+                <p className="text-2xl font-bold text-emerald-900">AED {costPerVisitor}</p>
+                <p className="text-xs text-emerald-500 mt-1">Per person reached</p>
+              </div>
+              <div className="w-10 h-10 bg-emerald-200 rounded-xl flex items-center justify-center">
+                <DollarSign className="w-5 h-5 text-emerald-700" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-amber-600">Conversion Rate</p>
+                <p className="text-2xl font-bold text-amber-900">{conversionRate}%</p>
+                <p className="text-xs text-amber-500 mt-1">Est. offline actions</p>
+              </div>
+              <div className="w-10 h-10 bg-amber-200 rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-amber-700" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-gradient-to-br from-rose-50 to-pink-50 border-rose-200">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-rose-600">Cost/Conversion</p>
+                <p className="text-2xl font-bold text-rose-900">AED {costPerConversion}</p>
+                <p className="text-xs text-rose-500 mt-1">Per action taken</p>
+              </div>
+              <div className="w-10 h-10 bg-rose-200 rounded-xl flex items-center justify-center">
+                <Share2 className="w-5 h-5 text-rose-700" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       <Tabs defaultValue="overview" className="space-y-6">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="timing">Timing Analysis</TabsTrigger>
           <TabsTrigger value="audience">Audience</TabsTrigger>
+          <TabsTrigger value="conversions">Conversions</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview">
@@ -396,6 +470,112 @@ export default function CampaignReport() {
                 <div className="p-4 bg-slate-50 rounded-xl">
                   <p className="text-sm text-slate-500">Operating Hours</p>
                   <p className="font-semibold">{venue?.operating_hours || "N/A"}</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="conversions">
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Estimated Offline Conversions</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="p-4 bg-blue-50 rounded-xl flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <Globe className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-900">Website Visits</p>
+                      <p className="text-xs text-slate-500">From screen exposure</p>
+                    </div>
+                  </div>
+                  <p className="text-2xl font-bold text-blue-600">{estimatedWebsiteVisits}</p>
+                </div>
+                
+                <div className="p-4 bg-emerald-50 rounded-xl flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                      <Phone className="w-5 h-5 text-emerald-600" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-900">Phone Calls</p>
+                      <p className="text-xs text-slate-500">Inquiries generated</p>
+                    </div>
+                  </div>
+                  <p className="text-2xl font-bold text-emerald-600">{estimatedCalls}</p>
+                </div>
+                
+                <div className="p-4 bg-violet-50 rounded-xl flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center">
+                      <QrCode className="w-5 h-5 text-violet-600" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-900">QR Code Scans</p>
+                      <p className="text-xs text-slate-500">Direct interactions</p>
+                    </div>
+                  </div>
+                  <p className="text-2xl font-bold text-violet-600">{estimatedQRScans}</p>
+                </div>
+
+                <div className="p-4 bg-slate-900 rounded-xl">
+                  <div className="flex items-center justify-between text-white">
+                    <span className="font-medium">Total Conversions</span>
+                    <span className="text-2xl font-bold">{totalConversions}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Location Performance</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="p-4 bg-slate-50 rounded-xl">
+                  <div className="flex items-center gap-3 mb-3">
+                    <MapPin className="w-5 h-5 text-violet-600" />
+                    <p className="font-semibold">Venue Details</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <p className="text-slate-500">Venue</p>
+                      <p className="font-medium">{venue?.name || "N/A"}</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-500">Type</p>
+                      <p className="font-medium capitalize">{venue?.type || "N/A"}</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-500">Area</p>
+                      <p className="font-medium">{venue?.area || "N/A"}</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-500">City</p>
+                      <p className="font-medium">{venue?.city || "N/A"}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-gradient-to-r from-violet-500 to-indigo-600 rounded-xl text-white">
+                  <p className="text-sm opacity-80 mb-1">Daily Avg. Footfall</p>
+                  <p className="text-3xl font-bold">{venue?.avg_daily_footfall?.toLocaleString() || "N/A"}</p>
+                  <p className="text-xs opacity-70 mt-1">visitors per day</p>
+                </div>
+
+                <div className="p-4 bg-emerald-50 rounded-xl">
+                  <p className="text-sm text-emerald-600 mb-1">Screen Visibility Score</p>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-3 bg-emerald-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${Math.min(viewRate, 100)}%` }} />
+                    </div>
+                    <span className="font-bold text-emerald-700">{viewRate}%</span>
+                  </div>
+                  <p className="text-xs text-emerald-600 mt-1">of visitors viewed your ad</p>
                 </div>
               </CardContent>
             </Card>

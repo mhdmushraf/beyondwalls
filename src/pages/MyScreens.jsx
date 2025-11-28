@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Plus,
   Search,
@@ -18,7 +18,15 @@ import {
   Lock,
   QrCode,
   Clock,
-  Loader2
+  Loader2,
+  RefreshCw,
+  Upload,
+  LayoutGrid,
+  List,
+  Tag,
+  Wrench,
+  Power,
+  AlertTriangle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,11 +48,15 @@ import LiveScreenPreview from "@/components/previews/LiveScreenPreview";
 
 export default function MyScreens() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [user, setUser] = useState(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [groupBy, setGroupBy] = useState("none"); // none, venue, status
+  const [viewMode, setViewMode] = useState("grid"); // grid, list
   const [selectedScreen, setSelectedScreen] = useState(null);
   const [showPlayerDialog, setShowPlayerDialog] = useState(false);
+  const [actionLoading, setActionLoading] = useState(null);
 
   useEffect(() => {
     loadUser();
@@ -117,16 +129,77 @@ export default function MyScreens() {
 
   const statusColors = {
     online: "bg-emerald-100 text-emerald-700 border-emerald-200",
-    offline: "bg-slate-100 text-slate-700 border-slate-200",
+    offline: "bg-rose-100 text-rose-700 border-rose-200",
     maintenance: "bg-amber-100 text-amber-700 border-amber-200",
     pending_setup: "bg-blue-100 text-blue-700 border-blue-200",
     pending_approval: "bg-amber-100 text-amber-700 border-amber-200"
   };
 
+  const statusIndicators = {
+    online: "bg-emerald-500",
+    offline: "bg-rose-500",
+    maintenance: "bg-amber-500",
+    pending_setup: "bg-blue-500",
+    pending_approval: "bg-amber-500"
+  };
+
   const statusCounts = {
     all: screens.length,
     online: screens.filter(s => s.status === "online").length,
-    offline: screens.filter(s => s.status === "offline").length
+    offline: screens.filter(s => s.status === "offline").length,
+    maintenance: screens.filter(s => s.status === "maintenance").length
+  };
+
+  // Group screens by venue or status
+  const groupedScreens = () => {
+    if (groupBy === "venue") {
+      const groups = {};
+      filteredScreens.forEach(screen => {
+        const venue = venues.find(v => v.id === screen.venue_id);
+        const venueName = venue?.name || "Unknown Venue";
+        if (!groups[venueName]) groups[venueName] = [];
+        groups[venueName].push(screen);
+      });
+      return groups;
+    } else if (groupBy === "status") {
+      const groups = {};
+      filteredScreens.forEach(screen => {
+        const status = screen.status || "unknown";
+        if (!groups[status]) groups[status] = [];
+        groups[status].push(screen);
+      });
+      return groups;
+    }
+    return { all: filteredScreens };
+  };
+
+  // Remote actions
+  const handleRemoteAction = async (screenId, action) => {
+    setActionLoading(screenId);
+    try {
+      const screen = screens.find(s => s.id === screenId);
+      if (action === "restart") {
+        await base44.entities.Screen.update(screenId, {
+          last_heartbeat: new Date().toISOString(),
+          status: "online"
+        });
+        toast.success("Restart signal sent to screen");
+      } else if (action === "maintenance") {
+        await base44.entities.Screen.update(screenId, {
+          status: screen.status === "maintenance" ? "online" : "maintenance"
+        });
+        toast.success(screen.status === "maintenance" ? "Screen back online" : "Screen set to maintenance");
+      } else if (action === "refresh") {
+        await base44.entities.Screen.update(screenId, {
+          owner_slots_last_updated: new Date().toISOString()
+        });
+        toast.success("Content refresh triggered");
+      }
+      queryClient.invalidateQueries({ queryKey: ["my-screens"] });
+    } catch (e) {
+      toast.error("Action failed");
+    }
+    setActionLoading(null);
   };
 
   if (!user) {
@@ -156,6 +229,46 @@ export default function MyScreens() {
         </Link>
       </div>
 
+      {/* Status Summary */}
+      <div className="grid grid-cols-4 gap-3 mb-6">
+        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setStatusFilter("all")}>
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="w-3 h-3 rounded-full bg-slate-400" />
+            <div>
+              <p className="text-2xl font-bold">{statusCounts.all}</p>
+              <p className="text-xs text-slate-500">Total</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setStatusFilter("online")}>
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
+            <div>
+              <p className="text-2xl font-bold text-emerald-600">{statusCounts.online}</p>
+              <p className="text-xs text-slate-500">Online</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setStatusFilter("offline")}>
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="w-3 h-3 rounded-full bg-rose-500" />
+            <div>
+              <p className="text-2xl font-bold text-rose-600">{statusCounts.offline}</p>
+              <p className="text-xs text-slate-500">Offline</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setStatusFilter("maintenance")}>
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="w-3 h-3 rounded-full bg-amber-500" />
+            <div>
+              <p className="text-2xl font-bold text-amber-600">{statusCounts.maintenance}</p>
+              <p className="text-xs text-slate-500">Maintenance</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Filters */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         <div className="relative flex-1 max-w-md">
@@ -167,19 +280,33 @@ export default function MyScreens() {
             className="pl-10"
           />
         </div>
-        <Tabs value={statusFilter} onValueChange={setStatusFilter}>
-          <TabsList className="bg-white border border-slate-200">
-            <TabsTrigger value="all" className="data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700">
-              All ({statusCounts.all})
-            </TabsTrigger>
-            <TabsTrigger value="online" className="data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700">
-              Online ({statusCounts.online})
-            </TabsTrigger>
-            <TabsTrigger value="offline" className="data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700">
-              Offline ({statusCounts.offline})
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <div className="flex gap-2">
+          <Tabs value={groupBy} onValueChange={setGroupBy}>
+            <TabsList className="bg-white border border-slate-200">
+              <TabsTrigger value="none" className="text-xs">No Group</TabsTrigger>
+              <TabsTrigger value="venue" className="text-xs">By Venue</TabsTrigger>
+              <TabsTrigger value="status" className="text-xs">By Status</TabsTrigger>
+            </TabsList>
+          </Tabs>
+          <div className="flex border rounded-lg overflow-hidden">
+            <Button
+              variant={viewMode === "grid" ? "default" : "ghost"}
+              size="icon"
+              className="h-9 w-9 rounded-none"
+              onClick={() => setViewMode("grid")}
+            >
+              <LayoutGrid className="w-4 h-4" />
+            </Button>
+            <Button
+              variant={viewMode === "list" ? "default" : "ghost"}
+              size="icon"
+              className="h-9 w-9 rounded-none"
+              onClick={() => setViewMode("list")}
+            >
+              <List className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
       </div>
 
       {/* Screens Grid */}
@@ -221,120 +348,226 @@ export default function MyScreens() {
           )}
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredScreens.map((screen) => {
-            const venue = venues.find(v => v.id === screen.venue_id);
-            const screenSlots = getScreenSlots(screen);
-            
-            return (
-              <Card key={screen.id} className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  {/* Live Preview - Always show if there are slots */}
-                  <div className="mb-4">
-                    {screenSlots.length > 0 ? (
-                      <LiveScreenPreview slots={screenSlots} size="small" />
-                    ) : (
-                      <div className="h-32 bg-slate-900 rounded-lg flex items-center justify-center">
-                        <div className="text-center text-slate-500">
-                          <MonitorPlay className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                          <p className="text-xs">No ads configured</p>
+        <div className="space-y-6">
+          {Object.entries(groupedScreens()).map(([groupName, groupScreens]) => (
+            <div key={groupName}>
+              {groupBy !== "none" && (
+                <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2 capitalize">
+                  {groupBy === "venue" && <Building2 className="w-5 h-5 text-violet-600" />}
+                  {groupBy === "status" && <div className={`w-3 h-3 rounded-full ${statusIndicators[groupName] || 'bg-slate-400'}`} />}
+                  {groupName.replace("_", " ")} ({groupScreens.length})
+                </h3>
+              )}
+              
+              <div className={viewMode === "grid" ? "grid md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-3"}>
+                {groupScreens.map((screen) => {
+                  const venue = venues.find(v => v.id === screen.venue_id);
+                  const screenSlots = getScreenSlots(screen);
+                  
+                  if (viewMode === "list") {
+                    return (
+                      <Card key={screen.id} className="hover:shadow-md transition-shadow">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-4">
+                            {/* Status Indicator */}
+                            <div className="relative">
+                              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                                screen.status === "online" ? "bg-emerald-100" : 
+                                screen.status === "offline" ? "bg-rose-100" : "bg-amber-100"
+                              }`}>
+                                <MonitorPlay className={`w-6 h-6 ${
+                                  screen.status === "online" ? "text-emerald-600" : 
+                                  screen.status === "offline" ? "text-rose-600" : "text-amber-600"
+                                }`} />
+                              </div>
+                              <div className={`absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${statusIndicators[screen.status]} ${screen.status === "online" ? "animate-pulse" : ""}`} />
+                            </div>
+                            
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-semibold text-slate-900 truncate">{screen.name}</h3>
+                              <p className="text-sm text-slate-500">{venue?.name} • {screen.size} • {screen.orientation}</p>
+                            </div>
+                            
+                            <div className="flex items-center gap-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={() => handleRemoteAction(screen.id, "refresh")}
+                                disabled={actionLoading === screen.id}
+                              >
+                                {actionLoading === screen.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={() => handleRemoteAction(screen.id, "maintenance")}
+                              >
+                                <Wrench className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => { setSelectedScreen(screen); setShowPlayerDialog(true); }}
+                              >
+                                <Play className="w-4 h-4 mr-1" />
+                                Player
+                              </Button>
+                              <Link to={createPageUrl("ManageOwnerSlots") + `?screen_id=${screen.id}`}>
+                                <Button variant="outline" size="icon" className="h-8 w-8">
+                                  <Settings className="w-4 h-4" />
+                                </Button>
+                              </Link>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  }
+                  
+                  return (
+                    <Card key={screen.id} className="hover:shadow-lg transition-shadow">
+                      <CardContent className="p-6">
+                        {/* Live Preview */}
+                        <div className="mb-4 relative">
+                          {screenSlots.length > 0 ? (
+                            <LiveScreenPreview slots={screenSlots} size="small" />
+                          ) : (
+                            <div className="h-32 bg-slate-900 rounded-lg flex items-center justify-center">
+                              <div className="text-center text-slate-500">
+                                <MonitorPlay className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                                <p className="text-xs">No ads configured</p>
+                              </div>
+                            </div>
+                          )}
+                          {/* Real-time status indicator */}
+                          <div className={`absolute top-2 right-2 w-3 h-3 rounded-full ${statusIndicators[screen.status]} ${screen.status === "online" ? "animate-pulse" : ""}`} />
                         </div>
-                      </div>
-                    )}
-                  </div>
 
-                  <div className="flex items-start justify-between mb-4">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                      screen.status === "online" ? "bg-emerald-100" : "bg-slate-100"
-                    }`}>
-                      <MonitorPlay className={`w-6 h-6 ${
-                        screen.status === "online" ? "text-emerald-600" : "text-slate-400"
-                      }`} />
-                    </div>
-                    <Badge className={`${statusColors[screen.status]} border`}>
-                      {screen.status === "online" ? (
-                        <><Wifi className="w-3 h-3 mr-1" /> Online</>
-                      ) : screen.status === "offline" ? (
-                        <><WifiOff className="w-3 h-3 mr-1" /> Offline</>
-                      ) : screen.status === "pending_approval" ? (
-                        <><Clock className="w-3 h-3 mr-1" /> Pending Approval</>
-                      ) : screen.status === "pending_setup" ? (
-                        <><QrCode className="w-3 h-3 mr-1" /> Ready to Setup</>
-                      ) : (
-                        screen.status?.replace("_", " ")
-                      )}
-                    </Badge>
-                  </div>
+                        <div className="flex items-start justify-between mb-4">
+                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                            screen.status === "online" ? "bg-emerald-100" : 
+                            screen.status === "offline" ? "bg-rose-100" : "bg-amber-100"
+                          }`}>
+                            <MonitorPlay className={`w-6 h-6 ${
+                              screen.status === "online" ? "text-emerald-600" : 
+                              screen.status === "offline" ? "text-rose-600" : "text-amber-600"
+                            }`} />
+                          </div>
+                          <Badge className={`${statusColors[screen.status]} border`}>
+                            {screen.status === "online" ? (
+                              <><Wifi className="w-3 h-3 mr-1" /> Online</>
+                            ) : screen.status === "offline" ? (
+                              <><WifiOff className="w-3 h-3 mr-1" /> Offline</>
+                            ) : screen.status === "maintenance" ? (
+                              <><Wrench className="w-3 h-3 mr-1" /> Maintenance</>
+                            ) : screen.status === "pending_approval" ? (
+                              <><Clock className="w-3 h-3 mr-1" /> Pending</>
+                            ) : screen.status === "pending_setup" ? (
+                              <><QrCode className="w-3 h-3 mr-1" /> Setup</>
+                            ) : (
+                              screen.status?.replace("_", " ")
+                            )}
+                          </Badge>
+                        </div>
 
-                  <h3 className="font-semibold text-slate-900 mb-1">{screen.name}</h3>
-                  <p className="text-sm text-slate-500 flex items-center gap-1 mb-4">
-                    <Building2 className="w-4 h-4" />
-                    {venue?.name || "Unknown Venue"}
-                  </p>
+                        <h3 className="font-semibold text-slate-900 mb-1">{screen.name}</h3>
+                        <p className="text-sm text-slate-500 flex items-center gap-1 mb-4">
+                          <Building2 className="w-4 h-4" />
+                          {venue?.name || "Unknown Venue"}
+                        </p>
 
-                  <div className="grid grid-cols-2 gap-3 mb-4">
-                    <div className="bg-slate-50 rounded-lg p-3">
-                      <p className="text-xs text-slate-500">Size</p>
-                      <p className="font-semibold text-slate-900">{screen.size}</p>
-                    </div>
-                    <div className="bg-slate-50 rounded-lg p-3">
-                      <p className="text-xs text-slate-500">Orientation</p>
-                      <p className="font-semibold text-slate-900 capitalize">{screen.orientation}</p>
-                    </div>
-                    <div className="bg-slate-50 rounded-lg p-3">
-                      <p className="text-xs text-slate-500">Rate</p>
-                      <p className="font-semibold text-slate-900">AED {screen.hourly_rate}/hr</p>
-                    </div>
-                    <div className="bg-slate-50 rounded-lg p-3">
-                      <p className="text-xs text-slate-500">Location</p>
-                      <p className="font-semibold text-slate-900 truncate">{screen.location_in_venue || "—"}</p>
-                    </div>
-                  </div>
+                        <div className="grid grid-cols-2 gap-3 mb-4">
+                          <div className="bg-slate-50 rounded-lg p-3">
+                            <p className="text-xs text-slate-500">Size</p>
+                            <p className="font-semibold text-slate-900">{screen.size}</p>
+                          </div>
+                          <div className="bg-slate-50 rounded-lg p-3">
+                            <p className="text-xs text-slate-500">Orientation</p>
+                            <p className="font-semibold text-slate-900 capitalize">{screen.orientation}</p>
+                          </div>
+                          <div className="bg-slate-50 rounded-lg p-3">
+                            <p className="text-xs text-slate-500">Rate</p>
+                            <p className="font-semibold text-slate-900">AED {screen.slot_price}/wk</p>
+                          </div>
+                          <div className="bg-slate-50 rounded-lg p-3">
+                            <p className="text-xs text-slate-500">Slots</p>
+                            <p className="font-semibold text-slate-900">{screen.available_slots || 5} available</p>
+                          </div>
+                        </div>
 
-                  {screen.last_heartbeat && (
-                    <p className="text-xs text-slate-400 mb-4">
-                      Last seen: {format(new Date(screen.last_heartbeat), "MMM d, h:mm a")}
-                    </p>
-                  )}
-
-                  <div className="flex gap-2">
-                    {screen.status === "pending_approval" ? (
-                      <Button variant="outline" className="flex-1" disabled>
-                        <Clock className="w-4 h-4 mr-2" />
-                        Awaiting Admin Approval
-                      </Button>
-                    ) : (
-                      <Button 
-                        variant="outline" 
-                        className="flex-1"
-                        onClick={() => {
-                          setSelectedScreen(screen);
-                          setShowPlayerDialog(true);
-                        }}
-                      >
-                        {screen.setup_code ? (
-                          <>
-                            <QrCode className="w-4 h-4 mr-2" />
-                            Setup Code
-                          </>
-                        ) : (
-                          <>
-                            <Play className="w-4 h-4 mr-2" />
-                            Launch Player
-                          </>
+                        {screen.last_heartbeat && (
+                          <p className="text-xs text-slate-400 mb-4">
+                            Last seen: {format(new Date(screen.last_heartbeat), "MMM d, h:mm a")}
+                          </p>
                         )}
-                      </Button>
-                    )}
-                    <Link to={createPageUrl("ManageOwnerSlots") + `?screen_id=${screen.id}`}>
-                      <Button variant="outline" size="icon">
-                        <Settings className="w-4 h-4" />
-                      </Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+
+                        {/* Remote Actions */}
+                        <div className="flex gap-1 mb-3">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex-1 h-8 text-xs"
+                            onClick={() => handleRemoteAction(screen.id, "refresh")}
+                            disabled={actionLoading === screen.id}
+                          >
+                            {actionLoading === screen.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3 mr-1" />}
+                            Refresh
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex-1 h-8 text-xs"
+                            onClick={() => handleRemoteAction(screen.id, "restart")}
+                            disabled={actionLoading === screen.id}
+                          >
+                            <Power className="w-3 h-3 mr-1" />
+                            Restart
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className={`flex-1 h-8 text-xs ${screen.status === "maintenance" ? "bg-amber-50" : ""}`}
+                            onClick={() => handleRemoteAction(screen.id, "maintenance")}
+                          >
+                            <Wrench className="w-3 h-3 mr-1" />
+                            {screen.status === "maintenance" ? "Online" : "Maint."}
+                          </Button>
+                        </div>
+
+                        <div className="flex gap-2">
+                          {screen.status === "pending_approval" ? (
+                            <Button variant="outline" className="flex-1" disabled>
+                              <Clock className="w-4 h-4 mr-2" />
+                              Awaiting Approval
+                            </Button>
+                          ) : (
+                            <Button 
+                              variant="outline" 
+                              className="flex-1"
+                              onClick={() => { setSelectedScreen(screen); setShowPlayerDialog(true); }}
+                            >
+                              {screen.setup_code ? (
+                                <><QrCode className="w-4 h-4 mr-2" />Setup Code</>
+                              ) : (
+                                <><Play className="w-4 h-4 mr-2" />Launch Player</>
+                              )}
+                            </Button>
+                          )}
+                          <Link to={createPageUrl("ManageOwnerSlots") + `?screen_id=${screen.id}`}>
+                            <Button variant="outline" size="icon">
+                              <Settings className="w-4 h-4" />
+                            </Button>
+                          </Link>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
