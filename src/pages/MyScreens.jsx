@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
@@ -26,7 +26,8 @@ import {
   Tag,
   Wrench,
   Power,
-  AlertTriangle
+  AlertTriangle,
+  Sliders
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,6 +46,8 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import LiveScreenPreview from "@/components/previews/LiveScreenPreview";
+import ScreenTagManager, { getTagColor } from "@/components/screens/ScreenTagManager";
+import ScreenStatusControl from "@/components/screens/ScreenStatusControl";
 
 export default function MyScreens() {
   const navigate = useNavigate();
@@ -56,7 +59,10 @@ export default function MyScreens() {
   const [viewMode, setViewMode] = useState("grid"); // grid, list
   const [selectedScreen, setSelectedScreen] = useState(null);
   const [showPlayerDialog, setShowPlayerDialog] = useState(false);
+  const [showTagDialog, setShowTagDialog] = useState(false);
+  const [showStatusDialog, setShowStatusDialog] = useState(false);
   const [actionLoading, setActionLoading] = useState(null);
+  const [tagFilter, setTagFilter] = useState(null);
 
   useEffect(() => {
     loadUser();
@@ -119,12 +125,20 @@ export default function MyScreens() {
     return slots;
   };
 
+  // Get all unique tags across screens
+  const allTags = useMemo(() => {
+    const tags = new Set();
+    screens.forEach(s => (s.tags || []).forEach(t => tags.add(t)));
+    return Array.from(tags);
+  }, [screens]);
+
   const filteredScreens = screens.filter(screen => {
     const venue = venues.find(v => v.id === screen.venue_id);
     const matchesSearch = screen.name?.toLowerCase().includes(search.toLowerCase()) ||
                          venue?.name?.toLowerCase().includes(search.toLowerCase());
     const matchesStatus = statusFilter === "all" || screen.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    const matchesTag = !tagFilter || (screen.tags || []).includes(tagFilter);
+    return matchesSearch && matchesStatus && matchesTag;
   });
 
   const statusColors = {
@@ -150,7 +164,7 @@ export default function MyScreens() {
     maintenance: screens.filter(s => s.status === "maintenance").length
   };
 
-  // Group screens by venue or status
+  // Group screens by venue, status, or tag
   const groupedScreens = () => {
     if (groupBy === "venue") {
       const groups = {};
@@ -169,8 +183,37 @@ export default function MyScreens() {
         groups[status].push(screen);
       });
       return groups;
+    } else if (groupBy === "tag") {
+      const groups = { "Untagged": [] };
+      allTags.forEach(tag => groups[tag] = []);
+      filteredScreens.forEach(screen => {
+        if (!screen.tags || screen.tags.length === 0) {
+          groups["Untagged"].push(screen);
+        } else {
+          screen.tags.forEach(tag => {
+            if (!groups[tag]) groups[tag] = [];
+            groups[tag].push(screen);
+          });
+        }
+      });
+      // Remove empty groups
+      Object.keys(groups).forEach(key => {
+        if (groups[key].length === 0) delete groups[key];
+      });
+      return groups;
     }
     return { all: filteredScreens };
+  };
+
+  // Tag management handlers
+  const handleUpdateTags = async (screenId, tags) => {
+    await base44.entities.Screen.update(screenId, { tags });
+    queryClient.invalidateQueries({ queryKey: ["my-screens"] });
+  };
+
+  const handleUpdateStatus = async (screenId, status) => {
+    await base44.entities.Screen.update(screenId, { status });
+    queryClient.invalidateQueries({ queryKey: ["my-screens"] });
   };
 
   // Remote actions
@@ -280,12 +323,13 @@ export default function MyScreens() {
             className="pl-10"
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Tabs value={groupBy} onValueChange={setGroupBy}>
             <TabsList className="bg-white border border-slate-200">
               <TabsTrigger value="none" className="text-xs">No Group</TabsTrigger>
               <TabsTrigger value="venue" className="text-xs">By Venue</TabsTrigger>
               <TabsTrigger value="status" className="text-xs">By Status</TabsTrigger>
+              <TabsTrigger value="tag" className="text-xs">By Tag</TabsTrigger>
             </TabsList>
           </Tabs>
           <div className="flex border rounded-lg overflow-hidden">
@@ -308,6 +352,32 @@ export default function MyScreens() {
           </div>
         </div>
       </div>
+
+      {/* Tag Filters */}
+      {allTags.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-6">
+          <Badge 
+            variant={tagFilter === null ? "default" : "outline"}
+            className="cursor-pointer"
+            onClick={() => setTagFilter(null)}
+          >
+            All Tags
+          </Badge>
+          {allTags.map(tag => {
+            const color = getTagColor(tag);
+            return (
+              <Badge
+                key={tag}
+                className={`cursor-pointer ${tagFilter === tag ? `${color.bg} ${color.text}` : "bg-slate-100 text-slate-600"}`}
+                onClick={() => setTagFilter(tagFilter === tag ? null : tag)}
+              >
+                <Tag className="w-3 h-3 mr-1" />
+                {tag}
+              </Badge>
+            );
+          })}
+        </div>
+      )}
 
       {/* Screens Grid */}
       {isLoading ? (
@@ -355,6 +425,7 @@ export default function MyScreens() {
                 <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2 capitalize">
                   {groupBy === "venue" && <Building2 className="w-5 h-5 text-violet-600" />}
                   {groupBy === "status" && <div className={`w-3 h-3 rounded-full ${statusIndicators[groupName] || 'bg-slate-400'}`} />}
+                  {groupBy === "tag" && <Tag className="w-5 h-5 text-violet-600" />}
                   {groupName.replace("_", " ")} ({groupScreens.length})
                 </h3>
               )}
@@ -393,18 +464,19 @@ export default function MyScreens() {
                                 variant="ghost"
                                 size="icon"
                                 className="h-8 w-8"
-                                onClick={() => handleRemoteAction(screen.id, "refresh")}
-                                disabled={actionLoading === screen.id}
+                                onClick={() => { setSelectedScreen(screen); setShowStatusDialog(true); }}
+                                title="Screen Control"
                               >
-                                {actionLoading === screen.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+                                <Sliders className="w-4 h-4" />
                               </Button>
                               <Button
                                 variant="ghost"
                                 size="icon"
                                 className="h-8 w-8"
-                                onClick={() => handleRemoteAction(screen.id, "maintenance")}
+                                onClick={() => { setSelectedScreen(screen); setShowTagDialog(true); }}
+                                title="Manage Tags"
                               >
-                                <Wrench className="w-4 h-4" />
+                                <Tag className="w-4 h-4" />
                               </Button>
                               <Button
                                 variant="outline"
@@ -473,10 +545,28 @@ export default function MyScreens() {
                         </div>
 
                         <h3 className="font-semibold text-slate-900 mb-1">{screen.name}</h3>
-                        <p className="text-sm text-slate-500 flex items-center gap-1 mb-4">
+                        <p className="text-sm text-slate-500 flex items-center gap-1 mb-2">
                           <Building2 className="w-4 h-4" />
                           {venue?.name || "Unknown Venue"}
                         </p>
+                        {/* Screen Tags */}
+                        {(screen.tags || []).length > 0 && (
+                          <div className="flex flex-wrap gap-1 mb-3">
+                            {screen.tags.slice(0, 3).map(tag => {
+                              const color = getTagColor(tag);
+                              return (
+                                <Badge key={tag} className={`${color.bg} ${color.text} text-xs px-1.5 py-0`}>
+                                  {tag}
+                                </Badge>
+                              );
+                            })}
+                            {screen.tags.length > 3 && (
+                              <Badge variant="outline" className="text-xs px-1.5 py-0">
+                                +{screen.tags.length - 3}
+                              </Badge>
+                            )}
+                          </div>
+                        )}
 
                         <div className="grid grid-cols-2 gap-3 mb-4">
                           <div className="bg-slate-50 rounded-lg p-3">
@@ -555,6 +645,14 @@ export default function MyScreens() {
                               )}
                             </Button>
                           )}
+                          <Button 
+                            variant="outline" 
+                            size="icon"
+                            onClick={() => { setSelectedScreen(screen); setShowTagDialog(true); }}
+                            title="Manage Tags"
+                          >
+                            <Tag className="w-4 h-4" />
+                          </Button>
                           <Link to={createPageUrl("ManageOwnerSlots") + `?screen_id=${screen.id}`}>
                             <Button variant="outline" size="icon">
                               <Settings className="w-4 h-4" />
@@ -570,6 +668,26 @@ export default function MyScreens() {
           ))}
         </div>
       )}
+
+      {/* Tag Manager Dialog */}
+      <ScreenTagManager
+        screens={screens}
+        allTags={allTags}
+        onUpdateTags={handleUpdateTags}
+        onCreateTag={(tag) => {/* Tag created automatically */}}
+        selectedScreen={selectedScreen}
+        open={showTagDialog}
+        onOpenChange={setShowTagDialog}
+      />
+
+      {/* Status Control Dialog */}
+      <ScreenStatusControl
+        screen={selectedScreen}
+        open={showStatusDialog}
+        onOpenChange={setShowStatusDialog}
+        onUpdateStatus={handleUpdateStatus}
+        onRemoteAction={handleRemoteAction}
+      />
 
       {/* Player Launch Dialog */}
       <Dialog open={showPlayerDialog} onOpenChange={setShowPlayerDialog}>
