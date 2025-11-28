@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { base44 } from "@/api/base44Client";
 import {
   MonitorPlay,
   ArrowRight,
@@ -35,7 +36,46 @@ import PublicAIChatWidget from "@/components/chat/PublicAIChatWidget";
 
 export default function Home() {
   const [showInvestorModal, setShowInvestorModal] = useState(false);
-  
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    checkAuthAndRedirect();
+  }, []);
+
+  const checkAuthAndRedirect = async () => {
+    try {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (isAuth) {
+        const user = await base44.auth.me();
+        // Redirect logged-in users to dashboard
+        if (user?.user_role === "admin" || user?.role === "admin") {
+          navigate(createPageUrl("AdminDashboard"), { replace: true });
+        } else {
+          navigate(createPageUrl("Dashboard"), { replace: true });
+        }
+        return;
+      }
+    } catch (e) {
+      // Not logged in, show home page
+    }
+    setCheckingAuth(false);
+  };
+
+  // Show loading while checking auth
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+            <MonitorPlay className="w-6 h-6 text-white" />
+          </div>
+          <p className="text-slate-500">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   const stats = [
     { value: "500+", label: "Active Screens", icon: MonitorPlay },
     { value: "1M+", label: "Daily Impressions", icon: TrendingUp },

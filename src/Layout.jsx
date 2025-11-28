@@ -213,7 +213,7 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Sidebar */}
       <aside className={`
-        fixed top-0 left-0 h-full w-72 bg-white border-r border-slate-200 z-50
+        fixed top-0 left-0 h-full w-[280px] sm:w-72 bg-white border-r border-slate-200 z-50
         transform transition-transform duration-300 ease-in-out
         lg:translate-x-0
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
@@ -238,7 +238,7 @@ export default function Layout({ children, currentPageName }) {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+          <nav className="flex-1 px-3 sm:px-4 py-4 sm:py-6 space-y-1 overflow-y-auto">
             {getNavItems().map((item) => {
               if (item.isGroup) {
                 const isChildActive = item.children?.some(child => currentPageName === child.page);
@@ -295,40 +295,40 @@ export default function Layout({ children, currentPageName }) {
                   to={createPageUrl(item.page)}
                   onClick={() => setSidebarOpen(false)}
                   className={`
-                    flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200
+                    flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-sm sm:text-base font-medium transition-all duration-200
                     ${isActive 
                       ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/25' 
                       : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                     }
                   `}
                 >
-                  <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-slate-500'}`} />
-                  {item.name}
+                  <item.icon className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 ${isActive ? 'text-white' : 'text-slate-500'}`} />
+                  <span className="truncate">{item.name}</span>
                 </Link>
               );
             })}
           </nav>
 
           {/* User Section */}
-          <div className="p-4 border-t border-slate-100">
+          <div className="p-3 sm:p-4 border-t border-slate-100">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors">
-                  <Avatar className="w-10 h-10">
+                <button className="w-full flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-xl hover:bg-slate-50 transition-colors">
+                  <Avatar className="w-9 h-9 sm:w-10 sm:h-10 flex-shrink-0">
                     <AvatarImage src={user?.avatar_url} />
-                    <AvatarFallback className="bg-gradient-to-br from-violet-500 to-indigo-500 text-white font-medium">
+                    <AvatarFallback className="bg-gradient-to-br from-violet-500 to-indigo-500 text-white font-medium text-sm">
                       {user?.full_name?.charAt(0) || "U"}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex-1 text-left">
+                  <div className="flex-1 text-left min-w-0">
                     <p className="font-medium text-slate-900 text-sm truncate">
                       {user?.full_name || "User"}
                     </p>
-                    <p className="text-xs text-slate-500 capitalize">
+                    <p className="text-xs text-slate-500 capitalize truncate">
                       {user?.user_role?.replace("_", " ") || "Advertiser"}
                     </p>
                   </div>
-                  <ChevronDown className="w-4 h-4 text-slate-400" />
+                  <ChevronDown className="w-4 h-4 text-slate-400 flex-shrink-0" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">

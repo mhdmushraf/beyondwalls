@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { MonitorPlay, ArrowRight, Menu, X } from "lucide-react";
@@ -7,7 +7,9 @@ import { Button } from "@/components/ui/button";
 
 export default function PublicNav() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     checkAuth();
@@ -17,8 +19,20 @@ export default function PublicNav() {
     try {
       const auth = await base44.auth.isAuthenticated();
       setIsAuthenticated(auth);
+      if (auth) {
+        const userData = await base44.auth.me();
+        setUser(userData);
+      }
     } catch (e) {
       setIsAuthenticated(false);
+    }
+  };
+
+  const handleDashboardClick = () => {
+    if (user?.user_role === "admin" || user?.role === "admin") {
+      navigate(createPageUrl("AdminDashboard"));
+    } else {
+      navigate(createPageUrl("Dashboard"));
     }
   };
 
@@ -64,13 +78,15 @@ export default function PublicNav() {
 
         <div className="flex items-center gap-2">
           {isAuthenticated ? (
-            <Link to={createPageUrl("Dashboard")}>
-              <Button size="sm" className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700">
+              <Button 
+                size="sm" 
+                className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700"
+                onClick={handleDashboardClick}
+              >
                 Dashboard
                 <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
-            </Link>
-          ) : (
+            ) : (
             <>
               <Button 
                 variant="ghost" 
