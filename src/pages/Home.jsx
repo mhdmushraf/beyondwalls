@@ -63,37 +63,37 @@ export default function Home() {
     { 
       name: "Restaurants & Cafés", 
       count: "80+", 
-      image: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&h=400&fit=crop",
+      image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=400&fit=crop&q=80",
       description: "Reach diners during meals"
     },
     { 
       name: "Shopping Malls", 
       count: "25+", 
-      image: "https://images.unsplash.com/photo-1567449303078-57ad995bd17f?w=600&h=400&fit=crop",
+      image: "https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=600&h=400&fit=crop&q=80",
       description: "High-traffic retail zones"
     },
     { 
       name: "Fitness Centers", 
       count: "45+", 
-      image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&h=400&fit=crop",
+      image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&h=400&fit=crop&q=80",
       description: "Health-conscious audience"
     },
     { 
       name: "Coworking Spaces", 
       count: "50+", 
-      image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop",
+      image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop&q=80",
       description: "Business professionals"
     },
     { 
       name: "Hotels & Lobbies", 
       count: "30+", 
-      image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=400&fit=crop",
+      image: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600&h=400&fit=crop&q=80",
       description: "Tourists & travelers"
     },
     { 
       name: "Clinics & Hospitals", 
       count: "20+", 
-      image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600&h=400&fit=crop",
+      image: "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=600&h=400&fit=crop&q=80",
       description: "Healthcare sector"
     }
   ];
@@ -271,9 +271,10 @@ export default function Home() {
             <div className="relative">
               <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-violet-500/20">
                 <img 
-                  src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=600&fit=crop" 
+                  src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=600&fit=crop&q=80" 
                   alt="Digital advertising screens in modern venue"
                   className="w-full h-auto"
+                  loading="eager"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-violet-900/60 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
@@ -393,24 +394,28 @@ export default function Home() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <img 
-                src="https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=400&h=500&fit=crop" 
+                src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=500&fit=crop&q=80" 
                 alt="Modern office building" 
                 className="rounded-2xl shadow-xl w-full h-64 object-cover"
+                loading="lazy"
               />
               <img 
-                src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop" 
+                src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop&q=80" 
                 alt="Coworking space" 
                 className="rounded-2xl shadow-xl w-full h-48 object-cover mt-8"
+                loading="lazy"
               />
               <img 
-                src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop" 
+                src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop&q=80" 
                 alt="Restaurant interior" 
                 className="rounded-2xl shadow-xl w-full h-48 object-cover -mt-4"
+                loading="lazy"
               />
               <img 
-                src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=400&h=500&fit=crop" 
+                src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=500&fit=crop&q=80" 
                 alt="Gym interior" 
                 className="rounded-2xl shadow-xl w-full h-64 object-cover -mt-8"
+                loading="lazy"
               />
             </div>
           </div>
@@ -493,9 +498,10 @@ export default function Home() {
             
             <div className="relative">
               <img 
-                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=700&h=500&fit=crop" 
+                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=700&h=500&fit=crop&q=80" 
                 alt="Team analyzing advertising campaign" 
                 className="rounded-2xl shadow-2xl"
+                loading="lazy"
               />
               <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl p-6 shadow-xl max-w-xs">
                 <div className="flex items-center gap-4 mb-3">
@@ -519,9 +525,10 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1 relative">
               <img 
-                src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=700&h=500&fit=crop" 
+                src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=700&h=500&fit=crop&q=80" 
                 alt="Modern café with digital screen" 
                 className="rounded-2xl shadow-2xl"
+                loading="lazy"
               />
               <div className="absolute -bottom-6 -right-6 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-6 shadow-xl text-white">
                 <div className="flex items-center gap-4">
