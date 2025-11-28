@@ -388,6 +388,10 @@ export default function ARFeatureSection() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Modals */}
+      <PremiumWaitlistModal open={showWaitlistModal} onClose={() => setShowWaitlistModal(false)} />
+      <EarlyAccessModal open={showEarlyAccessModal} onClose={() => setShowEarlyAccessModal(false)} />
     </section>
   );
 }
