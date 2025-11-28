@@ -25,7 +25,8 @@ import {
   Sparkles,
   RefreshCw,
   ShoppingCart,
-  Plus
+  Plus,
+  Layers
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,6 +44,7 @@ import {
 import { toast } from "sonner";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Switch } from "@/components/ui/switch";
 import PricingCalculator from "@/components/pricing/PricingCalculator";
 import AIRecommendations from "@/components/recommendations/AIRecommendations";
 import AdvancedScreenSearch from "@/components/booking/AdvancedScreenSearch";
@@ -55,6 +57,8 @@ export default function BookSlot() {
   const [user, setUser] = useState(null);
   const [step, setStep] = useState(1);
   const [selectedScreen, setSelectedScreen] = useState(null);
+  const [selectedScreens, setSelectedScreens] = useState([]); // Multi-select
+  const [multiSelectMode, setMultiSelectMode] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -352,28 +356,63 @@ The ads will be displayed on digital screens in ${venue?.type || "public"} venue
 
   // Cart functions
   const addToCart = () => {
-    if (!selectedScreen || !selectedSlot || !formData.creative_url || !formData.campaign_name) {
+    if (!formData.creative_url || !formData.campaign_name) {
       toast.error("Please complete all required fields");
       return;
     }
 
-    const cartItem = {
-      id: `${selectedScreen.id}-${selectedSlot}-${Date.now()}`,
-      screenId: selectedScreen.id,
-      slotNumber: selectedSlot,
-      campaignName: formData.campaign_name,
-      creativeUrl: formData.creative_url,
-      creativeType: formData.creative_type,
-      startDate: format(formData.start_date, "yyyy-MM-dd"),
-      endDate: format(endDate, "yyyy-MM-dd"),
-      weeks: formData.weeks,
-      totalCost: totalCost,
-      headline: formData.headline,
-      description: formData.description
-    };
+    // Multi-screen mode: add all selected screens with same creative
+    if (multiSelectMode && selectedScreens.length > 0) {
+      const newItems = selectedScreens.map(screen => {
+        const screenBookings = allBookings.filter(b => b.screen_id === screen.id);
+        const bookedSlots = screenBookings.map(b => b.slot_number);
+        const availableSlot = [1, 2, 3, 4, 5].find(s => !bookedSlots.includes(s)) || 1;
+        const price = screen.slot_price || 100;
+        
+        return {
+          id: `${screen.id}-${availableSlot}-${Date.now()}`,
+          screenId: screen.id,
+          slotNumber: availableSlot,
+          campaignName: formData.campaign_name,
+          creativeUrl: formData.creative_url,
+          creativeType: formData.creative_type,
+          startDate: format(formData.start_date, "yyyy-MM-dd"),
+          endDate: format(endDate, "yyyy-MM-dd"),
+          weeks: formData.weeks,
+          totalCost: price * formData.weeks,
+          headline: formData.headline,
+          description: formData.description
+        };
+      });
+      
+      setCartItems([...cartItems, ...newItems]);
+      toast.success(`Added ${selectedScreens.length} screens to cart!`);
+      setSelectedScreens([]);
+    } else {
+      // Single screen mode
+      if (!selectedScreen || !selectedSlot) {
+        toast.error("Please select a screen and slot");
+        return;
+      }
 
-    setCartItems([...cartItems, cartItem]);
-    toast.success("Added to cart!");
+      const cartItem = {
+        id: `${selectedScreen.id}-${selectedSlot}-${Date.now()}`,
+        screenId: selectedScreen.id,
+        slotNumber: selectedSlot,
+        campaignName: formData.campaign_name,
+        creativeUrl: formData.creative_url,
+        creativeType: formData.creative_type,
+        startDate: format(formData.start_date, "yyyy-MM-dd"),
+        endDate: format(endDate, "yyyy-MM-dd"),
+        weeks: formData.weeks,
+        totalCost: totalCost,
+        headline: formData.headline,
+        description: formData.description
+      };
+
+      setCartItems([...cartItems, cartItem]);
+      toast.success("Added to cart!");
+    }
     
     // Reset form for next booking
     setSelectedScreen(null);
@@ -643,6 +682,52 @@ Please review and approve/reject this campaign in the admin dashboard.
       {/* Step 1: Select Screen */}
       {step === 1 && (
         <div className="space-y-6">
+          {/* Multi-select toggle */}
+          <Card className="bg-gradient-to-r from-violet-50 to-indigo-50 border-violet-200">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Layers className="w-5 h-5 text-violet-600" />
+                  <div>
+                    <p className="font-medium text-slate-900">Multi-Screen Booking</p>
+                    <p className="text-sm text-slate-500">Select multiple screens for your campaign</p>
+                  </div>
+                </div>
+                <Switch 
+                  checked={multiSelectMode} 
+                  onCheckedChange={(checked) => {
+                    setMultiSelectMode(checked);
+                    if (!checked) {
+                      setSelectedScreens([]);
+                    } else {
+                      setSelectedScreen(null);
+                    }
+                  }}
+                />
+              </div>
+              {multiSelectMode && selectedScreens.length > 0 && (
+                <div className="mt-3 pt-3 border-t border-violet-200">
+                  <div className="flex flex-wrap gap-2">
+                    {selectedScreens.map(s => {
+                      const venue = venues.find(v => v.id === s.venue_id);
+                      return (
+                        <Badge key={s.id} className="bg-violet-100 text-violet-700 px-2 py-1">
+                          {s.name} • {venue?.name}
+                          <button 
+                            onClick={() => setSelectedScreens(selectedScreens.filter(ss => ss.id !== s.id))}
+                            className="ml-1 hover:text-violet-900"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
           {/* AI Recommendations */}
           <AIRecommendations
             user={user}
@@ -650,8 +735,14 @@ Please review and approve/reject this campaign in the admin dashboard.
             venues={venues}
             currentBookings={existingBookings}
             onSelectScreen={(screen) => {
-              setSelectedScreen(screen);
-              setStep(2);
+              if (multiSelectMode) {
+                if (!selectedScreens.find(s => s.id === screen.id)) {
+                  setSelectedScreens([...selectedScreens, screen]);
+                }
+              } else {
+                setSelectedScreen(screen);
+                setStep(2);
+              }
             }}
           />
 
@@ -660,18 +751,30 @@ Please review and approve/reject this campaign in the admin dashboard.
             venues={venues}
             allBookings={allBookings}
             favorites={favorites}
-            onSelectScreen={setSelectedScreen}
+            onSelectScreen={(screen) => {
+              if (!multiSelectMode) setSelectedScreen(screen);
+            }}
             onToggleFavorite={toggleFavorite}
             selectedScreen={selectedScreen}
+            multiSelect={multiSelectMode}
+            selectedScreens={selectedScreens}
+            onToggleScreen={(screen) => {
+              const exists = selectedScreens.find(s => s.id === screen.id);
+              if (exists) {
+                setSelectedScreens(selectedScreens.filter(s => s.id !== screen.id));
+              } else {
+                setSelectedScreens([...selectedScreens, screen]);
+              }
+            }}
           />
 
           <div className="flex justify-end">
             <Button 
               onClick={() => setStep(2)}
-              disabled={!selectedScreen}
+              disabled={multiSelectMode ? selectedScreens.length === 0 : !selectedScreen}
               className="bg-gradient-to-r from-violet-600 to-indigo-600"
             >
-              Continue
+              Continue {multiSelectMode && selectedScreens.length > 0 && `(${selectedScreens.length} screens)`}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
@@ -681,6 +784,32 @@ Please review and approve/reject this campaign in the admin dashboard.
       {/* Step 2: Select Slot & Upload Creative */}
       {step === 2 && (
         <div className="space-y-6">
+          {/* Multi-screen summary */}
+          {multiSelectMode && selectedScreens.length > 0 && (
+            <Card className="bg-violet-50 border-violet-200">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Layers className="w-5 h-5 text-violet-600" />
+                  <span className="font-semibold text-violet-900">Multi-Screen Booking: {selectedScreens.length} screens</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {selectedScreens.map(s => {
+                    const venue = venues.find(v => v.id === s.venue_id);
+                    return (
+                      <Badge key={s.id} variant="outline" className="bg-white">
+                        {s.name} • AED {s.slot_price}/wk
+                      </Badge>
+                    );
+                  })}
+                </div>
+                <p className="text-sm text-violet-600 mt-2">
+                  Total: AED {selectedScreens.reduce((sum, s) => sum + (s.slot_price || 100), 0) * formData.weeks}/campaign
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {!multiSelectMode && (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
@@ -733,6 +862,7 @@ Please review and approve/reject this campaign in the admin dashboard.
               )}
             </CardContent>
           </Card>
+          )}
 
           <Card>
             <CardHeader>
@@ -941,20 +1071,22 @@ Please review and approve/reject this campaign in the admin dashboard.
               <Button 
                 variant="outline"
                 onClick={addToCart}
-                disabled={!selectedSlot || !formData.creative_url || !formData.campaign_name}
+                disabled={multiSelectMode ? (!formData.creative_url || !formData.campaign_name) : (!selectedSlot || !formData.creative_url || !formData.campaign_name)}
                 className="border-violet-300 text-violet-700"
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Add to Cart
+                Add {multiSelectMode && selectedScreens.length > 1 ? `${selectedScreens.length} Screens` : ""} to Cart
               </Button>
-              <Button 
-                onClick={() => setStep(3)}
-                disabled={!selectedSlot || !formData.creative_url || !formData.campaign_name}
-                className="bg-gradient-to-r from-violet-600 to-indigo-600"
-              >
-                Review Booking
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+              {!multiSelectMode && (
+                <Button 
+                  onClick={() => setStep(3)}
+                  disabled={!selectedSlot || !formData.creative_url || !formData.campaign_name}
+                  className="bg-gradient-to-r from-violet-600 to-indigo-600"
+                >
+                  Review Booking
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              )}
             </div>
           </div>
         </div>
