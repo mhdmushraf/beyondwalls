@@ -26,10 +26,13 @@ import { Progress } from "@/components/ui/progress";
 import ARSubscriptionCard from "@/components/ar/ARSubscriptionCard";
 import ARCampaignCard from "@/components/ar/ARCampaignCard";
 import ARUpgradeModal from "@/components/ar/ARUpgradeModal";
+import ARAnalyticsDashboard from "@/components/ar/ARAnalyticsDashboard";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function ARDashboard() {
   const [user, setUser] = useState(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [activeTab, setActiveTab] = useState("campaigns");
 
   useEffect(() => {
     loadUser();
@@ -188,38 +191,49 @@ export default function ARDashboard() {
           </Card>
         )}
 
-        {/* Campaigns List */}
+        {/* Tabs for Campaigns and Analytics */}
         {hasARAccess && (
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-slate-900">Your AR Campaigns</h2>
-              <Link to={createPageUrl("ARCampaigns")} className="text-violet-600 text-sm font-medium hover:underline">
-                View All
-              </Link>
-            </div>
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="mb-6">
+              <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            </TabsList>
 
-            {campaigns.length === 0 ? (
-              <Card className="border-0 shadow-md">
-                <CardContent className="p-8 text-center">
-                  <Box className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                  <h3 className="font-semibold text-slate-900 mb-2">No AR Campaigns Yet</h3>
-                  <p className="text-slate-500 mb-4">Create your first AR campaign to get started</p>
-                  <Link to={createPageUrl("CreateARCampaign")}>
-                    <Button className="bg-gradient-to-r from-violet-600 to-fuchsia-600">
-                      <Plus className="w-4 h-4 mr-2" />
-                      Create AR Campaign
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {campaigns.slice(0, 6).map((campaign) => (
-                  <ARCampaignCard key={campaign.id} campaign={campaign} />
-                ))}
+            <TabsContent value="campaigns">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-bold text-slate-900">Your AR Campaigns</h2>
+                <Link to={createPageUrl("ARCampaigns")} className="text-violet-600 text-sm font-medium hover:underline">
+                  View All
+                </Link>
               </div>
-            )}
-          </div>
+
+              {campaigns.length === 0 ? (
+                <Card className="border-0 shadow-md">
+                  <CardContent className="p-8 text-center">
+                    <Box className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                    <h3 className="font-semibold text-slate-900 mb-2">No AR Campaigns Yet</h3>
+                    <p className="text-slate-500 mb-4">Create your first AR campaign to get started</p>
+                    <Link to={createPageUrl("CreateARCampaign")}>
+                      <Button className="bg-gradient-to-r from-violet-600 to-fuchsia-600">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Create AR Campaign
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {campaigns.slice(0, 6).map((campaign) => (
+                    <ARCampaignCard key={campaign.id} campaign={campaign} />
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="analytics">
+              <ARAnalyticsDashboard campaigns={campaigns} analyticsEvents={analyticsEvents} />
+            </TabsContent>
+          </Tabs>
         )}
 
         {/* Upgrade Modal */}

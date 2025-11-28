@@ -35,6 +35,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import ARTemplateSelector from "@/components/ar/ARTemplateSelector";
 
 const AR_TYPES = [
   {
@@ -85,9 +86,10 @@ const PLACEMENT_OPTIONS = [
 export default function CreateARCampaign() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0); // Start at 0 for template selection
   const [submitting, setSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -101,6 +103,20 @@ export default function CreateARCampaign() {
     start_date: "",
     end_date: ""
   });
+
+  const handleTemplateSelect = (template) => {
+    setSelectedTemplate(template);
+    if (template) {
+      // Pre-fill form with template values
+      setFormData(prev => ({
+        ...prev,
+        ar_type: template.ar_type || prev.ar_type,
+        cta_type: template.cta_type || prev.cta_type,
+        placement_type: template.placement_type || prev.placement_type,
+        name: template.name ? `${template.name} Campaign` : prev.name
+      }));
+    }
+  };
 
   useEffect(() => {
     loadUser();
@@ -192,6 +208,7 @@ export default function CreateARCampaign() {
 
   const canProceed = () => {
     switch (step) {
+      case 0: return true; // Template selection is optional
       case 1: return formData.name && formData.ar_type;
       case 2: return formData.model_url;
       case 3: return formData.cta_type && formData.cta_url;
@@ -237,26 +254,41 @@ export default function CreateARCampaign() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="icon" onClick={() => navigate(createPageUrl("ARDashboard"))}>
+          <Button variant="ghost" size="icon" onClick={() => step === 0 ? navigate(createPageUrl("ARDashboard")) : setStep(step - 1)}>
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
             <h1 className="text-2xl font-bold text-slate-900">Create AR Campaign</h1>
-            <p className="text-slate-500">Step {step} of 4</p>
+            <p className="text-slate-500">{step === 0 ? "Choose a template" : `Step ${step} of 4`}</p>
           </div>
         </div>
 
         {/* Progress */}
-        <div className="flex gap-2 mb-8">
-          {[1, 2, 3, 4].map((s) => (
-            <div
-              key={s}
-              className={`h-2 flex-1 rounded-full ${
-                s <= step ? "bg-violet-600" : "bg-slate-200"
-              }`}
-            />
-          ))}
-        </div>
+        {step > 0 && (
+          <div className="flex gap-2 mb-8">
+            {[1, 2, 3, 4].map((s) => (
+              <div
+                key={s}
+                className={`h-2 flex-1 rounded-full ${
+                  s <= step ? "bg-violet-600" : "bg-slate-200"
+                }`}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Step 0: Template Selection */}
+        {step === 0 && (
+          <Card className="border-0 shadow-lg">
+            <CardContent className="p-6">
+              <ARTemplateSelector
+                onSelectTemplate={handleTemplateSelect}
+                selectedTemplateId={selectedTemplate?.id || (selectedTemplate === null ? "scratch" : null)}
+                isPremiumUser={activeSubscription?.tier === "professional" || activeSubscription?.tier === "enterprise"}
+              />
+            </CardContent>
+          </Card>
+        )}
 
         {/* Step 1: Basic Info & AR Type */}
         {step === 1 && (
@@ -498,19 +530,19 @@ export default function CreateARCampaign() {
           <Button
             variant="outline"
             onClick={() => setStep(step - 1)}
-            disabled={step === 1}
+            disabled={step === 0}
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Previous
+            {step === 0 ? "Back" : "Previous"}
           </Button>
 
           {step < 4 ? (
             <Button
               onClick={() => setStep(step + 1)}
-              disabled={!canProceed()}
+              disabled={step > 0 && !canProceed()}
               className="bg-gradient-to-r from-violet-600 to-fuchsia-600"
             >
-              Next
+              {step === 0 ? "Continue" : "Next"}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           ) : (
