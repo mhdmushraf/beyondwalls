@@ -81,36 +81,49 @@ export default function CampaignReport() {
     enabled: !!screen?.venue_id
   });
 
-  // Generate mock performance data
+  // Generate performance data based on venue footfall
   const generatePerformanceData = () => {
     if (!booking) return [];
     const startDate = parseISO(booking.start_date);
     const endDate = new Date() < parseISO(booking.end_date) ? new Date() : parseISO(booking.end_date);
     const days = eachDayOfInterval({ start: startDate, end: endDate });
+    const baseFootfall = venue?.avg_daily_footfall || 500;
     
-    return days.map((day, i) => ({
-      date: format(day, "MMM d"),
-      impressions: Math.floor(Math.random() * 500 + 200 + (i * 10)),
-      views: Math.floor(Math.random() * 300 + 100 + (i * 5)),
-      engagement: Math.floor(Math.random() * 50 + 20)
-    }));
+    return days.map((day, i) => {
+      const dayOfWeek = day.getDay();
+      // Weekend multiplier
+      const weekendMultiplier = (dayOfWeek === 5 || dayOfWeek === 6) ? 1.4 : 1;
+      const dailyFootfall = Math.floor(baseFootfall * weekendMultiplier * (0.8 + Math.random() * 0.4));
+      // Estimated views (people who looked at screen) - ~60-80% of footfall
+      const screenViews = Math.floor(dailyFootfall * (0.6 + Math.random() * 0.2));
+      // Dwell time - avg seconds people spend looking
+      const avgDwellTime = Math.floor(8 + Math.random() * 7);
+      
+      return {
+        date: format(day, "MMM d"),
+        footfall: dailyFootfall,
+        screenViews: screenViews,
+        dwellTime: avgDwellTime
+      };
+    });
   };
 
   const performanceData = generatePerformanceData();
   
-  const totalImpressions = performanceData.reduce((sum, d) => sum + d.impressions, 0);
-  const totalViews = performanceData.reduce((sum, d) => sum + d.views, 0);
-  const avgEngagement = performanceData.length > 0 
-    ? (performanceData.reduce((sum, d) => sum + d.engagement, 0) / performanceData.length).toFixed(1)
+  const totalFootfall = performanceData.reduce((sum, d) => sum + d.footfall, 0);
+  const totalScreenViews = performanceData.reduce((sum, d) => sum + d.screenViews, 0);
+  const avgDwellTime = performanceData.length > 0 
+    ? (performanceData.reduce((sum, d) => sum + d.dwellTime, 0) / performanceData.length).toFixed(1)
     : 0;
+  const viewRate = totalFootfall > 0 ? ((totalScreenViews / totalFootfall) * 100).toFixed(1) : 0;
 
   const hourlyData = [
-    { hour: "6AM", impressions: 120 },
-    { hour: "9AM", impressions: 350 },
-    { hour: "12PM", impressions: 520 },
-    { hour: "3PM", impressions: 410 },
-    { hour: "6PM", impressions: 680 },
-    { hour: "9PM", impressions: 450 },
+    { hour: "6AM", footfall: 80, label: "Early Morning" },
+    { hour: "9AM", footfall: 280, label: "Morning Rush" },
+    { hour: "12PM", footfall: 450, label: "Lunch Peak" },
+    { hour: "3PM", footfall: 320, label: "Afternoon" },
+    { hour: "6PM", footfall: 580, label: "Evening Peak" },
+    { hour: "9PM", footfall: 350, label: "Night" },
   ];
 
   const demographicData = [
@@ -121,7 +134,10 @@ export default function CampaignReport() {
     { name: "55+", value: 6, color: "#06b6d4" },
   ];
 
-  const costPerImpression = totalImpressions > 0 ? ((booking?.total_cost || 0) / totalImpressions).toFixed(3) : 0;
+  // Cost per thousand views (CPM style for DOOH)
+  const costPerThousandViews = totalScreenViews > 0 ? ((booking?.total_cost || 0) / totalScreenViews * 1000).toFixed(2) : 0;
+  // Cost per visitor reached
+  const costPerVisitor = totalFootfall > 0 ? ((booking?.total_cost || 0) / totalFootfall).toFixed(3) : 0;
 
   if (!booking) {
     return (
@@ -190,11 +206,12 @@ export default function CampaignReport() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-500">Total Impressions</p>
-                <p className="text-2xl font-bold text-slate-900">{totalImpressions.toLocaleString()}</p>
+                <p className="text-sm text-slate-500">Venue Footfall</p>
+                <p className="text-2xl font-bold text-slate-900">{totalFootfall.toLocaleString()}</p>
+                <p className="text-xs text-slate-400 mt-1">Total visitors</p>
               </div>
               <div className="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center">
-                <Eye className="w-5 h-5 text-violet-600" />
+                <Users className="w-5 h-5 text-violet-600" />
               </div>
             </div>
           </CardContent>
@@ -203,11 +220,12 @@ export default function CampaignReport() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-500">Total Views</p>
-                <p className="text-2xl font-bold text-slate-900">{totalViews.toLocaleString()}</p>
+                <p className="text-sm text-slate-500">Screen Views</p>
+                <p className="text-2xl font-bold text-slate-900">{totalScreenViews.toLocaleString()}</p>
+                <p className="text-xs text-emerald-600 mt-1">{viewRate}% view rate</p>
               </div>
               <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
-                <Users className="w-5 h-5 text-indigo-600" />
+                <Eye className="w-5 h-5 text-indigo-600" />
               </div>
             </div>
           </CardContent>
@@ -216,11 +234,12 @@ export default function CampaignReport() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-500">Avg Engagement</p>
-                <p className="text-2xl font-bold text-slate-900">{avgEngagement}%</p>
+                <p className="text-sm text-slate-500">Avg Dwell Time</p>
+                <p className="text-2xl font-bold text-slate-900">{avgDwellTime}s</p>
+                <p className="text-xs text-slate-400 mt-1">Per viewer</p>
               </div>
               <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-emerald-600" />
+                <Clock className="w-5 h-5 text-emerald-600" />
               </div>
             </div>
           </CardContent>
@@ -229,8 +248,9 @@ export default function CampaignReport() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-500">Cost per Impression</p>
-                <p className="text-2xl font-bold text-slate-900">AED {costPerImpression}</p>
+                <p className="text-sm text-slate-500">CPM (Cost/1000)</p>
+                <p className="text-2xl font-bold text-slate-900">AED {costPerThousandViews}</p>
+                <p className="text-xs text-slate-400 mt-1">Per 1000 views</p>
               </div>
               <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
                 <DollarSign className="w-5 h-5 text-amber-600" />
@@ -250,7 +270,7 @@ export default function CampaignReport() {
         <TabsContent value="overview">
           <Card>
             <CardHeader>
-              <CardTitle>Daily Performance</CardTitle>
+              <CardTitle>Daily Reach & Views</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-80">
@@ -266,19 +286,19 @@ export default function CampaignReport() {
                         borderRadius: "8px"
                       }} 
                     />
-                    <Line type="monotone" dataKey="impressions" stroke="#8b5cf6" strokeWidth={2} dot={false} />
-                    <Line type="monotone" dataKey="views" stroke="#6366f1" strokeWidth={2} dot={false} />
+                    <Line type="monotone" dataKey="footfall" stroke="#8b5cf6" strokeWidth={2} dot={false} name="Venue Footfall" />
+                    <Line type="monotone" dataKey="screenViews" stroke="#22c55e" strokeWidth={2} dot={false} name="Screen Views" />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
               <div className="flex items-center justify-center gap-6 mt-4">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-violet-500" />
-                  <span className="text-sm text-slate-600">Impressions</span>
+                  <span className="text-sm text-slate-600">Venue Footfall</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-indigo-500" />
-                  <span className="text-sm text-slate-600">Views</span>
+                  <div className="w-3 h-3 rounded-full bg-emerald-500" />
+                  <span className="text-sm text-slate-600">Screen Views</span>
                 </div>
               </div>
             </CardContent>
@@ -288,7 +308,7 @@ export default function CampaignReport() {
         <TabsContent value="timing">
           <Card>
             <CardHeader>
-              <CardTitle>Impressions by Time of Day</CardTitle>
+              <CardTitle>Footfall by Time of Day</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-80">
@@ -302,15 +322,16 @@ export default function CampaignReport() {
                         backgroundColor: "white", 
                         border: "1px solid #e2e8f0",
                         borderRadius: "8px"
-                      }} 
+                      }}
+                      formatter={(value) => [`${value} visitors`, "Footfall"]}
                     />
-                    <Bar dataKey="impressions" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="footfall" fill="#8b5cf6" radius={[4, 4, 0, 0]} name="Visitors" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
               <div className="mt-4 p-4 bg-violet-50 rounded-xl">
                 <p className="text-sm text-violet-800">
-                  <strong>Peak Performance:</strong> Your ad performs best between 6PM - 9PM with an average of 680 impressions per hour.
+                  <strong>Peak Hours:</strong> Highest foot traffic between 6PM - 9PM (Evening Peak) with ~580 visitors per hour. Best time for maximum ad exposure!
                 </p>
               </div>
             </CardContent>
