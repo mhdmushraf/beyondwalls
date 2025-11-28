@@ -224,12 +224,22 @@ export default function Contact() {
               {/* Social Links */}
               <div className="pt-6">
                 <p className="text-sm text-slate-500 mb-4">Follow us on social media</p>
-                <div className="flex gap-3">
-                  {["LinkedIn", "Twitter", "Instagram"].map((social, i) => (
-                    <Button key={i} variant="outline" size="sm" className="text-slate-900">
-                      {social}
-                    </Button>
-                  ))}
+                <div className="flex gap-3 flex-wrap">
+                  <a href="https://www.linkedin.com/company/beyondwallsae" target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" size="sm" className="text-slate-900">LinkedIn</Button>
+                  </a>
+                  <a href="https://x.com/BeyondWallsae" target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" size="sm" className="text-slate-900">X/Twitter</Button>
+                  </a>
+                  <a href="https://www.instagram.com/beyondwallsae/" target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" size="sm" className="text-slate-900">Instagram</Button>
+                  </a>
+                  <a href="https://www.facebook.com/beyondwallsae" target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" size="sm" className="text-slate-900">Facebook</Button>
+                  </a>
+                  <a href="https://www.youtube.com/@BeyondWallsAE" target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" size="sm" className="text-slate-900">YouTube</Button>
+                  </a>
                 </div>
               </div>
             </div>
