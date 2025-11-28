@@ -25,6 +25,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import UAEPhoneInput from "@/components/forms/UAEPhoneInput";
+import UAEAddressInput from "@/components/forms/UAEAddressInput";
 
 export default function CompleteProfile() {
   const navigate = useNavigate();
@@ -143,8 +145,15 @@ export default function CompleteProfile() {
     }
   };
 
+  const isValidPhone = () => {
+    if (!formData.phone) return false;
+    const digits = formData.phone.replace(/\D/g, "");
+    // UAE phone should have country code (971) + 9 digits = 12 digits total
+    return digits.length >= 11 && digits.length <= 12;
+  };
+
   const canProceed = () => {
-    if (step === 1) return formData.avatar_url && formData.phone;
+    if (step === 1) return formData.avatar_url && formData.phone && isValidPhone();
     if (step === 2 && accountType === "company") return formData.company_name;
     if (step === 2 && accountType === "individual") return formData.emirates_id_front_url;
     if (step === 3 && accountType === "company") return formData.emirates_id_front_url;
@@ -422,33 +431,17 @@ export default function CompleteProfile() {
                         </div>
 
                         <div className="space-y-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="phone" className="flex items-center gap-2 text-slate-700">
-                              <Phone className="w-4 h-4 text-violet-600" />
-                              Mobile Number <span className="text-rose-500">*</span>
-                            </Label>
-                            <Input
-                              id="phone"
-                              placeholder="+971 50 XXX XXXX"
-                              value={formData.phone}
-                              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                              className="h-12 text-lg"
-                            />
-                          </div>
+                          <UAEPhoneInput
+                            value={formData.phone}
+                            onChange={(phone) => setFormData({ ...formData, phone })}
+                            required
+                          />
 
-                          <div className="space-y-2">
-                            <Label htmlFor="address" className="flex items-center gap-2 text-slate-700">
-                              <MapPin className="w-4 h-4 text-violet-600" />
-                              Address
-                            </Label>
-                            <Input
-                              id="address"
-                              placeholder="Building, Street, City"
-                              value={formData.address}
-                              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                              className="h-12"
-                            />
-                          </div>
+                          <UAEAddressInput
+                            value={formData.address}
+                            onChange={(address) => setFormData({ ...formData, address })}
+                            label="Address"
+                          />
                         </div>
                       </div>
                     )}

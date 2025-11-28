@@ -27,6 +27,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import UAEPhoneInput from "@/components/forms/UAEPhoneInput";
+import UAEAddressInput from "@/components/forms/UAEAddressInput";
+import VenueLocationPicker from "@/components/maps/VenueLocationPicker";
 
 const VENUE_TYPES = [
   { value: "restaurant", label: "Restaurant" },
@@ -53,6 +56,8 @@ export default function AddVenue() {
     address: "",
     city: "",
     area: "",
+    latitude: null,
+    longitude: null,
     contact_name: "",
     contact_phone: "",
     contact_email: "",
@@ -93,6 +98,12 @@ export default function AddVenue() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!formData.latitude || !formData.longitude) {
+      toast.error("Please select venue location on the map");
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -245,15 +256,12 @@ export default function AddVenue() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label>Full Address *</Label>
-              <Textarea
-                placeholder="Building name, street, area..."
-                value={formData.address}
-                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                required
-              />
-            </div>
+            <UAEAddressInput
+              value={formData.address}
+              onChange={(address) => setFormData({ ...formData, address })}
+              label="Full Address"
+              required
+            />
 
             <div className="space-y-2">
               <Label>Average Daily Footfall</Label>
@@ -270,29 +278,43 @@ export default function AddVenue() {
         <Card className="border-0 shadow-xl mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-violet-600" />
+              Venue Location on Map *
+            </CardTitle>
+            <CardDescription>Click on the map to mark your venue's exact location</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <VenueLocationPicker
+              value={formData.latitude && formData.longitude ? { lat: formData.latitude, lng: formData.longitude } : null}
+              onChange={(coords) => setFormData({ ...formData, latitude: coords.latitude, longitude: coords.longitude })}
+              selectedCity={formData.city}
+            />
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-xl mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
               <Phone className="w-5 h-5 text-violet-600" />
               Contact Information
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Contact Person Name</Label>
-                <Input
-                  placeholder="Full name"
-                  value={formData.contact_name}
-                  onChange={(e) => setFormData({ ...formData, contact_name: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Contact Phone</Label>
-                <Input
-                  placeholder="+971 50 XXX XXXX"
-                  value={formData.contact_phone}
-                  onChange={(e) => setFormData({ ...formData, contact_phone: e.target.value })}
-                />
-              </div>
+            <div className="space-y-2">
+              <Label>Contact Person Name</Label>
+              <Input
+                placeholder="Full name"
+                value={formData.contact_name}
+                onChange={(e) => setFormData({ ...formData, contact_name: e.target.value })}
+              />
             </div>
+            
+            <UAEPhoneInput
+              value={formData.contact_phone}
+              onChange={(phone) => setFormData({ ...formData, contact_phone: phone })}
+              label="Contact Phone"
+            />
+            
             <div className="space-y-2">
               <Label>Contact Email</Label>
               <Input
@@ -333,7 +355,7 @@ export default function AddVenue() {
           </Button>
           <Button 
             type="submit"
-            disabled={loading || !formData.name || !formData.type || !formData.city || !formData.address}
+            disabled={loading || !formData.name || !formData.type || !formData.city || !formData.address || !formData.latitude || !formData.longitude}
             className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700"
           >
             {loading ? (
