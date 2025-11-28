@@ -57,6 +57,36 @@ export default function AdminDashboard() {
     }
   };
 
+  const { data: users = [] } = useQuery({
+    queryKey: ["all-users"],
+    queryFn: () => base44.entities.User.list(),
+    enabled: authChecked
+  });
+
+  const { data: venues = [] } = useQuery({
+    queryKey: ["all-venues"],
+    queryFn: () => base44.entities.Venue.list(),
+    enabled: authChecked
+  });
+
+  const { data: screens = [] } = useQuery({
+    queryKey: ["all-screens"],
+    queryFn: () => base44.entities.Screen.list(),
+    enabled: authChecked
+  });
+
+  const { data: campaigns = [] } = useQuery({
+    queryKey: ["all-campaigns"],
+    queryFn: () => base44.entities.Campaign.list("-created_date", 50),
+    enabled: authChecked
+  });
+
+  const { data: transactions = [] } = useQuery({
+    queryKey: ["all-transactions"],
+    queryFn: () => base44.entities.Transaction.list("-created_date", 20),
+    enabled: authChecked
+  });
+
   if (!authChecked) {
     return (
       <div className="p-6 lg:p-8 flex items-center justify-center min-h-[60vh]">
@@ -67,31 +97,6 @@ export default function AdminDashboard() {
       </div>
     );
   }
-
-  const { data: users = [] } = useQuery({
-    queryKey: ["all-users"],
-    queryFn: () => base44.entities.User.list()
-  });
-
-  const { data: venues = [] } = useQuery({
-    queryKey: ["all-venues"],
-    queryFn: () => base44.entities.Venue.list()
-  });
-
-  const { data: screens = [] } = useQuery({
-    queryKey: ["all-screens"],
-    queryFn: () => base44.entities.Screen.list()
-  });
-
-  const { data: campaigns = [] } = useQuery({
-    queryKey: ["all-campaigns"],
-    queryFn: () => base44.entities.Campaign.list("-created_date", 50)
-  });
-
-  const { data: transactions = [] } = useQuery({
-    queryKey: ["all-transactions"],
-    queryFn: () => base44.entities.Transaction.list("-created_date", 20)
-  });
 
   const pendingCampaigns = campaigns.filter(c => c.status === "pending_approval");
   const pendingVenues = venues.filter(v => v.status === "pending");
