@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
@@ -55,7 +55,42 @@ export default function AdminScreens() {
   const [editData, setEditData] = useState({});
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    checkAdminAuth();
+  }, []);
+
+  const checkAdminAuth = async () => {
+    try {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) {
+        base44.auth.redirectToLogin(createPageUrl("AdminScreens"));
+        return;
+      }
+      const userData = await base44.auth.me();
+      const isAdmin = userData?.user_role === "admin" || userData?.role === "admin";
+      if (!isAdmin) {
+        window.location.href = createPageUrl("Dashboard");
+        return;
+      }
+      setAuthChecked(true);
+    } catch (e) {
+      base44.auth.redirectToLogin(createPageUrl("AdminScreens"));
+    }
+  };
+
+  if (!authChecked) {
+    return (
+      <div className="p-6 lg:p-8 flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <Loader2 className="w-10 h-10 text-violet-600 animate-spin mx-auto mb-4" />
+          <p className="text-slate-500">Checking permissions...</p>
+        </div>
+      </div>
+    );
+  }
 
   const generateSetupCode = () => {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';

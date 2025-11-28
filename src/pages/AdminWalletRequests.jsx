@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { createPageUrl } from "@/utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import {
@@ -45,10 +46,20 @@ export default function AdminWalletRequests() {
 
   const loadUser = async () => {
     try {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) {
+        base44.auth.redirectToLogin(createPageUrl("AdminWalletRequests"));
+        return;
+      }
       const userData = await base44.auth.me();
+      const isAdmin = userData?.user_role === "admin" || userData?.role === "admin";
+      if (!isAdmin) {
+        window.location.href = createPageUrl("Dashboard");
+        return;
+      }
       setUser(userData);
     } catch (e) {
-      base44.auth.redirectToLogin();
+      base44.auth.redirectToLogin(createPageUrl("AdminWalletRequests"));
     }
   };
 
