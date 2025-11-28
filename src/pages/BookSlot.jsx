@@ -617,7 +617,7 @@ Please review and approve/reject this campaign in the admin dashboard.
     );
   }
 
-  // Show checkout mode
+  // Show checkout mode - rendered inline instead of early return to prevent hooks issue
   if (checkoutMode && cartItems.length > 0) {
     return (
       <div className="p-6 lg:p-8 max-w-6xl mx-auto">
