@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { createPageUrl } from "@/utils";
 import {
   User,
   Mail,
@@ -44,6 +45,11 @@ export default function Settings() {
 
   const loadUser = async () => {
     try {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) {
+        base44.auth.redirectToLogin(createPageUrl("Settings"));
+        return;
+      }
       const userData = await base44.auth.me();
       setUser(userData);
       setFormData({
@@ -55,7 +61,7 @@ export default function Settings() {
         payment_method: userData.payment_method || ""
       });
     } catch (e) {
-      base44.auth.redirectToLogin();
+      base44.auth.redirectToLogin(createPageUrl("Settings"));
     }
   };
 
