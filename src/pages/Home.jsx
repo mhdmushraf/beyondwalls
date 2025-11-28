@@ -561,9 +561,9 @@ export default function Home() {
           <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16">
             <div className="flex items-center gap-3 text-white">
               <img 
-                src="https://in5.ae/wp-content/uploads/2021/04/in5-logo.png" 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6925a3bad1f286c6fe7d00ba/700c3204b_image.png" 
                 alt="in5 Dubai" 
-                className="h-8 object-contain brightness-0 invert opacity-80"
+                className="h-10 object-contain brightness-0 invert"
               />
               <div>
                 <p className="font-bold">in5 Dubai</p>
