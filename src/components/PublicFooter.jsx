@@ -1,8 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { MonitorPlay } from "lucide-react";
+import { MonitorPlay, Twitter, Instagram, Youtube, Facebook, Linkedin } from "lucide-react";
 import NewsletterSignup from "./NewsletterSignup";
+
+const SOCIAL_LINKS = [
+  { name: "X/Twitter", url: "https://x.com/BeyondWallsae", icon: Twitter },
+  { name: "Instagram", url: "https://www.instagram.com/beyondwallsae/", icon: Instagram },
+  { name: "YouTube", url: "https://www.youtube.com/@BeyondWallsAE", icon: Youtube },
+  { name: "Facebook", url: "https://www.facebook.com/beyondwallsae", icon: Facebook },
+  { name: "LinkedIn", url: "https://www.linkedin.com/company/beyondwallsae", icon: Linkedin },
+];
 
 export default function PublicFooter() {
   return (
@@ -38,9 +46,23 @@ export default function PublicFooter() {
           <div>
             <h4 className="font-semibold text-white mb-4">Contact</h4>
             <div className="space-y-2 text-sm text-slate-400">
-              <p>hello@beyondwalls.ae</p>
-              <p>+971 55 614 0067</p>
+              <a href="mailto:hello@beyondwalls.ae" className="block hover:text-white">hello@beyondwalls.ae</a>
+              <a href="tel:+971556140067" className="block hover:text-white">+971 55 614 0067</a>
               <p>Dubai, UAE</p>
+            </div>
+            <div className="flex gap-3 mt-4">
+              {SOCIAL_LINKS.map((social) => (
+                <a 
+                  key={social.name}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 bg-slate-800 hover:bg-violet-600 rounded-lg flex items-center justify-center transition-colors"
+                  aria-label={social.name}
+                >
+                  <social.icon className="w-4 h-4 text-slate-400 hover:text-white" />
+                </a>
+              ))}
             </div>
           </div>
         </div>
@@ -57,7 +79,7 @@ export default function PublicFooter() {
         </div>
         <div className="border-t border-slate-700 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-slate-400 text-sm">
-            © 2025 BeyondWalls. All rights reserved.
+            © {new Date().getFullYear()} BeyondWalls. All rights reserved. | <a href="https://www.beyondwalls.ae" className="hover:text-white">www.beyondwalls.ae</a>
           </p>
           <div className="flex gap-6 text-sm">
             <Link to={createPageUrl("Terms")} className="text-slate-400 hover:text-white">Terms of Service</Link>

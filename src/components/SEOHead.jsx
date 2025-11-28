@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 
 const DEFAULT_SEO = {
   siteName: "BeyondWalls",
-  siteUrl: "https://beyondwalls.ae",
+  siteUrl: "https://www.beyondwalls.ae",
   defaultTitle: "BeyondWalls - #1 Digital Out-of-Home Advertising Platform in UAE",
   defaultDescription: "BeyondWalls is UAE's leading DOOH platform. Book digital screens in cafés, malls & gyms. 500+ screens, real-time analytics, instant activation. Advertisers reach millions, venues earn 70% revenue.",
-  defaultImage: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&h=630&fit=crop&q=80",
+  defaultImage: "https://www.beyondwalls.ae/og-image.jpg",
   twitterHandle: "@BeyondWallsae",
   locale: "en_AE"
 };
@@ -119,7 +119,9 @@ export default function SEOHead({
         "https://x.com/BeyondWallsae",
         "https://www.instagram.com/beyondwallsae/",
         "https://www.youtube.com/@BeyondWallsAE",
-        "https://www.facebook.com/beyondwallsae"
+        "https://www.facebook.com/beyondwallsae",
+        "https://www.linkedin.com/company/beyondwallsae",
+        "https://www.tiktok.com/@beyondwallsae"
       ]
     };
 
@@ -144,18 +146,18 @@ export const PAGE_SEO = {
   home: {
     title: null, // Uses default
     description: "BeyondWalls is UAE's #1 self-serve DOOH advertising platform. Book premium digital screens in 500+ cafés, malls, gyms & coworking spaces across Dubai, Abu Dhabi & Sharjah. Advertisers reach millions daily, venues earn 70% revenue share. Start in minutes!",
-    keywords: "DOOH advertising UAE, digital signage Dubai, outdoor advertising platform, screen advertising, digital billboard UAE, café advertising, mall advertising Dubai, gym advertising",
+    keywords: "DOOH advertising UAE, digital signage Dubai, outdoor advertising platform, screen advertising, digital billboard UAE, café advertising, mall advertising Dubai, gym advertising, digital out of home, programmatic DOOH, self-serve advertising",
     url: "/",
-    image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&h=630&fit=crop&q=80",
+    image: "https://www.beyondwalls.ae/og-image.jpg",
     structuredData: {
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "BeyondWalls",
-      "url": "https://beyondwalls.ae",
+      "url": "https://www.beyondwalls.ae",
       "description": "UAE's #1 Digital Out-of-Home Advertising Platform - Book screens in cafés, malls & gyms",
       "potentialAction": {
         "@type": "SearchAction",
-        "target": "https://beyondwalls.ae/search?q={search_term_string}",
+        "target": "https://www.beyondwalls.ae/search?q={search_term_string}",
         "query-input": "required name=search_term_string"
       }
     }
