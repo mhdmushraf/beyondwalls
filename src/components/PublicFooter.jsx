@@ -57,7 +57,7 @@ export default function PublicFooter() {
         </div>
         <div className="border-t border-slate-700 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-slate-400 text-sm">
-            © 2024 BeyondWalls. All rights reserved.
+            © 2025 BeyondWalls. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm">
             <Link to={createPageUrl("Terms")} className="text-slate-400 hover:text-white">Terms of Service</Link>

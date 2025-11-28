@@ -64,7 +64,7 @@ export default function PublicNav() {
 
         <div className="flex items-center gap-2">
           {isAuthenticated ? (
-            <Link to={createPageUrl("AdvertiserDashboard")}>
+            <Link to={createPageUrl("Dashboard")}>
               <Button size="sm" className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700">
                 Dashboard
                 <ArrowRight className="w-4 h-4 ml-1" />
@@ -76,7 +76,7 @@ export default function PublicNav() {
                 variant="ghost" 
                 size="sm"
                 className="hidden sm:flex"
-                onClick={() => base44.auth.redirectToLogin()}
+                onClick={() => base44.auth.redirectToLogin(createPageUrl("Dashboard"))}
               >
                 Sign In
               </Button>
