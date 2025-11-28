@@ -58,6 +58,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
+import NewsletterManager from "@/components/crm/NewsletterManager";
 
 export default function AdminCRM() {
   const queryClient = useQueryClient();
@@ -528,6 +529,11 @@ www.beyondwalls.ae
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Newsletter Manager */}
+      <div className="mb-6">
+        <NewsletterManager />
       </div>
 
       {/* Tabs for Leads vs Users */}
