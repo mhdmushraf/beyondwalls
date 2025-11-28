@@ -30,7 +30,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
+
 import {
   Select,
   SelectContent,
@@ -43,6 +43,7 @@ import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import PricingCalculator from "@/components/pricing/PricingCalculator";
 import AIRecommendations from "@/components/recommendations/AIRecommendations";
+import AdvancedScreenSearch from "@/components/booking/AdvancedScreenSearch";
 
 export default function BookSlot() {
   const navigate = useNavigate();
@@ -55,8 +56,7 @@ export default function BookSlot() {
   const [loading, setLoading] = useState(false);
   const [checkingAvailability, setCheckingAvailability] = useState(false);
   const [availabilityError, setAvailabilityError] = useState(null);
-  const [filters, setFilters] = useState({ city: "", venue_type: "" });
-  const [search, setSearch] = useState("");
+
 
   const [formData, setFormData] = useState({
     campaign_name: "",
@@ -139,18 +139,6 @@ export default function BookSlot() {
     }
     refetchFavorites();
   };
-
-  const filteredScreens = screens.filter(screen => {
-    const venue = venues.find(v => v.id === screen.venue_id);
-    if (!venue) return false;
-    
-    if (filters.city && venue.city !== filters.city) return false;
-    if (filters.venue_type && venue.type !== filters.venue_type) return false;
-    if (search && !screen.name.toLowerCase().includes(search.toLowerCase()) && 
-        !venue.name.toLowerCase().includes(search.toLowerCase())) return false;
-    
-    return true;
-  });
 
   const getAvailableSlots = () => {
     if (!selectedScreen) return [];
@@ -502,8 +490,7 @@ Please review and approve/reject this campaign in the admin dashboard.
     }
   };
 
-  const cities = [...new Set(venues.map(v => v.city))];
-  const venueTypes = [...new Set(venues.map(v => v.type))];
+
 
   if (!user) {
     return (
@@ -558,102 +545,15 @@ Please review and approve/reject this campaign in the admin dashboard.
             }}
           />
 
-          <div className="flex flex-wrap gap-4">
-            <div className="relative flex-1 min-w-[200px]">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input 
-                placeholder="Search screens or venues..." 
-                className="pl-10"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-            <Select value={filters.city} onValueChange={(v) => setFilters({...filters, city: v})}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="City" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Cities</SelectItem>
-                {cities.map(city => (
-                  <SelectItem key={city} value={city}>{city}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={filters.venue_type} onValueChange={(v) => setFilters({...filters, venue_type: v})}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="Venue Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                {venueTypes.map(type => (
-                  <SelectItem key={type} value={type} className="capitalize">{type}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredScreens.map((screen) => {
-              const venue = venues.find(v => v.id === screen.venue_id);
-              const bookedCount = 5 - (screen.available_slots || 5);
-              
-              return (
-                <Card 
-                  key={screen.id}
-                  className={`cursor-pointer transition-all hover:shadow-lg ${
-                    selectedScreen?.id === screen.id ? "ring-2 ring-violet-600" : ""
-                  }`}
-                  onClick={() => setSelectedScreen(screen)}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      <div className="w-14 h-14 bg-violet-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <MonitorPlay className="w-7 h-7 text-violet-600" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between">
-                          <h3 className="font-semibold text-slate-900 truncate">{screen.name}</h3>
-                          <button
-                            onClick={(e) => toggleFavorite(e, screen.id)}
-                            className={`p-1 rounded-full transition-colors ${
-                              isFavorite(screen.id) 
-                                ? "text-amber-500 hover:bg-amber-50" 
-                                : "text-slate-300 hover:text-amber-500 hover:bg-amber-50"
-                            }`}
-                          >
-                            <Star className={`w-5 h-5 ${isFavorite(screen.id) ? "fill-current" : ""}`} />
-                          </button>
-                        </div>
-                        <p className="text-sm text-slate-500 truncate">{venue?.name}</p>
-                        <div className="flex items-center gap-2 mt-1 text-xs text-slate-400">
-                          <MapPin className="w-3 h-3" />
-                          <span>{venue?.city}</span>
-                          <span>•</span>
-                          <span>{screen.size}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between mt-4 pt-4 border-t">
-                      <div>
-                        <p className="text-lg font-bold text-violet-600">AED {screen.slot_price}/week</p>
-                        <p className="text-xs text-slate-500">per slot</p>
-                      </div>
-                      <Badge variant={bookedCount === 5 ? "destructive" : "secondary"}>
-                        {5 - bookedCount} slots available
-                      </Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-
-          {filteredScreens.length === 0 && (
-            <div className="text-center py-12">
-              <MonitorPlay className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-500">No screens available</p>
-            </div>
-          )}
+          <AdvancedScreenSearch
+            screens={screens}
+            venues={venues}
+            allBookings={allBookings}
+            favorites={favorites}
+            onSelectScreen={setSelectedScreen}
+            onToggleFavorite={toggleFavorite}
+            selectedScreen={selectedScreen}
+          />
 
           <div className="flex justify-end">
             <Button 
