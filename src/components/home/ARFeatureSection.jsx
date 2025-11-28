@@ -151,7 +151,7 @@ export default function ARFeatureSection() {
               Watch AR Demo
             </Button>
             <Link to={createPageUrl("Contact")}>
-              <Button size="lg" variant="outline" className="h-14 px-8 text-lg border-violet-500/50 text-white hover:bg-violet-500/10">
+              <Button size="lg" className="h-14 px-8 text-lg border-2 border-white bg-transparent text-white hover:bg-white hover:text-violet-600">
                 Request Early Access
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
