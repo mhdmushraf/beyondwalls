@@ -122,7 +122,7 @@ export default function Layout({ children, currentPageName }) {
     "Home", "Login", "Register", "CompleteProfile", "ScreenPlayer", 
     "About", "Services", "Contact", "ScreenLocations", "Blog", 
     "HelpCenter", "Terms", "Privacy", "HowItWorks", "PendingApproval", 
-    "Connect", "BlogPost", "AuthorProfile", "NotFound"
+    "Connect", "BlogPost", "AuthorProfile", "NotFound", "ARPremium"
   ];
   
   if (publicPages.includes(currentPageName)) {

@@ -42,6 +42,7 @@ import PublicFooter from "@/components/PublicFooter";
 import SEOHead from "@/components/SEOHead";
 import PremiumWaitlistModal from "@/components/modals/PremiumWaitlistModal";
 import EarlyAccessModal from "@/components/modals/EarlyAccessModal";
+import PublicAIChatWidget from "@/components/chat/PublicAIChatWidget";
 
 export default function ARPremium() {
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
@@ -232,8 +233,34 @@ export default function ARPremium() {
   return (
     <div className="min-h-screen bg-white">
       <SEOHead 
-        title="AR Engage - Premium AR Advertising | BeyondWalls"
-        description="Transform static screens into immersive AR experiences. Virtual try-on, 3D visualization, and interactive advertising for premium brands in UAE."
+        title="AR Engage - Premium AR Advertising | BeyondWalls Dubai"
+        description="Transform static screens into immersive AR experiences. Virtual try-on, 3D visualization, and interactive advertising for premium brands in UAE. WebAR technology - no app required."
+        keywords="AR advertising Dubai, augmented reality advertising UAE, virtual try-on Dubai, 3D product visualization, WebAR advertising, interactive DOOH, AR marketing UAE, immersive advertising Dubai"
+        url="/ar-premium"
+        image="https://www.beyondwalls.ae/og-ar-engage.jpg"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "name": "BeyondWalls AR Engage",
+          "description": "Premium augmented reality advertising solution for digital out-of-home screens in UAE",
+          "brand": {
+            "@type": "Brand",
+            "name": "BeyondWalls"
+          },
+          "offers": {
+            "@type": "AggregateOffer",
+            "priceCurrency": "AED",
+            "lowPrice": "2500",
+            "highPrice": "7500",
+            "offerCount": "3"
+          },
+          "category": "AR Advertising",
+          "provider": {
+            "@type": "Organization",
+            "name": "BeyondWalls",
+            "url": "https://www.beyondwalls.ae"
+          }
+        }}
       />
       <PublicNav />
 
@@ -579,6 +606,7 @@ export default function ARPremium() {
       </section>
 
       <PublicFooter />
+      <PublicAIChatWidget />
 
       {/* Modals */}
       <PremiumWaitlistModal open={showWaitlistModal} onClose={() => setShowWaitlistModal(false)} />
