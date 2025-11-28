@@ -21,7 +21,9 @@ import {
   Eye,
   AlertCircle,
   Mail,
-  Star
+  Star,
+  Sparkles,
+  RefreshCw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -61,8 +63,14 @@ export default function BookSlot() {
     creative_url: "",
     creative_type: "image",
     start_date: new Date(),
-    weeks: 1
+    weeks: 1,
+    headline: "",
+    description: "",
+    business_name: "",
+    product_service: ""
   });
+  const [adCopyVariations, setAdCopyVariations] = useState([]);
+  const [generatingCopy, setGeneratingCopy] = useState(false);
 
   useEffect(() => {
     loadUser();
@@ -254,6 +262,65 @@ export default function BookSlot() {
   };
 
   
+
+  const generateAdCopy = async () => {
+    if (!formData.business_name && !formData.campaign_name) {
+      toast.error("Please enter a campaign or business name first");
+      return;
+    }
+
+    setGeneratingCopy(true);
+    try {
+      const venue = selectedScreen ? venues.find(v => v.id === selectedScreen.venue_id) : null;
+      
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt: `You are an expert advertising copywriter. Generate 3 compelling ad copy variations for a digital signage advertisement.
+
+BUSINESS/CAMPAIGN INFO:
+- Campaign Name: ${formData.campaign_name || "N/A"}
+- Business Name: ${formData.business_name || "N/A"}
+- Product/Service: ${formData.product_service || "General business promotion"}
+- Venue Type: ${venue?.type || "retail venue"}
+- Location: ${venue?.city || "UAE"}
+
+Generate 3 different ad copy variations with different tones (professional, friendly, urgent). Each should have:
+- A catchy headline (max 6 words, impactful)
+- A short description (max 15 words, clear call-to-action)
+
+The ads will be displayed on digital screens in ${venue?.type || "public"} venues.`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            variations: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  headline: { type: "string" },
+                  description: { type: "string" },
+                  tone: { type: "string" }
+                }
+              }
+            }
+          }
+        }
+      });
+
+      setAdCopyVariations(response.variations || []);
+      if (response.variations?.length > 0) {
+        setFormData({
+          ...formData,
+          headline: response.variations[0].headline,
+          description: response.variations[0].description
+        });
+      }
+      toast.success("Ad copy generated!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to generate ad copy");
+    }
+    setGeneratingCopy(false);
+  };
 
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
@@ -662,13 +729,105 @@ Please review and approve/reject this campaign in the admin dashboard.
               <CardTitle>Campaign Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Campaign Name</Label>
+                  <Input 
+                    placeholder="e.g., Summer Sale Campaign"
+                    value={formData.campaign_name}
+                    onChange={(e) => setFormData({...formData, campaign_name: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label>Business Name</Label>
+                  <Input 
+                    placeholder="e.g., Fresh Bites Restaurant"
+                    value={formData.business_name}
+                    onChange={(e) => setFormData({...formData, business_name: e.target.value})}
+                  />
+                </div>
+              </div>
+
               <div>
-                <Label>Campaign Name</Label>
+                <Label>Product/Service (for AI ad copy)</Label>
                 <Input 
-                  placeholder="e.g., Summer Sale Campaign"
-                  value={formData.campaign_name}
-                  onChange={(e) => setFormData({...formData, campaign_name: e.target.value})}
+                  placeholder="e.g., Healthy food delivery, 20% off this week"
+                  value={formData.product_service}
+                  onChange={(e) => setFormData({...formData, product_service: e.target.value})}
                 />
+              </div>
+
+              {/* AI Ad Copy Generator */}
+              <div className="border rounded-xl p-4 bg-gradient-to-br from-violet-50 to-indigo-50">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-violet-600" />
+                    <Label className="text-violet-800 font-semibold">AI Ad Copy Generator</Label>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={generateAdCopy}
+                    disabled={generatingCopy}
+                    className="border-violet-300 text-violet-700 hover:bg-violet-100"
+                  >
+                    {generatingCopy ? (
+                      <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                    ) : (
+                      <RefreshCw className="w-4 h-4 mr-1" />
+                    )}
+                    Generate
+                  </Button>
+                </div>
+
+                {adCopyVariations.length > 0 ? (
+                  <div className="grid grid-cols-3 gap-2 mb-3">
+                    {adCopyVariations.map((variation, i) => (
+                      <div
+                        key={i}
+                        onClick={() => setFormData({
+                          ...formData,
+                          headline: variation.headline,
+                          description: variation.description
+                        })}
+                        className={`p-3 rounded-lg border-2 cursor-pointer transition-all text-sm ${
+                          formData.headline === variation.headline
+                            ? "border-violet-600 bg-white"
+                            : "border-transparent bg-white/50 hover:border-violet-300"
+                        }`}
+                      >
+                        <span className="text-xs text-violet-600 font-medium">{variation.tone}</span>
+                        <p className="font-semibold text-slate-900 mt-1">{variation.headline}</p>
+                        <p className="text-slate-600 text-xs mt-1">{variation.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-violet-600 mb-3">
+                    Enter campaign details above, then click Generate for AI-powered ad copy suggestions
+                  </p>
+                )}
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-xs">Headline</Label>
+                    <Input
+                      placeholder="Your catchy headline"
+                      value={formData.headline}
+                      onChange={(e) => setFormData({...formData, headline: e.target.value})}
+                      className="bg-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs">Description</Label>
+                    <Input
+                      placeholder="Short description"
+                      value={formData.description}
+                      onChange={(e) => setFormData({...formData, description: e.target.value})}
+                      className="bg-white"
+                    />
+                  </div>
+                </div>
               </div>
 
               <div>
