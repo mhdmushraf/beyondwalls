@@ -154,12 +154,14 @@ export default function ARFeatureSection() {
               <Play className="w-5 h-5 mr-2" />
               Watch AR Demo
             </Button>
-            <Link to={createPageUrl("Contact")}>
-              <Button size="lg" className="h-14 px-8 text-lg border-2 border-white bg-transparent text-white hover:bg-white hover:text-violet-600">
-                Request Early Access
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </Link>
+            <Button 
+              size="lg" 
+              className="h-14 px-8 text-lg border-2 border-white bg-transparent text-white hover:bg-white hover:text-violet-600"
+              onClick={() => setShowEarlyAccessModal(true)}
+            >
+              Request Early Access
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
           </div>
         </div>
 
