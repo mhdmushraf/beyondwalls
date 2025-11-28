@@ -559,10 +559,21 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16">
             <div className="flex items-center gap-3 text-white">
-              <Award className="w-8 h-8 text-amber-400" />
+              <img 
+                src="https://in5.ae/wp-content/uploads/2021/04/in5-logo.png" 
+                alt="in5 Dubai" 
+                className="h-8 object-contain brightness-0 invert opacity-80"
+              />
               <div>
                 <p className="font-bold">in5 Dubai</p>
-                <p className="text-slate-400 text-sm">Startup Member</p>
+                <p className="text-slate-400 text-sm">Incubated Startup</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 text-white">
+              <Award className="w-8 h-8 text-amber-400" />
+              <div>
+                <p className="font-bold">Award Winner</p>
+                <p className="text-slate-400 text-sm">Global Recognition 2025</p>
               </div>
             </div>
             <div className="flex items-center gap-3 text-white">
@@ -579,11 +590,75 @@ export default function Home() {
                 <p className="text-slate-400 text-sm">Local Support</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 text-white">
-              <Users className="w-8 h-8 text-violet-400" />
-              <div>
-                <p className="font-bold">100+ Clients</p>
-                <p className="text-slate-400 text-sm">And Growing</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Investor Section */}
+      <section className="py-20 px-6 bg-gradient-to-br from-slate-50 to-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <Badge className="bg-amber-100 text-amber-700 border-0 mb-4">For Investors</Badge>
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
+                Disrupting a $45B Global Market
+              </h2>
+              <p className="text-lg text-slate-600 mb-6">
+                BeyondWalls is positioned to capture a significant share of the rapidly growing DOOH market 
+                in the MENA region. Our asset-light, high-margin model creates sustainable value.
+              </p>
+              <div className="space-y-4 mb-8">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center">
+                    <TrendingUp className="w-5 h-5 text-violet-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-900">First-Mover Advantage</p>
+                    <p className="text-slate-500 text-sm">First self-serve DOOH platform in UAE</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
+                    <BarChart3 className="w-5 h-5 text-emerald-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-900">30% Commission Model</p>
+                    <p className="text-slate-500 text-sm">High-margin recurring revenue</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                    <Award className="w-5 h-5 text-amber-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-900">Award-Winning Innovation</p>
+                    <p className="text-slate-500 text-sm">Global Recognition Award 2025</p>
+                  </div>
+                </div>
+              </div>
+              <a href="mailto:partnership@beyondwalls.ae">
+                <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600 h-14 px-8">
+                  Investor Inquiries
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </a>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-100">
+                <p className="text-3xl font-bold text-violet-600 mb-1">$1.2B</p>
+                <p className="text-slate-600 text-sm">MENA DOOH Market</p>
+              </div>
+              <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-100">
+                <p className="text-3xl font-bold text-emerald-600 mb-1">12.4%</p>
+                <p className="text-slate-600 text-sm">Annual Growth (CAGR)</p>
+              </div>
+              <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-100">
+                <p className="text-3xl font-bold text-amber-600 mb-1">90%</p>
+                <p className="text-slate-600 text-sm">Cost Reduction</p>
+              </div>
+              <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-100">
+                <p className="text-3xl font-bold text-rose-600 mb-1">30 min</p>
+                <p className="text-slate-600 text-sm">Campaign Launch</p>
               </div>
             </div>
           </div>

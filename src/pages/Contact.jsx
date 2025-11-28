@@ -8,7 +8,9 @@ import {
   Clock,
   Send,
   MessageSquare,
-  Loader2
+  Loader2,
+  Megaphone,
+  Building2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -82,15 +84,57 @@ export default function Contact() {
       <PublicNav />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50">
-        <div className="max-w-4xl mx-auto text-center">
-          <Badge className="bg-amber-100 text-slate-900 mb-6">Contact Us</Badge>
+      <section className="pt-32 pb-20 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50 relative overflow-hidden">
+        <div className="absolute top-20 right-20 w-72 h-72 bg-violet-200 rounded-full blur-3xl opacity-30" />
+        <div className="absolute bottom-20 left-20 w-64 h-64 bg-indigo-200 rounded-full blur-3xl opacity-30" />
+        <div className="max-w-4xl mx-auto text-center relative">
+          <Badge className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-0 px-4 py-2 mb-6">
+            Let's Connect
+          </Badge>
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
-            Get in Touch
+            We'd Love to Hear From You
           </h1>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-            Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+            Whether you're an advertiser, venue owner, or investor - our team is ready to help you succeed.
           </p>
+        </div>
+      </section>
+
+      {/* Contact Cards */}
+      <section className="py-8 px-6 -mt-12 relative z-10">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-4">
+            <div className="bg-white rounded-2xl p-6 shadow-xl text-center">
+              <div className="w-14 h-14 bg-violet-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <Megaphone className="w-7 h-7 text-violet-600" />
+              </div>
+              <h3 className="font-bold text-slate-900 mb-1">Advertisers</h3>
+              <p className="text-slate-500 text-sm mb-3">Start your campaign today</p>
+              <a href="mailto:hello@beyondwalls.ae" className="text-violet-600 font-medium text-sm hover:underline">
+                hello@beyondwalls.ae
+              </a>
+            </div>
+            <div className="bg-white rounded-2xl p-6 shadow-xl text-center">
+              <div className="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <Building2 className="w-7 h-7 text-emerald-600" />
+              </div>
+              <h3 className="font-bold text-slate-900 mb-1">Venue Partners</h3>
+              <p className="text-slate-500 text-sm mb-3">Monetize your screens</p>
+              <a href="mailto:partnership@beyondwalls.ae" className="text-emerald-600 font-medium text-sm hover:underline">
+                partnership@beyondwalls.ae
+              </a>
+            </div>
+            <div className="bg-white rounded-2xl p-6 shadow-xl text-center">
+              <div className="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <MessageSquare className="w-7 h-7 text-amber-600" />
+              </div>
+              <h3 className="font-bold text-slate-900 mb-1">Technical Support</h3>
+              <p className="text-slate-500 text-sm mb-3">Need help? We're here</p>
+              <a href="mailto:support@beyondwalls.ae" className="text-amber-600 font-medium text-sm hover:underline">
+                support@beyondwalls.ae
+              </a>
+            </div>
+          </div>
         </div>
       </section>
 
