@@ -103,6 +103,7 @@ export default function BookSlot() {
     }
   };
 
+  // All hooks must be called before any conditional returns
   const { data: screens = [] } = useQuery({
     queryKey: ["available-screens"],
     queryFn: () => base44.entities.Screen.filter({ status: "online" })
@@ -137,6 +138,9 @@ export default function BookSlot() {
     queryFn: () => base44.entities.FavoriteScreen.filter({ user_id: user?.email }),
     enabled: !!user?.email
   });
+
+  // All useMemo and derived values
+  const endDate = addWeeks(formData.start_date, formData.weeks);
 
   const isFavorite = (screenId) => favorites.some(f => f.screen_id === screenId);
 
@@ -351,7 +355,6 @@ The ads will be displayed on digital screens in ${venue?.type || "public"} venue
     }
   };
 
-  const endDate = addWeeks(formData.start_date, formData.weeks);
   const { totalCost = 0, dynamicPrice = 0 } = calculateDynamicPrice || {};
 
   // Cart functions
