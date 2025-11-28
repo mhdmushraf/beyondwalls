@@ -101,7 +101,31 @@ export default function ScreenLocations() {
 
   return (
     <div className="min-h-screen bg-white">
-      <SEOHead {...PAGE_SEO.screenLocations} />
+      <SEOHead 
+        {...PAGE_SEO.screenLocations}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "name": "BeyondWalls Digital Advertising Screen Locations",
+          "description": "500+ digital advertising screens in premium venues across Dubai, Abu Dhabi, and Sharjah",
+          "url": "https://www.beyondwalls.ae/screen-locations",
+          "numberOfItems": venues.length || 500,
+          "itemListElement": filteredVenues.slice(0, 20).map((venue, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "item": {
+              "@type": "Place",
+              "name": venue.name,
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": venue.city,
+                "addressRegion": venue.area,
+                "addressCountry": "AE"
+              }
+            }
+          }))
+        }}
+      />
       <PublicNav />
 
       {/* Hero */}

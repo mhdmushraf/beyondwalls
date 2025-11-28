@@ -80,7 +80,57 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-white">
-      <SEOHead {...PAGE_SEO.contact} />
+      <SEOHead 
+        {...PAGE_SEO.contact}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "ContactPage",
+          "name": "Contact BeyondWalls - Advertising Inquiries Dubai",
+          "description": "Contact BeyondWalls for DOOH advertising inquiries, venue partnerships, or support",
+          "mainEntity": {
+            "@type": "Organization",
+            "name": "BeyondWalls",
+            "url": "https://www.beyondwalls.ae",
+            "logo": "https://www.beyondwalls.ae/logo.png",
+            "telephone": "+971-55-614-0067",
+            "email": "hello@beyondwalls.ae",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "in5 Tech, Dubai Internet City",
+              "addressLocality": "Dubai",
+              "addressRegion": "Dubai",
+              "postalCode": "500001",
+              "addressCountry": "AE"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": "25.0957",
+              "longitude": "55.1548"
+            },
+            "openingHoursSpecification": {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
+              "opens": "09:00",
+              "closes": "18:00"
+            },
+            "contactPoint": [
+              {
+                "@type": "ContactPoint",
+                "telephone": "+971-55-614-0067",
+                "contactType": "customer service",
+                "email": "hello@beyondwalls.ae",
+                "availableLanguage": ["English", "Arabic"]
+              },
+              {
+                "@type": "ContactPoint",
+                "telephone": "+971-55-614-0067",
+                "contactType": "sales",
+                "email": "partnership@beyondwalls.ae"
+              }
+            ]
+          }
+        }}
+      />
       <PublicNav />
 
       {/* Hero */}

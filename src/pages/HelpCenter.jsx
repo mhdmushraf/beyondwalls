@@ -122,7 +122,23 @@ export default function HelpCenter() {
 
   return (
     <div className="min-h-screen bg-white">
-      <SEOHead {...PAGE_SEO.helpCenter} />
+      <SEOHead 
+        {...PAGE_SEO.helpCenter}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "name": "BeyondWalls Help Center & FAQs",
+          "description": "Frequently asked questions about DOOH advertising on BeyondWalls platform",
+          "mainEntity": faqs.map(faq => ({
+            "@type": "Question",
+            "name": faq.question,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": faq.answer
+            }
+          }))
+        }}
+      />
       <PublicNav />
 
       {/* Hero */}

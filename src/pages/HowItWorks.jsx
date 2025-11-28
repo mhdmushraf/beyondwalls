@@ -218,7 +218,53 @@ export default function HowItWorks() {
 
   return (
     <div className="min-h-screen bg-white">
-      <SEOHead {...PAGE_SEO.howItWorks} />
+      <SEOHead 
+        {...PAGE_SEO.howItWorks}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "HowTo",
+          "name": "How to Advertise on Digital Screens in Dubai & UAE",
+          "description": "Complete step-by-step guide to booking DOOH advertising on BeyondWalls platform",
+          "totalTime": "PT30M",
+          "estimatedCost": {
+            "@type": "MonetaryAmount",
+            "currency": "AED",
+            "value": "99"
+          },
+          "step": [
+            {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Create Your Account",
+              "text": "Sign up as an advertiser or venue owner. Complete verification with Emirates ID or trade license."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Fund Your Wallet",
+              "text": "Add funds using credit card, Apple Pay, or bank transfer. Minimum top-up is AED 100."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Choose Screens",
+              "text": "Browse 500+ screens across Dubai, Abu Dhabi, and Sharjah. Filter by location, venue type, and price."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Upload Creative",
+              "text": "Upload your image or video ad. Supported formats: JPG, PNG, MP4. Max 60 seconds for video."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Go Live",
+              "text": "Submit for approval. Campaigns reviewed within 2-4 hours. Ads go live on selected screens."
+            }
+          ]
+        }}
+      />
       <PublicNav />
 
       {/* Hero Section */}

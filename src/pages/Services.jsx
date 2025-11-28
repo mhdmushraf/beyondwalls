@@ -125,7 +125,34 @@ export default function Services() {
 
   return (
     <div className="min-h-screen bg-white">
-      <SEOHead {...PAGE_SEO.services} />
+      <SEOHead 
+        {...PAGE_SEO.services}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "Service",
+          "name": "BeyondWalls DOOH Advertising Services",
+          "serviceType": "Digital Out-of-Home Advertising",
+          "provider": {
+            "@type": "Organization",
+            "name": "BeyondWalls",
+            "url": "https://www.beyondwalls.ae"
+          },
+          "areaServed": ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "RAK", "UAE"],
+          "description": "Premium DOOH advertising services for advertisers and venue owners in UAE. Self-serve platform with 500+ screens.",
+          "offers": {
+            "@type": "AggregateOffer",
+            "priceCurrency": "AED",
+            "lowPrice": "50",
+            "highPrice": "250",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "99",
+              "priceCurrency": "AED",
+              "unitText": "per week per screen"
+            }
+          }
+        }}
+      />
       <PublicNav />
 
       {/* Hero */}
