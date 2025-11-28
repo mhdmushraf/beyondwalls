@@ -59,6 +59,9 @@ import AdminWalletRequests from './pages/AdminWalletRequests';
 import NotFound from './pages/NotFound';
 import AutoBooking from './pages/AutoBooking';
 import ARPremium from './pages/ARPremium';
+import ARDashboard from './pages/ARDashboard';
+import CreateARCampaign from './pages/CreateARCampaign';
+import ARCampaigns from './pages/ARCampaigns';
 import __Layout from './Layout.jsx';
 
 
@@ -124,6 +127,9 @@ export const PAGES = {
     "NotFound": NotFound,
     "AutoBooking": AutoBooking,
     "ARPremium": ARPremium,
+    "ARDashboard": ARDashboard,
+    "CreateARCampaign": CreateARCampaign,
+    "ARCampaigns": ARCampaigns,
 }
 
 export const pagesConfig = {
