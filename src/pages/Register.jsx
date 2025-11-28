@@ -32,9 +32,8 @@ export default function Register() {
     sessionStorage.setItem("registration_account_type", accountType);
     sessionStorage.setItem("registration_user_role", userRole);
     
-    // Redirect to signup page with callback to complete profile
-    const signupUrl = `https://accounts.base44.io/signup?app_name=beyondwalls&next=${encodeURIComponent(window.location.origin + createPageUrl("CompleteProfile") + "?signup=true")}`;
-    window.location.href = signupUrl;
+    // Use Base44's built-in auth redirect which handles both login and signup
+    base44.auth.redirectToLogin(createPageUrl("CompleteProfile") + "?signup=true");
   };
 
   const benefits = {
