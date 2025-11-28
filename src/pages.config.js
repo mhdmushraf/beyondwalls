@@ -58,6 +58,7 @@ import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import AdminWalletRequests from './pages/AdminWalletRequests';
 import NotFound from './pages/NotFound';
 import AutoBooking from './pages/AutoBooking';
+import ARPremium from './pages/ARPremium';
 import __Layout from './Layout.jsx';
 
 
@@ -122,6 +123,7 @@ export const PAGES = {
     "AdminWalletRequests": AdminWalletRequests,
     "NotFound": NotFound,
     "AutoBooking": AutoBooking,
+    "ARPremium": ARPremium,
 }
 
 export const pagesConfig = {
