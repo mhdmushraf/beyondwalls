@@ -266,12 +266,12 @@ export default function Register() {
 
                 <p className="text-center text-sm text-slate-500 mt-4">
                   Already have an account?{" "}
-                  <Link 
-                    to={createPageUrl("Login")}
+                  <button 
+                    onClick={() => base44.auth.redirectToLogin(createPageUrl("Dashboard"))}
                     className="text-violet-600 font-medium hover:underline"
                   >
                     Sign in
-                  </Link>
+                  </button>
                 </p>
               </CardContent>
             </Card>
