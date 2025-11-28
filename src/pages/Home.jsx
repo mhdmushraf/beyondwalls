@@ -130,7 +130,93 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      <SEOHead {...PAGE_SEO.home} />
+      <SEOHead 
+        {...PAGE_SEO.home}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebSite",
+              "name": "BeyondWalls - Best Advertising Company in Dubai & UAE",
+              "alternateName": ["BeyondWalls DOOH", "BeyondWalls UAE", "BeyondWalls Advertising"],
+              "url": "https://www.beyondwalls.ae",
+              "description": "UAE's #1 Digital Out-of-Home (DOOH) Advertising Platform. Self-serve advertising on 500+ digital screens across Dubai, Abu Dhabi, Sharjah.",
+              "inLanguage": "en-AE",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://www.beyondwalls.ae/search?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            },
+            {
+              "@type": "Organization",
+              "name": "BeyondWalls",
+              "url": "https://www.beyondwalls.ae",
+              "logo": "https://www.beyondwalls.ae/logo.png",
+              "description": "Best advertising company in Dubai. Self-serve DOOH advertising platform for businesses in UAE.",
+              "foundingDate": "2025",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "in5 Tech, Dubai Internet City",
+                "addressLocality": "Dubai",
+                "addressCountry": "AE"
+              },
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+971-55-614-0067",
+                "contactType": "customer service",
+                "email": "hello@beyondwalls.ae"
+              },
+              "sameAs": [
+                "https://x.com/BeyondWallsae",
+                "https://www.instagram.com/beyondwallsae/",
+                "https://www.youtube.com/@BeyondWallsAE",
+                "https://www.facebook.com/beyondwallsae",
+                "https://www.linkedin.com/company/beyondwallsae",
+                "https://www.tiktok.com/@beyondwallsae"
+              ],
+              "award": "Global Recognition Award 2025"
+            },
+            {
+              "@type": "LocalBusiness",
+              "name": "BeyondWalls - Advertising Company Dubai",
+              "image": "https://www.beyondwalls.ae/og-image.jpg",
+              "priceRange": "AED 99 - AED 10,000",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "in5 Tech, Dubai Internet City",
+                "addressLocality": "Dubai",
+                "addressRegion": "Dubai",
+                "postalCode": "500001",
+                "addressCountry": "AE"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": "25.0957",
+                "longitude": "55.1548"
+              },
+              "telephone": "+971-55-614-0067",
+              "openingHoursSpecification": {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                "opens": "00:00",
+                "closes": "23:59"
+              }
+            },
+            {
+              "@type": "Service",
+              "name": "DOOH Advertising Dubai",
+              "provider": {
+                "@type": "Organization",
+                "name": "BeyondWalls"
+              },
+              "serviceType": "Digital Out-of-Home Advertising",
+              "areaServed": ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "RAK", "UAE"],
+              "description": "Book digital advertising screens in cafés, malls, gyms, and coworking spaces across UAE. Start from AED 99/week."
+            }
+          ]
+        }}
+      />
       <PublicNav />
 
       {/* Hero Section */}
