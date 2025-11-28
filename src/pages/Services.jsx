@@ -14,7 +14,14 @@ import {
   Settings,
   Wifi,
   CheckCircle2,
-  Megaphone
+  Megaphone,
+  TrendingUp,
+  Sparkles,
+  Globe,
+  Users,
+  ArrowRight,
+  Star,
+  Award
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -122,16 +129,59 @@ export default function Services() {
       <PublicNav />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50">
-        <div className="max-w-4xl mx-auto text-center">
-          <Badge className="bg-amber-100 text-slate-900 mb-6">Our Services</Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
-            Everything You Need for DOOH Success
+      <section className="pt-32 pb-20 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50 relative overflow-hidden">
+        <div className="absolute top-10 right-10 w-72 h-72 bg-violet-200 rounded-full blur-3xl opacity-30" />
+        <div className="absolute bottom-10 left-10 w-96 h-96 bg-indigo-200 rounded-full blur-3xl opacity-30" />
+        <div className="max-w-5xl mx-auto text-center relative">
+          <Badge className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-0 px-4 py-2 mb-6">
+            ✨ Complete DOOH Solutions
+          </Badge>
+          <h1 className="text-4xl md:text-6xl font-bold text-slate-900 mb-6">
+            Powerful Tools for
+            <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent"> Modern Advertising</span>
           </h1>
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-            Whether you're an advertiser looking to reach audiences or a venue owner 
-            wanting to monetize screens, we've got you covered.
+          <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8">
+            From AI-powered campaign creation to real-time analytics, BeyondWalls provides everything 
+            advertisers and venue owners need to succeed in digital out-of-home advertising.
           </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link to={createPageUrl("Register")}>
+              <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600 h-14 px-8">
+                <Megaphone className="w-5 h-5 mr-2" />
+                Start Advertising
+              </Button>
+            </Link>
+            <Link to={createPageUrl("Contact")}>
+              <Button size="lg" variant="outline" className="h-14 px-8 border-2">
+                <Building2 className="w-5 h-5 mr-2" />
+                List Your Venue
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Platform Stats */}
+      <section className="py-12 bg-slate-900">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="text-center">
+              <p className="text-3xl md:text-4xl font-bold text-white mb-1">500+</p>
+              <p className="text-slate-400">Active Screens</p>
+            </div>
+            <div className="text-center">
+              <p className="text-3xl md:text-4xl font-bold text-white mb-1">30 min</p>
+              <p className="text-slate-400">Go-Live Time</p>
+            </div>
+            <div className="text-center">
+              <p className="text-3xl md:text-4xl font-bold text-white mb-1">70%</p>
+              <p className="text-slate-400">Venue Revenue Share</p>
+            </div>
+            <div className="text-center">
+              <p className="text-3xl md:text-4xl font-bold text-white mb-1">98%</p>
+              <p className="text-slate-400">Platform Uptime</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -187,22 +237,55 @@ export default function Services() {
         </div>
       </section>
 
+      {/* How It Works Quick */}
+      <section className="py-20 px-6 bg-gradient-to-br from-indigo-50 to-violet-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <Badge className="bg-indigo-100 text-indigo-600 mb-4">How It Works</Badge>
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">Launch Your Campaign in 4 Steps</h2>
+          </div>
+          <div className="grid md:grid-cols-4 gap-6">
+            {[
+              { step: "1", title: "Sign Up", desc: "Create your account in 2 minutes", icon: Users },
+              { step: "2", title: "Choose Screens", desc: "Select from 500+ locations", icon: MonitorPlay },
+              { step: "3", title: "Upload Creative", desc: "Add your image or video", icon: Upload },
+              { step: "4", title: "Go Live", desc: "Your ad runs within 30 min", icon: Zap }
+            ].map((item, i) => (
+              <div key={i} className="relative">
+                <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow h-full">
+                  <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-lg mb-4">
+                    {item.step}
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-2">{item.title}</h3>
+                  <p className="text-slate-600 text-sm">{item.desc}</p>
+                </div>
+                {i < 3 && (
+                  <div className="hidden md:block absolute top-1/2 -right-3 transform -translate-y-1/2 z-10">
+                    <ArrowRight className="w-6 h-6 text-violet-300" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Pricing */}
       <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <Badge className="bg-violet-100 text-violet-600 mb-4">Pricing</Badge>
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">Simple, Transparent Pricing</h2>
+            <Badge className="bg-violet-100 text-violet-600 mb-4">Transparent Pricing</Badge>
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">No Hidden Fees. Pay As You Go.</h2>
             <p className="text-slate-600 max-w-2xl mx-auto">
-              No hidden fees. Pay only for what you use.
+              Start with as little as AED 50/week per screen. Scale up as your campaign grows.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {pricingPlans.map((plan, i) => (
-              <Card key={i} className={`relative ${plan.popular ? 'border-2 border-violet-500 shadow-xl' : 'border-2 border-slate-100'}`}>
+              <Card key={i} className={`relative ${plan.popular ? 'border-2 border-violet-500 shadow-2xl scale-105' : 'border-2 border-slate-100'}`}>
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <Badge className="bg-violet-600 text-white">Most Popular</Badge>
+                    <Badge className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white px-4 py-1">Most Popular</Badge>
                   </div>
                 )}
                 <CardContent className="p-8">
@@ -215,14 +298,15 @@ export default function Services() {
                   <ul className="space-y-3 mb-8">
                     {plan.features.map((feature, j) => (
                       <li key={j} className="flex items-center gap-2 text-sm">
-                        <CheckCircle2 className="w-4 h-4 text-violet-600" />
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                         <span className="text-slate-600">{feature}</span>
                       </li>
                     ))}
                   </ul>
                   <Link to={createPageUrl("Register")}>
-                    <Button className={`w-full ${plan.popular ? 'bg-gradient-to-r from-violet-600 to-indigo-600' : 'bg-slate-100 text-slate-900 hover:bg-slate-200'}`}>
+                    <Button className={`w-full h-12 ${plan.popular ? 'bg-gradient-to-r from-violet-600 to-indigo-600' : 'bg-slate-100 text-slate-900 hover:bg-slate-200'}`}>
                       Get Started
+                      <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                   </Link>
                 </CardContent>
@@ -232,29 +316,100 @@ export default function Services() {
         </div>
       </section>
 
+      {/* Testimonial */}
+      <section className="py-20 px-6 bg-slate-50">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white rounded-3xl p-8 md:p-12 shadow-xl relative">
+            <div className="absolute -top-6 left-8">
+              <div className="w-12 h-12 bg-amber-400 rounded-full flex items-center justify-center">
+                <Star className="w-6 h-6 text-white fill-white" />
+              </div>
+            </div>
+            <div className="flex gap-1 mb-6">
+              {[1,2,3,4,5].map(s => (
+                <Star key={s} className="w-5 h-5 text-amber-400 fill-amber-400" />
+              ))}
+            </div>
+            <p className="text-xl md:text-2xl text-slate-700 mb-6 leading-relaxed">
+              "BeyondWalls transformed how we advertise. We launched our campaign across 15 screens in Dubai 
+              within an hour. The self-serve platform is incredibly intuitive, and the real-time analytics 
+              helped us optimize on the fly. Our brand visibility increased by 300%!"
+            </p>
+            <div className="flex items-center gap-4">
+              <img 
+                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop" 
+                alt="Ahmed K." 
+                className="w-14 h-14 rounded-full object-cover"
+              />
+              <div>
+                <p className="font-bold text-slate-900">Ahmed K.</p>
+                <p className="text-slate-500">Marketing Director, Food & Beverage Brand</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us */}
+      <section className="py-20 px-6 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <Badge className="bg-emerald-100 text-emerald-700 mb-4">Why BeyondWalls</Badge>
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">The BeyondWalls Advantage</h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-violet-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Globe className="w-8 h-8 text-violet-600" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">UAE-Wide Coverage</h3>
+              <p className="text-slate-600">Screens in Dubai, Abu Dhabi, Sharjah, Ajman, and RAK. Reach audiences wherever they are.</p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Sparkles className="w-8 h-8 text-emerald-600" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">AI-Powered</h3>
+              <p className="text-slate-600">Our AI recommends best screens, optimizes creatives, and predicts campaign performance.</p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Award className="w-8 h-8 text-amber-600" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Award-Winning</h3>
+              <p className="text-slate-600">Recognized with 2025 Global Recognition Award for innovation in DOOH advertising.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
-      <section className="py-20 px-6 bg-gradient-to-br from-violet-600 to-indigo-600">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            Ready to Get Started?
+      <section className="py-24 px-6 bg-gradient-to-br from-violet-600 via-indigo-600 to-purple-700 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-full h-full" style={{backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "24px 24px"}} />
+        </div>
+        <div className="max-w-4xl mx-auto text-center relative">
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+            Ready to Advertise Smarter?
           </h2>
-          <p className="text-xl text-white/80 mb-8">
-            Join BeyondWalls today and transform your advertising
+          <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
+            Join 100+ businesses already reaching millions of customers through BeyondWalls screens
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to={createPageUrl("Register")}>
-              <Button size="lg" className="bg-amber-100 text-slate-900 hover:bg-amber-100/90">
+              <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8 shadow-xl">
                 <Megaphone className="w-5 h-5 mr-2" />
-                Start Free Trial
+                Start Advertising Now
               </Button>
             </Link>
-            <Link to={createPageUrl("Contact")}>
-              <Button size="lg" className="border-2 border-white bg-transparent text-white hover:bg-white hover:text-violet-600">
-                <Building2 className="w-5 h-5 mr-2" />
-                Contact Sales
+            <Link to={createPageUrl("HowItWorks")}>
+              <Button size="lg" className="border-2 border-white bg-transparent text-white hover:bg-white hover:text-violet-600 h-14 px-8">
+                See How It Works
+                <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
           </div>
+          <p className="text-white/60 mt-8 text-sm">No credit card required • Setup in 5 minutes • Cancel anytime</p>
         </div>
       </section>
 
