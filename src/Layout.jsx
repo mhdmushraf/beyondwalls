@@ -114,8 +114,15 @@ export default function Layout({ children, currentPageName }) {
     }
   };
 
-  // Public pages without sidebar
-  if (["Home", "Login", "Register", "CompleteProfile", "ScreenPlayer", "About", "Services", "Contact", "ScreenLocations", "Blog", "HelpCenter", "Terms", "Privacy", "HowItWorks", "PendingApproval", "Connect", "BlogPost", "AuthorProfile", "NotFound"].includes(currentPageName)) {
+  // Public pages without sidebar - no auth required
+  const publicPages = [
+    "Home", "Login", "Register", "CompleteProfile", "ScreenPlayer", 
+    "About", "Services", "Contact", "ScreenLocations", "Blog", 
+    "HelpCenter", "Terms", "Privacy", "HowItWorks", "PendingApproval", 
+    "Connect", "BlogPost", "AuthorProfile", "NotFound"
+  ];
+  
+  if (publicPages.includes(currentPageName)) {
     return <>{children}</>;
   }
 
@@ -128,6 +135,47 @@ export default function Layout({ children, currentPageName }) {
             <MonitorPlay className="w-6 h-6 text-white" />
           </div>
           <p className="text-slate-500">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // SECURITY: Redirect to login if not authenticated for protected pages
+  if (!user) {
+    base44.auth.redirectToLogin(window.location.pathname);
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+            <MonitorPlay className="w-6 h-6 text-white" />
+          </div>
+          <p className="text-slate-500">Redirecting to login...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // SECURITY: Admin pages protection
+  const adminPages = [
+    "AdminDashboard", "AdminUserApprovals", "AdminUsers", "AdminBookings",
+    "AdminCampaigns", "AdminVenues", "AdminScreens", "AdminWallet",
+    "AdminWalletRequests", "AdminTransactions", "AdminPricing",
+    "AdminPlatformWallet", "AdminBlog", "AdminCRM", "AdminDefaultContent",
+    "LogoGenerator"
+  ];
+  
+  const isAdmin = user?.user_role === "admin" || user?.role === "admin";
+  
+  if (adminPages.includes(currentPageName) && !isAdmin) {
+    // Non-admin trying to access admin page - redirect to user dashboard
+    navigate(createPageUrl("Dashboard"));
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <Shield className="w-6 h-6 text-white" />
+          </div>
+          <p className="text-slate-500">Access denied. Redirecting...</p>
         </div>
       </div>
     );
