@@ -33,6 +33,7 @@ import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
 import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
 import PublicAIChatWidget from "@/components/chat/PublicAIChatWidget";
+import ARFeatureSection from "@/components/home/ARFeatureSection";
 
 export default function Home() {
   const [showInvestorModal, setShowInvestorModal] = useState(false);
@@ -382,6 +383,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* AR Feature Section - Premium Feature Highlight */}
+      <ARFeatureSection />
 
       {/* Cities Banner */}
       <section className="py-6 bg-slate-900">
