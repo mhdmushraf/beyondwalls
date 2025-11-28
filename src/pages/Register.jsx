@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
 
 export default function Register() {
   const [step, setStep] = useState(1);
@@ -50,6 +51,7 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex">
+      <SEOHead {...PAGE_SEO.register} />
       {/* Left Side - Visual */}
       <div className="hidden lg:flex lg:w-5/12 bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 relative overflow-hidden">
         {/* Animated Elements */}

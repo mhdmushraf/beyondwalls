@@ -146,12 +146,7 @@ Goals: ${formData.goals || "Not specified"}
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <SEOHead
-        title="Connect Partner Program - For DOOH Companies"
-        description="Join Beyond Walls Connect, the partner program for established DOOH companies. Access our marketplace of advertisers, leverage our AI technology, and earn 85% revenue share."
-        keywords="DOOH partnership, advertising network, screen monetization, digital signage partner, outdoor advertising partnership"
-        url="/connect"
-      />
+      <SEOHead {...PAGE_SEO.connect} />
       <PublicNav />
 
       {/* Hero Section */}
