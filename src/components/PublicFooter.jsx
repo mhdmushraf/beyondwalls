@@ -38,7 +38,7 @@ export default function PublicFooter() {
           <div>
             <h4 className="font-semibold text-white mb-4">Contact</h4>
             <div className="space-y-2 text-sm text-slate-400">
-              <p>info@beyondwalls.ae</p>
+              <p>hello@beyondwalls.ae</p>
               <p>+971 55 614 0067</p>
               <p>Dubai, UAE</p>
             </div>

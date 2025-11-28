@@ -113,7 +113,7 @@ export default function SEOHead({
         "@type": "ContactPoint",
         "telephone": "+971-55-614-0067",
         "contactType": "customer service",
-        "email": "info@beyondwalls.ae"
+        "email": "hello@beyondwalls.ae"
       },
       "sameAs": [
         "https://x.com/BeyondWallsae",
