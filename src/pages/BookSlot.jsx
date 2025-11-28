@@ -23,7 +23,9 @@ import {
   Mail,
   Star,
   Sparkles,
-  RefreshCw
+  RefreshCw,
+  ShoppingCart,
+  Plus
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,6 +46,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import PricingCalculator from "@/components/pricing/PricingCalculator";
 import AIRecommendations from "@/components/recommendations/AIRecommendations";
 import AdvancedScreenSearch from "@/components/booking/AdvancedScreenSearch";
+import BookingCart from "@/components/booking/BookingCart";
+import CartCheckout from "@/components/booking/CartCheckout";
 
 export default function BookSlot() {
   const navigate = useNavigate();
@@ -71,6 +75,11 @@ export default function BookSlot() {
   });
   const [adCopyVariations, setAdCopyVariations] = useState([]);
   const [generatingCopy, setGeneratingCopy] = useState(false);
+  
+  // Cart state
+  const [cartItems, setCartItems] = useState([]);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [checkoutMode, setCheckoutMode] = useState(false);
 
   useEffect(() => {
     loadUser();
@@ -341,6 +350,69 @@ The ads will be displayed on digital screens in ${venue?.type || "public"} venue
   const endDate = addWeeks(formData.start_date, formData.weeks);
   const { totalCost = 0, dynamicPrice = 0 } = calculateDynamicPrice || {};
 
+  // Cart functions
+  const addToCart = () => {
+    if (!selectedScreen || !selectedSlot || !formData.creative_url || !formData.campaign_name) {
+      toast.error("Please complete all required fields");
+      return;
+    }
+
+    const cartItem = {
+      id: `${selectedScreen.id}-${selectedSlot}-${Date.now()}`,
+      screenId: selectedScreen.id,
+      slotNumber: selectedSlot,
+      campaignName: formData.campaign_name,
+      creativeUrl: formData.creative_url,
+      creativeType: formData.creative_type,
+      startDate: format(formData.start_date, "yyyy-MM-dd"),
+      endDate: format(endDate, "yyyy-MM-dd"),
+      weeks: formData.weeks,
+      totalCost: totalCost,
+      headline: formData.headline,
+      description: formData.description
+    };
+
+    setCartItems([...cartItems, cartItem]);
+    toast.success("Added to cart!");
+    
+    // Reset form for next booking
+    setSelectedScreen(null);
+    setSelectedSlot(null);
+    setFormData({
+      campaign_name: "",
+      creative_url: "",
+      creative_type: "image",
+      start_date: new Date(),
+      weeks: 1,
+      headline: "",
+      description: "",
+      business_name: formData.business_name,
+      product_service: formData.product_service
+    });
+    setAdCopyVariations([]);
+    setStep(1);
+  };
+
+  const removeFromCart = (itemId) => {
+    setCartItems(cartItems.filter(item => item.id !== itemId));
+    toast.success("Removed from cart");
+  };
+
+  const clearCart = () => {
+    setCartItems([]);
+    toast.success("Cart cleared");
+  };
+
+  const handleCartCheckout = () => {
+    setCartOpen(false);
+    setCheckoutMode(true);
+  };
+
+  const handleCheckoutSuccess = () => {
+    setCartItems([]);
+    setCheckoutMode(false);
+  };
+
   const handleSubmit = async () => {
     if (totalCost > (user?.wallet_balance || 0)) {
       toast.error("Insufficient wallet balance");
@@ -503,17 +575,55 @@ Please review and approve/reject this campaign in the admin dashboard.
     );
   }
 
+  // Show checkout mode
+  if (checkoutMode && cartItems.length > 0) {
+    return (
+      <div className="p-6 lg:p-8 max-w-6xl mx-auto">
+        <div className="flex items-center gap-4 mb-8">
+          <Button variant="ghost" size="icon" onClick={() => setCheckoutMode(false)}>
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <div>
+            <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Checkout</h1>
+            <p className="text-slate-500">Review and confirm your bookings</p>
+          </div>
+        </div>
+        <CartCheckout
+          cartItems={cartItems}
+          user={user}
+          venues={venues}
+          screens={screens}
+          onBack={() => setCheckoutMode(false)}
+          onSuccess={handleCheckoutSuccess}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 lg:p-8 max-w-6xl mx-auto">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-8">
-        <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
-        <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Book Ad Slot</h1>
-          <p className="text-slate-500">Advertise on screens across the UAE</p>
+      <div className="flex items-center justify-between gap-4 mb-8">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <div>
+            <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Book Ad Slot</h1>
+            <p className="text-slate-500">Advertise on screens across the UAE</p>
+          </div>
         </div>
+        <BookingCart
+          cartItems={cartItems}
+          onRemoveItem={removeFromCart}
+          onClearCart={clearCart}
+          onCheckout={handleCartCheckout}
+          venues={venues}
+          screens={screens}
+          userBalance={user?.wallet_balance}
+          isOpen={cartOpen}
+          onOpenChange={setCartOpen}
+        />
       </div>
 
       {/* Progress */}
@@ -825,14 +935,25 @@ Please review and approve/reject this campaign in the admin dashboard.
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
-            <Button 
-              onClick={() => setStep(3)}
-              disabled={!selectedSlot || !formData.creative_url || !formData.campaign_name}
-              className="bg-gradient-to-r from-violet-600 to-indigo-600"
-            >
-              Review Booking
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
+            <div className="flex gap-3">
+              <Button 
+                variant="outline"
+                onClick={addToCart}
+                disabled={!selectedSlot || !formData.creative_url || !formData.campaign_name}
+                className="border-violet-300 text-violet-700"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add to Cart
+              </Button>
+              <Button 
+                onClick={() => setStep(3)}
+                disabled={!selectedSlot || !formData.creative_url || !formData.campaign_name}
+                className="bg-gradient-to-r from-violet-600 to-indigo-600"
+              >
+                Review Booking
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
           </div>
         </div>
       )}
