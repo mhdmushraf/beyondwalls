@@ -43,10 +43,11 @@ export default function BlogPost() {
   const post = posts[0];
 
   const blogSEO = post ? {
-    title: post.title,
+    title: `${post.title} | BeyondWalls Blog`,
     description: post.excerpt || post.content?.substring(0, 160),
-    image: post.cover_image,
-    url: `/blog/${post.id}`,
+    keywords: `${post.title}, DOOH advertising, digital advertising Dubai, ${categoryLabels[post.category] || post.category}, BeyondWalls blog, ${(post.tags || []).join(", ")}`,
+    image: post.cover_image || "https://www.beyondwalls.ae/og-blog.jpg",
+    url: `/blog/${post.slug || post.id}`,
     type: "article",
     article: {
       publishedTime: post.published_at,
@@ -58,23 +59,33 @@ export default function BlogPost() {
     structuredData: {
       "@context": "https://schema.org",
       "@type": "BlogPosting",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": `https://www.beyondwalls.ae/blog/${post.slug || post.id}`
+      },
       "headline": post.title,
       "description": post.excerpt,
-      "image": post.cover_image,
+      "image": post.cover_image || "https://www.beyondwalls.ae/og-blog.jpg",
       "author": {
         "@type": "Person",
-        "name": post.author_name || "BeyondWalls"
+        "name": post.author_name || "BeyondWalls Team"
       },
       "publisher": {
         "@type": "Organization",
         "name": "BeyondWalls",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://beyondwalls.ae/logo.png"
+          "url": "https://www.beyondwalls.ae/logo.png",
+          "width": 200,
+          "height": 60
         }
       },
       "datePublished": post.published_at,
-      "dateModified": post.updated_date || post.published_at
+      "dateModified": post.updated_date || post.published_at,
+      "articleSection": categoryLabels[post.category] || post.category,
+      "keywords": (post.tags || []).join(", "),
+      "wordCount": post.content?.split(/\s+/).length || 0,
+      "inLanguage": "en-AE"
     }
   } : {};
 
