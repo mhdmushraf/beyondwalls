@@ -56,6 +56,7 @@ import AdvertiserHub from './pages/AdvertiserHub';
 import Connect from './pages/Connect';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import AdminWalletRequests from './pages/AdminWalletRequests';
+import NotFound from './pages/NotFound';
 import __Layout from './Layout.jsx';
 
 
@@ -118,6 +119,7 @@ export const PAGES = {
     "Connect": Connect,
     "AnalyticsDashboard": AnalyticsDashboard,
     "AdminWalletRequests": AdminWalletRequests,
+    "NotFound": NotFound,
 }
 
 export const pagesConfig = {
