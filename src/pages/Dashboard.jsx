@@ -33,6 +33,12 @@ export default function Dashboard() {
 
   const loadUser = async () => {
     try {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) {
+        base44.auth.redirectToLogin(createPageUrl("Dashboard"));
+        return;
+      }
+      
       const userData = await base44.auth.me();
       setUser(userData);
       
@@ -42,7 +48,7 @@ export default function Dashboard() {
         return;
       }
     } catch (e) {
-      base44.auth.redirectToLogin();
+      base44.auth.redirectToLogin(createPageUrl("Dashboard"));
     }
   };
 
