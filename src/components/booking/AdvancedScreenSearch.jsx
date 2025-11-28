@@ -203,62 +203,62 @@ export default function AdvancedScreenSearch({
     
     return (
       <Card 
-        className={`cursor-pointer transition-all hover:shadow-lg ${
+        className={`cursor-pointer transition-all hover:shadow-lg active:scale-[0.98] ${
           selectedScreen?.id === screen.id ? "ring-2 ring-violet-600" : ""
         }`}
         onClick={() => onSelectScreen(screen)}
       >
-        <CardContent className="p-4">
-          <div className="flex items-start gap-3">
-            <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center flex-shrink-0">
-              <MonitorPlay className="w-6 h-6 text-violet-600" />
+        <CardContent className="p-3 sm:p-4">
+          <div className="flex items-start gap-2 sm:gap-3">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-violet-100 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+              <MonitorPlay className="w-5 h-5 sm:w-6 sm:h-6 text-violet-600" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="font-semibold text-slate-900 truncate">{screen.name}</h3>
-                  <p className="text-sm text-slate-500 truncate">{venue?.name}</p>
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base truncate">{screen.name}</h3>
+                  <p className="text-xs sm:text-sm text-slate-500 truncate">{venue?.name}</p>
                 </div>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     onToggleFavorite(e, screen.id);
                   }}
-                  className={`p-1 rounded-full transition-colors ${
+                  className={`p-1.5 rounded-full transition-colors flex-shrink-0 ${
                     isFavorite(screen.id) 
                       ? "text-amber-500 hover:bg-amber-50" 
                       : "text-slate-300 hover:text-amber-500 hover:bg-amber-50"
                   }`}
                 >
-                  <Star className={`w-5 h-5 ${isFavorite(screen.id) ? "fill-current" : ""}`} />
+                  <Star className={`w-4 h-4 sm:w-5 sm:h-5 ${isFavorite(screen.id) ? "fill-current" : ""}`} />
                 </button>
               </div>
-              <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-slate-400">
-                <span className="flex items-center gap-1">
-                  <MapPin className="w-3 h-3" />
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-1.5 sm:mt-2 text-[10px] sm:text-xs text-slate-400">
+                <span className="flex items-center gap-0.5 sm:gap-1">
+                  <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                   {venue?.city}
                 </span>
                 <span>•</span>
                 <span>{screen.size}</span>
-                <span>•</span>
-                <span className="capitalize">{screen.orientation}</span>
+                <span className="hidden sm:inline">•</span>
+                <span className="hidden sm:inline capitalize">{screen.orientation}</span>
                 {venue?.avg_daily_footfall && (
-                  <>
-                    <span>•</span>
-                    <span className="flex items-center gap-1">
-                      <Users className="w-3 h-3" />
-                      {venue.avg_daily_footfall}/day
-                    </span>
-                  </>
+                  <span className="hidden lg:flex items-center gap-1">
+                    • <Users className="w-3 h-3" />
+                    {venue.avg_daily_footfall}/day
+                  </span>
                 )}
               </div>
             </div>
           </div>
-          <div className="flex items-center justify-between mt-3 pt-3 border-t">
+          <div className="flex items-center justify-between mt-2 sm:mt-3 pt-2 sm:pt-3 border-t">
             <div>
-              <p className="text-lg font-bold text-violet-600">AED {screen.slot_price}/week</p>
+              <p className="text-base sm:text-lg font-bold text-violet-600">AED {screen.slot_price}<span className="text-xs sm:text-sm font-normal text-slate-500">/wk</span></p>
             </div>
-            <Badge variant={availability === 0 ? "destructive" : availability <= 2 ? "secondary" : "default"}>
+            <Badge 
+              variant={availability === 0 ? "destructive" : availability <= 2 ? "secondary" : "default"}
+              className="text-[10px] sm:text-xs"
+            >
               {availability} slots
             </Badge>
           </div>
@@ -270,31 +270,31 @@ export default function AdvancedScreenSearch({
   return (
     <div className="space-y-4">
       {/* Search Bar and View Toggle */}
-      <div className="flex flex-col md:flex-row gap-4">
+      <div className="flex flex-col gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input 
-            placeholder="Search by screen name, venue, city, or screen ID..." 
-            className="pl-10"
+            placeholder="Search screens, venues, cities..." 
+            className="pl-10 text-base"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="outline" className="relative">
-                <SlidersHorizontal className="w-4 h-4 mr-2" />
-                Advanced Filters
+              <Button variant="outline" size="sm" className="relative">
+                <SlidersHorizontal className="w-4 h-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Advanced</span> Filters
                 {activeFiltersCount > 0 && (
-                  <Badge className="ml-2 h-5 w-5 p-0 flex items-center justify-center bg-violet-600">
+                  <Badge className="ml-1 sm:ml-2 h-5 w-5 p-0 flex items-center justify-center bg-violet-600">
                     {activeFiltersCount}
                   </Badge>
                 )}
               </Button>
             </SheetTrigger>
-            <SheetContent className="w-[400px] overflow-y-auto">
+            <SheetContent className="w-full sm:w-[400px] overflow-y-auto" side="right">
               <SheetHeader>
                 <SheetTitle className="flex items-center justify-between">
                   Advanced Filters
@@ -452,11 +452,11 @@ export default function AdvancedScreenSearch({
           </Sheet>
 
           <Tabs value={viewMode} onValueChange={setViewMode}>
-            <TabsList>
-              <TabsTrigger value="list">
+            <TabsList className="h-9">
+              <TabsTrigger value="list" className="px-3">
                 <List className="w-4 h-4" />
               </TabsTrigger>
-              <TabsTrigger value="map">
+              <TabsTrigger value="map" className="px-3">
                 <Map className="w-4 h-4" />
               </TabsTrigger>
             </TabsList>
@@ -464,10 +464,10 @@ export default function AdvancedScreenSearch({
         </div>
       </div>
 
-      {/* Quick Filters */}
-      <div className="flex flex-wrap gap-2">
+      {/* Quick Filters - Responsive */}
+      <div className="flex flex-wrap gap-2 items-center">
         <Select value={filters.city} onValueChange={(v) => setFilters({...filters, city: v})}>
-          <SelectTrigger className="w-32">
+          <SelectTrigger className="w-28 sm:w-32 h-9 text-sm">
             <SelectValue placeholder="City" />
           </SelectTrigger>
           <SelectContent>
@@ -479,8 +479,8 @@ export default function AdvancedScreenSearch({
         </Select>
         
         <Select value={filters.venue_type} onValueChange={(v) => setFilters({...filters, venue_type: v})}>
-          <SelectTrigger className="w-36">
-            <SelectValue placeholder="Venue Type" />
+          <SelectTrigger className="w-28 sm:w-36 h-9 text-sm">
+            <SelectValue placeholder="Type" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Types</SelectItem>
@@ -491,8 +491,8 @@ export default function AdvancedScreenSearch({
         </Select>
 
         <Select value={filters.availability} onValueChange={(v) => setFilters({...filters, availability: v})}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Availability" />
+          <SelectTrigger className="w-28 sm:w-36 h-9 text-sm">
+            <SelectValue placeholder="Slots" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All</SelectItem>
@@ -502,35 +502,35 @@ export default function AdvancedScreenSearch({
         </Select>
 
         {activeFiltersCount > 0 && (
-          <Button variant="ghost" size="sm" onClick={resetFilters} className="text-rose-600">
-            <X className="w-4 h-4 mr-1" />
-            Clear Filters
+          <Button variant="ghost" size="sm" onClick={resetFilters} className="text-rose-600 h-9 px-2">
+            <X className="w-4 h-4" />
+            <span className="hidden sm:inline ml-1">Clear</span>
           </Button>
         )}
 
-        <div className="ml-auto text-sm text-slate-500">
-          {filteredScreens.length} screens found
+        <div className="ml-auto text-xs sm:text-sm text-slate-500 whitespace-nowrap">
+          {filteredScreens.length} screens
         </div>
       </div>
 
       {/* Results */}
       {viewMode === "list" ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {filteredScreens.map((screen) => (
             <ScreenCard key={screen.id} screen={screen} />
           ))}
           {filteredScreens.length === 0 && (
-            <div className="col-span-full text-center py-12">
-              <MonitorPlay className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-500">No screens match your filters</p>
-              <Button variant="link" onClick={resetFilters}>Clear all filters</Button>
+            <div className="col-span-full text-center py-8 sm:py-12">
+              <MonitorPlay className="w-10 h-10 sm:w-12 sm:h-12 text-slate-300 mx-auto mb-3" />
+              <p className="text-slate-500 text-sm sm:text-base">No screens match your filters</p>
+              <Button variant="link" size="sm" onClick={resetFilters}>Clear all filters</Button>
             </div>
           )}
         </div>
       ) : (
         <Card className="overflow-hidden">
           <CardContent className="p-0">
-            <div className="h-[500px]">
+            <div className="h-[350px] sm:h-[450px] lg:h-[500px]">
               <MapContainer
                 center={mapCenter}
                 zoom={10}
