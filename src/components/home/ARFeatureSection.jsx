@@ -25,9 +25,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import PremiumWaitlistModal from "@/components/modals/PremiumWaitlistModal";
+import EarlyAccessModal from "@/components/modals/EarlyAccessModal";
 
 export default function ARFeatureSection() {
   const [showDemo, setShowDemo] = useState(false);
+  const [showWaitlistModal, setShowWaitlistModal] = useState(false);
+  const [showEarlyAccessModal, setShowEarlyAccessModal] = useState(false);
 
   const arFeatures = [
     {
