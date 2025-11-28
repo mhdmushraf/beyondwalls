@@ -51,10 +51,15 @@ export default function MyScreens() {
 
   const loadUser = async () => {
     try {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) {
+        base44.auth.redirectToLogin(createPageUrl("MyScreens"));
+        return;
+      }
       const userData = await base44.auth.me();
       setUser(userData);
     } catch (e) {
-      base44.auth.redirectToLogin();
+      base44.auth.redirectToLogin(createPageUrl("MyScreens"));
     }
   };
 

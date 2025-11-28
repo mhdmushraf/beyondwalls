@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { createPageUrl } from "@/utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import {
@@ -47,6 +48,41 @@ export default function AdminUsers() {
   const [adminForm, setAdminForm] = useState({
     permissions: []
   });
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    checkAdminAuth();
+  }, []);
+
+  const checkAdminAuth = async () => {
+    try {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) {
+        base44.auth.redirectToLogin(createPageUrl("AdminUsers"));
+        return;
+      }
+      const userData = await base44.auth.me();
+      const isAdmin = userData?.user_role === "admin" || userData?.role === "admin";
+      if (!isAdmin) {
+        window.location.href = createPageUrl("Dashboard");
+        return;
+      }
+      setAuthChecked(true);
+    } catch (e) {
+      base44.auth.redirectToLogin(createPageUrl("AdminUsers"));
+    }
+  };
+
+  if (!authChecked) {
+    return (
+      <div className="p-6 lg:p-8 flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <Loader2 className="w-10 h-10 text-violet-600 animate-spin mx-auto mb-4" />
+          <p className="text-slate-500">Checking permissions...</p>
+        </div>
+      </div>
+    );
+  }
 
   const availablePermissions = [
     { value: "all", label: "Full Access", description: "Access to all admin features" },
