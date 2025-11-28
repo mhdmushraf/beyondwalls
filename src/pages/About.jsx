@@ -70,7 +70,57 @@ export default function About() {
 
   return (
     <div className="min-h-screen bg-white">
-      <SEOHead {...PAGE_SEO.about} />
+      <SEOHead 
+        {...PAGE_SEO.about}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "AboutPage",
+          "name": "About BeyondWalls - Award-Winning DOOH Advertising Startup Dubai",
+          "description": "BeyondWalls is an award-winning DOOH advertising startup incubated by in5 Dubai. Global Recognition Award 2025 winner. Founded by Muhammed Musharaf.",
+          "mainEntity": {
+            "@type": "Organization",
+            "name": "BeyondWalls",
+            "url": "https://www.beyondwalls.ae",
+            "logo": "https://www.beyondwalls.ae/logo.png",
+            "foundingDate": "2025-06",
+            "founder": {
+              "@type": "Person",
+              "name": "Muhammed Musharaf",
+              "jobTitle": "CEO & Founder"
+            },
+            "award": [
+              {
+                "@type": "Award",
+                "name": "Global Recognition Award 2025",
+                "description": "Innovation in DOOH Advertising"
+              }
+            ],
+            "parentOrganization": {
+              "@type": "Organization",
+              "name": "in5 Dubai",
+              "url": "https://infive.ae",
+              "parentOrganization": {
+                "@type": "Organization",
+                "name": "TECOM Group"
+              }
+            },
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "in5 Tech, Dubai Internet City",
+              "addressLocality": "Dubai",
+              "addressCountry": "AE"
+            },
+            "sameAs": [
+              "https://x.com/BeyondWallsae",
+              "https://www.instagram.com/beyondwallsae/",
+              "https://www.youtube.com/@BeyondWallsAE",
+              "https://www.facebook.com/beyondwallsae",
+              "https://www.linkedin.com/company/beyondwallsae",
+              "https://www.tiktok.com/@beyondwallsae"
+            ]
+          }
+        }}
+      />
       <PublicNav />
 
       {/* Hero */}
