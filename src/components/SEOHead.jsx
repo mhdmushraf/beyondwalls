@@ -4,7 +4,7 @@ const DEFAULT_SEO = {
   siteName: "BeyondWalls",
   siteUrl: "https://www.beyondwalls.ae",
   defaultTitle: "BeyondWalls - #1 Digital Out-of-Home (DOOH) Advertising Platform in Dubai & UAE",
-  defaultDescription: "BeyondWalls is UAE's leading DOOH advertising platform. Book digital screens in cafés, malls, gyms & coworking spaces across Dubai, Abu Dhabi & Sharjah. 500+ screens, real-time analytics, instant activation. Best advertising company in Dubai for SMBs. Start from AED 99/week!",
+  defaultDescription: "UAE's leading DOOH advertising platform. Book digital screens in cafés, malls, gyms & coworking spaces across Dubai, Abu Dhabi & Sharjah. 500+ screens, real-time analytics. Start from AED 99/week!",
   defaultImage: "https://www.beyondwalls.ae/og-image.jpg",
   twitterHandle: "@BeyondWallsae",
   locale: "en_AE"
@@ -54,7 +54,7 @@ export default function SEOHead({
     setMetaTag("og:title", fullTitle, true);
     setMetaTag("og:description", metaDescription, true);
     setMetaTag("og:image", metaImage, true);
-    setMetaTag("og:image:alt", "BeyondWalls - Digital Advertising Platform", true);
+    setMetaTag("og:image:alt", "BeyondWalls - UAE's #1 DOOH Advertising Platform", true);
     setMetaTag("og:image:width", "1200", true);
     setMetaTag("og:image:height", "630", true);
     setMetaTag("og:url", canonicalUrl, true);
@@ -62,8 +62,9 @@ export default function SEOHead({
     setMetaTag("og:site_name", DEFAULT_SEO.siteName, true);
     setMetaTag("og:locale", DEFAULT_SEO.locale, true);
     
-    // WhatsApp specific
+    // WhatsApp specific - ensure secure URL and proper image
     setMetaTag("og:image:secure_url", metaImage, true);
+    setMetaTag("og:image:type", "image/jpeg", true);
 
     // Twitter Card Tags
     setMetaTag("twitter:card", "summary_large_image");
@@ -177,7 +178,7 @@ export default function SEOHead({
 export const PAGE_SEO = {
   home: {
     title: null, // Uses default
-    description: "BeyondWalls is UAE's #1 self-serve DOOH advertising platform & best advertising company in Dubai. Book premium digital screens in 500+ cafés, malls, gyms & coworking spaces across Dubai, Abu Dhabi & Sharjah. Start from AED 99/week. Venues earn 70% revenue share!",
+    description: "UAE's #1 self-serve DOOH advertising platform. Book digital screens in 500+ cafés, malls, gyms across Dubai, Abu Dhabi & Sharjah. Start from AED 99/week. Venues earn 70% revenue!",
     keywords: "advertising companies in Dubai, advertising agency Dubai, DOOH advertising UAE, digital signage Dubai, outdoor advertising Dubai, screen advertising UAE, digital billboard Dubai, café advertising Dubai, mall advertising Dubai, gym advertising UAE, digital out of home advertising, programmatic DOOH UAE, self-serve advertising platform, best advertising company UAE, advertising companies in UAE, Dubai advertising, Abu Dhabi advertising, Sharjah advertising, billboard advertising Dubai, digital marketing Dubai",
     url: "/",
     image: "https://www.beyondwalls.ae/og-image.jpg",
