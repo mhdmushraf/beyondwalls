@@ -165,44 +165,58 @@ export const PAGE_SEO = {
   about: {
     title: "About Us - Our Mission & Story",
     description: "Learn about BeyondWalls, the award-winning DOOH advertising startup from in5 Dubai. Founded to democratize outdoor advertising and help venues monetize their screens across the UAE.",
-    keywords: "BeyondWalls about, DOOH startup Dubai, in5 Dubai startup, digital advertising company UAE, outdoor advertising company",
-    url: "/about"
+    keywords: "BeyondWalls about, DOOH startup Dubai, in5 Dubai startup, digital advertising company UAE, outdoor advertising company, Global Recognition Award 2025",
+    url: "/about",
+    image: "https://www.beyondwalls.ae/og-about.jpg"
   },
   services: {
     title: "Services - Advertising & Venue Solutions",
     description: "Explore BeyondWalls services for advertisers and venue owners. Precision targeting, real-time analytics, easy screen setup, and 70% revenue share for venues. Start today.",
-    keywords: "DOOH advertising services, venue monetization UAE, screen advertising services, digital signage solutions Dubai, advertising platform features",
-    url: "/services"
+    keywords: "DOOH advertising services, venue monetization UAE, screen advertising services, digital signage solutions Dubai, advertising platform features, 70% revenue share",
+    url: "/services",
+    image: "https://www.beyondwalls.ae/og-services.jpg"
   },
   contact: {
     title: "Contact Us - Get in Touch",
-    description: "Contact BeyondWalls for advertising inquiries, venue partnerships, or support. Email info@beyondwalls.ae or call +971 55 614 0067. Located in Dubai, UAE.",
-    keywords: "contact BeyondWalls, DOOH advertising inquiry, venue partnership Dubai, advertising support UAE",
-    url: "/contact"
+    description: "Contact BeyondWalls for advertising inquiries, venue partnerships, or support. Email hello@beyondwalls.ae or call +971 55 614 0067. Located in Dubai, UAE.",
+    keywords: "contact BeyondWalls, DOOH advertising inquiry, venue partnership Dubai, advertising support UAE, Dubai advertising agency",
+    url: "/contact",
+    image: "https://www.beyondwalls.ae/og-contact.jpg"
   },
   blog: {
     title: "Blog - DOOH Advertising Insights & Tips",
     description: "Read the latest insights on digital out-of-home advertising, industry trends, tips for successful campaigns, and BeyondWalls product updates.",
-    keywords: "DOOH blog, digital advertising tips, outdoor advertising trends, screen advertising insights, UAE advertising news",
-    url: "/blog"
+    keywords: "DOOH blog, digital advertising tips, outdoor advertising trends, screen advertising insights, UAE advertising news, marketing tips",
+    url: "/blog",
+    image: "https://www.beyondwalls.ae/og-blog.jpg"
   },
   howItWorks: {
     title: "How It Works - Complete Platform Guide",
     description: "Learn how BeyondWalls works for advertisers and venue owners. Step-by-step guide to creating campaigns, setting up screens, and earning revenue from digital advertising.",
-    keywords: "how DOOH works, digital advertising guide, screen setup guide, advertising campaign tutorial, venue monetization guide",
-    url: "/how-it-works"
+    keywords: "how DOOH works, digital advertising guide, screen setup guide, advertising campaign tutorial, venue monetization guide, self-serve advertising",
+    url: "/how-it-works",
+    image: "https://www.beyondwalls.ae/og-how-it-works.jpg"
   },
   screenLocations: {
     title: "Screen Locations - Premium Venues Across UAE",
     description: "Browse 500+ digital screens in premium locations across the UAE. Find advertising spaces in Dubai, Abu Dhabi, Sharjah cafés, malls, gyms, and coworking spaces.",
-    keywords: "advertising screens Dubai, digital billboards UAE, mall advertising locations, café screens Dubai, gym advertising Abu Dhabi",
-    url: "/screen-locations"
+    keywords: "advertising screens Dubai, digital billboards UAE, mall advertising locations, café screens Dubai, gym advertising Abu Dhabi, coworking space ads",
+    url: "/screen-locations",
+    image: "https://www.beyondwalls.ae/og-locations.jpg"
   },
   helpCenter: {
     title: "Help Center - FAQs & Support",
     description: "Get answers to frequently asked questions about BeyondWalls. Learn about advertising, venue setup, payments, screen player, and troubleshooting.",
-    keywords: "BeyondWalls help, DOOH FAQ, advertising support, screen player help, venue owner support",
-    url: "/help-center"
+    keywords: "BeyondWalls help, DOOH FAQ, advertising support, screen player help, venue owner support, customer service",
+    url: "/help-center",
+    image: "https://www.beyondwalls.ae/og-help.jpg"
+  },
+  connect: {
+    title: "Connect - Partner Program for Venues",
+    description: "Join BeyondWalls Connect partner program. Turn your venue screens into revenue generators with 70% revenue share. Easy setup, no upfront costs.",
+    keywords: "BeyondWalls Connect, venue partner program, screen monetization, passive income screens, digital signage partnership",
+    url: "/connect",
+    image: "https://www.beyondwalls.ae/og-connect.jpg"
   },
   terms: {
     title: "Terms of Service",

@@ -378,24 +378,34 @@ export default function About() {
             <p className="text-slate-500 mb-4">Connect with us</p>
             <div className="flex justify-center gap-4">
               <a href="https://x.com/BeyondWallsae" target="_blank" rel="noopener noreferrer" 
-                 className="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center hover:bg-slate-700 transition-colors">
+                 className="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center hover:bg-slate-700 transition-colors"
+                 aria-label="Follow us on X/Twitter">
                 𝕏
               </a>
               <a href="https://www.instagram.com/beyondwallsae/" target="_blank" rel="noopener noreferrer"
-                 className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-xl flex items-center justify-center hover:opacity-80 transition-opacity">
+                 className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-xl flex items-center justify-center hover:opacity-80 transition-opacity"
+                 aria-label="Follow us on Instagram">
                 IG
               </a>
               <a href="https://www.youtube.com/@BeyondWallsAE" target="_blank" rel="noopener noreferrer"
-                 className="w-12 h-12 bg-red-600 text-white rounded-xl flex items-center justify-center hover:bg-red-700 transition-colors">
+                 className="w-12 h-12 bg-red-600 text-white rounded-xl flex items-center justify-center hover:bg-red-700 transition-colors"
+                 aria-label="Subscribe on YouTube">
                 YT
               </a>
               <a href="https://www.facebook.com/beyondwallsae" target="_blank" rel="noopener noreferrer"
-                 className="w-12 h-12 bg-blue-600 text-white rounded-xl flex items-center justify-center hover:bg-blue-700 transition-colors">
+                 className="w-12 h-12 bg-blue-600 text-white rounded-xl flex items-center justify-center hover:bg-blue-700 transition-colors"
+                 aria-label="Follow us on Facebook">
                 FB
               </a>
               <a href="https://www.linkedin.com/company/beyondwallsae" target="_blank" rel="noopener noreferrer"
-                 className="w-12 h-12 bg-blue-700 text-white rounded-xl flex items-center justify-center hover:bg-blue-800 transition-colors">
+                 className="w-12 h-12 bg-blue-700 text-white rounded-xl flex items-center justify-center hover:bg-blue-800 transition-colors"
+                 aria-label="Follow us on LinkedIn">
                 in
+              </a>
+              <a href="https://www.tiktok.com/@beyondwallsae" target="_blank" rel="noopener noreferrer"
+                 className="w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center hover:bg-slate-800 transition-colors"
+                 aria-label="Follow us on TikTok">
+                TT
               </a>
             </div>
           </div>
