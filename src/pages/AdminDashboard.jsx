@@ -31,10 +31,24 @@ export default function AdminDashboard() {
 
   const loadUser = async () => {
     try {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) {
+        base44.auth.redirectToLogin(createPageUrl("AdminDashboard"));
+        return;
+      }
+      
       const userData = await base44.auth.me();
+      
+      // Security check: Only admins can access this page
+      const isAdmin = userData?.user_role === "admin" || userData?.role === "admin";
+      if (!isAdmin) {
+        window.location.href = createPageUrl("Dashboard");
+        return;
+      }
+      
       setUser(userData);
     } catch (e) {
-      base44.auth.redirectToLogin();
+      base44.auth.redirectToLogin(createPageUrl("AdminDashboard"));
     }
   };
 
