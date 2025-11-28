@@ -14,7 +14,9 @@ import {
   Pencil,
   Save,
   Loader2,
-  Clock
+  Clock,
+  Play,
+  MonitorPlay
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,6 +40,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import LiveScreenPreview from "@/components/previews/LiveScreenPreview";
 
 export default function AdminVenues() {
   const queryClient = useQueryClient();
@@ -89,6 +92,32 @@ export default function AdminVenues() {
     queryKey: ["admin-venues"],
     queryFn: () => base44.entities.Venue.list("-created_date")
   });
+
+  const { data: screens = [] } = useQuery({
+    queryKey: ["admin-venue-screens"],
+    queryFn: () => base44.entities.Screen.list()
+  });
+
+  const { data: allBookings = [] } = useQuery({
+    queryKey: ["admin-venue-bookings"],
+    queryFn: () => base44.entities.AdSlotBooking.filter({ status: "active" })
+  });
+
+  const [previewVenue, setPreviewVenue] = useState(null);
+
+  const getVenueScreens = (venueId) => screens.filter(s => s.venue_id === venueId);
+
+  const getScreenSlots = (screen) => {
+    const slots = [];
+    if (screen?.owner_slot_1_url) slots.push({ url: screen.owner_slot_1_url, type: screen.owner_slot_1_type || "image", name: "Owner Ad 1" });
+    if (screen?.owner_slot_2_url) slots.push({ url: screen.owner_slot_2_url, type: screen.owner_slot_2_type || "image", name: "Owner Ad 2" });
+    if (screen?.owner_slot_3_url) slots.push({ url: screen.owner_slot_3_url, type: screen.owner_slot_3_type || "image", name: "Owner Ad 3" });
+    const screenBookings = allBookings.filter(b => b.screen_id === screen.id);
+    screenBookings.forEach(b => {
+      if (b.creative_url) slots.push({ url: b.creative_url, type: b.creative_type || "image", name: b.campaign_name || "Ad" });
+    });
+    return slots;
+  };
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Venue.update(id, data),
@@ -253,6 +282,16 @@ export default function AdminVenues() {
                       </td>
                       <td className="p-4">
                         <div className="flex items-center gap-2">
+                          {getVenueScreens(venue.id).some(s => s.status === "online") && (
+                            <Button 
+                              variant="ghost" 
+                              size="icon"
+                              onClick={() => setPreviewVenue(venue)}
+                              className="text-violet-600"
+                            >
+                              <Play className="w-4 h-4" />
+                            </Button>
+                          )}
                           <Button variant="ghost" size="icon" onClick={() => setSelectedVenue(venue)}>
                             <Eye className="w-4 h-4" />
                           </Button>
@@ -548,6 +587,40 @@ export default function AdminVenues() {
               Save Changes
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Live Preview Dialog for Venue Screens */}
+      <Dialog open={!!previewVenue} onOpenChange={() => setPreviewVenue(null)}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Building2 className="w-5 h-5 text-violet-600" />
+              Live Preview: {previewVenue?.name}
+            </DialogTitle>
+          </DialogHeader>
+          {previewVenue && (
+            <div className="space-y-4">
+              <p className="text-sm text-slate-500">
+                {getVenueScreens(previewVenue.id).filter(s => s.status === "online").length} online screens
+              </p>
+              <div className="grid md:grid-cols-2 gap-4">
+                {getVenueScreens(previewVenue.id).filter(s => s.status === "online").map((screen) => (
+                  <div key={screen.id} className="border rounded-xl p-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <MonitorPlay className="w-4 h-4 text-violet-600" />
+                      <span className="font-medium text-sm">{screen.name}</span>
+                      <Badge className="bg-emerald-100 text-emerald-700 text-xs">Online</Badge>
+                    </div>
+                    <LiveScreenPreview slots={getScreenSlots(screen)} size="small" />
+                    <p className="text-xs text-slate-500 mt-2">
+                      {getScreenSlots(screen).length} ads playing
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>

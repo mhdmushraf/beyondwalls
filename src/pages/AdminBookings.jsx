@@ -13,7 +13,8 @@ import {
   Clock,
   Calendar,
   User,
-  Loader2
+  Loader2,
+  Play
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +30,7 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import LiveScreenPreview from "@/components/previews/LiveScreenPreview";
 
 export default function AdminBookings() {
   const [user, setUser] = useState(null);
@@ -296,24 +298,44 @@ www.beyondwalls.ae
     setProcessing(false);
   };
 
+  const getScreenSlots = (screenId) => {
+    const screen = screens.find(s => s.id === screenId);
+    const slots = [];
+    if (screen?.owner_slot_1_url) slots.push({ url: screen.owner_slot_1_url, type: screen.owner_slot_1_type || "image", name: "Owner Ad 1" });
+    if (screen?.owner_slot_2_url) slots.push({ url: screen.owner_slot_2_url, type: screen.owner_slot_2_type || "image", name: "Owner Ad 2" });
+    if (screen?.owner_slot_3_url) slots.push({ url: screen.owner_slot_3_url, type: screen.owner_slot_3_type || "image", name: "Owner Ad 3" });
+    const screenBookings = bookings.filter(b => b.screen_id === screenId && b.status === "active");
+    screenBookings.forEach(b => {
+      if (b.creative_url) slots.push({ url: b.creative_url, type: b.creative_type || "image", name: b.campaign_name || "Ad" });
+    });
+    return slots;
+  };
+
   const BookingCard = ({ booking, showActions = false }) => {
     const { screen, venue } = getScreenInfo(booking.screen_id);
+    const screenSlots = booking.status === "active" ? getScreenSlots(booking.screen_id) : [];
     
     return (
       <Card className="hover:shadow-lg transition-shadow">
         <CardContent className="p-4">
           <div className="flex items-start gap-4">
-            <div className="w-20 h-20 bg-slate-100 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden">
-              {booking.creative_url ? (
-                booking.creative_type === "video" ? (
-                  <video src={booking.creative_url} className="w-full h-full object-cover" />
+            {booking.status === "active" && screenSlots.length > 0 ? (
+              <div className="w-32 flex-shrink-0">
+                <LiveScreenPreview slots={screenSlots} size="small" />
+              </div>
+            ) : (
+              <div className="w-20 h-20 bg-slate-100 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden">
+                {booking.creative_url ? (
+                  booking.creative_type === "video" ? (
+                    <video src={booking.creative_url} className="w-full h-full object-cover" />
+                  ) : (
+                    <img src={booking.creative_url} className="w-full h-full object-cover" alt="" />
+                  )
                 ) : (
-                  <img src={booking.creative_url} className="w-full h-full object-cover" alt="" />
-                )
-              ) : (
-                <Megaphone className="w-8 h-8 text-slate-400" />
-              )}
-            </div>
+                  <Megaphone className="w-8 h-8 text-slate-400" />
+                )}
+              </div>
+            )}
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between gap-4">
                 <div>

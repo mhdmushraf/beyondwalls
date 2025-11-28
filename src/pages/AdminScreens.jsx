@@ -21,7 +21,8 @@ import {
   X,
   Upload,
   Save,
-  LayoutGrid
+  LayoutGrid,
+  Play
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,6 +46,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import LiveScreenPreview from "@/components/previews/LiveScreenPreview";
 
 export default function AdminScreens() {
   const [search, setSearch] = useState("");
@@ -205,6 +207,25 @@ export default function AdminScreens() {
     queryKey: ["admin-venues-lookup"],
     queryFn: () => base44.entities.Venue.list()
   });
+
+  const { data: allBookings = [] } = useQuery({
+    queryKey: ["admin-screen-bookings"],
+    queryFn: () => base44.entities.AdSlotBooking.filter({ status: "active" })
+  });
+
+  const [previewScreen, setPreviewScreen] = useState(null);
+
+  const getScreenSlots = (screen) => {
+    const slots = [];
+    if (screen?.owner_slot_1_url) slots.push({ url: screen.owner_slot_1_url, type: screen.owner_slot_1_type || "image", name: "Owner Ad 1" });
+    if (screen?.owner_slot_2_url) slots.push({ url: screen.owner_slot_2_url, type: screen.owner_slot_2_type || "image", name: "Owner Ad 2" });
+    if (screen?.owner_slot_3_url) slots.push({ url: screen.owner_slot_3_url, type: screen.owner_slot_3_type || "image", name: "Owner Ad 3" });
+    const screenBookings = allBookings.filter(b => b.screen_id === screen.id);
+    screenBookings.forEach(b => {
+      if (b.creative_url) slots.push({ url: b.creative_url, type: b.creative_type || "image", name: b.campaign_name || "Ad" });
+    });
+    return slots;
+  };
 
   const filteredScreens = screens.filter(screen => {
     const venue = venues.find(v => v.id === screen.venue_id);
@@ -424,6 +445,16 @@ export default function AdminScreens() {
                         </td>
                         <td className="p-4">
                           <div className="flex items-center gap-2">
+                            {screen.status === "online" && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setPreviewScreen(screen)}
+                                className="text-violet-600"
+                              >
+                                <Play className="w-4 h-4" />
+                              </Button>
+                            )}
                             <Link to={createPageUrl(`AdminScreenSlots?id=${screen.id}`)}>
                               <Button size="sm" variant="outline">
                                 <LayoutGrid className="w-4 h-4 mr-1" />
@@ -691,6 +722,46 @@ export default function AdminScreens() {
               Save Changes
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Live Preview Dialog */}
+      <Dialog open={!!previewScreen} onOpenChange={() => setPreviewScreen(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Play className="w-5 h-5 text-violet-600" />
+              Live Preview: {previewScreen?.name}
+            </DialogTitle>
+          </DialogHeader>
+          {previewScreen && (
+            <div className="space-y-4">
+              <LiveScreenPreview 
+                slots={getScreenSlots(previewScreen)} 
+                size="large" 
+              />
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="text-slate-500">Screen</p>
+                  <p className="font-medium">{previewScreen.name}</p>
+                </div>
+                <div>
+                  <p className="text-slate-500">Status</p>
+                  <Badge className={previewScreen.status === "online" ? "bg-emerald-100 text-emerald-700" : "bg-slate-100"}>
+                    {previewScreen.status}
+                  </Badge>
+                </div>
+                <div>
+                  <p className="text-slate-500">Active Ads</p>
+                  <p className="font-medium">{getScreenSlots(previewScreen).length} slots playing</p>
+                </div>
+                <div>
+                  <p className="text-slate-500">Device ID</p>
+                  <code className="text-xs bg-slate-100 px-2 py-1 rounded">{previewScreen.device_id}</code>
+                </div>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
