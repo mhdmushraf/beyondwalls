@@ -8,10 +8,16 @@ import {
   Box,
   Eye,
   BarChart3,
-  Sparkles
+  Sparkles,
+  Mail,
+  User,
+  Building2,
+  Phone
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -75,66 +81,82 @@ const PLANS = [
 export default function ARUpgradeModal({ open, onClose, currentSubscription }) {
   const [selectedPlan, setSelectedPlan] = useState("professional");
   const [processing, setProcessing] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    company: "",
+    phone: ""
+  });
 
-  const handleSubscribe = async () => {
+  const handleJoinWaitlist = async () => {
+    if (!formData.name || !formData.email) {
+      toast.error("Please fill in your name and email");
+      return;
+    }
+
     setProcessing(true);
     try {
-      const user = await base44.auth.me();
       const plan = PLANS.find(p => p.id === selectedPlan);
       
-      // Check if user has existing subscription
-      const existingSubs = await base44.entities.ARSubscription.filter({ user_id: user.email });
-      
-      if (existingSubs.length > 0) {
-        // Update existing subscription
-        await base44.entities.ARSubscription.update(existingSubs[0].id, {
-          tier: selectedPlan,
-          status: "active",
-          monthly_price: plan.price,
-          ar_credits: plan.credits,
-          start_date: new Date().toISOString().split('T')[0],
-          end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-        });
-      } else {
-        // Create new subscription
-        await base44.entities.ARSubscription.create({
-          user_id: user.email,
-          tier: selectedPlan,
-          status: "active",
-          monthly_price: plan.price,
-          ar_credits: plan.credits,
-          credits_used: 0,
-          features: plan.features,
-          start_date: new Date().toISOString().split('T')[0],
-          end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          auto_renew: true
-        });
-      }
+      // Create lead for waitlist
+      await base44.entities.Lead.create({
+        name: formData.name,
+        email: formData.email,
+        company_name: formData.company,
+        phone: formData.phone,
+        lead_type: "advertiser",
+        source: "website",
+        status: "new",
+        notes: `AR Premium Waitlist - Interested in: ${plan.name}`,
+        expected_value: plan.price || 10000
+      });
 
       // Send notification email
       await base44.integrations.Core.SendEmail({
         to: "partnership@beyondwalls.ae",
-        subject: `🎉 New AR Premium Subscription: ${user.full_name || user.email}`,
+        subject: `🎯 New AR Premium Waitlist: ${formData.name}`,
         body: `
-New AR Premium Subscription:
+New AR Premium Waitlist Registration:
 
-User: ${user.full_name || "N/A"}
-Email: ${user.email}
-Plan: ${plan.name}
-Price: AED ${plan.price?.toLocaleString() || "Custom"}
-Credits: ${plan.credits}
+Name: ${formData.name}
+Email: ${formData.email}
+Company: ${formData.company || "N/A"}
+Phone: ${formData.phone || "N/A"}
+Interested Plan: ${plan.name}
+Expected Value: AED ${plan.price?.toLocaleString() || "Custom"}
         `
       });
 
-      toast.success(`Successfully subscribed to ${plan.name}!`);
-      onClose();
-      window.location.reload();
+      setSubmitted(true);
     } catch (error) {
-      toast.error("Failed to process subscription. Please try again.");
+      toast.error("Failed to join waitlist. Please try again.");
     } finally {
       setProcessing(false);
     }
   };
+
+  // Success state
+  if (submitted) {
+    return (
+      <Dialog open={open} onOpenChange={onClose}>
+        <DialogContent className="max-w-md">
+          <div className="text-center py-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-violet-600 to-fuchsia-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 className="w-8 h-8 text-white" />
+            </div>
+            <h3 className="text-xl font-bold text-slate-900 mb-2">You're on the Waitlist!</h3>
+            <p className="text-slate-600 mb-6">
+              Thank you for your interest in AR Engage Premium. We'll notify you as soon as it's available.
+            </p>
+            <Button onClick={onClose} className="bg-gradient-to-r from-violet-600 to-fuchsia-600">
+              Got it!
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -142,12 +164,12 @@ Credits: ${plan.credits}
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Crown className="w-6 h-6 text-amber-500" />
-            Upgrade to AR Engage Premium
+            Join AR Engage Premium Waitlist
           </DialogTitle>
         </DialogHeader>
 
         <p className="text-slate-600 mb-6">
-          Choose a plan to unlock immersive AR advertising experiences for your brand.
+          AR Engage is coming soon! Join the waitlist to get early access and exclusive launch pricing.
         </p>
 
         <div className="grid md:grid-cols-3 gap-4 mb-6">
@@ -194,26 +216,80 @@ Credits: ${plan.credits}
           ))}
         </div>
 
+        {/* Waitlist Form */}
+        <div className="bg-slate-50 rounded-xl p-6 mb-6">
+          <h4 className="font-semibold text-slate-900 mb-4">Join the Waitlist</h4>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Full Name *</Label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Input
+                  placeholder="Your full name"
+                  className="pl-10"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Email *</Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Input
+                  type="email"
+                  placeholder="your@email.com"
+                  className="pl-10"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Company (Optional)</Label>
+              <div className="relative">
+                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Input
+                  placeholder="Company name"
+                  className="pl-10"
+                  value={formData.company}
+                  onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Phone (Optional)</Label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Input
+                  placeholder="+971 XX XXX XXXX"
+                  className="pl-10"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="flex justify-end gap-3">
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
           <Button
-            onClick={handleSubscribe}
-            disabled={processing || selectedPlan === "enterprise"}
+            onClick={handleJoinWaitlist}
+            disabled={processing || !formData.name || !formData.email}
             className="bg-gradient-to-r from-violet-600 to-fuchsia-600"
           >
             {processing ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Processing...
+                Joining...
               </>
-            ) : selectedPlan === "enterprise" ? (
-              "Contact Sales"
             ) : (
               <>
-                <Zap className="w-4 h-4 mr-2" />
-                Subscribe Now
+                <Sparkles className="w-4 h-4 mr-2" />
+                Join Waitlist
               </>
             )}
           </Button>
