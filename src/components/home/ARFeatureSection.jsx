@@ -354,7 +354,7 @@ export default function ARFeatureSection() {
                 </Button>
               </Link>
               <Link to={createPageUrl("Services")}>
-                <Button size="lg" variant="outline" className="h-14 px-8 text-lg border-violet-500/50 text-white hover:bg-violet-500/10">
+                <Button size="lg" className="h-14 px-8 text-lg border-2 border-white bg-transparent text-white hover:bg-white hover:text-violet-600">
                   Learn More About Premium
                 </Button>
               </Link>
