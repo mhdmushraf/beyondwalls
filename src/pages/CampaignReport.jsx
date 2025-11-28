@@ -19,7 +19,8 @@ import {
   Phone,
   Globe,
   QrCode,
-  Share2
+  Share2,
+  Building2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -339,6 +340,7 @@ export default function CampaignReport() {
           <TabsTrigger value="timing">Timing Analysis</TabsTrigger>
           <TabsTrigger value="audience">Audience</TabsTrigger>
           <TabsTrigger value="conversions">Conversions</TabsTrigger>
+          <TabsTrigger value="attribution">Attribution</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview">
@@ -576,6 +578,172 @@ export default function CampaignReport() {
                     <span className="font-bold text-emerald-700">{viewRate}%</span>
                   </div>
                   <p className="text-xs text-emerald-600 mt-1">of visitors viewed your ad</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="attribution">
+          <div className="space-y-6">
+            {/* Screen Performance Attribution */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MonitorPlay className="w-5 h-5 text-violet-600" />
+                  Screen Performance Attribution
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="p-4 bg-gradient-to-r from-violet-50 to-indigo-50 rounded-xl border border-violet-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center">
+                          <MonitorPlay className="w-6 h-6 text-violet-600" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-slate-900">{screen?.name || "Screen"}</p>
+                          <p className="text-sm text-slate-500">{venue?.name} • {venue?.city}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-bold text-violet-600">100%</p>
+                        <p className="text-xs text-slate-500">Attribution</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-4 gap-3 mt-4">
+                      <div className="text-center p-2 bg-white rounded-lg">
+                        <p className="text-lg font-bold text-slate-900">{totalFootfall.toLocaleString()}</p>
+                        <p className="text-xs text-slate-500">Reach</p>
+                      </div>
+                      <div className="text-center p-2 bg-white rounded-lg">
+                        <p className="text-lg font-bold text-slate-900">{totalScreenViews.toLocaleString()}</p>
+                        <p className="text-xs text-slate-500">Views</p>
+                      </div>
+                      <div className="text-center p-2 bg-white rounded-lg">
+                        <p className="text-lg font-bold text-slate-900">{totalConversions}</p>
+                        <p className="text-xs text-slate-500">Conversions</p>
+                      </div>
+                      <div className="text-center p-2 bg-white rounded-lg">
+                        <p className="text-lg font-bold text-slate-900">AED {booking.total_cost}</p>
+                        <p className="text-xs text-slate-500">Spend</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Venue Attribution */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Building2 className="w-5 h-5 text-indigo-600" />
+                  Venue Attribution
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="p-4 bg-slate-50 rounded-xl">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                        <Building2 className="w-6 h-6 text-indigo-600" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-slate-900">{venue?.name || "Venue"}</p>
+                        <p className="text-sm text-slate-500 capitalize">{venue?.type} • {venue?.area}, {venue?.city}</p>
+                      </div>
+                    </div>
+                    <Badge className="bg-indigo-100 text-indigo-700">Primary Venue</Badge>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="p-3 bg-white rounded-lg">
+                      <p className="text-xs text-slate-500">Venue Score</p>
+                      <p className="text-xl font-bold text-indigo-600">92/100</p>
+                    </div>
+                    <div className="p-3 bg-white rounded-lg">
+                      <p className="text-xs text-slate-500">Avg Footfall</p>
+                      <p className="text-xl font-bold text-slate-900">{venue?.avg_daily_footfall?.toLocaleString() || "N/A"}</p>
+                    </div>
+                    <div className="p-3 bg-white rounded-lg">
+                      <p className="text-xs text-slate-500">View Rate</p>
+                      <p className="text-xl font-bold text-emerald-600">{viewRate}%</p>
+                    </div>
+                    <div className="p-3 bg-white rounded-lg">
+                      <p className="text-xs text-slate-500">Conversion Rate</p>
+                      <p className="text-xl font-bold text-amber-600">{conversionRate}%</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Conversion Funnel */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Conversion Funnel</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="relative">
+                    <div className="h-12 bg-violet-600 rounded-lg flex items-center justify-between px-4">
+                      <span className="text-white font-medium">Venue Footfall</span>
+                      <span className="text-white font-bold">{totalFootfall.toLocaleString()}</span>
+                    </div>
+                  </div>
+                  <div className="relative ml-4">
+                    <div className="h-12 bg-violet-500 rounded-lg flex items-center justify-between px-4" style={{ width: `${viewRate}%`, minWidth: '200px' }}>
+                      <span className="text-white font-medium">Screen Views</span>
+                      <span className="text-white font-bold">{totalScreenViews.toLocaleString()}</span>
+                    </div>
+                    <span className="absolute right-0 top-1/2 -translate-y-1/2 text-xs text-slate-500 ml-2">
+                      {viewRate}%
+                    </span>
+                  </div>
+                  <div className="relative ml-8">
+                    <div className="h-12 bg-violet-400 rounded-lg flex items-center justify-between px-4" style={{ width: `${Math.min(conversionRate * 10, 60)}%`, minWidth: '180px' }}>
+                      <span className="text-white font-medium">Engaged</span>
+                      <span className="text-white font-bold">{Math.floor(totalScreenViews * 0.15)}</span>
+                    </div>
+                  </div>
+                  <div className="relative ml-12">
+                    <div className="h-12 bg-emerald-500 rounded-lg flex items-center justify-between px-4" style={{ width: '40%', minWidth: '160px' }}>
+                      <span className="text-white font-medium">Conversions</span>
+                      <span className="text-white font-bold">{totalConversions}</span>
+                    </div>
+                    <span className="absolute right-0 top-1/2 -translate-y-1/2 text-xs text-slate-500 ml-2">
+                      {conversionRate}%
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Attribution Summary */}
+            <Card className="bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold mb-4">Campaign Attribution Summary</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="p-4 bg-white/10 rounded-xl">
+                    <p className="text-slate-300 text-sm">Total Spend</p>
+                    <p className="text-2xl font-bold">AED {booking.total_cost}</p>
+                  </div>
+                  <div className="p-4 bg-white/10 rounded-xl">
+                    <p className="text-slate-300 text-sm">Cost per View</p>
+                    <p className="text-2xl font-bold">AED {costPerVisitor}</p>
+                  </div>
+                  <div className="p-4 bg-white/10 rounded-xl">
+                    <p className="text-slate-300 text-sm">Cost per Conversion</p>
+                    <p className="text-2xl font-bold">AED {costPerConversion}</p>
+                  </div>
+                  <div className="p-4 bg-emerald-500/20 rounded-xl border border-emerald-500/30">
+                    <p className="text-emerald-300 text-sm">ROI Score</p>
+                    <p className="text-2xl font-bold text-emerald-400">
+                      {totalConversions > 0 ? Math.min(Math.round((totalConversions / (booking.total_cost / 100)) * 10), 100) : 0}/100
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
