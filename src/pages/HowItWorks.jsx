@@ -222,18 +222,36 @@ export default function HowItWorks() {
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50">
-        <div className="max-w-4xl mx-auto text-center">
-          <Badge className="bg-violet-100 text-violet-700 mb-6">
-            Complete Platform Guide
+      <section className="pt-32 pb-20 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50 relative overflow-hidden">
+        <div className="absolute top-20 right-20 w-72 h-72 bg-violet-200 rounded-full blur-3xl opacity-30" />
+        <div className="absolute bottom-20 left-20 w-96 h-96 bg-indigo-200 rounded-full blur-3xl opacity-30" />
+        <div className="max-w-5xl mx-auto text-center relative">
+          <Badge className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-0 px-4 py-2 mb-6">
+            📖 Complete Platform Guide
           </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
-            How BeyondWalls Works
+          <h1 className="text-4xl md:text-6xl font-bold text-slate-900 mb-6">
+            From Signup to 
+            <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent"> Live Ads </span>
+            in 30 Minutes
           </h1>
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-            A comprehensive guide to our digital out-of-home advertising platform. 
-            Learn how advertisers reach audiences and venues earn revenue.
+          <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8">
+            BeyondWalls makes digital out-of-home advertising accessible to everyone. 
+            Whether you're an advertiser or venue owner, here's everything you need to know.
           </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link to={createPageUrl("Register")}>
+              <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600 h-14 px-8">
+                <Megaphone className="w-5 h-5 mr-2" />
+                I'm an Advertiser
+              </Button>
+            </Link>
+            <Link to={createPageUrl("Register")}>
+              <Button size="lg" variant="outline" className="h-14 px-8 border-2">
+                <Building2 className="w-5 h-5 mr-2" />
+                I'm a Venue Owner
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -247,6 +265,24 @@ export default function HowItWorks() {
                 <p className="text-slate-400">{stat.label}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Video Placeholder / Visual */}
+      <section className="py-16 px-6 bg-gradient-to-b from-slate-900 to-slate-800">
+        <div className="max-w-4xl mx-auto">
+          <div className="aspect-video bg-gradient-to-br from-violet-600 to-indigo-700 rounded-3xl flex items-center justify-center relative overflow-hidden shadow-2xl">
+            <div className="absolute inset-0 opacity-20">
+              <div className="absolute top-0 left-0 w-full h-full" style={{backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "20px 20px"}} />
+            </div>
+            <div className="text-center text-white relative z-10">
+              <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 cursor-pointer hover:bg-white/30 transition-colors">
+                <div className="w-0 h-0 border-l-[20px] border-l-white border-t-[12px] border-t-transparent border-b-[12px] border-b-transparent ml-2" />
+              </div>
+              <p className="text-xl font-medium">Watch How It Works</p>
+              <p className="text-white/60 text-sm mt-2">2 minute overview</p>
+            </div>
           </div>
         </div>
       </section>
@@ -605,29 +641,58 @@ export default function HowItWorks() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 px-6 bg-gradient-to-br from-violet-600 to-indigo-600">
+      {/* Still Have Questions */}
+      <section className="py-16 px-6 bg-white">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+          <h2 className="text-2xl font-bold text-slate-900 mb-4">Still Have Questions?</h2>
+          <p className="text-slate-600 mb-8">Our team is ready to help you get started</p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link to={createPageUrl("HelpCenter")}>
+              <Button variant="outline" size="lg" className="border-2">
+                Visit Help Center
+              </Button>
+            </Link>
+            <Link to={createPageUrl("Contact")}>
+              <Button variant="outline" size="lg" className="border-2">
+                Contact Support
+              </Button>
+            </Link>
+            <a href="mailto:hello@beyondwalls.ae">
+              <Button variant="outline" size="lg" className="border-2">
+                Email Us
+              </Button>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-24 px-6 bg-gradient-to-br from-violet-600 via-indigo-600 to-purple-700 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-full h-full" style={{backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "24px 24px"}} />
+        </div>
+        <div className="max-w-4xl mx-auto text-center relative">
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
             Ready to Get Started?
           </h2>
-          <p className="text-xl text-white/80 mb-8">
-            Join the fastest-growing DOOH network in the UAE
+          <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
+            Join the fastest-growing DOOH network in the UAE. Launch your first campaign in under 30 minutes.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to={createPageUrl("Register")}>
-              <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 px-8">
+              <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8 shadow-xl">
                 <Megaphone className="w-5 h-5 mr-2" />
-                I'm an Advertiser
+                Start as Advertiser
               </Button>
             </Link>
             <Link to={createPageUrl("Register")}>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 px-8">
+              <Button size="lg" className="border-2 border-white bg-transparent text-white hover:bg-white hover:text-violet-600 h-14 px-8">
                 <Building2 className="w-5 h-5 mr-2" />
-                I'm a Venue Owner
+                Join as Venue Owner
               </Button>
             </Link>
           </div>
+          <p className="text-white/60 mt-8 text-sm">No credit card required • Free to sign up • Go live in 30 minutes</p>
         </div>
       </section>
 

@@ -126,20 +126,51 @@ export default function HelpCenter() {
       <PublicNav />
 
       {/* Hero */}
-      <section className="pt-32 pb-12 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50">
-        <div className="max-w-4xl mx-auto text-center">
-          <Badge className="bg-amber-100 text-slate-900 mb-6">Help Center</Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
-            How Can We Help?
+      <section className="pt-32 pb-12 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50 relative overflow-hidden">
+        <div className="absolute top-20 right-20 w-72 h-72 bg-violet-200 rounded-full blur-3xl opacity-30" />
+        <div className="absolute bottom-20 left-20 w-64 h-64 bg-indigo-200 rounded-full blur-3xl opacity-30" />
+        <div className="max-w-4xl mx-auto text-center relative">
+          <Badge className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-0 px-4 py-2 mb-6">
+            24/7 Support
+          </Badge>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
+            How Can We Help You?
           </h1>
+          <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
+            Find answers to common questions or reach out to our support team
+          </p>
           <div className="relative max-w-xl mx-auto">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
             <Input
               placeholder="Search for answers..."
-              className="pl-12 h-14 text-lg"
+              className="pl-12 h-14 text-lg shadow-lg border-0"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Links */}
+      <section className="py-8 px-6 bg-slate-900">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Link to={createPageUrl("HowItWorks")} className="bg-white/5 hover:bg-white/10 rounded-xl p-4 text-center transition-colors">
+              <Megaphone className="w-6 h-6 text-violet-400 mx-auto mb-2" />
+              <p className="text-white font-medium text-sm">How It Works</p>
+            </Link>
+            <Link to={createPageUrl("Contact")} className="bg-white/5 hover:bg-white/10 rounded-xl p-4 text-center transition-colors">
+              <MessageSquare className="w-6 h-6 text-emerald-400 mx-auto mb-2" />
+              <p className="text-white font-medium text-sm">Contact Support</p>
+            </Link>
+            <Link to={createPageUrl("Services")} className="bg-white/5 hover:bg-white/10 rounded-xl p-4 text-center transition-colors">
+              <Building2 className="w-6 h-6 text-amber-400 mx-auto mb-2" />
+              <p className="text-white font-medium text-sm">Our Services</p>
+            </Link>
+            <a href="mailto:support@beyondwalls.ae" className="bg-white/5 hover:bg-white/10 rounded-xl p-4 text-center transition-colors">
+              <Shield className="w-6 h-6 text-rose-400 mx-auto mb-2" />
+              <p className="text-white font-medium text-sm">Email Support</p>
+            </a>
           </div>
         </div>
       </section>
@@ -208,24 +239,36 @@ export default function HelpCenter() {
       </section>
 
       {/* Contact CTA */}
-      <section className="py-20 px-6 bg-slate-50">
-        <div className="max-w-4xl mx-auto text-center">
-          <MessageSquare className="w-16 h-16 text-violet-600 mx-auto mb-6" />
-          <h2 className="text-2xl font-bold text-slate-900 mb-4">
-            Still Have Questions?
+      <section className="py-20 px-6 bg-gradient-to-br from-violet-600 to-indigo-600 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-full h-full" style={{backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "24px 24px"}} />
+        </div>
+        <div className="max-w-4xl mx-auto text-center relative">
+          <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <MessageSquare className="w-10 h-10 text-white" />
+          </div>
+          <h2 className="text-3xl font-bold text-white mb-4">
+            Can't Find What You're Looking For?
           </h2>
-          <p className="text-slate-600 mb-8">
-            Our support team is here to help. Reach out and we'll get back to you within 24 hours.
+          <p className="text-white/80 mb-8 max-w-xl mx-auto">
+            Our support team responds within 24 hours. We're here to help you succeed.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to={createPageUrl("Contact")}>
-              <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600">
+              <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8">
                 Contact Support
               </Button>
             </Link>
-            <Button size="lg" variant="outline" className="text-slate-900">
-              <a href="mailto:support@beyondwalls.ae">Email: support@beyondwalls.ae</a>
-            </Button>
+            <a href="mailto:support@beyondwalls.ae">
+              <Button size="lg" className="border-2 border-white bg-transparent text-white hover:bg-white hover:text-violet-600 h-14 px-8">
+                support@beyondwalls.ae
+              </Button>
+            </a>
+          </div>
+          <div className="mt-8 flex flex-wrap justify-center gap-6 text-white/60 text-sm">
+            <span>📞 +971 55 614 0067</span>
+            <span>📍 in5 Dubai, UAE</span>
+            <span>⏰ Sun-Thu 9AM-6PM</span>
           </div>
         </div>
       </section>
