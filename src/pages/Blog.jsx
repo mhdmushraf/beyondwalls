@@ -57,7 +57,32 @@ export default function Blog() {
 
   return (
     <div className="min-h-screen bg-white">
-      <SEOHead {...PAGE_SEO.blog} />
+      <SEOHead 
+        {...PAGE_SEO.blog}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "Blog",
+          "name": "BeyondWalls Blog - DOOH Advertising Insights",
+          "description": "Expert insights on digital out-of-home advertising, marketing tips, case studies, and industry trends in Dubai & UAE",
+          "url": "https://www.beyondwalls.ae/blog",
+          "publisher": {
+            "@type": "Organization",
+            "name": "BeyondWalls",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://www.beyondwalls.ae/logo.png"
+            }
+          },
+          "inLanguage": "en-AE",
+          "blogPost": filteredPosts.slice(0, 10).map(post => ({
+            "@type": "BlogPosting",
+            "headline": post.title,
+            "description": post.excerpt,
+            "url": `https://www.beyondwalls.ae/blog/${post.slug || post.id}`,
+            "datePublished": post.published_at
+          }))
+        }}
+      />
       <PublicNav />
 
       {/* Hero */}
