@@ -217,76 +217,76 @@ export default function AdminUsers() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 sm:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-500 text-sm">Total Users</p>
-                <p className="text-3xl font-bold text-slate-900">{users.length}</p>
+                <p className="text-slate-500 text-xs sm:text-sm">Total Users</p>
+                <p className="text-xl sm:text-3xl font-bold text-slate-900">{users.length}</p>
               </div>
-              <Users className="w-8 h-8 text-slate-300" />
+              <Users className="w-6 h-6 sm:w-8 sm:h-8 text-slate-300" />
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 sm:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-500 text-sm">Advertisers</p>
-                <p className="text-3xl font-bold text-violet-600">
+                <p className="text-slate-500 text-xs sm:text-sm">Advertisers</p>
+                <p className="text-xl sm:text-3xl font-bold text-violet-600">
                   {users.filter(u => u.user_role === "advertiser").length}
                 </p>
               </div>
-              <Megaphone className="w-8 h-8 text-violet-200" />
+              <Megaphone className="w-6 h-6 sm:w-8 sm:h-8 text-violet-200" />
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 sm:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-500 text-sm">Venue Owners</p>
-                <p className="text-3xl font-bold text-indigo-600">
+                <p className="text-slate-500 text-xs sm:text-sm">Venue Owners</p>
+                <p className="text-xl sm:text-3xl font-bold text-indigo-600">
                   {users.filter(u => u.user_role === "venue_owner").length}
                 </p>
               </div>
-              <Building2 className="w-8 h-8 text-indigo-200" />
+              <Building2 className="w-6 h-6 sm:w-8 sm:h-8 text-indigo-200" />
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 sm:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-500 text-sm">Pending Verification</p>
-                <p className="text-3xl font-bold text-amber-600">
+                <p className="text-slate-500 text-xs sm:text-sm">Pending</p>
+                <p className="text-xl sm:text-3xl font-bold text-amber-600">
                   {users.filter(u => u.verification_status === "pending").length}
                 </p>
               </div>
-              <Clock className="w-8 h-8 text-amber-200" />
+              <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-amber-200" />
             </div>
           </CardContent>
         </Card>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+      <div className="flex flex-col gap-3 sm:gap-4 mb-4 sm:mb-6">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
           <Input
             placeholder="Search users..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-10"
+            className="pl-9 sm:pl-10"
           />
         </div>
-        <Tabs value={roleFilter} onValueChange={setRoleFilter}>
-          <TabsList>
-            <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="advertiser">Advertisers</TabsTrigger>
-            <TabsTrigger value="venue_owner">Venue Owners</TabsTrigger>
-            <TabsTrigger value="admin">Admins</TabsTrigger>
+        <Tabs value={roleFilter} onValueChange={setRoleFilter} className="w-full overflow-x-auto">
+          <TabsList className="w-full sm:w-auto justify-start">
+            <TabsTrigger value="all" className="text-xs sm:text-sm">All</TabsTrigger>
+            <TabsTrigger value="advertiser" className="text-xs sm:text-sm">Advertisers</TabsTrigger>
+            <TabsTrigger value="venue_owner" className="text-xs sm:text-sm">Venues</TabsTrigger>
+            <TabsTrigger value="admin" className="text-xs sm:text-sm">Admins</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>

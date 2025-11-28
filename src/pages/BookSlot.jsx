@@ -697,7 +697,7 @@ Please review and approve/reject this campaign in the admin dashboard.
                   <p className="text-sm text-rose-700">{availabilityError}</p>
                 </div>
               )}
-              <div className="grid grid-cols-5 gap-3">
+              <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3">
                 {[1, 2, 3, 4, 5].map((slot) => {
                   const isBooked = !getAvailableSlots().includes(slot);
                   return (
@@ -708,7 +708,7 @@ Please review and approve/reject this campaign in the admin dashboard.
                         setSelectedSlot(slot);
                         setAvailabilityError(null);
                       }}
-                      className={`p-4 rounded-xl border-2 transition-all ${
+                      className={`p-3 sm:p-4 rounded-xl border-2 transition-all ${
                         isBooked 
                           ? "bg-slate-100 border-slate-200 cursor-not-allowed opacity-50"
                           : selectedSlot === slot
@@ -716,8 +716,8 @@ Please review and approve/reject this campaign in the admin dashboard.
                             : "bg-white border-slate-200 hover:border-violet-300"
                       }`}
                     >
-                      <p className="font-bold text-lg">Slot {slot}</p>
-                      <p className="text-xs text-slate-500 mt-1">
+                      <p className="font-bold text-sm sm:text-lg">Slot {slot}</p>
+                      <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1">
                         {isBooked ? "Booked" : "Available"}
                       </p>
                     </button>
@@ -739,21 +739,23 @@ Please review and approve/reject this campaign in the admin dashboard.
               <CardTitle>Campaign Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
-                  <Label>Campaign Name</Label>
+                  <Label className="text-sm">Campaign Name</Label>
                   <Input 
                     placeholder="e.g., Summer Sale Campaign"
                     value={formData.campaign_name}
                     onChange={(e) => setFormData({...formData, campaign_name: e.target.value})}
+                    className="mt-1"
                   />
                 </div>
                 <div>
-                  <Label>Business Name</Label>
+                  <Label className="text-sm">Business Name</Label>
                   <Input 
                     placeholder="e.g., Fresh Bites Restaurant"
                     value={formData.business_name}
                     onChange={(e) => setFormData({...formData, business_name: e.target.value})}
+                    className="mt-1"
                   />
                 </div>
               </div>
@@ -791,7 +793,7 @@ Please review and approve/reject this campaign in the admin dashboard.
                 </div>
 
                 {adCopyVariations.length > 0 ? (
-                  <div className="grid grid-cols-3 gap-2 mb-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
                     {adCopyVariations.map((variation, i) => (
                       <div
                         key={i}
@@ -800,15 +802,15 @@ Please review and approve/reject this campaign in the admin dashboard.
                           headline: variation.headline,
                           description: variation.description
                         })}
-                        className={`p-3 rounded-lg border-2 cursor-pointer transition-all text-sm ${
+                        className={`p-2 sm:p-3 rounded-lg border-2 cursor-pointer transition-all text-sm ${
                           formData.headline === variation.headline
                             ? "border-violet-600 bg-white"
                             : "border-transparent bg-white/50 hover:border-violet-300"
                         }`}
                       >
-                        <span className="text-xs text-violet-600 font-medium">{variation.tone}</span>
-                        <p className="font-semibold text-slate-900 mt-1">{variation.headline}</p>
-                        <p className="text-slate-600 text-xs mt-1">{variation.description}</p>
+                        <span className="text-[10px] sm:text-xs text-violet-600 font-medium">{variation.tone}</span>
+                        <p className="font-semibold text-slate-900 mt-1 text-xs sm:text-sm">{variation.headline}</p>
+                        <p className="text-slate-600 text-[10px] sm:text-xs mt-1">{variation.description}</p>
                       </div>
                     ))}
                   </div>
@@ -818,14 +820,14 @@ Please review and approve/reject this campaign in the admin dashboard.
                   </p>
                 )}
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                   <div>
                     <Label className="text-xs">Headline</Label>
                     <Input
                       placeholder="Your catchy headline"
                       value={formData.headline}
                       onChange={(e) => setFormData({...formData, headline: e.target.value})}
-                      className="bg-white"
+                      className="bg-white mt-1"
                     />
                   </div>
                   <div>
@@ -834,7 +836,7 @@ Please review and approve/reject this campaign in the admin dashboard.
                       placeholder="Short description"
                       value={formData.description}
                       onChange={(e) => setFormData({...formData, description: e.target.value})}
-                      className="bg-white"
+                      className="bg-white mt-1"
                     />
                   </div>
                 </div>
@@ -877,17 +879,17 @@ Please review and approve/reject this campaign in the admin dashboard.
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
-                  <Label>Start Date</Label>
+                  <Label className="text-sm">Start Date</Label>
                   <Popover>
                     <PopoverTrigger asChild>
-                      <Button variant="outline" className="w-full justify-start mt-1">
+                      <Button variant="outline" className="w-full justify-start mt-1 text-sm">
                         <Calendar className="w-4 h-4 mr-2" />
-                        {format(formData.start_date, "PPP")}
+                        {format(formData.start_date, "PP")}
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
+                    <PopoverContent className="w-auto p-0" align="start">
                       <CalendarComponent
                         mode="single"
                         selected={formData.start_date}
@@ -898,7 +900,7 @@ Please review and approve/reject this campaign in the admin dashboard.
                   </Popover>
                 </div>
                 <div>
-                  <Label>Duration (Weeks)</Label>
+                  <Label className="text-sm">Duration (Weeks)</Label>
                   <Select 
                     value={String(formData.weeks)} 
                     onValueChange={(v) => setFormData({...formData, weeks: parseInt(v)})}
@@ -930,12 +932,12 @@ Please review and approve/reject this campaign in the admin dashboard.
             />
           )}
 
-          <div className="flex justify-between">
-            <Button variant="outline" onClick={() => setStep(1)}>
+          <div className="flex flex-col sm:flex-row justify-between gap-3">
+            <Button variant="outline" onClick={() => setStep(1)} className="order-2 sm:order-1">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 order-1 sm:order-2">
               <Button 
                 variant="outline"
                 onClick={addToCart}

@@ -126,27 +126,27 @@ export default function AdminDashboard() {
       {(pendingCampaigns.length > 0 || pendingVenues.length > 0) && (
         <Card className="mb-8 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
           <CardContent className="py-4">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center">
-                <Clock className="w-6 h-6 text-white" />
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-amber-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <p className="font-semibold text-slate-900">Pending Approvals</p>
                 <p className="text-sm text-slate-600">
                   {pendingCampaigns.length} campaigns and {pendingVenues.length} venues waiting for review
                 </p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                 {pendingCampaigns.length > 0 && (
                   <Link to={createPageUrl("AdminCampaigns")}>
-                    <Button variant="outline" className="border-amber-300">
+                    <Button variant="outline" size="sm" className="border-amber-300">
                       Review Campaigns
                     </Button>
                   </Link>
                 )}
                 {pendingVenues.length > 0 && (
                   <Link to={createPageUrl("AdminVenues")}>
-                    <Button variant="outline" className="border-amber-300">
+                    <Button variant="outline" size="sm" className="border-amber-300">
                       Review Venues
                     </Button>
                   </Link>

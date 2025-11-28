@@ -76,9 +76,9 @@ export default function MyBookings() {
     
     return (
       <Card className="hover:shadow-lg transition-shadow">
-        <CardContent className="p-4">
-          <div className="flex items-start gap-4">
-            <div className="w-16 h-16 bg-violet-100 rounded-xl flex items-center justify-center flex-shrink-0">
+        <CardContent className="p-3 sm:p-4">
+          <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
+            <div className="w-full sm:w-16 h-32 sm:h-16 bg-violet-100 rounded-xl flex items-center justify-center flex-shrink-0">
               {booking.creative_url ? (
                 booking.creative_type === "video" ? (
                   <video src={booking.creative_url} className="w-full h-full object-cover rounded-xl" />
@@ -89,11 +89,11 @@ export default function MyBookings() {
                 <Megaphone className="w-8 h-8 text-violet-600" />
               )}
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h3 className="font-semibold text-slate-900">{booking.campaign_name || "Ad Campaign"}</h3>
-                  <p className="text-sm text-slate-500 mt-1">
+            <div className="flex-1 min-w-0 w-full">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base truncate">{booking.campaign_name || "Ad Campaign"}</h3>
+                  <p className="text-xs sm:text-sm text-slate-500 mt-1 truncate">
                     <MonitorPlay className="w-3 h-3 inline mr-1" />
                     {screen?.name || "Screen"} • Slot #{booking.slot_number}
                   </p>
@@ -101,23 +101,23 @@ export default function MyBookings() {
                 <Badge variant={
                   booking.status === "active" ? "default" :
                   booking.status === "pending" ? "secondary" : "outline"
-                }>
+                } className="text-xs flex-shrink-0">
                   {booking.status}
                 </Badge>
               </div>
-              <div className="flex items-center gap-4 mt-3 text-sm text-slate-500">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 sm:mt-3 text-xs sm:text-sm text-slate-500">
                 <span className="flex items-center gap-1">
                   <Calendar className="w-3 h-3" />
-                  {format(new Date(booking.start_date), "MMM d")} - {format(new Date(booking.end_date), "MMM d, yyyy")}
+                  {format(new Date(booking.start_date), "MMM d")} - {format(new Date(booking.end_date), "MMM d")}
                 </span>
                 <span className="flex items-center gap-1">
                   <Clock className="w-3 h-3" />
-                  {booking.weeks_booked} week{booking.weeks_booked > 1 ? "s" : ""}
+                  {booking.weeks_booked}w
                 </span>
               </div>
-              <div className="mt-3 pt-3 border-t flex items-center justify-between">
+              <div className="mt-3 pt-3 border-t flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                 <p className="font-semibold text-violet-600">AED {booking.total_cost}</p>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   {booking.status === "active" && (
                     <InvoiceDownloadButton 
                       type="advertiser" 
@@ -128,15 +128,15 @@ export default function MyBookings() {
                     />
                   )}
                   <Link to={createPageUrl(`CampaignManager?id=${booking.id}`)}>
-                    <Button variant="outline" size="sm">
-                      <Settings className="w-4 h-4 mr-1" />
-                      Manage
+                    <Button variant="outline" size="sm" className="h-8 text-xs">
+                      <Settings className="w-3 h-3 sm:mr-1" />
+                      <span className="hidden sm:inline">Manage</span>
                     </Button>
                   </Link>
                   <Link to={createPageUrl(`CampaignReport?id=${booking.id}`)}>
-                    <Button variant="outline" size="sm">
-                      <BarChart3 className="w-4 h-4 mr-1" />
-                      Report
+                    <Button variant="outline" size="sm" className="h-8 text-xs">
+                      <BarChart3 className="w-3 h-3 sm:mr-1" />
+                      <span className="hidden sm:inline">Report</span>
                     </Button>
                   </Link>
                 </div>

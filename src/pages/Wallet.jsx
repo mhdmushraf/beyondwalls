@@ -232,45 +232,43 @@ export default function Wallet() {
       </div>
 
       {/* Balance Card */}
-      <Card className="mb-8 bg-gradient-to-br from-violet-600 to-indigo-600 text-white border-0">
-        <CardContent className="p-8">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <Card className="mb-6 sm:mb-8 bg-gradient-to-br from-violet-600 to-indigo-600 text-white border-0">
+        <CardContent className="p-4 sm:p-6 lg:p-8">
+          <div className="flex flex-col gap-4 sm:gap-6">
             <div>
-              <p className="text-white/70 mb-1">Available Balance</p>
-              <p className="text-5xl font-bold">AED {calculatedBalance.toLocaleString()}</p>
-              <div className="flex gap-8 mt-6">
+              <p className="text-white/70 mb-1 text-sm">Available Balance</p>
+              <p className="text-3xl sm:text-4xl lg:text-5xl font-bold">AED {calculatedBalance.toLocaleString()}</p>
+              <div className="flex flex-wrap gap-4 sm:gap-8 mt-4 sm:mt-6">
                 <div>
-                  <p className="text-white/70 text-sm">Total Earnings</p>
-                  <p className="text-2xl font-semibold text-emerald-300">
+                  <p className="text-white/70 text-xs sm:text-sm">Total Earnings</p>
+                  <p className="text-lg sm:text-xl lg:text-2xl font-semibold text-emerald-300">
                     +AED {totalEarnings.toLocaleString()}
                   </p>
                 </div>
                 <div>
-                  <p className="text-white/70 text-sm">Total Spent</p>
-                  <p className="text-2xl font-semibold text-rose-300">
+                  <p className="text-white/70 text-xs sm:text-sm">Total Spent</p>
+                  <p className="text-lg sm:text-xl lg:text-2xl font-semibold text-rose-300">
                     -AED {totalSpent.toLocaleString()}
                   </p>
                 </div>
               </div>
             </div>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-row gap-2 sm:gap-3">
               <Button 
-                size="lg"
-                className="bg-white text-violet-600 hover:bg-white/90"
+                className="flex-1 sm:flex-none bg-white text-violet-600 hover:bg-white/90"
                 onClick={() => setShowTopUp(true)}
               >
-                <Plus className="w-5 h-5 mr-2" />
-                Add Funds
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+                <span className="text-sm sm:text-base">Add Funds</span>
               </Button>
               {totalEarnings > 0 && (
                 <Button 
-                  size="lg"
                   variant="outline"
-                  className="border-white/30 text-white hover:bg-white/10"
+                  className="flex-1 sm:flex-none border-white/30 text-white hover:bg-white/10"
                   onClick={() => setShowWithdraw(true)}
                 >
-                  <Download className="w-5 h-5 mr-2" />
-                  Withdraw
+                  <Download className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+                  <span className="text-sm sm:text-base">Withdraw</span>
                 </Button>
               )}
             </div>
@@ -294,16 +292,16 @@ export default function Wallet() {
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                <ArrowDownRight className="w-5 h-5 text-emerald-600" />
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <ArrowDownRight className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
               </div>
-              <div>
-                <p className="text-sm text-slate-500">Screen Earnings</p>
-                <p className="text-lg font-bold text-emerald-600">
+              <div className="min-w-0">
+                <p className="text-xs sm:text-sm text-slate-500">Earnings</p>
+                <p className="text-sm sm:text-lg font-bold text-emerald-600 truncate">
                   AED {totalEarnings.toLocaleString()}
                 </p>
               </div>
@@ -311,14 +309,14 @@ export default function Wallet() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-rose-100 rounded-lg flex items-center justify-center">
-                <ArrowUpRight className="w-5 h-5 text-rose-600" />
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-rose-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5 text-rose-600" />
               </div>
-              <div>
-                <p className="text-sm text-slate-500">Ad Spending</p>
-                <p className="text-lg font-bold text-rose-600">
+              <div className="min-w-0">
+                <p className="text-xs sm:text-sm text-slate-500">Spending</p>
+                <p className="text-sm sm:text-lg font-bold text-rose-600 truncate">
                   AED {totalSpent.toLocaleString()}
                 </p>
               </div>
@@ -326,14 +324,14 @@ export default function Wallet() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-violet-600" />
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-violet-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-violet-600" />
               </div>
-              <div>
-                <p className="text-sm text-slate-500">Net Balance</p>
-                <p className="text-lg font-bold text-violet-600">
+              <div className="min-w-0">
+                <p className="text-xs sm:text-sm text-slate-500">Net</p>
+                <p className="text-sm sm:text-lg font-bold text-violet-600 truncate">
                   AED {(totalEarnings - totalSpent).toLocaleString()}
                 </p>
               </div>
@@ -341,14 +339,14 @@ export default function Wallet() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <CreditCard className="w-5 h-5 text-blue-600" />
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
               </div>
-              <div>
-                <p className="text-sm text-slate-500">Transactions</p>
-                <p className="text-lg font-bold text-blue-600">{transactions.length}</p>
+              <div className="min-w-0">
+                <p className="text-xs sm:text-sm text-slate-500">Transactions</p>
+                <p className="text-sm sm:text-lg font-bold text-blue-600">{transactions.length}</p>
               </div>
             </div>
           </CardContent>

@@ -224,58 +224,62 @@ export default function AdminScreenSlots() {
   return (
     <div className="p-6 lg:p-8 max-w-6xl mx-auto">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-8">
-        <Button variant="ghost" size="icon" onClick={() => navigate(createPageUrl("AdminScreens"))}>
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
-        <div className="flex-1">
-          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">{screen.name}</h1>
-          <p className="text-slate-500">{venue?.name} • {venue?.city}</p>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate(createPageUrl("AdminScreens"))}>
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 truncate">{screen.name}</h1>
+            <p className="text-sm text-slate-500 truncate">{venue?.name} • {venue?.city}</p>
+          </div>
         </div>
-        <Badge variant={screen.status === "online" ? "default" : "secondary"}>
+        <Badge variant={screen.status === "online" ? "default" : "secondary"} className="self-start sm:self-center">
           {screen.status}
         </Badge>
       </div>
 
       {/* Screen Info */}
-      <Card className="mb-6">
-        <CardContent className="p-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+      <Card className="mb-4 sm:mb-6">
+        <CardContent className="p-3 sm:p-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
             <div>
               <p className="text-slate-500">Size</p>
               <p className="font-medium">{screen.size} • {screen.orientation}</p>
             </div>
             <div>
               <p className="text-slate-500">Slot Price</p>
-              <p className="font-medium">AED {screen.slot_price}/week</p>
+              <p className="font-medium">AED {screen.slot_price}/wk</p>
             </div>
             <div>
               <p className="text-slate-500">Owner</p>
-              <p className="font-medium">{getAdvertiserName(screen.owner_id)}</p>
+              <p className="font-medium truncate">{getAdvertiserName(screen.owner_id)}</p>
             </div>
             <div>
-              <p className="text-slate-500">Total Slots</p>
-              <p className="font-medium">{screen.total_slots || 8} (Owner: {screen.owner_slots || 3}, Paid: {screen.available_slots || 5})</p>
+              <p className="text-slate-500">Slots</p>
+              <p className="font-medium">{screen.total_slots || 8} (O:{screen.owner_slots || 3}, P:{screen.available_slots || 5})</p>
             </div>
           </div>
         </CardContent>
       </Card>
 
       <Tabs defaultValue="owner">
-        <TabsList className="mb-6">
-          <TabsTrigger value="owner" className="gap-2">
-            <Building2 className="w-4 h-4" />
-            Owner Slots ({screen.owner_slots || 3})
+        <TabsList className="mb-4 sm:mb-6 w-full sm:w-auto flex">
+          <TabsTrigger value="owner" className="flex-1 sm:flex-initial gap-1 sm:gap-2 text-xs sm:text-sm">
+            <Building2 className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="hidden sm:inline">Owner Slots</span>
+            <span className="sm:hidden">Owner</span> ({screen.owner_slots || 3})
           </TabsTrigger>
-          <TabsTrigger value="advertiser" className="gap-2">
-            <User className="w-4 h-4" />
-            Advertiser Slots ({activeBookings.length})
+          <TabsTrigger value="advertiser" className="flex-1 sm:flex-initial gap-1 sm:gap-2 text-xs sm:text-sm">
+            <User className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="hidden sm:inline">Advertiser Slots</span>
+            <span className="sm:hidden">Ads</span> ({activeBookings.length})
           </TabsTrigger>
         </TabsList>
 
         {/* Owner Slots */}
         <TabsContent value="owner">
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {[1, 2, 3].map((slot) => {
               const url = screen[`owner_slot_${slot}_url`];
               const type = screen[`owner_slot_${slot}_type`] || "image";
@@ -324,13 +328,13 @@ export default function AdminScreenSlots() {
         <TabsContent value="advertiser">
           {activeBookings.length === 0 ? (
             <Card>
-              <CardContent className="py-12 text-center">
-                <User className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                <p className="text-slate-500">No active advertiser bookings</p>
+              <CardContent className="py-8 sm:py-12 text-center">
+                <User className="w-10 h-10 sm:w-12 sm:h-12 text-slate-300 mx-auto mb-3" />
+                <p className="text-slate-500 text-sm sm:text-base">No active advertiser bookings</p>
               </CardContent>
             </Card>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {activeBookings.map((booking) => (
                 <Card key={booking.id}>
                   <CardHeader className="pb-2">
