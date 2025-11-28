@@ -87,7 +87,8 @@ export default function Layout({ children, currentPageName }) {
                 if (hasPermission("all") || hasPermission("blog")) adminItems.push({ name: "Blog", icon: Megaphone, page: "AdminBlog" });
                 if (hasPermission("all") || hasPermission("crm")) adminItems.push({ name: "CRM", icon: Users, page: "AdminCRM" });
                 if (hasPermission("all")) adminItems.push({ name: "Default Content", icon: MonitorPlay, page: "AdminDefaultContent" });
-              if (hasPermission("all")) adminItems.push({ name: "Logo Generator", icon: Settings, page: "LogoGenerator" });
+              if (hasPermission("all")) adminItems.push({ name: "AR Campaigns", icon: Megaphone, page: "AdminARCampaigns" });
+                      if (hasPermission("all")) adminItems.push({ name: "Logo Generator", icon: Settings, page: "LogoGenerator" });
 
                 return adminItems;
     } else {
@@ -101,7 +102,8 @@ export default function Layout({ children, currentPageName }) {
                       { name: "Favorites", icon: MonitorPlay, page: "FavoriteScreens" },
                       { name: "My Bookings", icon: Megaphone, page: "MyBookings" },
             { name: "Auto-Booking", icon: Zap, page: "AutoBooking" },
-                      { name: "Wallet", icon: Wallet, page: "Wallet" },
+                            { name: "AR Engage", icon: Megaphone, page: "ARDashboard" },
+                            { name: "Wallet", icon: Wallet, page: "Wallet" },
                       { name: "My Venues", icon: Building2, page: "MyVenues" },
                       { name: "My Screens", icon: MonitorPlay, page: "MyScreens" },
                     ];
