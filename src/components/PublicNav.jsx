@@ -41,10 +41,10 @@ export default function PublicNav() {
     { name: "About", page: "About" },
     { name: "Services", page: "Services" },
     { name: "Screen Locations", page: "ScreenLocations" },
-    { name: "AR Engage", page: "ARPremium", isNew: true },
     { name: "Blog", page: "Blog" },
     { name: "Help Center", page: "HelpCenter" },
     { name: "Contact", page: "Contact" },
+    { name: "AR Engage", page: "ARPremium", isNew: true },
     { name: "Connect", page: "Connect", highlight: true },
   ];
 
@@ -74,7 +74,7 @@ export default function PublicNav() {
                   : "text-slate-600 hover:text-violet-600"
               }`}
             >
-              {link.highlight ? "✨ Connect" : link.isNew ? <>🔮 {link.name}</> : link.name}
+              {link.highlight ? "✨ Connect" : link.name}
             </Link>
           ))}
         </div>
@@ -133,7 +133,7 @@ export default function PublicNav() {
               }`}
               onClick={() => setMobileMenuOpen(false)}
             >
-              {link.highlight ? "✨ Connect" : link.isNew ? <>🔮 {link.name}</> : link.name}
+              {link.highlight ? "✨ Connect" : link.name}
             </Link>
           ))}
         </div>
