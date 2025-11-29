@@ -414,5 +414,41 @@ export const PAGE_SEO = {
     keywords: "BeyondWalls privacy, advertising platform privacy policy, data protection UAE",
     url: "/privacy",
     noindex: true
+  },
+  arPremium: {
+    title: "AR Engage - Augmented Reality Advertising Dubai | Virtual Try-On | 3D Product Visualization UAE",
+    description: "Transform DOOH screens into immersive AR experiences. Virtual try-on, 3D product visualization, interactive advertising for premium brands in Dubai & UAE. WebAR technology - no app required. Coming Q1 2026.",
+    keywords: "AR advertising Dubai, augmented reality advertising UAE, virtual try-on Dubai, 3D product visualization Dubai, WebAR advertising, interactive DOOH Dubai, AR marketing UAE, immersive advertising Dubai, augmented reality Dubai, virtual reality advertising UAE, AR billboards Dubai, interactive digital signage UAE",
+    url: "/ar-premium",
+    image: "https://www.beyondwalls.ae/og-ar-engage.jpg",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "BeyondWalls AR Engage - Augmented Reality Advertising",
+      "description": "Premium augmented reality advertising solution for digital out-of-home screens in Dubai & UAE. Virtual try-on, 3D visualization, interactive experiences.",
+      "brand": {
+        "@type": "Brand",
+        "name": "BeyondWalls"
+      },
+      "offers": {
+        "@type": "AggregateOffer",
+        "priceCurrency": "AED",
+        "lowPrice": "2500",
+        "highPrice": "7500",
+        "offerCount": "3"
+      },
+      "category": "AR Advertising",
+      "areaServed": ["Dubai", "Abu Dhabi", "Sharjah", "UAE"],
+      "provider": {
+        "@type": "Organization",
+        "name": "BeyondWalls",
+        "url": "https://www.beyondwalls.ae",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Dubai",
+          "addressCountry": "AE"
+        }
+      }
+    }
   }
 };
