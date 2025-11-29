@@ -24,6 +24,12 @@ export default function AdminTransactions() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [authChecked, setAuthChecked] = useState(false);
 
+  const { data: transactions = [], isLoading } = useQuery({
+    queryKey: ["admin-transactions"],
+    queryFn: () => base44.entities.Transaction.list("-created_date"),
+    enabled: authChecked
+  });
+
   useEffect(() => {
     checkAdminAuth();
   }, []);
@@ -57,12 +63,6 @@ export default function AdminTransactions() {
       </div>
     );
   }
-
-  const { data: transactions = [], isLoading } = useQuery({
-    queryKey: ["admin-transactions"],
-    queryFn: () => base44.entities.Transaction.list("-created_date"),
-    enabled: authChecked
-  });
 
   const filteredTransactions = transactions.filter(tx => {
     const matchesSearch = tx.user_id?.toLowerCase().includes(search.toLowerCase()) ||
