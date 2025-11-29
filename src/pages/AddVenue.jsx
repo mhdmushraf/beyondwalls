@@ -114,6 +114,59 @@ export default function AddVenue() {
         status: "pending"
       });
 
+      // Send confirmation email to user
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: user.email,
+          subject: "📍 Venue Submitted for Approval | BeyondWalls",
+          body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Digital Out-of-Home Advertising
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dear ${user.full_name || "Valued Partner"},
+
+Thank you for registering your venue with BeyondWalls!
+
+📋 VENUE DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+🏢 Venue: ${formData.name}
+📍 Location: ${formData.city}, ${formData.area || ""}
+🏷️ Type: ${formData.type}
+
+⏳ STATUS: PENDING APPROVAL
+━━━━━━━━━━━━━━━━━━━━━━━━━
+Our team will review your venue submission within 24-48 hours. You will receive an email notification once your venue is approved.
+
+💡 WHAT'S NEXT?
+• Our team reviews your venue details and documents
+• You'll receive approval confirmation via email
+• Start adding screens to your venue
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Need help? Contact us at info@beyondwalls.ae
+Phone: +971 55 614 0067
+
+BeyondWalls - Advertise Beyond Boundaries
+www.beyondwalls.ae
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          `.trim()
+        });
+      } catch (emailErr) {
+        console.log("Email failed but venue was created");
+      }
+
+      // Notify admin
+      await base44.entities.AdminNotification.create({
+        type: "new_venue",
+        title: "New Venue Submitted",
+        message: `${user.full_name || user.email} submitted venue: ${formData.name}`,
+        reference_id: user.email,
+        reference_type: "venue",
+        status: "unread"
+      });
+
       toast.success("Venue submitted for approval!");
       navigate(createPageUrl("MyVenues"));
     } catch (error) {

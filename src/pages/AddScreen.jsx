@@ -138,6 +138,51 @@ export default function AddScreen() {
         status: "unread"
       });
 
+      // Send confirmation email to user
+      const selectedVenue = venues.find(v => v.id === formData.venue_id);
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: user.email,
+          subject: "📺 Screen Submitted for Approval | BeyondWalls",
+          body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Digital Out-of-Home Advertising
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dear ${user.full_name || "Valued Partner"},
+
+Your screen has been submitted for approval!
+
+📋 SCREEN DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+📺 Screen: ${formData.name}
+📍 Venue: ${selectedVenue?.name || "N/A"}
+📐 Size: ${formData.size} (${formData.orientation})
+💰 Rate: AED ${formData.hourly_rate}/week
+
+⏳ STATUS: PENDING APPROVAL
+━━━━━━━━━━━━━━━━━━━━━━━━━
+Our team will review your screen within 24-48 hours. Once approved, you'll receive a setup code to connect your screen.
+
+💡 WHAT'S NEXT?
+• Our team reviews your screen details
+• You'll receive a setup code via email
+• Connect your screen using the BeyondWalls Player
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Need help? Contact us at info@beyondwalls.ae
+Phone: +971 55 614 0067
+
+BeyondWalls - Advertise Beyond Boundaries
+www.beyondwalls.ae
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          `.trim()
+        });
+      } catch (emailErr) {
+        console.log("Email failed but screen was created");
+      }
+
       toast.success("Screen submitted for approval!");
       navigate(createPageUrl("MyScreens"));
     } catch (error) {

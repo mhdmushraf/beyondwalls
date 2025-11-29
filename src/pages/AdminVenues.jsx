@@ -182,12 +182,23 @@ export default function AdminVenues() {
     if (selectedVenueIds.length === 0) return;
     setProcessing(true);
     try {
+      const selectedVenues = venues.filter(v => selectedVenueIds.includes(v.id));
       await Promise.all(selectedVenueIds.map(id => 
         base44.entities.Venue.update(id, { 
           status: "approved",
           approved_at: new Date().toISOString()
         })
       ));
+      
+      // Send approval emails
+      await Promise.all(selectedVenues.map(venue => 
+        base44.integrations.Core.SendEmail({
+          to: venue.owner_id,
+          subject: "✅ Venue Approved! | BeyondWalls",
+          body: `Your venue "${venue.name}" has been approved! Log in to add screens and start earning. - BeyondWalls Team`
+        }).catch(() => {})
+      ));
+      
       queryClient.invalidateQueries({ queryKey: ["admin-all-venues"] });
       toast.success(`${selectedVenueIds.length} venues approved`);
       setSelectedVenueIds([]);
@@ -222,14 +233,30 @@ export default function AdminVenues() {
     if (selectedScreenIds.length === 0) return;
     setProcessing(true);
     try {
-      await Promise.all(selectedScreenIds.map(id => 
-        base44.entities.Screen.update(id, {
+      const selectedScreensData = screens.filter(s => selectedScreenIds.includes(s.id));
+      const screenUpdates = selectedScreensData.map(screen => {
+        const setupCode = generateSetupCode();
+        return { screen, setupCode };
+      });
+      
+      await Promise.all(screenUpdates.map(({ screen, setupCode }) => 
+        base44.entities.Screen.update(screen.id, {
           status: "pending_setup",
-          setup_code: generateSetupCode(),
+          setup_code: setupCode,
           setup_code_generated_at: new Date().toISOString(),
           approved_at: new Date().toISOString()
         })
       ));
+      
+      // Send approval emails with setup codes
+      await Promise.all(screenUpdates.map(({ screen, setupCode }) => 
+        base44.integrations.Core.SendEmail({
+          to: screen.owner_id,
+          subject: "✅ Screen Approved! Setup Code: " + setupCode + " | BeyondWalls",
+          body: `Your screen "${screen.name}" has been approved! Your setup code is: ${setupCode}. Use this code in the BeyondWalls Player to connect your screen. - BeyondWalls Team`
+        }).catch(() => {})
+      ));
+      
       queryClient.invalidateQueries({ queryKey: ["admin-all-screens"] });
       toast.success(`${selectedScreenIds.length} screens approved`);
       setSelectedScreenIds([]);
@@ -268,6 +295,46 @@ export default function AdminVenues() {
         status: "approved",
         approved_at: new Date().toISOString()
       });
+      
+      // Send approval email
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: venue.owner_id,
+          subject: "✅ Venue Approved! | BeyondWalls",
+          body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Digital Out-of-Home Advertising
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Great news! Your venue has been approved!
+
+📋 VENUE DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+🏢 Venue: ${venue.name}
+📍 Location: ${venue.city}, ${venue.area || ""}
+🏷️ Type: ${venue.type}
+
+✅ STATUS: APPROVED
+━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 NEXT STEPS:
+1. Add screens to your venue
+2. Upload your own promotional content
+3. Start earning from advertisers!
+
+Log in to your dashboard to get started:
+www.beyondwalls.ae
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BeyondWalls - Advertise Beyond Boundaries
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          `.trim()
+        });
+      } catch (emailErr) {
+        console.log("Email failed");
+      }
+      
       queryClient.invalidateQueries({ queryKey: ["admin-all-venues"] });
       toast.success("Venue approved");
       setSelectedItem(null);
@@ -287,6 +354,51 @@ export default function AdminVenues() {
         setup_code_generated_at: new Date().toISOString(),
         approved_at: new Date().toISOString()
       });
+      
+      // Send approval email with setup code
+      const venue = venues.find(v => v.id === screen.venue_id);
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: screen.owner_id,
+          subject: "✅ Screen Approved! Your Setup Code | BeyondWalls",
+          body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Digital Out-of-Home Advertising
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Great news! Your screen has been approved!
+
+📋 SCREEN DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+📺 Screen: ${screen.name}
+📍 Venue: ${venue?.name || "N/A"}
+📐 Size: ${screen.size} (${screen.orientation})
+
+✅ STATUS: APPROVED
+━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔑 YOUR SETUP CODE:
+━━━━━━━━━━━━━━━━━━━━━━━━━
+${setupCode}
+━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📱 HOW TO CONNECT:
+1. Open the BeyondWalls Player on your screen
+2. Enter the setup code above
+3. Your screen will go live automatically!
+
+Need help? Contact us at info@beyondwalls.ae
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BeyondWalls - Advertise Beyond Boundaries
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          `.trim()
+        });
+      } catch (emailErr) {
+        console.log("Email failed");
+      }
+      
       queryClient.invalidateQueries({ queryKey: ["admin-all-screens"] });
       toast.success(`Screen approved! Setup code: ${setupCode}`);
       setSelectedItem(null);
