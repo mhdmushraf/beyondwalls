@@ -34,6 +34,7 @@ import PublicFooter from "@/components/PublicFooter";
 import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
 import PublicAIChatWidget from "@/components/chat/PublicAIChatWidget";
 import ARFeatureSection from "@/components/home/ARFeatureSection";
+import BOneShowcase from "@/components/home/BOneShowcase";
 
 export default function Home() {
   const [showInvestorModal, setShowInvestorModal] = useState(false);
@@ -803,6 +804,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* B.One Product Showcase */}
+      <BOneShowcase />
 
       {/* Final CTA */}
       <section className="py-24 px-6 bg-gradient-to-br from-violet-600 via-indigo-600 to-violet-700 relative overflow-hidden">
