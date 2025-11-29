@@ -73,6 +73,12 @@ export default function AdminUsers() {
     }
   };
 
+  const { data: users = [], isLoading } = useQuery({
+    queryKey: ["admin-users"],
+    queryFn: () => base44.entities.User.list("-created_date"),
+    enabled: authChecked
+  });
+
   const availablePermissions = [
     { value: "all", label: "Full Access", description: "Access to all admin features" },
     { value: "dashboard", label: "Dashboard", description: "View admin dashboard" },
@@ -85,6 +91,17 @@ export default function AdminUsers() {
     { value: "blog", label: "Blog", description: "Manage blog posts" },
     { value: "crm", label: "CRM", description: "Access CRM and leads" }
   ];
+
+  if (!authChecked) {
+    return (
+      <div className="p-6 lg:p-8 flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <Loader2 className="w-10 h-10 text-violet-600 animate-spin mx-auto mb-4" />
+          <p className="text-slate-500">Checking permissions...</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleOpenAdminDialog = (user = null) => {
     setSelectedUser(user);
@@ -124,23 +141,6 @@ export default function AdminUsers() {
       }
     }
   };
-
-  const { data: users = [], isLoading } = useQuery({
-    queryKey: ["admin-users"],
-    queryFn: () => base44.entities.User.list("-created_date"),
-    enabled: authChecked
-  });
-
-  if (!authChecked) {
-    return (
-      <div className="p-6 lg:p-8 flex items-center justify-center min-h-[60vh]">
-        <div className="text-center">
-          <Loader2 className="w-10 h-10 text-violet-600 animate-spin mx-auto mb-4" />
-          <p className="text-slate-500">Checking permissions...</p>
-        </div>
-      </div>
-    );
-  }
 
   const handleAddWallet = (user) => {
     setSelectedUser(user);
