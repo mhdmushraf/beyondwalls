@@ -105,6 +105,9 @@ export default function AdvancedScreenSearch({
     return screens.filter(screen => {
       const venue = venues.find(v => v.id === screen.venue_id);
       if (!venue) return false;
+      
+      // Exclude suspended screens and screens from suspended venues
+      if (screen.status === "suspended" || venue.status === "suspended") return false;
 
       // Text search
       if (search) {
