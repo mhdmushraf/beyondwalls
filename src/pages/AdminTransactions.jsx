@@ -60,7 +60,8 @@ export default function AdminTransactions() {
 
   const { data: transactions = [], isLoading } = useQuery({
     queryKey: ["admin-transactions"],
-    queryFn: () => base44.entities.Transaction.list("-created_date")
+    queryFn: () => base44.entities.Transaction.list("-created_date"),
+    enabled: authChecked
   });
 
   const filteredTransactions = transactions.filter(tx => {

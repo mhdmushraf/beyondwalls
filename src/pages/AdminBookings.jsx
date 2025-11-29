@@ -34,6 +34,7 @@ import LiveScreenPreview from "@/components/previews/LiveScreenPreview";
 
 export default function AdminBookings() {
   const [user, setUser] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
   const [search, setSearch] = useState("");
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [rejectionReason, setRejectionReason] = useState("");
@@ -58,24 +59,39 @@ export default function AdminBookings() {
         return;
       }
       setUser(userData);
+      setAuthChecked(true);
     } catch (e) {
       base44.auth.redirectToLogin(createPageUrl("AdminBookings"));
     }
   };
 
+  if (!authChecked) {
+    return (
+      <div className="p-6 lg:p-8 flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <Loader2 className="w-10 h-10 text-violet-600 animate-spin mx-auto mb-4" />
+          <p className="text-slate-500">Checking permissions...</p>
+        </div>
+      </div>
+    );
+  }
+
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ["all-bookings"],
-    queryFn: () => base44.entities.AdSlotBooking.list("-created_date", 100)
+    queryFn: () => base44.entities.AdSlotBooking.list("-created_date", 100),
+    enabled: !!user
   });
 
   const { data: screens = [] } = useQuery({
     queryKey: ["all-screens"],
-    queryFn: () => base44.entities.Screen.list()
+    queryFn: () => base44.entities.Screen.list(),
+    enabled: !!user
   });
 
   const { data: venues = [] } = useQuery({
     queryKey: ["all-venues"],
-    queryFn: () => base44.entities.Venue.list()
+    queryFn: () => base44.entities.Venue.list(),
+    enabled: !!user
   });
 
   const pendingBookings = bookings.filter(b => b.status === "pending");
