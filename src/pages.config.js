@@ -63,6 +63,7 @@ import CreateARCampaign from './pages/CreateARCampaign';
 import ARCampaigns from './pages/ARCampaigns';
 import AdminARCampaigns from './pages/AdminARCampaigns';
 import AdminVenues from './pages/AdminVenues';
+import AdminVenueManager from './pages/AdminVenueManager';
 import __Layout from './Layout.jsx';
 
 
@@ -132,6 +133,7 @@ export const PAGES = {
     "ARCampaigns": ARCampaigns,
     "AdminARCampaigns": AdminARCampaigns,
     "AdminVenues": AdminVenues,
+    "AdminVenueManager": AdminVenueManager,
 }
 
 export const pagesConfig = {
