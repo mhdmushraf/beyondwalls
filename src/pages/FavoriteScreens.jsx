@@ -23,24 +23,6 @@ export default function FavoriteScreens() {
   const [user, setUser] = useState(null);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  const loadUser = async () => {
-    try {
-      const isAuth = await base44.auth.isAuthenticated();
-      if (!isAuth) {
-        base44.auth.redirectToLogin(createPageUrl("FavoriteScreens"));
-        return;
-      }
-      const userData = await base44.auth.me();
-      setUser(userData);
-    } catch (e) {
-      base44.auth.redirectToLogin(createPageUrl("FavoriteScreens"));
-    }
-  };
-
   const { data: favorites = [] } = useQuery({
     queryKey: ["favorites", user?.email],
     queryFn: () => base44.entities.FavoriteScreen.filter({ user_id: user?.email }),
@@ -61,6 +43,24 @@ export default function FavoriteScreens() {
     queryKey: ["all-bookings"],
     queryFn: () => base44.entities.AdSlotBooking.filter({ status: "active" })
   });
+
+  useEffect(() => {
+    loadUser();
+  }, []);
+
+  const loadUser = async () => {
+    try {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) {
+        base44.auth.redirectToLogin(createPageUrl("FavoriteScreens"));
+        return;
+      }
+      const userData = await base44.auth.me();
+      setUser(userData);
+    } catch (e) {
+      base44.auth.redirectToLogin(createPageUrl("FavoriteScreens"));
+    }
+  };
 
   const favoriteScreens = screens.filter(s => 
     favorites.some(f => f.screen_id === s.id)

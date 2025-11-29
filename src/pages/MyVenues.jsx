@@ -26,6 +26,17 @@ export default function MyVenues() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
+  const { data: venues = [], isLoading } = useQuery({
+    queryKey: ["my-venues", user?.email],
+    queryFn: () => base44.entities.Venue.filter({ owner_id: user?.email }),
+    enabled: !!user?.email
+  });
+
+  const { data: screens = [] } = useQuery({
+    queryKey: ["all-screens"],
+    queryFn: () => base44.entities.Screen.list()
+  });
+
   useEffect(() => {
     loadUser();
   }, []);
@@ -43,17 +54,6 @@ export default function MyVenues() {
       base44.auth.redirectToLogin(createPageUrl("MyVenues"));
     }
   };
-
-  const { data: venues = [], isLoading } = useQuery({
-    queryKey: ["my-venues", user?.email],
-    queryFn: () => base44.entities.Venue.filter({ owner_id: user?.email }),
-    enabled: !!user?.email
-  });
-
-  const { data: screens = [] } = useQuery({
-    queryKey: ["all-screens"],
-    queryFn: () => base44.entities.Screen.list()
-  });
 
   const filteredVenues = venues.filter(venue => {
     const matchesSearch = venue.name?.toLowerCase().includes(search.toLowerCase()) ||
