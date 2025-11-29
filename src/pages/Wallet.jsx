@@ -47,6 +47,18 @@ export default function Wallet() {
     loadUser();
   }, []);
 
+  const { data: transactions = [], refetch } = useQuery({
+    queryKey: ["wallet-transactions", user?.email],
+    queryFn: () => base44.entities.Transaction.filter({ user_id: user?.email }, "-created_date"),
+    enabled: !!user?.email
+  });
+
+  const { data: walletRequests = [], refetch: refetchRequests } = useQuery({
+    queryKey: ["wallet-requests", user?.email],
+    queryFn: () => base44.entities.WalletRequest.filter({ user_id: user?.email }, "-created_date"),
+    enabled: !!user?.email
+  });
+
   const loadUser = async () => {
     try {
       const isAuth = await base44.auth.isAuthenticated();
@@ -61,18 +73,6 @@ export default function Wallet() {
       base44.auth.redirectToLogin(createPageUrl("Wallet"));
     }
   };
-
-  const { data: transactions = [], refetch } = useQuery({
-    queryKey: ["wallet-transactions", user?.email],
-    queryFn: () => base44.entities.Transaction.filter({ user_id: user?.email }, "-created_date"),
-    enabled: !!user?.email
-  });
-
-  const { data: walletRequests = [], refetch: refetchRequests } = useQuery({
-    queryKey: ["wallet-requests", user?.email],
-    queryFn: () => base44.entities.WalletRequest.filter({ user_id: user?.email }, "-created_date"),
-    enabled: !!user?.email
-  });
 
   const handleReceiptUpload = async (e) => {
     const file = e.target.files[0];
