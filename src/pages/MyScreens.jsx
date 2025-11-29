@@ -27,7 +27,8 @@ import {
   Wrench,
   Power,
   AlertTriangle,
-  Sliders
+  Sliders,
+  Ban
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,6 +49,7 @@ import { format } from "date-fns";
 import LiveScreenPreview from "@/components/previews/LiveScreenPreview";
 import ScreenTagManager, { getTagColor } from "@/components/screens/ScreenTagManager";
 import ScreenStatusControl from "@/components/screens/ScreenStatusControl";
+import SuspensionRequestForm from "@/components/suspension/SuspensionRequestForm";
 
 export default function MyScreens() {
   const navigate = useNavigate();
@@ -63,6 +65,7 @@ export default function MyScreens() {
   const [showStatusDialog, setShowStatusDialog] = useState(false);
   const [actionLoading, setActionLoading] = useState(null);
   const [tagFilter, setTagFilter] = useState(null);
+  const [suspensionRequest, setSuspensionRequest] = useState({ open: false, screen: null });
 
   const { data: venues = [] } = useQuery({
     queryKey: ["my-venues", user?.email],
@@ -146,7 +149,8 @@ export default function MyScreens() {
     offline: "bg-rose-100 text-rose-700 border-rose-200",
     maintenance: "bg-amber-100 text-amber-700 border-amber-200",
     pending_setup: "bg-blue-100 text-blue-700 border-blue-200",
-    pending_approval: "bg-amber-100 text-amber-700 border-amber-200"
+    pending_approval: "bg-amber-100 text-amber-700 border-amber-200",
+    suspended: "bg-red-100 text-red-700 border-red-200"
   };
 
   const statusIndicators = {
@@ -154,14 +158,16 @@ export default function MyScreens() {
     offline: "bg-rose-500",
     maintenance: "bg-amber-500",
     pending_setup: "bg-blue-500",
-    pending_approval: "bg-amber-500"
+    pending_approval: "bg-amber-500",
+    suspended: "bg-red-500"
   };
 
   const statusCounts = {
     all: screens.length,
     online: screens.filter(s => s.status === "online").length,
     offline: screens.filter(s => s.status === "offline").length,
-    maintenance: screens.filter(s => s.status === "maintenance").length
+    maintenance: screens.filter(s => s.status === "maintenance").length,
+    suspended: screens.filter(s => s.status === "suspended").length
   };
 
   // Group screens by venue, status, or tag
@@ -310,6 +316,17 @@ export default function MyScreens() {
             </div>
           </CardContent>
         </Card>
+        {statusCounts.suspended > 0 && (
+          <Card className="cursor-pointer hover:shadow-md transition-shadow border-red-200 bg-red-50" onClick={() => setStatusFilter("suspended")}>
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className="w-3 h-3 rounded-full bg-red-500" />
+              <div>
+                <p className="text-2xl font-bold text-red-600">{statusCounts.suspended}</p>
+                <p className="text-xs text-red-500">Suspended</p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Filters */}
@@ -538,6 +555,8 @@ export default function MyScreens() {
                               <><Clock className="w-3 h-3 mr-1" /> Pending</>
                             ) : screen.status === "pending_setup" ? (
                               <><QrCode className="w-3 h-3 mr-1" /> Setup</>
+                            ) : screen.status === "suspended" ? (
+                              <><Ban className="w-3 h-3 mr-1" /> Suspended</>
                             ) : (
                               screen.status?.replace("_", " ")
                             )}
@@ -626,39 +645,56 @@ export default function MyScreens() {
                           </Button>
                         </div>
 
-                        <div className="flex gap-2">
-                          {screen.status === "pending_approval" ? (
-                            <Button variant="outline" className="flex-1" disabled>
-                              <Clock className="w-4 h-4 mr-2" />
-                              Awaiting Approval
-                            </Button>
-                          ) : (
+                        {screen.status === "suspended" ? (
+                          <div className="space-y-2">
+                            <div className="p-2 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-sm text-red-700">
+                              <Ban className="w-4 h-4" />
+                              <span className="flex-1">This screen is suspended</span>
+                            </div>
                             <Button 
                               variant="outline" 
-                              className="flex-1"
-                              onClick={() => { setSelectedScreen(screen); setShowPlayerDialog(true); }}
+                              className="w-full border-amber-300 text-amber-700 hover:bg-amber-50"
+                              onClick={() => setSuspensionRequest({ open: true, screen })}
                             >
-                              {screen.setup_code ? (
-                                <><QrCode className="w-4 h-4 mr-2" />Setup Code</>
-                              ) : (
-                                <><Play className="w-4 h-4 mr-2" />Launch Player</>
-                              )}
+                              <AlertTriangle className="w-4 h-4 mr-2" />
+                              Request Reactivation
                             </Button>
-                          )}
-                          <Button 
-                            variant="outline" 
-                            size="icon"
-                            onClick={() => { setSelectedScreen(screen); setShowTagDialog(true); }}
-                            title="Manage Tags"
-                          >
-                            <Tag className="w-4 h-4" />
-                          </Button>
-                          <Link to={createPageUrl("ManageOwnerSlots") + `?screen_id=${screen.id}`}>
-                            <Button variant="outline" size="icon">
-                              <Settings className="w-4 h-4" />
+                          </div>
+                        ) : (
+                          <div className="flex gap-2">
+                            {screen.status === "pending_approval" ? (
+                              <Button variant="outline" className="flex-1" disabled>
+                                <Clock className="w-4 h-4 mr-2" />
+                                Awaiting Approval
+                              </Button>
+                            ) : (
+                              <Button 
+                                variant="outline" 
+                                className="flex-1"
+                                onClick={() => { setSelectedScreen(screen); setShowPlayerDialog(true); }}
+                              >
+                                {screen.setup_code ? (
+                                  <><QrCode className="w-4 h-4 mr-2" />Setup Code</>
+                                ) : (
+                                  <><Play className="w-4 h-4 mr-2" />Launch Player</>
+                                )}
+                              </Button>
+                            )}
+                            <Button 
+                              variant="outline" 
+                              size="icon"
+                              onClick={() => { setSelectedScreen(screen); setShowTagDialog(true); }}
+                              title="Manage Tags"
+                            >
+                              <Tag className="w-4 h-4" />
                             </Button>
-                          </Link>
-                        </div>
+                            <Link to={createPageUrl("ManageOwnerSlots") + `?screen_id=${screen.id}`}>
+                              <Button variant="outline" size="icon">
+                                <Settings className="w-4 h-4" />
+                              </Button>
+                            </Link>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
                   );
@@ -808,6 +844,15 @@ export default function MyScreens() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Suspension Request Form */}
+      <SuspensionRequestForm
+        open={suspensionRequest.open}
+        onOpenChange={(open) => setSuspensionRequest({ ...suspensionRequest, open })}
+        item={suspensionRequest.screen}
+        itemType="screen"
+        user={user}
+      />
     </div>
   );
 }
