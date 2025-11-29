@@ -22,7 +22,10 @@ import {
   ExternalLink,
   ChevronRight,
   Filter,
-  MoreVertical
+  MoreVertical,
+  Ban,
+  CheckCircle2,
+  AlertTriangle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,6 +54,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
 export default function AdminVenueManager() {
@@ -63,13 +67,15 @@ export default function AdminVenueManager() {
   const [saving, setSaving] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
   
-  const [venueFilters, setVenueFilters] = useState({ city: "all", type: "all" });
+  const [venueFilters, setVenueFilters] = useState({ city: "all", type: "all", status: "all" });
   const [screenFilters, setScreenFilters] = useState({ status: "all", city: "all" });
+  const [suspendDialog, setSuspendDialog] = useState({ open: false, type: null, item: null });
+  const [suspendReason, setSuspendReason] = useState("");
 
   // All hooks before conditional returns
   const { data: venues = [], isLoading: venuesLoading } = useQuery({
-    queryKey: ["admin-approved-venues"],
-    queryFn: () => base44.entities.Venue.filter({ status: "approved" }, "-created_date"),
+    queryKey: ["admin-managed-venues"],
+    queryFn: () => base44.entities.Venue.list("-created_date"),
     enabled: authChecked
   });
 
@@ -111,15 +117,18 @@ export default function AdminVenueManager() {
   const cities = [...new Set(venues.map(v => v.city).filter(Boolean))];
   const venueTypes = [...new Set(venues.map(v => v.type).filter(Boolean))];
 
-  const filteredVenues = venues.filter(venue => {
+  const managedVenues = venues.filter(v => v.status === "approved" || v.status === "suspended");
+  
+  const filteredVenues = managedVenues.filter(venue => {
     const matchesSearch = venue.name?.toLowerCase().includes(search.toLowerCase()) ||
                          venue.city?.toLowerCase().includes(search.toLowerCase());
     const matchesCity = venueFilters.city === "all" || venue.city === venueFilters.city;
     const matchesType = venueFilters.type === "all" || venue.type === venueFilters.type;
-    return matchesSearch && matchesCity && matchesType;
+    const matchesStatus = venueFilters.status === "all" || venue.status === venueFilters.status;
+    return matchesSearch && matchesCity && matchesType && matchesStatus;
   });
 
-  const activeScreens = screens.filter(s => ["online", "offline", "pending_setup"].includes(s.status));
+  const activeScreens = screens.filter(s => ["online", "offline", "pending_setup", "suspended"].includes(s.status));
   
   const filteredScreens = activeScreens.filter(screen => {
     const venue = venues.find(v => v.id === screen.venue_id);
@@ -170,18 +179,167 @@ export default function AdminVenueManager() {
     setSaving(false);
   };
 
-  const handleSuspendVenue = async (venue) => {
-    if (!confirm("Suspend this venue? All screens will go offline.")) return;
+  const handleSuspendVenue = async () => {
+    if (!suspendDialog.item || !suspendReason.trim()) return;
+    const venue = suspendDialog.item;
+    setSaving(true);
     try {
-      await base44.entities.Venue.update(venue.id, { status: "suspended" });
+      await base44.entities.Venue.update(venue.id, { 
+        status: "suspended",
+        suspension_reason: suspendReason,
+        suspended_at: new Date().toISOString()
+      });
       const venueScreens = getVenueScreens(venue.id);
-      await Promise.all(venueScreens.map(s => base44.entities.Screen.update(s.id, { status: "offline" })));
-      queryClient.invalidateQueries({ queryKey: ["admin-approved-venues"] });
+      await Promise.all(venueScreens.map(s => base44.entities.Screen.update(s.id, { status: "suspended" })));
+      
+      // Send suspension email
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: venue.owner_id,
+          subject: "⚠️ Venue Suspended | BeyondWalls",
+          body: `
+Your venue "${venue.name}" has been suspended.
+
+Reason: ${suspendReason}
+
+While suspended:
+• You cannot add new screens
+• Your screens will not display ads
+• Advertisers cannot book your screens
+
+To request reactivation, please log in to your dashboard and submit a request.
+
+Contact us at info@beyondwalls.ae for assistance.
+
+- BeyondWalls Team
+          `.trim()
+        });
+      } catch (e) {}
+      
+      queryClient.invalidateQueries({ queryKey: ["admin-managed-venues"] });
       queryClient.invalidateQueries({ queryKey: ["admin-active-screens"] });
       toast.success("Venue suspended");
+      setSuspendDialog({ open: false, type: null, item: null });
+      setSuspendReason("");
     } catch (e) {
       toast.error("Failed to suspend venue");
     }
+    setSaving(false);
+  };
+
+  const handleReactivateVenue = async (venue) => {
+    setSaving(true);
+    try {
+      await base44.entities.Venue.update(venue.id, { 
+        status: "approved",
+        suspension_reason: null,
+        suspended_at: null
+      });
+      
+      // Send reactivation email
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: venue.owner_id,
+          subject: "✅ Venue Reactivated | BeyondWalls",
+          body: `
+Great news! Your venue "${venue.name}" has been reactivated.
+
+You can now:
+• Add new screens
+• Accept ad bookings
+• Start earning again
+
+Log in to your dashboard to get started.
+
+- BeyondWalls Team
+          `.trim()
+        });
+      } catch (e) {}
+      
+      queryClient.invalidateQueries({ queryKey: ["admin-managed-venues"] });
+      toast.success("Venue reactivated");
+    } catch (e) {
+      toast.error("Failed to reactivate venue");
+    }
+    setSaving(false);
+  };
+
+  const handleSuspendScreen = async () => {
+    if (!suspendDialog.item || !suspendReason.trim()) return;
+    const screen = suspendDialog.item;
+    setSaving(true);
+    try {
+      await base44.entities.Screen.update(screen.id, { 
+        status: "suspended",
+        suspension_reason: suspendReason,
+        suspended_at: new Date().toISOString()
+      });
+      
+      // Send suspension email
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: screen.owner_id,
+          subject: "⚠️ Screen Suspended | BeyondWalls",
+          body: `
+Your screen "${screen.name}" has been suspended.
+
+Reason: ${suspendReason}
+
+While suspended:
+• The screen will not display ads
+• Advertisers cannot book this screen
+
+To request reactivation, please log in to your dashboard and submit a request.
+
+Contact us at info@beyondwalls.ae for assistance.
+
+- BeyondWalls Team
+          `.trim()
+        });
+      } catch (e) {}
+      
+      queryClient.invalidateQueries({ queryKey: ["admin-active-screens"] });
+      toast.success("Screen suspended");
+      setSuspendDialog({ open: false, type: null, item: null });
+      setSuspendReason("");
+    } catch (e) {
+      toast.error("Failed to suspend screen");
+    }
+    setSaving(false);
+  };
+
+  const handleReactivateScreen = async (screen) => {
+    setSaving(true);
+    try {
+      await base44.entities.Screen.update(screen.id, { 
+        status: "online",
+        suspension_reason: null,
+        suspended_at: null
+      });
+      
+      // Send reactivation email
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: screen.owner_id,
+          subject: "✅ Screen Reactivated | BeyondWalls",
+          body: `
+Great news! Your screen "${screen.name}" has been reactivated and is now online.
+
+Advertisers can now book your screen again.
+
+Log in to your dashboard to manage your screen.
+
+- BeyondWalls Team
+          `.trim()
+        });
+      } catch (e) {}
+      
+      queryClient.invalidateQueries({ queryKey: ["admin-active-screens"] });
+      toast.success("Screen reactivated");
+    } catch (e) {
+      toast.error("Failed to reactivate screen");
+    }
+    setSaving(false);
   };
 
   const handleToggleScreenStatus = async (screen) => {
@@ -228,7 +386,7 @@ export default function AdminVenueManager() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
@@ -236,8 +394,21 @@ export default function AdminVenueManager() {
                 <Building2 className="w-5 h-5 text-emerald-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">{venues.length}</p>
+                <p className="text-2xl font-bold text-slate-900">{managedVenues.filter(v => v.status === "approved").length}</p>
                 <p className="text-sm text-slate-500">Active Venues</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="border-red-200 bg-red-50">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                <Ban className="w-5 h-5 text-red-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-red-700">{managedVenues.filter(v => v.status === "suspended").length}</p>
+                <p className="text-sm text-red-600">Suspended</p>
               </div>
             </div>
           </CardContent>
@@ -293,7 +464,7 @@ export default function AdminVenueManager() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="mb-4">
-          <TabsTrigger value="venues" className="gap-2"><Building2 className="w-4 h-4" />Venues ({venues.length})</TabsTrigger>
+          <TabsTrigger value="venues" className="gap-2"><Building2 className="w-4 h-4" />Venues ({managedVenues.length})</TabsTrigger>
           <TabsTrigger value="screens" className="gap-2"><MonitorPlay className="w-4 h-4" />Screens ({activeScreens.length})</TabsTrigger>
         </TabsList>
 
@@ -301,6 +472,14 @@ export default function AdminVenueManager() {
         <TabsContent value="venues">
           <div className="flex items-center gap-3 mb-4 p-3 bg-slate-50 rounded-lg">
             <Filter className="w-4 h-4 text-slate-500" />
+            <Select value={venueFilters.status} onValueChange={(v) => setVenueFilters({...venueFilters, status: v})}>
+              <SelectTrigger className="w-32 h-8 text-sm"><SelectValue placeholder="Status" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="approved">Active</SelectItem>
+                <SelectItem value="suspended">Suspended</SelectItem>
+              </SelectContent>
+            </Select>
             <Select value={venueFilters.city} onValueChange={(v) => setVenueFilters({...venueFilters, city: v})}>
               <SelectTrigger className="w-32 h-8 text-sm"><SelectValue placeholder="City" /></SelectTrigger>
               <SelectContent>
@@ -349,17 +528,28 @@ export default function AdminVenueManager() {
                                 <Badge variant="secondary" className="capitalize">{venue.type}</Badge>
                               </div>
                             </div>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon"><MoreVertical className="w-4 h-4" /></Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => setVenueDetails(venue)}><Eye className="w-4 h-4 mr-2" />View Details</DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => setEditingVenue({...venue})}><Pencil className="w-4 h-4 mr-2" />Edit</DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem className="text-red-600" onClick={() => handleSuspendVenue(venue)}><Trash2 className="w-4 h-4 mr-2" />Suspend</DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                            <div className="flex items-center gap-2">
+                              <Badge className={statusColors[venue.status]}>{venue.status}</Badge>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="icon"><MoreVertical className="w-4 h-4" /></Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuItem onClick={() => setVenueDetails(venue)}><Eye className="w-4 h-4 mr-2" />View Details</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => setEditingVenue({...venue})}><Pencil className="w-4 h-4 mr-2" />Edit</DropdownMenuItem>
+                                  <DropdownMenuSeparator />
+                                  {venue.status === "suspended" ? (
+                                    <DropdownMenuItem className="text-emerald-600" onClick={() => handleReactivateVenue(venue)}>
+                                      <CheckCircle2 className="w-4 h-4 mr-2" />Reactivate
+                                    </DropdownMenuItem>
+                                  ) : (
+                                    <DropdownMenuItem className="text-red-600" onClick={() => setSuspendDialog({ open: true, type: "venue", item: venue })}>
+                                      <Ban className="w-4 h-4 mr-2" />Suspend
+                                    </DropdownMenuItem>
+                                  )}
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
                           </div>
                           
                           <div className="grid grid-cols-4 gap-4 mt-4">
@@ -406,6 +596,7 @@ export default function AdminVenueManager() {
                 <SelectItem value="online">Online</SelectItem>
                 <SelectItem value="offline">Offline</SelectItem>
                 <SelectItem value="pending_setup">Setup</SelectItem>
+                <SelectItem value="suspended">Suspended</SelectItem>
               </SelectContent>
             </Select>
             <Select value={screenFilters.city} onValueChange={(v) => setScreenFilters({...screenFilters, city: v})}>
@@ -455,9 +646,20 @@ export default function AdminVenueManager() {
                             {screen.setup_code && (
                               <code className="px-2 py-1 bg-violet-50 text-violet-700 rounded text-sm font-mono">{screen.setup_code}</code>
                             )}
-                            <Button variant="outline" size="sm" onClick={() => handleToggleScreenStatus(screen)}>
-                              {screen.status === "online" ? "Set Offline" : "Set Online"}
-                            </Button>
+                            {screen.status === "suspended" ? (
+                              <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700" onClick={() => handleReactivateScreen(screen)}>
+                                <CheckCircle2 className="w-4 h-4 mr-1" />Reactivate
+                              </Button>
+                            ) : (
+                              <>
+                                <Button variant="outline" size="sm" onClick={() => handleToggleScreenStatus(screen)}>
+                                  {screen.status === "online" ? "Set Offline" : "Set Online"}
+                                </Button>
+                                <Button variant="outline" size="sm" className="text-red-600 hover:bg-red-50" onClick={() => setSuspendDialog({ open: true, type: "screen", item: screen })}>
+                                  <Ban className="w-4 h-4" />
+                                </Button>
+                              </>
+                            )}
                             <Button variant="ghost" size="icon" onClick={() => setEditingScreen({...screen})}>
                               <Pencil className="w-4 h-4" />
                             </Button>
@@ -603,6 +805,49 @@ export default function AdminVenueManager() {
             <Button variant="outline" onClick={() => setEditingScreen(null)}>Cancel</Button>
             <Button onClick={handleSaveScreen} disabled={saving} className="bg-violet-600 hover:bg-violet-700">
               {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Suspend Dialog */}
+      <Dialog open={suspendDialog.open} onOpenChange={(open) => { if (!open) { setSuspendDialog({ open: false, type: null, item: null }); setSuspendReason(""); } }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-600">
+              <AlertTriangle className="w-5 h-5" />
+              Suspend {suspendDialog.type === "venue" ? "Venue" : "Screen"}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+              <p className="text-sm text-amber-700">
+                {suspendDialog.type === "venue" 
+                  ? "Suspending this venue will also suspend all its screens. The owner will be notified via email."
+                  : "Suspending this screen will prevent it from displaying ads. The owner will be notified via email."
+                }
+              </p>
+            </div>
+            <div>
+              <Label>Suspension Reason *</Label>
+              <Textarea 
+                placeholder="Enter reason for suspension..."
+                value={suspendReason}
+                onChange={(e) => setSuspendReason(e.target.value)}
+                rows={4}
+                className="mt-2"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setSuspendDialog({ open: false, type: null, item: null }); setSuspendReason(""); }}>Cancel</Button>
+            <Button 
+              variant="destructive"
+              onClick={suspendDialog.type === "venue" ? handleSuspendVenue : handleSuspendScreen}
+              disabled={saving || !suspendReason.trim()}
+            >
+              {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Ban className="w-4 h-4 mr-2" />}
+              Suspend
             </Button>
           </DialogFooter>
         </DialogContent>
