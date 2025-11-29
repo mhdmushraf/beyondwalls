@@ -466,7 +466,7 @@ export default function AdminVenues() {
               <Badge className="bg-amber-500 text-white ml-1">{pendingScreensCount}</Badge>
             )}
           </TabsTrigger>
-        </Tabs>
+        </TabsList>
 
         {/* Venues Tab */}
         <TabsContent value="venues">
