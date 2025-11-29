@@ -58,6 +58,7 @@ export default function AdminScreens() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
+  const [previewScreen, setPreviewScreen] = useState(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -100,8 +101,6 @@ export default function AdminScreens() {
     queryFn: () => base44.entities.AdSlotBooking.filter({ status: "active" }),
     enabled: authChecked
   });
-
-  const [previewScreen, setPreviewScreen] = useState(null);
 
   if (!authChecked) {
     return (
