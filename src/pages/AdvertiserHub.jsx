@@ -36,24 +36,6 @@ export default function AdvertiserHub() {
   const [user, setUser] = useState(null);
   const [selectedBooking, setSelectedBooking] = useState(null);
 
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  const loadUser = async () => {
-    try {
-      const isAuth = await base44.auth.isAuthenticated();
-      if (!isAuth) {
-        base44.auth.redirectToLogin(createPageUrl("AdvertiserHub"));
-        return;
-      }
-      const userData = await base44.auth.me();
-      setUser(userData);
-    } catch (e) {
-      base44.auth.redirectToLogin(createPageUrl("AdvertiserHub"));
-    }
-  };
-
   const { data: bookings = [], refetch: refetchBookings } = useQuery({
     queryKey: ["advertiser-bookings", user?.email],
     queryFn: () => base44.entities.AdSlotBooking.filter({ advertiser_id: user?.email }, "-created_date"),
@@ -81,6 +63,24 @@ export default function AdvertiserHub() {
     queryKey: ["all-venues"],
     queryFn: () => base44.entities.Venue.list()
   });
+
+  useEffect(() => {
+    loadUser();
+  }, []);
+
+  const loadUser = async () => {
+    try {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) {
+        base44.auth.redirectToLogin(createPageUrl("AdvertiserHub"));
+        return;
+      }
+      const userData = await base44.auth.me();
+      setUser(userData);
+    } catch (e) {
+      base44.auth.redirectToLogin(createPageUrl("AdvertiserHub"));
+    }
+  };
 
   // Calculate overall metrics
   const activeBookings = bookings.filter(b => b.status === "active");

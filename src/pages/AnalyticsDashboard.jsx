@@ -69,24 +69,6 @@ export default function AnalyticsDashboard() {
   const [selectedCampaign, setSelectedCampaign] = useState("all");
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  const loadUser = async () => {
-    try {
-      const isAuth = await base44.auth.isAuthenticated();
-      if (!isAuth) {
-        base44.auth.redirectToLogin(createPageUrl("AnalyticsDashboard"));
-        return;
-      }
-      const userData = await base44.auth.me();
-      setUser(userData);
-    } catch (e) {
-      base44.auth.redirectToLogin(createPageUrl("AnalyticsDashboard"));
-    }
-  };
-
   const { data: bookings = [], refetch: refetchBookings } = useQuery({
     queryKey: ["analytics-bookings", user?.email],
     queryFn: () => base44.entities.AdSlotBooking.filter({ advertiser_id: user?.email }, "-created_date"),
@@ -108,6 +90,24 @@ export default function AnalyticsDashboard() {
     queryFn: () => base44.entities.Transaction.filter({ user_id: user?.email }, "-created_date"),
     enabled: !!user?.email
   });
+
+  useEffect(() => {
+    loadUser();
+  }, []);
+
+  const loadUser = async () => {
+    try {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) {
+        base44.auth.redirectToLogin(createPageUrl("AnalyticsDashboard"));
+        return;
+      }
+      const userData = await base44.auth.me();
+      setUser(userData);
+    } catch (e) {
+      base44.auth.redirectToLogin(createPageUrl("AnalyticsDashboard"));
+    }
+  };
 
   const handleRefresh = async () => {
     setIsRefreshing(true);

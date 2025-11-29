@@ -79,24 +79,6 @@ export default function AutoBooking() {
     end_date: format(addWeeks(new Date(), 4), "yyyy-MM-dd")
   });
 
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  const loadUser = async () => {
-    try {
-      const isAuth = await base44.auth.isAuthenticated();
-      if (!isAuth) {
-        base44.auth.redirectToLogin(createPageUrl("AutoBooking"));
-        return;
-      }
-      const userData = await base44.auth.me();
-      setUser(userData);
-    } catch (e) {
-      base44.auth.redirectToLogin(createPageUrl("AutoBooking"));
-    }
-  };
-
   const { data: rules = [], isLoading } = useQuery({
     queryKey: ["auto-booking-rules", user?.email],
     queryFn: () => base44.entities.AutoBookingRule.filter({ advertiser_id: user?.email }, "-created_date"),
@@ -117,6 +99,24 @@ export default function AutoBooking() {
     queryKey: ["active-bookings"],
     queryFn: () => base44.entities.AdSlotBooking.filter({ status: "active" })
   });
+
+  useEffect(() => {
+    loadUser();
+  }, []);
+
+  const loadUser = async () => {
+    try {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) {
+        base44.auth.redirectToLogin(createPageUrl("AutoBooking"));
+        return;
+      }
+      const userData = await base44.auth.me();
+      setUser(userData);
+    } catch (e) {
+      base44.auth.redirectToLogin(createPageUrl("AutoBooking"));
+    }
+  };
 
   const cities = [...new Set(venues.map(v => v.city).filter(Boolean))];
   const venueTypes = [...new Set(venues.map(v => v.type).filter(Boolean))];
