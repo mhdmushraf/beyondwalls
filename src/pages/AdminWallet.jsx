@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
+import { createPageUrl } from "@/utils";
 import {
   Wallet,
   Users,
@@ -31,31 +32,53 @@ import {
 } from "@/components/ui/table";
 
 export default function AdminWallet() {
-  const [user, setUser] = useState(null);
   const [search, setSearch] = useState("");
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
-    loadUser();
+    const checkAuth = async () => {
+      try {
+        const isAuth = await base44.auth.isAuthenticated();
+        if (!isAuth) {
+          base44.auth.redirectToLogin(createPageUrl("AdminWallet"));
+          return;
+        }
+        const userData = await base44.auth.me();
+        const isAdmin = userData?.user_role === "admin" || userData?.role === "admin";
+        if (!isAdmin) {
+          window.location.href = createPageUrl("Dashboard");
+          return;
+        }
+        setAuthChecked(true);
+      } catch (e) {
+        base44.auth.redirectToLogin(createPageUrl("AdminWallet"));
+      }
+    };
+    checkAuth();
   }, []);
-
-  const loadUser = async () => {
-    try {
-      const userData = await base44.auth.me();
-      setUser(userData);
-    } catch (e) {
-      base44.auth.redirectToLogin();
-    }
-  };
 
   const { data: users = [] } = useQuery({
     queryKey: ["all-users-wallet"],
-    queryFn: () => base44.entities.User.list()
+    queryFn: () => base44.entities.User.list(),
+    enabled: authChecked
   });
 
   const { data: transactions = [] } = useQuery({
     queryKey: ["all-transactions"],
-    queryFn: () => base44.entities.Transaction.list("-created_date", 200)
+    queryFn: () => base44.entities.Transaction.list("-created_date", 200),
+    enabled: authChecked
   });
+
+  if (!authChecked) {
+    return (
+      <div className="p-6 lg:p-8 flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <Wallet className="w-10 h-10 text-violet-600 animate-spin mx-auto mb-4" />
+          <p className="text-slate-500">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Transaction stats
   const topUps = transactions.filter(t => t.type === "top_up" && t.status === "completed");
