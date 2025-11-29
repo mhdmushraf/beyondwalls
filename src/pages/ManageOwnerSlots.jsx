@@ -45,24 +45,6 @@ export default function ManageOwnerSlots() {
     slot3_type: "image"
   });
 
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  const loadUser = async () => {
-    try {
-      const isAuth = await base44.auth.isAuthenticated();
-      if (!isAuth) {
-        base44.auth.redirectToLogin(createPageUrl("ManageOwnerSlots"));
-        return;
-      }
-      const userData = await base44.auth.me();
-      setUser(userData);
-    } catch (e) {
-      base44.auth.redirectToLogin(createPageUrl("ManageOwnerSlots"));
-    }
-  };
-
   const { data: screens = [], refetch } = useQuery({
     queryKey: ["my-screens-for-slots", user?.email],
     queryFn: () => base44.entities.Screen.filter({ owner_id: user?.email }),
@@ -82,6 +64,24 @@ export default function ManageOwnerSlots() {
     }),
     enabled: !!selectedScreen?.id
   });
+
+  useEffect(() => {
+    loadUser();
+  }, []);
+
+  const loadUser = async () => {
+    try {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) {
+        base44.auth.redirectToLogin(createPageUrl("ManageOwnerSlots"));
+        return;
+      }
+      const userData = await base44.auth.me();
+      setUser(userData);
+    } catch (e) {
+      base44.auth.redirectToLogin(createPageUrl("ManageOwnerSlots"));
+    }
+  };
 
   useEffect(() => {
     if (selectedScreen) {

@@ -37,19 +37,6 @@ export default function CampaignManager() {
   const urlParams = new URLSearchParams(window.location.search);
   const bookingId = urlParams.get("id");
 
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  const loadUser = async () => {
-    try {
-      const userData = await base44.auth.me();
-      setUser(userData);
-    } catch (e) {
-      base44.auth.redirectToLogin();
-    }
-  };
-
   const { data: booking } = useQuery({
     queryKey: ["booking", bookingId],
     queryFn: async () => {
@@ -97,6 +84,19 @@ export default function CampaignManager() {
     queryKey: ["all-venues"],
     queryFn: () => base44.entities.Venue.list()
   });
+
+  useEffect(() => {
+    loadUser();
+  }, []);
+
+  const loadUser = async () => {
+    try {
+      const userData = await base44.auth.me();
+      setUser(userData);
+    } catch (e) {
+      base44.auth.redirectToLogin();
+    }
+  };
 
   if (!user) {
     return (
