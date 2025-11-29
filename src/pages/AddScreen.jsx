@@ -67,11 +67,14 @@ export default function AddScreen() {
     owner_slot_3_type: "image"
   });
 
-  const { data: venues = [] } = useQuery({
+  const { data: allVenues = [] } = useQuery({
     queryKey: ["my-venues", user?.email],
     queryFn: () => base44.entities.Venue.filter({ owner_id: user?.email }),
     enabled: !!user?.email
   });
+  
+  // Filter to only approved venues (not suspended)
+  const venues = allVenues.filter(v => v.status === "approved");
 
   // Get venue_id from URL if provided
   useEffect(() => {
@@ -236,9 +239,14 @@ www.beyondwalls.ae
                   ))}
                 </SelectContent>
               </Select>
-              {venues.length === 0 && (
+              {venues.length === 0 && allVenues.length === 0 && (
                 <p className="text-sm text-amber-600">
                   You need to add a venue first before adding screens.
+                </p>
+              )}
+              {venues.length === 0 && allVenues.length > 0 && (
+                <p className="text-sm text-red-600">
+                  All your venues are suspended. Please contact support to reactivate.
                 </p>
               )}
             </div>
