@@ -23,6 +23,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import StatsCard from "@/components/dashboard/StatsCard";
 import AdminOnboarding from "@/components/admin/AdminOnboarding";
+import SystemHealthMonitor from "@/components/admin/SystemHealthMonitor";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
@@ -286,46 +287,8 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        {/* System Health */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">System Health</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse" />
-                  <span className="text-sm">Screen Network</span>
-                </div>
-                <span className="text-sm font-medium text-emerald-600">
-                  {screens.length > 0 ? Math.round((onlineScreens / screens.length) * 100) : 0}% Online
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse" />
-                  <span className="text-sm">API Status</span>
-                </div>
-                <span className="text-sm font-medium text-emerald-600">Operational</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse" />
-                  <span className="text-sm">Payment Gateway</span>
-                </div>
-                <span className="text-sm font-medium text-emerald-600">Operational</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse" />
-                  <span className="text-sm">Media Storage</span>
-                </div>
-                <span className="text-sm font-medium text-emerald-600">Operational</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {/* System Health Monitor */}
+        <SystemHealthMonitor />
       </div>
     </div>
   );
