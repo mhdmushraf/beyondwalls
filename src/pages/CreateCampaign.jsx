@@ -83,6 +83,16 @@ export default function CreateCampaign() {
     orientation: ""
   });
 
+  const { data: venues = [] } = useQuery({
+    queryKey: ["venues"],
+    queryFn: () => base44.entities.Venue.filter({ status: "approved" })
+  });
+
+  const { data: screens = [] } = useQuery({
+    queryKey: ["screens"],
+    queryFn: () => base44.entities.Screen.filter({ status: "online" })
+  });
+
   useEffect(() => {
     loadUser();
   }, []);
@@ -95,16 +105,6 @@ export default function CreateCampaign() {
       base44.auth.redirectToLogin();
     }
   };
-
-  const { data: venues = [] } = useQuery({
-    queryKey: ["venues"],
-    queryFn: () => base44.entities.Venue.filter({ status: "approved" })
-  });
-
-  const { data: screens = [] } = useQuery({
-    queryKey: ["screens"],
-    queryFn: () => base44.entities.Screen.filter({ status: "online" })
-  });
 
   const filteredScreens = screens.filter(screen => {
     const venue = venues.find(v => v.id === screen.venue_id);
