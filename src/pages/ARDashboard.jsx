@@ -34,19 +34,6 @@ export default function ARDashboard() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [activeTab, setActiveTab] = useState("campaigns");
 
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  const loadUser = async () => {
-    try {
-      const userData = await base44.auth.me();
-      setUser(userData);
-    } catch (e) {
-      base44.auth.redirectToLogin();
-    }
-  };
-
   const { data: subscription } = useQuery({
     queryKey: ["ar-subscription", user?.email],
     queryFn: () => base44.entities.ARSubscription.filter({ user_id: user?.email }),
@@ -64,6 +51,19 @@ export default function ARDashboard() {
     queryFn: () => base44.entities.ARAnalyticsEvent.list("-created_date", 100),
     enabled: !!user?.email,
   });
+
+  useEffect(() => {
+    loadUser();
+  }, []);
+
+  const loadUser = async () => {
+    try {
+      const userData = await base44.auth.me();
+      setUser(userData);
+    } catch (e) {
+      base44.auth.redirectToLogin();
+    }
+  };
 
   const activeSubscription = subscription?.[0];
   const hasARAccess = activeSubscription?.status === "active";
