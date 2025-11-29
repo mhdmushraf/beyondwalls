@@ -54,6 +54,26 @@ export default function AdminVenues() {
   const [saving, setSaving] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
 
+  const [previewVenue, setPreviewVenue] = useState(null);
+
+  const { data: venues = [], isLoading } = useQuery({
+    queryKey: ["admin-venues"],
+    queryFn: () => base44.entities.Venue.list("-created_date"),
+    enabled: authChecked
+  });
+
+  const { data: screens = [] } = useQuery({
+    queryKey: ["admin-venue-screens"],
+    queryFn: () => base44.entities.Screen.list(),
+    enabled: authChecked
+  });
+
+  const { data: allBookings = [] } = useQuery({
+    queryKey: ["admin-venue-bookings"],
+    queryFn: () => base44.entities.AdSlotBooking.filter({ status: "active" }),
+    enabled: authChecked
+  });
+
   useEffect(() => {
     checkAdminAuth();
   }, []);
@@ -87,23 +107,6 @@ export default function AdminVenues() {
       </div>
     );
   }
-
-  const { data: venues = [], isLoading } = useQuery({
-    queryKey: ["admin-venues"],
-    queryFn: () => base44.entities.Venue.list("-created_date")
-  });
-
-  const { data: screens = [] } = useQuery({
-    queryKey: ["admin-venue-screens"],
-    queryFn: () => base44.entities.Screen.list()
-  });
-
-  const { data: allBookings = [] } = useQuery({
-    queryKey: ["admin-venue-bookings"],
-    queryFn: () => base44.entities.AdSlotBooking.filter({ status: "active" })
-  });
-
-  const [previewVenue, setPreviewVenue] = useState(null);
 
   const getVenueScreens = (venueId) => screens.filter(s => s.venue_id === venueId);
 
