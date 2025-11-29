@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
+import { useQuery } from "@tanstack/react-query";
 import { 
   Activity, 
   CheckCircle2, 
@@ -6,145 +8,81 @@ import {
   RefreshCw,
   Monitor,
   Clock,
-  Zap
+  Zap,
+  Wifi,
+  WifiOff
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-
-// List of all pages to monitor
-const ADMIN_PAGES = [
-  { name: "AdminDashboard", label: "Dashboard" },
-  { name: "AdminUserApprovals", label: "User Approvals" },
-  { name: "AdminUsers", label: "Users" },
-  { name: "AdminBookings", label: "Ad Bookings" },
-  { name: "AdminCampaigns", label: "Campaigns" },
-  { name: "AdminVenues", label: "Venues" },
-  { name: "AdminScreens", label: "Screens" },
-  { name: "AdminWallet", label: "Wallet System" },
-  { name: "AdminWalletRequests", label: "Wallet Requests" },
-  { name: "AdminTransactions", label: "Transactions" },
-  { name: "AdminPricing", label: "Dynamic Pricing" },
-  { name: "AdminPlatformWallet", label: "Platform Revenue" },
-  { name: "AdminBlog", label: "Blog" },
-  { name: "AdminCRM", label: "CRM" },
-  { name: "AdminDefaultContent", label: "Default Content" },
-  { name: "AdminARCampaigns", label: "AR Campaigns" },
-];
-
-const USER_PAGES = [
-  { name: "Dashboard", label: "User Dashboard" },
-  { name: "AdvertiserHub", label: "Advertiser Hub" },
-  { name: "AnalyticsDashboard", label: "Analytics" },
-  { name: "BookSlot", label: "Book Slot" },
-  { name: "MyBookings", label: "My Bookings" },
-  { name: "ARDashboard", label: "AR Dashboard" },
-  { name: "Wallet", label: "Wallet" },
-  { name: "MyVenues", label: "My Venues" },
-  { name: "MyScreens", label: "My Screens" },
-  { name: "Settings", label: "Settings" },
-];
-
-const PUBLIC_PAGES = [
-  { name: "Home", label: "Home" },
-  { name: "About", label: "About" },
-  { name: "Services", label: "Services" },
-  { name: "Contact", label: "Contact" },
-  { name: "Blog", label: "Blog" },
-  { name: "ScreenLocations", label: "Screen Locations" },
-  { name: "HelpCenter", label: "Help Center" },
-  { name: "ARPremium", label: "AR Premium" },
-];
+import { differenceInMinutes } from "date-fns";
 
 export default function SystemHealthMonitor() {
-  const [healthStatus, setHealthStatus] = useState({
-    admin: [],
-    user: [],
-    public: []
+  const [lastCheck, setLastCheck] = useState(new Date());
+
+  // Fetch all screens for real-time monitoring
+  const { data: screens = [], refetch, isLoading } = useQuery({
+    queryKey: ["health-monitor-screens"],
+    queryFn: () => base44.entities.Screen.list(),
+    refetchInterval: 60000 // Refetch every minute
   });
-  const [lastCheck, setLastCheck] = useState(null);
-  const [isChecking, setIsChecking] = useState(false);
-  const [autoCheckEnabled, setAutoCheckEnabled] = useState(true);
 
-  // Run health check on mount and every 30 minutes
-  useEffect(() => {
-    runHealthCheck();
-    
-    let interval;
-    if (autoCheckEnabled) {
-      interval = setInterval(() => {
-        runHealthCheck();
-      }, 30 * 60 * 1000); // 30 minutes
-    }
-    
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [autoCheckEnabled]);
-
-  const checkPage = async (pageName) => {
-    try {
-      // Simple check - try to dynamically import the page module
-      const startTime = Date.now();
-      
-      // We'll do a fetch request to see if the page exists
-      const response = await fetch(`${window.location.origin}/${pageName}`, {
-        method: 'HEAD',
-        cache: 'no-store'
-      });
-      
-      const loadTime = Date.now() - startTime;
-      
-      return {
-        status: response.ok || response.status === 200 || response.status === 304 ? 'healthy' : 'warning',
-        loadTime,
-        error: null
-      };
-    } catch (error) {
-      return {
-        status: 'error',
-        loadTime: 0,
-        error: error.message
-      };
-    }
+  const handleRefresh = () => {
+    refetch();
+    setLastCheck(new Date());
   };
 
-  const runHealthCheck = async () => {
-    setIsChecking(true);
+  // Calculate screen health
+  const getScreenHealth = () => {
+    if (screens.length === 0) return { online: 0, offline: 0, warning: 0, total: 0 };
     
-    const checkPages = async (pages) => {
-      return Promise.all(
-        pages.map(async (page) => {
-          const result = await checkPage(page.name);
-          return {
-            ...page,
-            ...result,
-            checkedAt: new Date().toISOString()
-          };
-        })
-      );
-    };
-
-    try {
-      const [adminResults, userResults, publicResults] = await Promise.all([
-        checkPages(ADMIN_PAGES),
-        checkPages(USER_PAGES),
-        checkPages(PUBLIC_PAGES)
-      ]);
-
-      setHealthStatus({
-        admin: adminResults,
-        user: userResults,
-        public: publicResults
-      });
-      setLastCheck(new Date());
-    } catch (error) {
-      console.error("Health check failed:", error);
-    }
+    const now = new Date();
+    let online = 0;
+    let offline = 0;
+    let warning = 0;
     
-    setIsChecking(false);
+    screens.forEach(screen => {
+      if (screen.status === "online" && screen.last_heartbeat) {
+        const lastHeartbeat = new Date(screen.last_heartbeat);
+        const minutesAgo = differenceInMinutes(now, lastHeartbeat);
+        
+        if (minutesAgo <= 2) {
+          online++;
+        } else if (minutesAgo <= 5) {
+          warning++;
+        } else {
+          offline++;
+        }
+      } else if (screen.status === "online" && !screen.last_heartbeat) {
+        warning++;
+      } else {
+        offline++;
+      }
+    });
+    
+    return { online, offline, warning, total: screens.length };
   };
+
+  const screenHealth = getScreenHealth();
+  const healthPercentage = screenHealth.total > 0 
+    ? Math.round((screenHealth.online / screenHealth.total) * 100) 
+    : 100;
+
+  // Get screens that need attention (offline for more than 5 minutes)
+  const getOfflineScreens = () => {
+    const now = new Date();
+    return screens.filter(screen => {
+      if (screen.status !== "online") return false;
+      if (!screen.last_heartbeat) return true;
+      
+      const lastHeartbeat = new Date(screen.last_heartbeat);
+      const minutesAgo = differenceInMinutes(now, lastHeartbeat);
+      return minutesAgo > 5;
+    });
+  };
+
+  const offlineScreens = getOfflineScreens();
 
   const getOverallHealth = () => {
     const allPages = [...healthStatus.admin, ...healthStatus.user, ...healthStatus.public];
