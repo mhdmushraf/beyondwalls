@@ -64,24 +64,6 @@ export default function MyScreens() {
   const [actionLoading, setActionLoading] = useState(null);
   const [tagFilter, setTagFilter] = useState(null);
 
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  const loadUser = async () => {
-    try {
-      const isAuth = await base44.auth.isAuthenticated();
-      if (!isAuth) {
-        base44.auth.redirectToLogin(createPageUrl("MyScreens"));
-        return;
-      }
-      const userData = await base44.auth.me();
-      setUser(userData);
-    } catch (e) {
-      base44.auth.redirectToLogin(createPageUrl("MyScreens"));
-    }
-  };
-
   const { data: venues = [] } = useQuery({
     queryKey: ["my-venues", user?.email],
     queryFn: () => base44.entities.Venue.filter({ owner_id: user?.email }),
@@ -104,6 +86,24 @@ export default function MyScreens() {
     queryFn: () => base44.entities.AdSlotBooking.filter({ status: "active" }),
     refetchInterval: 30000 // Refresh every 30 seconds
   });
+
+  useEffect(() => {
+    loadUser();
+  }, []);
+
+  const loadUser = async () => {
+    try {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) {
+        base44.auth.redirectToLogin(createPageUrl("MyScreens"));
+        return;
+      }
+      const userData = await base44.auth.me();
+      setUser(userData);
+    } catch (e) {
+      base44.auth.redirectToLogin(createPageUrl("MyScreens"));
+    }
+  };
 
   // Get all active ads for a screen
   const getScreenSlots = (screen) => {

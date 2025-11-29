@@ -103,6 +103,16 @@ export default function AICampaignCreator() {
   // Draft campaign for review
   const [draftCampaign, setDraftCampaign] = useState(null);
 
+  const { data: venues = [] } = useQuery({
+    queryKey: ["venues"],
+    queryFn: () => base44.entities.Venue.filter({ status: "approved" })
+  });
+
+  const { data: screens = [] } = useQuery({
+    queryKey: ["screens"],
+    queryFn: () => base44.entities.Screen.filter({ status: "online" })
+  });
+
   useEffect(() => {
     loadUser();
     loadTemplate();
@@ -151,16 +161,6 @@ export default function AICampaignCreator() {
       }
     }
   };
-
-  const { data: venues = [] } = useQuery({
-    queryKey: ["venues"],
-    queryFn: () => base44.entities.Venue.filter({ status: "approved" })
-  });
-
-  const { data: screens = [] } = useQuery({
-    queryKey: ["screens"],
-    queryFn: () => base44.entities.Screen.filter({ status: "online" })
-  });
 
   const generateAISuggestions = async () => {
     if (!businessInfo.product_service || !businessInfo.target_audience) {

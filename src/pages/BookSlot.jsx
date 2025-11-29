@@ -85,24 +85,6 @@ export default function BookSlot() {
   const [cartOpen, setCartOpen] = useState(false);
   const [checkoutMode, setCheckoutMode] = useState(false);
 
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  const loadUser = async () => {
-    try {
-      const isAuth = await base44.auth.isAuthenticated();
-      if (!isAuth) {
-        base44.auth.redirectToLogin(createPageUrl("BookSlot"));
-        return;
-      }
-      const userData = await base44.auth.me();
-      setUser(userData);
-    } catch (e) {
-      base44.auth.redirectToLogin(createPageUrl("BookSlot"));
-    }
-  };
-
   // All hooks must be called before any conditional returns
   const { data: screens = [] } = useQuery({
     queryKey: ["available-screens"],
@@ -138,6 +120,24 @@ export default function BookSlot() {
     queryFn: () => base44.entities.FavoriteScreen.filter({ user_id: user?.email }),
     enabled: !!user?.email
   });
+
+  useEffect(() => {
+    loadUser();
+  }, []);
+
+  const loadUser = async () => {
+    try {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) {
+        base44.auth.redirectToLogin(createPageUrl("BookSlot"));
+        return;
+      }
+      const userData = await base44.auth.me();
+      setUser(userData);
+    } catch (e) {
+      base44.auth.redirectToLogin(createPageUrl("BookSlot"));
+    }
+  };
 
   // All useMemo and derived values
   const endDate = addWeeks(formData.start_date, formData.weeks);
