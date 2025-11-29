@@ -14,7 +14,6 @@ import VenueEarnings from './pages/VenueEarnings';
 import Settings from './pages/Settings';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminCampaigns from './pages/AdminCampaigns';
-import AdminVenues from './pages/AdminVenues';
 import AdminScreens from './pages/AdminScreens';
 import AdminUsers from './pages/AdminUsers';
 import AdminTransactions from './pages/AdminTransactions';
@@ -83,7 +82,6 @@ export const PAGES = {
     "Settings": Settings,
     "AdminDashboard": AdminDashboard,
     "AdminCampaigns": AdminCampaigns,
-    "AdminVenues": AdminVenues,
     "AdminScreens": AdminScreens,
     "AdminUsers": AdminUsers,
     "AdminTransactions": AdminTransactions,
