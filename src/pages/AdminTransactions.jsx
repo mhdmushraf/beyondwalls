@@ -24,34 +24,33 @@ export default function AdminTransactions() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [authChecked, setAuthChecked] = useState(false);
 
+  useEffect(() => {
+    const checkAdminAuth = async () => {
+      try {
+        const isAuth = await base44.auth.isAuthenticated();
+        if (!isAuth) {
+          base44.auth.redirectToLogin(createPageUrl("AdminTransactions"));
+          return;
+        }
+        const userData = await base44.auth.me();
+        const isAdmin = userData?.user_role === "admin" || userData?.role === "admin";
+        if (!isAdmin) {
+          window.location.href = createPageUrl("Dashboard");
+          return;
+        }
+        setAuthChecked(true);
+      } catch (e) {
+        base44.auth.redirectToLogin(createPageUrl("AdminTransactions"));
+      }
+    };
+    checkAdminAuth();
+  }, []);
+
   const { data: transactions = [], isLoading } = useQuery({
     queryKey: ["admin-transactions"],
     queryFn: () => base44.entities.Transaction.list("-created_date"),
     enabled: authChecked
   });
-
-  useEffect(() => {
-    checkAdminAuth();
-  }, []);
-
-  const checkAdminAuth = async () => {
-    try {
-      const isAuth = await base44.auth.isAuthenticated();
-      if (!isAuth) {
-        base44.auth.redirectToLogin(createPageUrl("AdminTransactions"));
-        return;
-      }
-      const userData = await base44.auth.me();
-      const isAdmin = userData?.user_role === "admin" || userData?.role === "admin";
-      if (!isAdmin) {
-        window.location.href = createPageUrl("Dashboard");
-        return;
-      }
-      setAuthChecked(true);
-    } catch (e) {
-      base44.auth.redirectToLogin(createPageUrl("AdminTransactions"));
-    }
-  };
 
   if (!authChecked) {
     return (
