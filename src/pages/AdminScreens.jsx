@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { format } from "date-fns";
+import { format, differenceInMinutes } from "date-fns";
 import {
   Search,
   MonitorPlay,
@@ -360,19 +360,36 @@ export default function AdminScreens() {
                 ) : (
                   filteredScreens.map((screen) => {
                     const venue = venues.find(v => v.id === screen.venue_id);
+                    const now = new Date();
+                    const lastHeartbeat = screen.last_heartbeat ? new Date(screen.last_heartbeat) : null;
+                    const minutesSinceHeartbeat = lastHeartbeat ? differenceInMinutes(now, lastHeartbeat) : Infinity;
+                    const isOfflineWarning = screen.status === "online" && minutesSinceHeartbeat > 5;
+                    
                     return (
-                      <tr key={screen.id} className="border-b hover:bg-slate-50">
+                      <tr key={screen.id} className={`border-b hover:bg-slate-50 ${isOfflineWarning ? 'bg-red-50' : ''}`}>
                         <td className="p-4">
                           <div className="flex items-center gap-3">
-                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                              screen.status === "online" ? "bg-emerald-100" : "bg-slate-100"
+                            <div className={`relative w-10 h-10 rounded-lg flex items-center justify-center ${
+                              screen.status === "online" && !isOfflineWarning ? "bg-emerald-100" : 
+                              isOfflineWarning ? "bg-red-100" : "bg-slate-100"
                             }`}>
                               <MonitorPlay className={`w-5 h-5 ${
-                                screen.status === "online" ? "text-emerald-600" : "text-slate-400"
+                                screen.status === "online" && !isOfflineWarning ? "text-emerald-600" : 
+                                isOfflineWarning ? "text-red-600" : "text-slate-400"
                               }`} />
+                              {isOfflineWarning && (
+                                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+                              )}
                             </div>
                             <div>
-                              <p className="font-medium text-slate-900">{screen.name}</p>
+                              <div className="flex items-center gap-2">
+                                <p className="font-medium text-slate-900">{screen.name}</p>
+                                {isOfflineWarning && (
+                                  <Badge className="bg-red-100 text-red-700 text-xs">
+                                    Offline {minutesSinceHeartbeat}m
+                                  </Badge>
+                                )}
+                              </div>
                               <p className="text-sm text-slate-500">{screen.device_type}</p>
                             </div>
                           </div>
