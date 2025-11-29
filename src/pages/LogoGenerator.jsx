@@ -101,6 +101,64 @@ export default function LogoGenerator() {
       ctx.closePath();
       ctx.fill();
       
+    } else if (type === 'bone') {
+      // B.One Player Logo
+      canvas.width = 400;
+      canvas.height = 120;
+      
+      // Dark background
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.roundRect(0, 0, 400, 120, 16);
+      ctx.fill();
+      
+      // Icon background gradient
+      const gradient = ctx.createLinearGradient(15, 20, 95, 100);
+      gradient.addColorStop(0, '#8B5CF6');
+      gradient.addColorStop(1, '#6366F1');
+      
+      // Draw icon background
+      ctx.beginPath();
+      ctx.roundRect(15, 20, 80, 80, 16);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+      
+      // Simple monitor in icon
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 5;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.roundRect(30, 35, 50, 38, 4);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(55, 73);
+      ctx.lineTo(55, 85);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(40, 85);
+      ctx.lineTo(70, 85);
+      ctx.stroke();
+      
+      // Play icon
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.moveTo(48, 45);
+      ctx.lineTo(48, 63);
+      ctx.lineTo(65, 54);
+      ctx.closePath();
+      ctx.fill();
+      
+      // Text "B.One"
+      ctx.font = 'bold 42px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'white';
+      ctx.fillText('B.One', 115, 70);
+      
+      // Text "Player" subtitle
+      ctx.font = '18px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#a78bfa';
+      ctx.fillText('Player', 115, 95);
+      
     } else {
       canvas.width = 400;
       canvas.height = 100;
@@ -157,7 +215,7 @@ export default function LogoGenerator() {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = type === 'icon' ? 'beyondwalls-icon.png' : 'beyondwalls-logo.png';
+      link.download = type === 'icon' ? 'beyondwalls-icon.png' : type === 'bone' ? 'bone-player-logo.png' : 'beyondwalls-logo.png';
       link.click();
       URL.revokeObjectURL(url);
     }, 'image/png');
@@ -167,7 +225,58 @@ export default function LogoGenerator() {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     
-    if (type === 'icon') {
+    if (type === 'bone') {
+      // B.One Player Logo for PDF
+      canvas.width = 400;
+      canvas.height = 120;
+      
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.roundRect(0, 0, 400, 120, 16);
+      ctx.fill();
+      
+      const gradient = ctx.createLinearGradient(15, 20, 95, 100);
+      gradient.addColorStop(0, '#8B5CF6');
+      gradient.addColorStop(1, '#6366F1');
+      
+      ctx.beginPath();
+      ctx.roundRect(15, 20, 80, 80, 16);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+      
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 5;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.roundRect(30, 35, 50, 38, 4);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(55, 73);
+      ctx.lineTo(55, 85);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(40, 85);
+      ctx.lineTo(70, 85);
+      ctx.stroke();
+      
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.moveTo(48, 45);
+      ctx.lineTo(48, 63);
+      ctx.lineTo(65, 54);
+      ctx.closePath();
+      ctx.fill();
+      
+      ctx.font = 'bold 42px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'white';
+      ctx.fillText('B.One', 115, 70);
+      
+      ctx.font = '18px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#a78bfa';
+      ctx.fillText('Player', 115, 95);
+      
+    } else if (type === 'icon') {
       canvas.width = 256;
       canvas.height = 256;
       
@@ -265,7 +374,7 @@ export default function LogoGenerator() {
       <!DOCTYPE html>
       <html>
       <head>
-        <title>BeyondWalls ${type === 'icon' ? 'Icon' : 'Logo'}</title>
+        <title>${type === 'bone' ? 'B.One Player Logo' : `BeyondWalls ${type === 'icon' ? 'Icon' : 'Logo'}`}</title>
         <style>
           @page { size: ${type === 'icon' ? '256px 256px' : '400px 100px'}; margin: 0; }
           body { margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; }
@@ -334,6 +443,28 @@ export default function LogoGenerator() {
                     <Download className="w-3 h-3 mr-1" /> PNG
                   </Button>
                   <Button size="sm" variant="outline" onClick={() => downloadAsPDF('full')}>
+                    <FileText className="w-3 h-3 mr-1" /> PDF
+                  </Button>
+                </div>
+              </div>
+
+              {/* B.One Player Logo */}
+              <div className="text-center">
+                <div className="flex items-center gap-3 bg-slate-900 p-4 rounded-xl shadow-lg mx-auto mb-2">
+                  <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-indigo-500 rounded-xl flex items-center justify-center">
+                    <MonitorPlay className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="text-left">
+                    <span className="font-bold text-xl text-white">B.One</span>
+                    <span className="text-xs text-violet-400 block -mt-1">Player</span>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-500 mb-2">B.One Player</p>
+                <div className="flex gap-1">
+                  <Button size="sm" variant="outline" onClick={() => downloadCurrentLogo('bone')}>
+                    <Download className="w-3 h-3 mr-1" /> PNG
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => downloadAsPDF('bone')}>
                     <FileText className="w-3 h-3 mr-1" /> PDF
                   </Button>
                 </div>

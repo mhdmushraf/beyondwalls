@@ -325,7 +325,7 @@ export default function ScreenPlayer() {
               <div className="w-20 h-20 bg-gradient-to-br from-violet-500 to-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-violet-500/30">
                 <MonitorPlay className="w-10 h-10 text-white" />
               </div>
-              <h1 className="text-2xl font-bold text-white mb-2">BeyondWalls Player</h1>
+              <h1 className="text-2xl font-bold text-white mb-2">B.One Player</h1>
               <p className="text-white/60">Connect your screen to start displaying ads</p>
             </div>
 
@@ -423,8 +423,8 @@ export default function ScreenPlayer() {
 
             <p className="text-center text-white/40 text-sm mt-6">
               {authMode === "setup_code" 
-                ? "Get your setup code from the BeyondWalls dashboard after screen approval"
-                : "Find your Screen ID in the BeyondWalls dashboard"
+                ? "Get your setup code from the B.One dashboard after screen approval"
+                : "Find your Screen ID in the B.One dashboard"
               }
             </p>
           </CardContent>
@@ -445,10 +445,10 @@ export default function ScreenPlayer() {
           <div className="flex items-center justify-between max-w-7xl mx-auto">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-lg flex items-center justify-center">
                   <MonitorPlay className="w-4 h-4 text-white" />
                 </div>
-                <span className="font-bold text-white">BeyondWalls</span>
+                <span className="font-bold text-white">B.One</span>
               </div>
               <div className="flex items-center gap-2 text-emerald-400">
                 <Wifi className="w-4 h-4" />
