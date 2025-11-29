@@ -200,17 +200,20 @@ export default function AdminScreens() {
 
   const { data: screens = [], isLoading } = useQuery({
     queryKey: ["admin-screens"],
-    queryFn: () => base44.entities.Screen.list("-created_date")
+    queryFn: () => base44.entities.Screen.list("-created_date"),
+    enabled: authChecked
   });
 
   const { data: venues = [] } = useQuery({
     queryKey: ["admin-venues-lookup"],
-    queryFn: () => base44.entities.Venue.list()
+    queryFn: () => base44.entities.Venue.list(),
+    enabled: authChecked
   });
 
   const { data: allBookings = [] } = useQuery({
     queryKey: ["admin-screen-bookings"],
-    queryFn: () => base44.entities.AdSlotBooking.filter({ status: "active" })
+    queryFn: () => base44.entities.AdSlotBooking.filter({ status: "active" }),
+    enabled: authChecked
   });
 
   const [previewScreen, setPreviewScreen] = useState(null);
