@@ -55,12 +55,14 @@ export default function MyBookings() {
 
   const { data: screens = [] } = useQuery({
     queryKey: ["all-screens"],
-    queryFn: () => base44.entities.Screen.list()
+    queryFn: () => base44.entities.Screen.list(),
+    enabled: !!user
   });
 
   const { data: venues = [] } = useQuery({
     queryKey: ["all-venues"],
-    queryFn: () => base44.entities.Venue.list()
+    queryFn: () => base44.entities.Venue.list(),
+    enabled: !!user
   });
 
   const activeBookings = bookings.filter(b => b.status === "active");
