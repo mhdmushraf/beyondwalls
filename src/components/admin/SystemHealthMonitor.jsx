@@ -84,84 +84,13 @@ export default function SystemHealthMonitor() {
 
   const offlineScreens = getOfflineScreens();
 
-  const getOverallHealth = () => {
-    const allPages = [...healthStatus.admin, ...healthStatus.user, ...healthStatus.public];
-    if (allPages.length === 0) return { percentage: 100, status: 'unknown' };
-    
-    const healthyCount = allPages.filter(p => p.status === 'healthy').length;
-    const percentage = Math.round((healthyCount / allPages.length) * 100);
-    
-    if (percentage >= 90) return { percentage, status: 'healthy' };
-    if (percentage >= 70) return { percentage, status: 'warning' };
-    return { percentage, status: 'critical' };
+  const getOverallStatus = () => {
+    if (healthPercentage >= 90) return 'healthy';
+    if (healthPercentage >= 70) return 'warning';
+    return 'critical';
   };
 
-  const overallHealth = getOverallHealth();
-
-  const StatusBadge = ({ status }) => {
-    const config = {
-      healthy: { color: "bg-emerald-100 text-emerald-700", icon: CheckCircle2 },
-      warning: { color: "bg-amber-100 text-amber-700", icon: AlertCircle },
-      error: { color: "bg-red-100 text-red-700", icon: AlertCircle },
-      unknown: { color: "bg-slate-100 text-slate-700", icon: Clock }
-    };
-    
-    const { color, icon: Icon } = config[status] || config.unknown;
-    
-    return (
-      <Badge className={`${color} flex items-center gap-1`}>
-        <Icon className="w-3 h-3" />
-        {status}
-      </Badge>
-    );
-  };
-
-  const PageStatusList = ({ title, pages, icon: Icon }) => {
-    const healthyCount = pages.filter(p => p.status === 'healthy').length;
-    const hasIssues = pages.some(p => p.status !== 'healthy');
-    
-    return (
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Icon className="w-4 h-4 text-violet-600" />
-            <span className="font-medium text-slate-900">{title}</span>
-          </div>
-          <span className="text-sm text-slate-500">
-            {healthyCount}/{pages.length} healthy
-          </span>
-        </div>
-        
-        {hasIssues && (
-          <div className="space-y-2 pl-6">
-            {pages.filter(p => p.status !== 'healthy').map((page) => (
-              <div 
-                key={page.name}
-                className="flex items-center justify-between p-2 bg-red-50 rounded-lg"
-              >
-                <span className="text-sm text-slate-700">{page.label}</span>
-                <div className="flex items-center gap-2">
-                  <StatusBadge status={page.status} />
-                  {page.error && (
-                    <span className="text-xs text-red-600">{page.error}</span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-        
-        {!hasIssues && pages.length > 0 && (
-          <div className="pl-6">
-            <div className="flex items-center gap-2 text-sm text-emerald-600">
-              <CheckCircle2 className="w-4 h-4" />
-              All pages operational
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
+  const overallStatus = getOverallStatus();
 
   return (
     <Card className="border-slate-200">
@@ -169,17 +98,17 @@ export default function SystemHealthMonitor() {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Activity className="w-5 h-5 text-violet-600" />
-            System Health Monitor
+            Screen Health Monitor
           </CardTitle>
           <Button
             size="sm"
             variant="outline"
-            onClick={runHealthCheck}
-            disabled={isChecking}
+            onClick={handleRefresh}
+            disabled={isLoading}
             className="gap-2"
           >
-            <RefreshCw className={`w-4 h-4 ${isChecking ? 'animate-spin' : ''}`} />
-            {isChecking ? 'Checking...' : 'Check Now'}
+            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+            Refresh
           </Button>
         </div>
       </CardHeader>
@@ -187,65 +116,109 @@ export default function SystemHealthMonitor() {
         {/* Overall Health */}
         <div className="p-4 bg-slate-50 rounded-xl">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-slate-700">Overall System Health</span>
-            <StatusBadge status={overallHealth.status} />
+            <span className="text-sm font-medium text-slate-700">Screen Network Health</span>
+            <Badge className={`flex items-center gap-1 ${
+              overallStatus === 'healthy' ? 'bg-emerald-100 text-emerald-700' :
+              overallStatus === 'warning' ? 'bg-amber-100 text-amber-700' :
+              'bg-red-100 text-red-700'
+            }`}>
+              {overallStatus === 'healthy' ? <CheckCircle2 className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
+              {overallStatus}
+            </Badge>
           </div>
           <Progress 
-            value={overallHealth.percentage} 
+            value={healthPercentage} 
             className={`h-2 ${
-              overallHealth.status === 'healthy' ? '[&>div]:bg-emerald-500' :
-              overallHealth.status === 'warning' ? '[&>div]:bg-amber-500' :
+              overallStatus === 'healthy' ? '[&>div]:bg-emerald-500' :
+              overallStatus === 'warning' ? '[&>div]:bg-amber-500' :
               '[&>div]:bg-red-500'
             }`}
           />
           <div className="flex items-center justify-between mt-2">
             <span className="text-xs text-slate-500">
-              {overallHealth.percentage}% operational
+              {healthPercentage}% screens online
             </span>
-            {lastCheck && (
-              <span className="text-xs text-slate-500">
-                Last checked: {lastCheck.toLocaleTimeString()}
-              </span>
-            )}
+            <span className="text-xs text-slate-500">
+              Last checked: {lastCheck.toLocaleTimeString()}
+            </span>
           </div>
         </div>
 
-        {/* Auto-check indicator */}
+        {/* Screen Stats */}
+        <div className="grid grid-cols-3 gap-3">
+          <div className="p-3 bg-emerald-50 rounded-lg text-center">
+            <div className="flex items-center justify-center gap-1 mb-1">
+              <Wifi className="w-4 h-4 text-emerald-600" />
+              <span className="text-2xl font-bold text-emerald-600">{screenHealth.online}</span>
+            </div>
+            <p className="text-xs text-emerald-700">Online</p>
+          </div>
+          <div className="p-3 bg-amber-50 rounded-lg text-center">
+            <div className="flex items-center justify-center gap-1 mb-1">
+              <Clock className="w-4 h-4 text-amber-600" />
+              <span className="text-2xl font-bold text-amber-600">{screenHealth.warning}</span>
+            </div>
+            <p className="text-xs text-amber-700">Delayed</p>
+          </div>
+          <div className="p-3 bg-red-50 rounded-lg text-center">
+            <div className="flex items-center justify-center gap-1 mb-1">
+              <WifiOff className="w-4 h-4 text-red-600" />
+              <span className="text-2xl font-bold text-red-600">{screenHealth.offline}</span>
+            </div>
+            <p className="text-xs text-red-700">Offline</p>
+          </div>
+        </div>
+
+        {/* Offline Screens Alert */}
+        {offlineScreens.length > 0 && (
+          <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
+            <div className="flex items-center gap-2 mb-3">
+              <AlertCircle className="w-5 h-5 text-red-600" />
+              <span className="font-medium text-red-800">
+                {offlineScreens.length} Screen{offlineScreens.length > 1 ? 's' : ''} Offline
+              </span>
+            </div>
+            <div className="space-y-2 max-h-40 overflow-y-auto">
+              {offlineScreens.slice(0, 5).map(screen => (
+                <div key={screen.id} className="flex items-center justify-between p-2 bg-white rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                    <span className="text-sm text-slate-700">{screen.name}</span>
+                  </div>
+                  <span className="text-xs text-slate-500">
+                    {screen.last_heartbeat 
+                      ? `Last seen: ${differenceInMinutes(new Date(), new Date(screen.last_heartbeat))}m ago`
+                      : 'Never connected'
+                    }
+                  </span>
+                </div>
+              ))}
+              {offlineScreens.length > 5 && (
+                <p className="text-xs text-red-600 text-center">
+                  +{offlineScreens.length - 5} more screens offline
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* All Good Message */}
+        {offlineScreens.length === 0 && screenHealth.total > 0 && (
+          <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+              <span className="text-emerald-800">All screens are operating normally</span>
+            </div>
+          </div>
+        )}
+
+        {/* Auto-refresh indicator */}
         <div className="flex items-center justify-between p-3 bg-violet-50 rounded-lg">
           <div className="flex items-center gap-2">
             <Zap className="w-4 h-4 text-violet-600" />
-            <span className="text-sm text-violet-700">Auto-check every 30 minutes</span>
+            <span className="text-sm text-violet-700">Auto-refresh every minute</span>
           </div>
-          <Badge className={autoCheckEnabled ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-700"}>
-            {autoCheckEnabled ? 'Enabled' : 'Disabled'}
-          </Badge>
-        </div>
-
-        {/* Page Status Sections */}
-        <div className="space-y-4">
-          <PageStatusList 
-            title="Admin Pages" 
-            pages={healthStatus.admin} 
-            icon={Monitor}
-          />
-          <PageStatusList 
-            title="User Pages" 
-            pages={healthStatus.user} 
-            icon={Monitor}
-          />
-          <PageStatusList 
-            title="Public Pages" 
-            pages={healthStatus.public} 
-            icon={Monitor}
-          />
-        </div>
-
-        {/* Note about manual fixes */}
-        <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
-          <p className="text-sm text-amber-800">
-            <strong>Note:</strong> If issues are detected, they require manual intervention to fix. 
-            Contact your development team with the error details above.
-          </p>
+          <Badge className="bg-emerald-100 text-emerald-700">Active</Badge>
         </div>
       </CardContent>
     </Card>
