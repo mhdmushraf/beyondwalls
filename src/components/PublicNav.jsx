@@ -41,6 +41,7 @@ export default function PublicNav() {
     { name: "About", page: "About" },
     { name: "Services", page: "Services" },
     { name: "Screen Locations", page: "ScreenLocations" },
+    { name: "AR Engage", page: "ARPremium", isNew: true },
     { name: "Blog", page: "Blog" },
     { name: "Help Center", page: "HelpCenter" },
     { name: "Contact", page: "Contact" },
@@ -68,10 +69,12 @@ export default function PublicNav() {
               className={`font-medium transition-colors text-sm whitespace-nowrap ${
                 link.highlight 
                   ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white px-3 py-1.5 rounded-full hover:from-violet-700 hover:to-indigo-700" 
+                  : link.isNew
+                  ? "bg-gradient-to-r from-fuchsia-500 to-violet-500 text-white px-3 py-1.5 rounded-full hover:from-fuchsia-600 hover:to-violet-600 flex items-center gap-1"
                   : "text-slate-600 hover:text-violet-600"
               }`}
             >
-              {link.highlight ? "✨ Connect" : link.name}
+              {link.highlight ? "✨ Connect" : link.isNew ? <>🔮 {link.name}</> : link.name}
             </Link>
           ))}
         </div>
@@ -124,11 +127,13 @@ export default function PublicNav() {
               className={`block font-medium py-2.5 px-3 rounded-lg transition-colors ${
                 link.highlight 
                   ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white" 
+                  : link.isNew
+                  ? "bg-gradient-to-r from-fuchsia-500 to-violet-500 text-white"
                   : "text-slate-600 hover:text-violet-600 hover:bg-violet-50"
               }`}
               onClick={() => setMobileMenuOpen(false)}
             >
-              {link.highlight ? "✨ Connect" : link.name}
+              {link.highlight ? "✨ Connect" : link.isNew ? <>🔮 {link.name}</> : link.name}
             </Link>
           ))}
         </div>
