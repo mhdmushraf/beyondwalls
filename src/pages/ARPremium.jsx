@@ -487,7 +487,7 @@ export default function ARPremium() {
           <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-4">
             {heroStats.map((stat, i) => (
               <div key={i} className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 text-center hover:bg-white/10 transition-all hover:scale-105">
-                <stat.icon className={`w-8 h-8 mx-auto mb-3 text-${stat.color}-400`} />
+                <stat.icon className="w-8 h-8 mx-auto mb-3 text-violet-400" />
                 <div className="text-3xl md:text-4xl font-bold text-white mb-1">{stat.value}</div>
                 <div className="text-slate-400 text-sm">{stat.label}</div>
               </div>
@@ -738,7 +738,7 @@ export default function ARPremium() {
                 <Card className={`bg-slate-800/50 border-slate-700/50 backdrop-blur-sm h-full ${i === 0 ? 'ring-2 ring-violet-500' : ''}`}>
                   <CardContent className="p-8">
                     <div className="flex items-center gap-4 mb-6">
-                      <div className={`w-14 h-14 bg-gradient-to-br from-${phase.color}-600 to-${phase.color}-700 rounded-2xl flex items-center justify-center`}>
+                      <div className="w-14 h-14 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-2xl flex items-center justify-center">
                         <phase.icon className="w-7 h-7 text-white" />
                       </div>
                       <div>
