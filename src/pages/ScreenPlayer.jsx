@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   MonitorPlay,
   Lock,
@@ -9,18 +9,31 @@ import {
   Volume2,
   VolumeX,
   Maximize,
+  Minimize,
   RefreshCw,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  SkipForward,
+  SkipBack,
+  Play,
+  Pause,
+  Clock,
+  Zap,
+  Activity,
+  Settings,
+  X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 
 export default function ScreenPlayer() {
+  const queryClient = useQueryClient();
   const [screenId, setScreenId] = useState("");
   const [setupCode, setSetupCode] = useState("");
-  const [authMode, setAuthMode] = useState("setup_code"); // "setup_code" or "screen_id"
+  const [authMode, setAuthMode] = useState("setup_code");
   const [pin, setPin] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
   const [screen, setScreen] = useState(null);
@@ -31,10 +44,20 @@ export default function ScreenPlayer() {
   const [connecting, setConnecting] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
   const [animationType, setAnimationType] = useState("fade");
+  const [isPaused, setIsPaused] = useState(false);
+  const [showDashboard, setShowDashboard] = useState(true);
+  const [connectionStatus, setConnectionStatus] = useState("connected"); // connected, reconnecting, offline
+  const [lastHeartbeat, setLastHeartbeat] = useState(null);
+  const [adProgress, setAdProgress] = useState(0);
+  const [adStartTime, setAdStartTime] = useState(null);
+  const [totalPlaytime, setTotalPlaytime] = useState(0);
+  const [adsPlayed, setAdsPlayed] = useState(0);
+  const [mediaError, setMediaError] = useState(null);
   const containerRef = useRef(null);
   const videoRef = useRef(null);
+  const progressIntervalRef = useRef(null);
 
-  const AD_DURATION = 8000; // 8 seconds for images
+  const AD_DURATION = 8000;
   const animations = ["fade", "slideLeft", "slideRight", "slideUp", "slideDown", "zoom", "flip", "blur"];
 
   // Get setup code or screen ID from URL
@@ -51,7 +74,7 @@ export default function ScreenPlayer() {
     }
   }, []);
 
-  // Fetch ad slot bookings for this screen (only approved/active ones)
+  // Fetch ad slot bookings
   const { data: bookings = [], refetch: refetchBookings } = useQuery({
     queryKey: ["player-bookings", screen?.id],
     queryFn: async () => {
@@ -59,15 +82,14 @@ export default function ScreenPlayer() {
         screen_id: screen?.id, 
         status: "active" 
       });
-      // Filter to only show bookings within their date range
       const today = new Date().toISOString().split('T')[0];
       return allBookings.filter(b => b.start_date <= today && b.end_date >= today);
     },
     enabled: authenticated && !!screen?.id,
-    refetchInterval: 60000 // Refresh every minute
+    refetchInterval: 60000
   });
 
-  // Fetch campaigns for this screen (legacy support)
+  // Fetch campaigns
   const { data: campaigns = [], refetch: refetchCampaigns } = useQuery({
     queryKey: ["player-campaigns", screen?.id],
     queryFn: async () => {
@@ -75,150 +97,190 @@ export default function ScreenPlayer() {
       return allCampaigns.filter(c => c.screen_ids?.includes(screen?.id));
     },
     enabled: authenticated && !!screen?.id,
-    refetchInterval: 60000 // Refresh every minute
+    refetchInterval: 60000
   });
 
-  // Fetch default content from platform settings
+  // Fetch platform settings
   const { data: platformSettings = [] } = useQuery({
     queryKey: ["platform-settings"],
     queryFn: () => base44.entities.PlatformSettings.list(),
     enabled: authenticated
   });
 
+  // Check for remote commands (skip/replay from admin)
+  const { data: screenData } = useQuery({
+    queryKey: ["screen-commands", screen?.id],
+    queryFn: () => base44.entities.Screen.filter({ id: screen?.id }),
+    enabled: authenticated && !!screen?.id,
+    refetchInterval: 5000 // Check every 5 seconds for commands
+  });
+
+  // Handle remote commands
+  useEffect(() => {
+    if (screenData?.[0]?.player_command) {
+      const command = screenData[0].player_command;
+      if (command === "skip") {
+        goToNextAd();
+      } else if (command === "replay") {
+        replayCurrentAd();
+      } else if (command === "pause") {
+        setIsPaused(true);
+      } else if (command === "resume") {
+        setIsPaused(false);
+      }
+      // Clear the command after processing
+      base44.entities.Screen.update(screen.id, { player_command: null });
+    }
+  }, [screenData]);
+
   const defaultContentUrl = platformSettings.find(s => s.setting_key === "default_screen_content_url")?.setting_value || "";
   const defaultContentType = platformSettings.find(s => s.setting_key === "default_screen_content_type")?.setting_value || "image";
 
-  // Build owner slots array from screen data
+  // Build owner slots
   const ownerSlots = [];
   if (screen?.owner_slot_1_url) {
-    ownerSlots.push({ 
-      id: "owner-1", 
-      name: "Owner Slot 1", 
-      creative_url: screen.owner_slot_1_url, 
-      creative_type: screen.owner_slot_1_type || "image",
-      type: "owner"
-    });
+    ownerSlots.push({ id: "owner-1", name: "Owner Slot 1", creative_url: screen.owner_slot_1_url, creative_type: screen.owner_slot_1_type || "image", type: "owner" });
   }
   if (screen?.owner_slot_2_url) {
-    ownerSlots.push({ 
-      id: "owner-2", 
-      name: "Owner Slot 2", 
-      creative_url: screen.owner_slot_2_url, 
-      creative_type: screen.owner_slot_2_type || "image",
-      type: "owner"
-    });
+    ownerSlots.push({ id: "owner-2", name: "Owner Slot 2", creative_url: screen.owner_slot_2_url, creative_type: screen.owner_slot_2_type || "image", type: "owner" });
   }
   if (screen?.owner_slot_3_url) {
-    ownerSlots.push({ 
-      id: "owner-3", 
-      name: "Owner Slot 3", 
-      creative_url: screen.owner_slot_3_url, 
-      creative_type: screen.owner_slot_3_type || "image",
-      type: "owner"
-    });
+    ownerSlots.push({ id: "owner-3", name: "Owner Slot 3", creative_url: screen.owner_slot_3_url, creative_type: screen.owner_slot_3_type || "image", type: "owner" });
   }
 
-  // Build advertiser ads array
+  // Build advertiser ads
   const advertiserAds = [
-    ...bookings.map(b => ({ 
-      id: b.id, 
-      name: b.campaign_name || "Ad Slot", 
-      creative_url: b.creative_url, 
-      creative_type: b.creative_type,
-      type: "booking"
-    })),
-    ...campaigns.map(c => ({ 
-      id: c.id, 
-      name: c.name, 
-      creative_url: c.creative_url, 
-      creative_type: c.creative_type,
-      type: "campaign"
-    }))
+    ...bookings.map(b => ({ id: b.id, name: b.campaign_name || "Ad Slot", creative_url: b.creative_url, creative_type: b.creative_type, type: "booking" })),
+    ...campaigns.map(c => ({ id: c.id, name: c.name, creative_url: c.creative_url, creative_type: c.creative_type, type: "campaign" }))
   ].filter(ad => ad.creative_url);
 
-  // Build interleaved playlist: Ad1 -> Owner1 -> Ad2 -> Owner2 -> Ad3 -> Owner3 -> Ad4 -> Ad5 -> repeat
+  // Build playlist
   const buildPlaylist = () => {
-    const playlist = [];
     const adCount = advertiserAds.length;
     const ownerCount = ownerSlots.length;
-    
-    if (adCount === 0 && ownerCount === 0) {
-      // No content, will show default
-      return [];
-    }
-    
-    if (adCount === 0) {
-      // Only owner slots
-      return [...ownerSlots];
-    }
-    
-    if (ownerCount === 0) {
-      // Only advertiser ads
-      return [...advertiserAds];
-    }
+    if (adCount === 0 && ownerCount === 0) return [];
+    if (adCount === 0) return [...ownerSlots];
+    if (ownerCount === 0) return [...advertiserAds];
 
-    // Interleave: pattern is Ad, Owner, Ad, Owner, Ad, Owner, Ad, Ad (then repeat)
-    // For up to 5 ad slots and 3 owner slots
-    let adIndex = 0;
-    let ownerIndex = 0;
-    
-    // Slot 1: Ad
+    const playlist = [];
+    let adIndex = 0, ownerIndex = 0;
     if (adIndex < adCount) playlist.push(advertiserAds[adIndex++]);
-    // Slot 2: Owner
     if (ownerIndex < ownerCount) playlist.push(ownerSlots[ownerIndex++]);
-    // Slot 3: Ad
     if (adIndex < adCount) playlist.push(advertiserAds[adIndex++]);
-    // Slot 4: Owner
     if (ownerIndex < ownerCount) playlist.push(ownerSlots[ownerIndex++]);
-    // Slot 5: Ad
     if (adIndex < adCount) playlist.push(advertiserAds[adIndex++]);
-    // Slot 6: Owner
     if (ownerIndex < ownerCount) playlist.push(ownerSlots[ownerIndex++]);
-    // Slot 7: Ad
     if (adIndex < adCount) playlist.push(advertiserAds[adIndex++]);
-    // Slot 8: Ad
     if (adIndex < adCount) playlist.push(advertiserAds[adIndex++]);
-
     return playlist;
   };
 
   const allAds = buildPlaylist();
+  const currentAd = allAds[currentAdIndex];
 
-  // Cycle through ads with animations
+  // Progress bar update
   useEffect(() => {
-    if (!authenticated || allAds.length === 0) return;
-    
-    const currentAd = allAds[currentAdIndex];
+    if (!authenticated || allAds.length === 0 || isPaused) {
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+      return;
+    }
+
+    setAdStartTime(Date.now());
+    setAdProgress(0);
+
     const isVideo = currentAd?.creative_type === "video";
-    
-    // For videos, we handle transition via onEnded event
+    if (!isVideo) {
+      progressIntervalRef.current = setInterval(() => {
+        const elapsed = Date.now() - (adStartTime || Date.now());
+        const progress = Math.min((elapsed / AD_DURATION) * 100, 100);
+        setAdProgress(progress);
+      }, 100);
+    }
+
+    return () => {
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+    };
+  }, [authenticated, currentAdIndex, isPaused, allAds.length]);
+
+  // Ad cycling
+  useEffect(() => {
+    if (!authenticated || allAds.length === 0 || isPaused) return;
+    const isVideo = currentAd?.creative_type === "video";
     if (isVideo) return;
-    
-    // For images, use fixed duration
+
     const timer = setTimeout(() => {
       goToNextAd();
     }, AD_DURATION);
 
     return () => clearTimeout(timer);
-  }, [authenticated, allAds.length, currentAdIndex]);
+  }, [authenticated, allAds.length, currentAdIndex, isPaused]);
 
-  const goToNextAd = () => {
-    // Pick random animation for next transition
+  // Playtime tracking
+  useEffect(() => {
+    if (!authenticated || isPaused) return;
+    const timer = setInterval(() => {
+      setTotalPlaytime(prev => prev + 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [authenticated, isPaused]);
+
+  const goToNextAd = useCallback(() => {
+    setMediaError(null);
     const randomAnim = animations[Math.floor(Math.random() * animations.length)];
     setAnimationType(randomAnim);
     setTransitioning(true);
-    
+    setAdsPlayed(prev => prev + 1);
+
     setTimeout(() => {
       setCurrentAdIndex(prev => (prev + 1) % allAds.length);
+      setAdStartTime(Date.now());
+      setAdProgress(0);
       setTimeout(() => setTransitioning(false), 50);
     }, 400);
+  }, [allAds.length]);
+
+  const goToPrevAd = () => {
+    setMediaError(null);
+    setTransitioning(true);
+    setTimeout(() => {
+      setCurrentAdIndex(prev => prev === 0 ? allAds.length - 1 : prev - 1);
+      setAdStartTime(Date.now());
+      setAdProgress(0);
+      setTimeout(() => setTransitioning(false), 50);
+    }, 400);
+  };
+
+  const replayCurrentAd = () => {
+    setMediaError(null);
+    setAdStartTime(Date.now());
+    setAdProgress(0);
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0;
+      videoRef.current.play();
+    }
   };
 
   const handleVideoEnded = () => {
     goToNextAd();
   };
 
-  // Send heartbeat
+  const handleVideoProgress = () => {
+    if (videoRef.current) {
+      const progress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
+      setAdProgress(progress);
+    }
+  };
+
+  const handleMediaError = (e) => {
+    console.error("Media error:", e);
+    setMediaError(`Failed to load: ${currentAd?.name}`);
+    // Auto-skip to next ad after 3 seconds on error
+    setTimeout(() => {
+      if (allAds.length > 1) goToNextAd();
+    }, 3000);
+  };
+
+  // Send heartbeat with enhanced status
   useEffect(() => {
     if (!authenticated || !screen?.id) return;
 
@@ -227,22 +289,43 @@ export default function ScreenPlayer() {
         await base44.entities.Screen.update(screen.id, {
           last_heartbeat: new Date().toISOString(),
           status: "online",
-          player_active: true
+          player_active: true,
+          current_ad_index: currentAdIndex,
+          total_playtime: totalPlaytime,
+          ads_played_count: adsPlayed
         });
+        setConnectionStatus("connected");
+        setLastHeartbeat(new Date());
       } catch (e) {
         console.error("Heartbeat failed:", e);
+        setConnectionStatus("reconnecting");
+        // Retry after 5 seconds
+        setTimeout(sendHeartbeat, 5000);
       }
     };
 
     sendHeartbeat();
-    const interval = setInterval(sendHeartbeat, 30000); // Every 30 seconds
+    const interval = setInterval(sendHeartbeat, 30000);
 
     return () => {
       clearInterval(interval);
-      // Mark as offline when leaving
-      base44.entities.Screen.update(screen.id, { player_active: false });
+      base44.entities.Screen.update(screen.id, { player_active: false }).catch(() => {});
     };
-  }, [authenticated, screen?.id]);
+  }, [authenticated, screen?.id, currentAdIndex, totalPlaytime, adsPlayed]);
+
+  // Connection status monitoring
+  useEffect(() => {
+    const handleOnline = () => setConnectionStatus("connected");
+    const handleOffline = () => setConnectionStatus("offline");
+    
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
   const handleAuthenticate = async () => {
     setError("");
@@ -253,48 +336,19 @@ export default function ScreenPlayer() {
       let foundScreen = null;
 
       if (authMode === "setup_code") {
-        if (!setupCode) {
-          setError("Please enter a setup code");
-          setConnecting(false);
-          return;
-        }
+        if (!setupCode) { setError("Please enter a setup code"); setConnecting(false); return; }
         foundScreen = screens.find(s => s.setup_code === setupCode.toUpperCase());
-        if (!foundScreen) {
-          setError("Invalid setup code. Please check and try again.");
-          setConnecting(false);
-          return;
-        }
+        if (!foundScreen) { setError("Invalid setup code. Please check and try again."); setConnecting(false); return; }
       } else {
-        if (!screenId) {
-          setError("Please enter a screen ID");
-          setConnecting(false);
-          return;
-        }
-        foundScreen = screens.find(s => 
-          s.device_id === screenId || s.id === screenId
-        );
-        if (!foundScreen) {
-          setError("Screen not found. Check your screen ID.");
-          setConnecting(false);
-          return;
-        }
-        if (foundScreen.player_pin && foundScreen.player_pin !== pin) {
-          setError("Invalid PIN. Please try again.");
-          setConnecting(false);
-          return;
-        }
+        if (!screenId) { setError("Please enter a screen ID"); setConnecting(false); return; }
+        foundScreen = screens.find(s => s.device_id === screenId || s.id === screenId);
+        if (!foundScreen) { setError("Screen not found. Check your screen ID."); setConnecting(false); return; }
+        if (foundScreen.player_pin && foundScreen.player_pin !== pin) { setError("Invalid PIN. Please try again."); setConnecting(false); return; }
       }
 
       setScreen(foundScreen);
       setAuthenticated(true);
-
-      // Update screen status to online
-      await base44.entities.Screen.update(foundScreen.id, {
-        status: "online",
-        player_active: true,
-        last_heartbeat: new Date().toISOString()
-      });
-
+      await base44.entities.Screen.update(foundScreen.id, { status: "online", player_active: true, last_heartbeat: new Date().toISOString() });
     } catch (e) {
       setError("Failed to connect. Please try again.");
     }
@@ -303,7 +357,6 @@ export default function ScreenPlayer() {
 
   const toggleFullscreen = () => {
     if (!containerRef.current) return;
-    
     if (!document.fullscreenElement) {
       containerRef.current.requestFullscreen();
       setIsFullscreen(true);
@@ -313,7 +366,13 @@ export default function ScreenPlayer() {
     }
   };
 
-  const currentAd = allAds[currentAdIndex];
+  const formatTime = (seconds) => {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    if (hrs > 0) return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   // Login Screen
   if (!authenticated) {
@@ -329,68 +388,27 @@ export default function ScreenPlayer() {
               <p className="text-white/60">Connect your screen to start displaying ads</p>
             </div>
 
-            {/* Auth Mode Toggle */}
             <div className="flex bg-white/10 rounded-lg p-1 mb-6">
-              <button
-                onClick={() => setAuthMode("setup_code")}
-                className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all ${
-                  authMode === "setup_code" 
-                    ? "bg-violet-600 text-white" 
-                    : "text-white/60 hover:text-white"
-                }`}
-              >
-                Setup Code
-              </button>
-              <button
-                onClick={() => setAuthMode("screen_id")}
-                className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all ${
-                  authMode === "screen_id" 
-                    ? "bg-violet-600 text-white" 
-                    : "text-white/60 hover:text-white"
-                }`}
-              >
-                Screen ID
-              </button>
+              <button onClick={() => setAuthMode("setup_code")} className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all ${authMode === "setup_code" ? "bg-violet-600 text-white" : "text-white/60 hover:text-white"}`}>Setup Code</button>
+              <button onClick={() => setAuthMode("screen_id")} className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all ${authMode === "screen_id" ? "bg-violet-600 text-white" : "text-white/60 hover:text-white"}`}>Screen ID</button>
             </div>
 
             <div className="space-y-4">
               {authMode === "setup_code" ? (
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-white/80">Setup Code</label>
-                  <Input
-                    placeholder="e.g., BW-ABCD1234"
-                    value={setupCode}
-                    onChange={(e) => setSetupCode(e.target.value.toUpperCase())}
-                    className="bg-white/10 border-white/20 text-white placeholder:text-white/40 h-14 text-xl text-center tracking-wider font-mono"
-                  />
-                  <p className="text-xs text-white/40 text-center">
-                    Enter the setup code provided by your admin
-                  </p>
+                  <Input placeholder="e.g., BW-ABCD1234" value={setupCode} onChange={(e) => setSetupCode(e.target.value.toUpperCase())} className="bg-white/10 border-white/20 text-white placeholder:text-white/40 h-14 text-xl text-center tracking-wider font-mono" />
+                  <p className="text-xs text-white/40 text-center">Enter the setup code provided by your admin</p>
                 </div>
               ) : (
                 <>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-white/80">Screen ID</label>
-                    <Input
-                      placeholder="e.g., BW-CAF-001"
-                      value={screenId}
-                      onChange={(e) => setScreenId(e.target.value.toUpperCase())}
-                      className="bg-white/10 border-white/20 text-white placeholder:text-white/40 h-12 text-lg"
-                    />
+                    <Input placeholder="e.g., BW-CAF-001" value={screenId} onChange={(e) => setScreenId(e.target.value.toUpperCase())} className="bg-white/10 border-white/20 text-white placeholder:text-white/40 h-12 text-lg" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-white/80 flex items-center gap-2">
-                      <Lock className="w-4 h-4" />
-                      PIN Code (if set)
-                    </label>
-                    <Input
-                      type="password"
-                      placeholder="6-digit PIN"
-                      value={pin}
-                      onChange={(e) => setPin(e.target.value)}
-                      maxLength={6}
-                      className="bg-white/10 border-white/20 text-white placeholder:text-white/40 h-12 text-lg tracking-widest"
-                    />
+                    <label className="text-sm font-medium text-white/80 flex items-center gap-2"><Lock className="w-4 h-4" />PIN Code (if set)</label>
+                    <Input type="password" placeholder="6-digit PIN" value={pin} onChange={(e) => setPin(e.target.value)} maxLength={6} className="bg-white/10 border-white/20 text-white placeholder:text-white/40 h-12 text-lg tracking-widest" />
                   </div>
                 </>
               )}
@@ -402,30 +420,13 @@ export default function ScreenPlayer() {
                 </div>
               )}
 
-              <Button 
-                onClick={handleAuthenticate}
-                disabled={connecting}
-                className="w-full h-12 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-lg"
-              >
-                {connecting ? (
-                  <>
-                    <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
-                    Connecting...
-                  </>
-                ) : (
-                  <>
-                    <Wifi className="w-5 h-5 mr-2" />
-                    Connect Screen
-                  </>
-                )}
+              <Button onClick={handleAuthenticate} disabled={connecting} className="w-full h-12 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-lg">
+                {connecting ? (<><RefreshCw className="w-5 h-5 mr-2 animate-spin" />Connecting...</>) : (<><Wifi className="w-5 h-5 mr-2" />Connect Screen</>)}
               </Button>
             </div>
 
             <p className="text-center text-white/40 text-sm mt-6">
-              {authMode === "setup_code" 
-                ? "Get your setup code from the B.One dashboard after screen approval"
-                : "Find your Screen ID in the B.One dashboard"
-              }
+              {authMode === "setup_code" ? "Get your setup code from the B.One dashboard after screen approval" : "Find your Screen ID in the B.One dashboard"}
             </p>
           </CardContent>
         </Card>
@@ -435,93 +436,127 @@ export default function ScreenPlayer() {
 
   // Player Screen
   return (
-    <div 
-      ref={containerRef}
-      className="min-h-screen bg-black relative overflow-hidden"
-    >
-      {/* Status Bar */}
-      {!isFullscreen && (
-        <div className="absolute top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/80 to-transparent p-4">
-          <div className="flex items-center justify-between max-w-7xl mx-auto">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                  <MonitorPlay className="w-4 h-4 text-white" />
+    <div ref={containerRef} className="min-h-screen bg-black relative overflow-hidden">
+      {/* Connection Status Indicator */}
+      {connectionStatus !== "connected" && (
+        <div className={`absolute top-4 left-1/2 -translate-x-1/2 z-[100] px-4 py-2 rounded-full flex items-center gap-2 ${connectionStatus === "offline" ? "bg-red-500" : "bg-amber-500"}`}>
+          {connectionStatus === "offline" ? <WifiOff className="w-4 h-4 text-white" /> : <RefreshCw className="w-4 h-4 text-white animate-spin" />}
+          <span className="text-white text-sm font-medium">{connectionStatus === "offline" ? "No Internet Connection" : "Reconnecting..."}</span>
+        </div>
+      )}
+
+      {/* Media Error Indicator */}
+      {mediaError && (
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-[100] px-4 py-2 rounded-full bg-red-500/90 flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-white" />
+          <span className="text-white text-sm">{mediaError}</span>
+        </div>
+      )}
+
+      {/* Real-time Dashboard */}
+      {showDashboard && !isFullscreen && (
+        <div className="absolute top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/90 via-black/70 to-transparent p-4">
+          <div className="max-w-7xl mx-auto">
+            {/* Top Bar */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center">
+                    <MonitorPlay className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <span className="font-bold text-white text-lg">B.One</span>
+                    <span className="text-violet-400 text-xs block -mt-1">Player</span>
+                  </div>
                 </div>
-                <span className="font-bold text-white">B.One</span>
+                
+                {/* Connection Status Badge */}
+                <Badge className={`${connectionStatus === "connected" ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : connectionStatus === "reconnecting" ? "bg-amber-500/20 text-amber-400 border-amber-500/30" : "bg-red-500/20 text-red-400 border-red-500/30"}`}>
+                  {connectionStatus === "connected" ? <><Wifi className="w-3 h-3 mr-1" />Connected</> : connectionStatus === "reconnecting" ? <><RefreshCw className="w-3 h-3 mr-1 animate-spin" />Reconnecting</> : <><WifiOff className="w-3 h-3 mr-1" />Offline</>}
+                </Badge>
               </div>
-              <div className="flex items-center gap-2 text-emerald-400">
-                <Wifi className="w-4 h-4" />
-                <span className="text-sm">Connected</span>
+
+              <div className="flex items-center gap-3">
+                <div className="text-right text-white/60 text-sm">
+                  <p className="font-medium text-white">{screen?.name}</p>
+                  <p className="text-xs">{screen?.device_id}</p>
+                </div>
+                <Button variant="ghost" size="icon" onClick={() => setShowDashboard(false)} className="text-white/60 hover:text-white">
+                  <X className="w-4 h-4" />
+                </Button>
               </div>
             </div>
-            <div className="flex items-center gap-4 text-white/60 text-sm">
-              <span>{screen?.name}</span>
-              <span className="text-white/40">|</span>
-              <span>{screen?.device_id}</span>
+
+            {/* Stats Row */}
+            <div className="grid grid-cols-4 gap-3">
+              <div className="bg-white/5 backdrop-blur rounded-xl p-3 border border-white/10">
+                <div className="flex items-center gap-2 text-white/60 text-xs mb-1">
+                  <Activity className="w-3 h-3" />
+                  Current Ad
+                </div>
+                <p className="text-white font-medium truncate">{currentAd?.name || "No Ad"}</p>
+                <p className="text-violet-400 text-xs">{currentAd?.type === "owner" ? "Owner Content" : "Advertiser"}</p>
+              </div>
+              
+              <div className="bg-white/5 backdrop-blur rounded-xl p-3 border border-white/10">
+                <div className="flex items-center gap-2 text-white/60 text-xs mb-1">
+                  <Clock className="w-3 h-3" />
+                  Playtime
+                </div>
+                <p className="text-white font-bold text-lg">{formatTime(totalPlaytime)}</p>
+                <p className="text-emerald-400 text-xs">{adsPlayed} ads played</p>
+              </div>
+              
+              <div className="bg-white/5 backdrop-blur rounded-xl p-3 border border-white/10">
+                <div className="flex items-center gap-2 text-white/60 text-xs mb-1">
+                  <Zap className="w-3 h-3" />
+                  Queue Position
+                </div>
+                <p className="text-white font-bold text-lg">{currentAdIndex + 1} / {allAds.length}</p>
+                <p className="text-blue-400 text-xs">{allAds.length} total ads</p>
+              </div>
+              
+              <div className="bg-white/5 backdrop-blur rounded-xl p-3 border border-white/10">
+                <div className="flex items-center gap-2 text-white/60 text-xs mb-1">
+                  <CheckCircle2 className="w-3 h-3" />
+                  Last Sync
+                </div>
+                <p className="text-white font-medium">{lastHeartbeat ? new Date(lastHeartbeat).toLocaleTimeString() : "--:--"}</p>
+                <p className="text-white/40 text-xs">Every 30s</p>
+              </div>
             </div>
           </div>
         </div>
       )}
 
+      {/* Show Dashboard Button when hidden */}
+      {!showDashboard && !isFullscreen && (
+        <Button variant="ghost" size="icon" onClick={() => setShowDashboard(true)} className="absolute top-4 right-4 z-50 text-white/40 hover:text-white bg-black/40 hover:bg-black/60">
+          <Settings className="w-5 h-5" />
+        </Button>
+      )}
+
       {/* Animation Styles */}
       <style>{`
-        .ad-container {
-          transition: all 0.4s ease-in-out;
-        }
-        .ad-container.transitioning.fade {
-          opacity: 0;
-        }
-        .ad-container.transitioning.slideLeft {
-          transform: translateX(-100%);
-          opacity: 0;
-        }
-        .ad-container.transitioning.slideRight {
-          transform: translateX(100%);
-          opacity: 0;
-        }
-        .ad-container.transitioning.slideUp {
-          transform: translateY(-100%);
-          opacity: 0;
-        }
-        .ad-container.transitioning.slideDown {
-          transform: translateY(100%);
-          opacity: 0;
-        }
-        .ad-container.transitioning.zoom {
-          transform: scale(0.5);
-          opacity: 0;
-        }
-        .ad-container.transitioning.flip {
-          transform: rotateY(90deg);
-          opacity: 0;
-        }
-        .ad-container.transitioning.blur {
-          filter: blur(20px);
-          opacity: 0;
-        }
+        .ad-container { transition: all 0.4s ease-in-out; }
+        .ad-container.transitioning.fade { opacity: 0; }
+        .ad-container.transitioning.slideLeft { transform: translateX(-100%); opacity: 0; }
+        .ad-container.transitioning.slideRight { transform: translateX(100%); opacity: 0; }
+        .ad-container.transitioning.slideUp { transform: translateY(-100%); opacity: 0; }
+        .ad-container.transitioning.slideDown { transform: translateY(100%); opacity: 0; }
+        .ad-container.transitioning.zoom { transform: scale(0.5); opacity: 0; }
+        .ad-container.transitioning.flip { transform: rotateY(90deg); opacity: 0; }
+        .ad-container.transitioning.blur { filter: blur(20px); opacity: 0; }
       `}</style>
 
       {/* Ad Content */}
       <div className={`w-full h-screen flex items-center justify-center ad-container ${transitioning ? `transitioning ${animationType}` : ''}`}>
         {allAds.length === 0 ? (
-          // Show default content if available, otherwise show waiting message
           defaultContentUrl ? (
             defaultContentType === "video" ? (
-              <video
-                src={defaultContentUrl}
-                className="w-full h-full object-contain"
-                autoPlay
-                loop
-                muted={isMuted}
-                playsInline
-              />
+              <video src={defaultContentUrl} className="w-full h-full object-contain" autoPlay loop muted={isMuted} playsInline onError={handleMediaError} />
             ) : (
-              <img
-                src={defaultContentUrl}
-                alt="Default Content"
-                className="w-full h-full object-contain"
-              />
+              <img src={defaultContentUrl} alt="Default Content" className="w-full h-full object-contain" onError={handleMediaError} />
             )
           ) : (
             <div className="text-center text-white">
@@ -530,79 +565,56 @@ export default function ScreenPlayer() {
               </div>
               <h2 className="text-2xl font-bold mb-2">No Active Campaigns</h2>
               <p className="text-white/60">Waiting for approved ads to be scheduled...</p>
-              <Button 
-                variant="ghost" 
-                className="mt-6 text-white/60"
-                onClick={() => { refetchBookings(); refetchCampaigns(); }}
-              >
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Refresh
+              <Button variant="ghost" className="mt-6 text-white/60" onClick={() => { refetchBookings(); refetchCampaigns(); }}>
+                <RefreshCw className="w-4 h-4 mr-2" />Refresh
               </Button>
             </div>
           )
         ) : currentAd?.creative_url ? (
           currentAd.creative_type === "video" ? (
-            <video
-              ref={videoRef}
-              key={currentAd.id}
-              src={currentAd.creative_url}
-              className="w-full h-full object-contain"
-              autoPlay
-              muted={isMuted}
-              playsInline
-              onEnded={handleVideoEnded}
-              onLoadedMetadata={(e) => {
-                // If video is longer than max duration, set up a timeout
-                if (e.target.duration > AD_DURATION / 1000) {
-                  setTimeout(() => {
-                    if (videoRef.current) {
-                      goToNextAd();
-                    }
-                  }, AD_DURATION);
-                }
-              }}
-            />
+            <video ref={videoRef} key={currentAd.id} src={currentAd.creative_url} className="w-full h-full object-contain" autoPlay={!isPaused} muted={isMuted} playsInline onEnded={handleVideoEnded} onTimeUpdate={handleVideoProgress} onError={handleMediaError} onLoadedMetadata={(e) => { if (e.target.duration > AD_DURATION / 1000) { setTimeout(() => { if (videoRef.current) goToNextAd(); }, AD_DURATION); } }} />
           ) : (
-            <img
-              key={currentAd.id}
-              src={currentAd.creative_url}
-              alt={currentAd.name}
-              className="w-full h-full object-contain"
-            />
+            <img key={currentAd.id} src={currentAd.creative_url} alt={currentAd.name} className="w-full h-full object-contain" onError={handleMediaError} />
           )
         ) : null}
       </div>
 
+      {/* Progress Bar */}
+      {!isFullscreen && allAds.length > 0 && (
+        <div className="absolute bottom-24 left-4 right-4 z-50">
+          <Progress value={adProgress} className="h-1 bg-white/20" />
+        </div>
+      )}
+
       {/* Controls */}
       {!isFullscreen && (
-        <div className="absolute bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-black/80 to-transparent p-4">
+        <div className="absolute bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-black/90 to-transparent p-4">
           <div className="flex items-center justify-between max-w-7xl mx-auto">
+            {/* Ad Indicators */}
             <div className="flex items-center gap-2">
-              {allAds.map((_, idx) => (
-                <div 
-                  key={idx}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    idx === currentAdIndex ? "bg-violet-500 w-6" : "bg-white/30"
-                  }`}
-                />
+              {allAds.slice(0, 10).map((ad, idx) => (
+                <button key={idx} onClick={() => { setCurrentAdIndex(idx); setAdProgress(0); }} className={`h-2 rounded-full transition-all ${idx === currentAdIndex ? "bg-violet-500 w-8" : "bg-white/30 w-2 hover:bg-white/50"}`} title={ad.name} />
               ))}
+              {allAds.length > 10 && <span className="text-white/40 text-xs ml-1">+{allAds.length - 10}</span>}
             </div>
-            <div className="flex items-center gap-2">
-              <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={() => setIsMuted(!isMuted)}
-                className="text-white/60 hover:text-white hover:bg-white/10"
-              >
+
+            {/* Playback Controls */}
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="icon" onClick={goToPrevAd} className="text-white/60 hover:text-white hover:bg-white/10" title="Previous Ad">
+                <SkipBack className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={() => setIsPaused(!isPaused)} className="text-white/60 hover:text-white hover:bg-white/10" title={isPaused ? "Resume" : "Pause"}>
+                {isPaused ? <Play className="w-5 h-5" /> : <Pause className="w-5 h-5" />}
+              </Button>
+              <Button variant="ghost" size="icon" onClick={goToNextAd} className="text-white/60 hover:text-white hover:bg-white/10" title="Skip Ad">
+                <SkipForward className="w-5 h-5" />
+              </Button>
+              <div className="w-px h-6 bg-white/20 mx-2" />
+              <Button variant="ghost" size="icon" onClick={() => setIsMuted(!isMuted)} className="text-white/60 hover:text-white hover:bg-white/10">
                 {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
               </Button>
-              <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={toggleFullscreen}
-                className="text-white/60 hover:text-white hover:bg-white/10"
-              >
-                <Maximize className="w-5 h-5" />
+              <Button variant="ghost" size="icon" onClick={toggleFullscreen} className="text-white/60 hover:text-white hover:bg-white/10">
+                {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
               </Button>
             </div>
           </div>
@@ -611,11 +623,29 @@ export default function ScreenPlayer() {
 
       {/* Campaign Info Overlay */}
       {!isFullscreen && currentAd && (
-        <div className="absolute bottom-16 left-4 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2">
+        <div className="absolute bottom-28 left-4 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2">
           <p className="text-white text-sm font-medium">{currentAd.name}</p>
-          <p className="text-white/60 text-xs">
-            {currentAdIndex + 1} of {allAds.length}
-          </p>
+          <div className="flex items-center gap-2 text-xs">
+            <span className="text-white/60">{currentAdIndex + 1} of {allAds.length}</span>
+            <Badge variant="outline" className={`text-xs py-0 ${currentAd.type === "owner" ? "border-emerald-500/50 text-emerald-400" : "border-violet-500/50 text-violet-400"}`}>
+              {currentAd.type === "owner" ? "Owner" : "Paid Ad"}
+            </Badge>
+          </div>
+        </div>
+      )}
+
+      {/* Paused Overlay */}
+      {isPaused && (
+        <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-40">
+          <div className="text-center">
+            <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Pause className="w-10 h-10 text-white" />
+            </div>
+            <p className="text-white text-xl font-bold">Paused</p>
+            <Button onClick={() => setIsPaused(false)} className="mt-4 bg-violet-600 hover:bg-violet-700">
+              <Play className="w-4 h-4 mr-2" />Resume Playback
+            </Button>
+          </div>
         </div>
       )}
     </div>
