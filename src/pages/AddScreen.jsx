@@ -67,6 +67,12 @@ export default function AddScreen() {
     owner_slot_3_type: "image"
   });
 
+  const { data: venues = [] } = useQuery({
+    queryKey: ["my-venues", user?.email],
+    queryFn: () => base44.entities.Venue.filter({ owner_id: user?.email }),
+    enabled: !!user?.email
+  });
+
   // Get venue_id from URL if provided
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -85,12 +91,6 @@ export default function AddScreen() {
       base44.auth.redirectToLogin();
     }
   };
-
-  const { data: venues = [] } = useQuery({
-    queryKey: ["my-venues", user?.email],
-    queryFn: () => base44.entities.Venue.filter({ owner_id: user?.email }),
-    enabled: !!user?.email
-  });
 
   // Generate a unique device ID
   const generateDeviceId = () => {

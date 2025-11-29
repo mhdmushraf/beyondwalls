@@ -43,10 +43,6 @@ export default function Wallet() {
   const [uploading, setUploading] = useState(false);
   const [receiptUrl, setReceiptUrl] = useState("");
 
-  useEffect(() => {
-    loadUser();
-  }, []);
-
   const { data: transactions = [], refetch } = useQuery({
     queryKey: ["wallet-transactions", user?.email],
     queryFn: () => base44.entities.Transaction.filter({ user_id: user?.email }, "-created_date"),
@@ -58,6 +54,10 @@ export default function Wallet() {
     queryFn: () => base44.entities.WalletRequest.filter({ user_id: user?.email }, "-created_date"),
     enabled: !!user?.email
   });
+
+  useEffect(() => {
+    loadUser();
+  }, []);
 
   const loadUser = async () => {
     try {
