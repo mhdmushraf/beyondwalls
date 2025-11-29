@@ -11,7 +11,9 @@ import {
   MonitorPlay,
   Activity,
   Settings,
-  Loader2
+  Loader2,
+  Ban,
+  AlertTriangle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,12 +21,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import SuspensionRequestForm from "@/components/suspension/SuspensionRequestForm";
 
 export default function MyVenues() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [suspensionRequest, setSuspensionRequest] = useState({ open: false, venue: null });
 
   const { data: venues = [], isLoading } = useQuery({
     queryKey: ["my-venues", user?.email],
@@ -72,7 +76,8 @@ export default function MyVenues() {
   const statusCounts = {
     all: venues.length,
     approved: venues.filter(v => v.status === "approved").length,
-    pending: venues.filter(v => v.status === "pending").length
+    pending: venues.filter(v => v.status === "pending").length,
+    suspended: venues.filter(v => v.status === "suspended").length
   };
 
   if (!user) {
@@ -124,6 +129,11 @@ export default function MyVenues() {
             <TabsTrigger value="pending" className="data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700">
               Pending ({statusCounts.pending})
             </TabsTrigger>
+            {statusCounts.suspended > 0 && (
+              <TabsTrigger value="suspended" className="data-[state=active]:bg-red-100 data-[state=active]:text-red-700">
+                Suspended ({statusCounts.suspended})
+              </TabsTrigger>
+            )}
           </TabsList>
         </Tabs>
       </div>
@@ -210,25 +220,53 @@ export default function MyVenues() {
                     </div>
                     <Badge variant="secondary" className="capitalize">{venue.type}</Badge>
                   </div>
-                  <div className="flex gap-2">
-                    <Link to={createPageUrl(`VenueDetails?id=${venue.id}`)} className="flex-1">
-                      <Button variant="outline" className="w-full">
-                        <Settings className="w-4 h-4 mr-2" />
-                        Manage
+                  {venue.status === "suspended" ? (
+                    <div className="space-y-2">
+                      <div className="p-2 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-sm text-red-700">
+                        <Ban className="w-4 h-4" />
+                        <span className="flex-1">This venue is suspended</span>
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        className="w-full border-amber-300 text-amber-700 hover:bg-amber-50"
+                        onClick={() => setSuspensionRequest({ open: true, venue })}
+                      >
+                        <AlertTriangle className="w-4 h-4 mr-2" />
+                        Request Reactivation
                       </Button>
-                    </Link>
-                    <Link to={createPageUrl(`AddScreen?venue_id=${venue.id}`)}>
-                      <Button variant="outline" size="icon">
-                        <Plus className="w-4 h-4" />
-                      </Button>
-                    </Link>
-                  </div>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <Link to={createPageUrl(`VenueDetails?id=${venue.id}`)} className="flex-1">
+                        <Button variant="outline" className="w-full">
+                          <Settings className="w-4 h-4 mr-2" />
+                          Manage
+                        </Button>
+                      </Link>
+                      {venue.status === "approved" && (
+                        <Link to={createPageUrl(`AddScreen?venue_id=${venue.id}`)}>
+                          <Button variant="outline" size="icon">
+                            <Plus className="w-4 h-4" />
+                          </Button>
+                        </Link>
+                      )}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             );
           })}
         </div>
       )}
+
+      {/* Suspension Request Form */}
+      <SuspensionRequestForm
+        open={suspensionRequest.open}
+        onOpenChange={(open) => setSuspensionRequest({ ...suspensionRequest, open })}
+        item={suspensionRequest.venue}
+        itemType="venue"
+        user={user}
+      />
     </div>
   );
 }
