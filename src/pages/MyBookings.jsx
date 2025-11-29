@@ -33,20 +33,6 @@ export default function MyBookings() {
     loadUser();
   }, []);
 
-  const loadUser = async () => {
-    try {
-      const isAuth = await base44.auth.isAuthenticated();
-      if (!isAuth) {
-        base44.auth.redirectToLogin(createPageUrl("MyBookings"));
-        return;
-      }
-      const userData = await base44.auth.me();
-      setUser(userData);
-    } catch (e) {
-      base44.auth.redirectToLogin(createPageUrl("MyBookings"));
-    }
-  };
-
   const { data: bookings = [] } = useQuery({
     queryKey: ["my-bookings", user?.email],
     queryFn: () => base44.entities.AdSlotBooking.filter({ advertiser_id: user?.email }, "-created_date"),
@@ -64,6 +50,20 @@ export default function MyBookings() {
     queryFn: () => base44.entities.Venue.list(),
     enabled: !!user
   });
+
+  const loadUser = async () => {
+    try {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) {
+        base44.auth.redirectToLogin(createPageUrl("MyBookings"));
+        return;
+      }
+      const userData = await base44.auth.me();
+      setUser(userData);
+    } catch (e) {
+      base44.auth.redirectToLogin(createPageUrl("MyBookings"));
+    }
+  };
 
   const activeBookings = bookings.filter(b => b.status === "active");
   const pendingBookings = bookings.filter(b => b.status === "pending");
