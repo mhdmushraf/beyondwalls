@@ -31,6 +31,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import LiveScreenPreview from "@/components/previews/LiveScreenPreview";
+import { NotificationService } from "@/components/notifications/NotificationService";
 
 export default function AdminBookings() {
   const queryClient = useQueryClient();
@@ -377,38 +378,19 @@ BeyondWalls - Advertise Beyond Boundaries
         status: "completed"
       });
 
-      // Send approval email to advertiser
-      await base44.integrations.Core.SendEmail({
-        to: booking.advertiser_id,
-        subject: `✅ Campaign Approved: ${booking.campaign_name} | BeyondWalls`,
-        body: `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        BEYONDWALLS
-   Digital Out-of-Home Advertising
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // Send approval notification to advertiser (in-app + email)
+      const advertiserData = await base44.entities.User.filter({ email: booking.advertiser_id });
+      if (advertiserData.length > 0) {
+        await NotificationService.campaignApproved(booking, advertiserData[0], screen, venue);
+      }
 
-🎉 CONGRATULATIONS!
-
-Your campaign "${booking.campaign_name}" has been approved and is now LIVE!
-
-📅 CAMPAIGN SCHEDULE
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Start Date: ${booking.start_date}
-End Date: ${booking.end_date}
-
-Investment: AED ${totalCost.toLocaleString()}
-
-Your ad is now displaying on screens across our network.
-
-📊 Track your campaign performance in your dashboard.
-📄 Download your invoice from My Bookings.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Thank you for advertising with BeyondWalls!
-www.beyondwalls.ae
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        `.trim()
-      });
+      // Send new booking notification to venue owner
+      if (screen?.owner_id) {
+        const ownerData = await base44.entities.User.filter({ email: screen.owner_id });
+        if (ownerData.length > 0 && advertiserData.length > 0) {
+          await NotificationService.newBookingForVenueOwner(booking, ownerData[0], screen, advertiserData[0]);
+        }
+      }
 
       // Update notification
       const notifications = await base44.entities.AdminNotification.filter({
@@ -490,12 +472,11 @@ www.beyondwalls.ae
         });
       }
 
-      // Send rejection email
-      await base44.integrations.Core.SendEmail({
-        to: booking.advertiser_id,
-        subject: `❌ Campaign Not Approved: ${booking.campaign_name}`,
-        body: `Unfortunately, your campaign "${booking.campaign_name}" was not approved.\n\nReason: ${rejectionReason}\n\nYour payment of AED ${booking.total_cost} has been refunded to your wallet.\n\nPlease contact us if you have any questions.`
-      });
+      // Send rejection notification to advertiser (in-app + email)
+      const advertiserData = await base44.entities.User.filter({ email: booking.advertiser_id });
+      if (advertiserData.length > 0) {
+        await NotificationService.campaignRejected(booking, advertiserData[0], rejectionReason);
+      }
 
       toast.success("Booking rejected and refund processed");
       queryClient.invalidateQueries({ queryKey: ["all-bookings"] });
