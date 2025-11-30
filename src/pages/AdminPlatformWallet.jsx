@@ -162,7 +162,7 @@ export default function AdminPlatformWallet() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-emerald-600">+AED {txn.amount?.toLocaleString()}</p>
+                    <p className="font-semibold text-emerald-600">+AED {Math.abs(txn.amount || 0).toLocaleString()}</p>
                     <Badge variant="outline" className="text-xs">30% commission</Badge>
                   </div>
                 </div>
