@@ -129,28 +129,30 @@ export default function Wallet() {
   const pendingRequests = walletRequests.filter(r => r.status === "pending");
 
   // Calculate all values from transactions for accuracy
+  // Handle both positive and negative amounts in transactions
   const totalTopUps = transactions
     .filter(t => t.type === "top_up" && t.status === "completed")
-    .reduce((sum, t) => sum + (t.amount || 0), 0);
+    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
 
   const totalEarnings = transactions
     .filter(t => t.type === "earning" && t.status === "completed")
-    .reduce((sum, t) => sum + (t.amount || 0), 0);
+    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
   
+  // Ad spend can be stored as negative, so take absolute value
   const totalSpent = transactions
     .filter(t => t.type === "ad_spend" && t.status === "completed")
-    .reduce((sum, t) => sum + (t.amount || 0), 0);
+    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
 
   const totalWithdrawals = transactions
     .filter(t => t.type === "withdrawal" && t.status === "completed")
-    .reduce((sum, t) => sum + (t.amount || 0), 0);
+    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
 
   const totalRefunds = transactions
     .filter(t => t.type === "refund" && t.status === "completed")
-    .reduce((sum, t) => sum + (t.amount || 0), 0);
+    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
 
-  // Calculate actual balance from transactions
-  const calculatedBalance = totalTopUps + totalEarnings + totalRefunds - totalSpent - totalWithdrawals;
+  // Use user's wallet_balance as source of truth, fallback to calculation
+  const calculatedBalance = user?.wallet_balance ?? (totalTopUps + totalEarnings + totalRefunds - totalSpent - totalWithdrawals);
 
   const handleTopUp = async () => {
     const topUpAmount = parseFloat(amount);
@@ -600,42 +602,44 @@ function TransactionList({ transactions }) {
 
   return (
     <div className="space-y-3">
-      {transactions.map((tx) => (
-        <div key={tx.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-          <div className="flex items-center gap-4">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-              tx.type === "earning" || tx.type === "top_up" 
-                ? "bg-emerald-100" 
-                : "bg-rose-100"
-            }`}>
-              {tx.type === "earning" || tx.type === "top_up" ? (
-                <ArrowDownRight className="w-5 h-5 text-emerald-600" />
-              ) : (
-                <ArrowUpRight className="w-5 h-5 text-rose-600" />
-              )}
+      {transactions.map((tx) => {
+        // Determine if transaction is positive based on type and amount
+        const isPositiveType = tx.type === "earning" || tx.type === "top_up" || tx.type === "refund";
+        const amount = tx.amount || 0;
+        // If amount is negative, it's a deduction. If positive and earning/topup/refund, it's income
+        const isPositive = amount > 0 ? isPositiveType : false;
+        const displayAmount = Math.abs(amount);
+        
+        return (
+          <div key={tx.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+            <div className="flex items-center gap-4">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                isPositive ? "bg-emerald-100" : "bg-rose-100"
+              }`}>
+                {isPositive ? (
+                  <ArrowDownRight className="w-5 h-5 text-emerald-600" />
+                ) : (
+                  <ArrowUpRight className="w-5 h-5 text-rose-600" />
+                )}
+              </div>
+              <div>
+                <p className="font-medium text-slate-900">{tx.description}</p>
+                <p className="text-sm text-slate-500">
+                  {tx.created_date && format(new Date(tx.created_date), "MMM d, yyyy • h:mm a")}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="font-medium text-slate-900">{tx.description}</p>
-              <p className="text-sm text-slate-500">
-                {tx.created_date && format(new Date(tx.created_date), "MMM d, yyyy • h:mm a")}
+            <div className="text-right">
+              <p className={`font-semibold ${isPositive ? "text-emerald-600" : "text-rose-600"}`}>
+                {isPositive ? "+" : "-"}AED {displayAmount.toLocaleString()}
               </p>
+              <Badge variant={tx.status === "completed" ? "secondary" : "outline"} className="text-xs">
+                {tx.status}
+              </Badge>
             </div>
           </div>
-          <div className="text-right">
-            <p className={`font-semibold ${
-              tx.type === "earning" || tx.type === "top_up" 
-                ? "text-emerald-600" 
-                : "text-rose-600"
-            }`}>
-              {tx.type === "earning" || tx.type === "top_up" ? "+" : "-"}
-              AED {tx.amount?.toLocaleString()}
-            </p>
-            <Badge variant={tx.status === "completed" ? "secondary" : "outline"} className="text-xs">
-              {tx.status}
-            </Badge>
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
