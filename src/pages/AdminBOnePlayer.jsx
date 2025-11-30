@@ -50,6 +50,75 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 
+// Screen Preview Component
+function ScreenPreviewContent({ screen, bookings }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  // Get active content for this screen
+  const screenBookings = bookings.filter(b => b.screen_id === screen.id);
+  
+  const allContent = [
+    ...(screen.owner_slot_1_url ? [{ url: screen.owner_slot_1_url, type: screen.owner_slot_1_type || "image", name: "Owner Slot 1" }] : []),
+    ...(screen.owner_slot_2_url ? [{ url: screen.owner_slot_2_url, type: screen.owner_slot_2_type || "image", name: "Owner Slot 2" }] : []),
+    ...(screen.owner_slot_3_url ? [{ url: screen.owner_slot_3_url, type: screen.owner_slot_3_type || "image", name: "Owner Slot 3" }] : []),
+    ...screenBookings.map(b => ({ url: b.creative_url, type: b.creative_type || "image", name: b.campaign_name || "Ad" }))
+  ].filter(c => c.url);
+
+  useEffect(() => {
+    if (allContent.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentIndex(prev => (prev + 1) % allContent.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [allContent.length]);
+
+  if (allContent.length === 0) {
+    return (
+      <div className="text-center">
+        <MonitorPlay className="w-12 h-12 text-slate-600 mx-auto mb-2" />
+        <p className="text-slate-500 text-sm">No active content</p>
+      </div>
+    );
+  }
+
+  const current = allContent[currentIndex];
+  
+  return (
+    <div className="w-full h-full relative">
+      {current.type === "video" ? (
+        <video 
+          src={current.url} 
+          className="w-full h-full object-contain" 
+          autoPlay 
+          muted 
+          loop
+        />
+      ) : (
+        <img 
+          src={current.url} 
+          alt={current.name}
+          className="w-full h-full object-contain"
+        />
+      )}
+      <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
+        <Badge className="bg-black/60 text-white text-xs">
+          {current.name}
+        </Badge>
+        {allContent.length > 1 && (
+          <div className="flex gap-1">
+            {allContent.map((_, i) => (
+              <div 
+                key={i} 
+                className={`w-1.5 h-1.5 rounded-full ${i === currentIndex ? "bg-white" : "bg-white/40"}`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function AdminBOnePlayer() {
   const queryClient = useQueryClient();
   const [user, setUser] = useState(null);
@@ -465,7 +534,7 @@ export default function AdminBOnePlayer() {
 
       {/* Details Dialog */}
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <MonitorPlay className="w-5 h-5" />
@@ -475,6 +544,32 @@ export default function AdminBOnePlayer() {
           
           {selectedScreen && (
             <div className="space-y-6">
+              {/* Live Preview */}
+              <div className="border rounded-xl overflow-hidden bg-black">
+                <div className="flex items-center justify-between px-3 py-2 bg-slate-900 border-b border-slate-700">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${getScreenStatus(selectedScreen) === "playing" ? "bg-emerald-500 animate-pulse" : "bg-slate-500"}`} />
+                    <span className="text-xs text-slate-400">Live Preview</span>
+                  </div>
+                  {getScreenStatus(selectedScreen) === "playing" && (
+                    <Badge className="bg-emerald-500/20 text-emerald-400 text-xs">
+                      <Play className="w-3 h-3 mr-1" />
+                      Playing
+                    </Badge>
+                  )}
+                </div>
+                <div className="aspect-video bg-slate-950 flex items-center justify-center relative">
+                  {getScreenStatus(selectedScreen) === "offline" ? (
+                    <div className="text-center">
+                      <WifiOff className="w-12 h-12 text-slate-600 mx-auto mb-2" />
+                      <p className="text-slate-500 text-sm">Screen Offline</p>
+                    </div>
+                  ) : (
+                    <ScreenPreviewContent screen={selectedScreen} bookings={bookings} />
+                  )}
+                </div>
+              </div>
+
               {/* Status Overview */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-slate-50 rounded-xl">
