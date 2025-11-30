@@ -433,6 +433,9 @@ export default function ScreenPlayer() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Hide controls in kiosk/auto-start mode
+  const isKioskMode = autoStartMode && authenticated;
+
   // Login Screen
   if (!authenticated) {
     return (
@@ -512,8 +515,8 @@ export default function ScreenPlayer() {
         </div>
       )}
 
-      {/* Real-time Dashboard */}
-      {showDashboard && !isFullscreen && (
+      {/* Real-time Dashboard - hidden in kiosk mode */}
+      {showDashboard && !isFullscreen && !isKioskMode && (
         <div className="absolute top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/90 via-black/70 to-transparent p-4">
           <div className="max-w-7xl mx-auto">
             {/* Top Bar */}
@@ -588,8 +591,8 @@ export default function ScreenPlayer() {
         </div>
       )}
 
-      {/* Show Dashboard Button when hidden */}
-      {!showDashboard && !isFullscreen && (
+      {/* Show Dashboard Button when hidden - not in kiosk mode */}
+      {!showDashboard && !isFullscreen && !isKioskMode && (
         <Button variant="ghost" size="icon" onClick={() => setShowDashboard(true)} className="absolute top-4 right-4 z-50 text-white/40 hover:text-white bg-black/40 hover:bg-black/60">
           <Settings className="w-5 h-5" />
         </Button>
@@ -645,8 +648,8 @@ export default function ScreenPlayer() {
         </div>
       )}
 
-      {/* Controls */}
-      {!isFullscreen && (
+      {/* Controls - hidden in kiosk mode */}
+      {!isFullscreen && !isKioskMode && (
         <div className="absolute bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-black/90 to-transparent p-4">
           <div className="flex items-center justify-between max-w-7xl mx-auto">
             {/* Ad Indicators */}
@@ -680,8 +683,8 @@ export default function ScreenPlayer() {
         </div>
       )}
 
-      {/* Campaign Info Overlay */}
-      {!isFullscreen && currentAd && (
+      {/* Campaign Info Overlay - hidden in kiosk mode */}
+      {!isFullscreen && !isKioskMode && currentAd && (
         <div className="absolute bottom-28 left-4 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2">
           <p className="text-white text-sm font-medium">{currentAd.name}</p>
           <div className="flex items-center gap-2 text-xs">
