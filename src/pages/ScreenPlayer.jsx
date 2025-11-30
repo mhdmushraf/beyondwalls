@@ -141,8 +141,13 @@ export default function ScreenPlayer() {
     }
   }, []);
 
-  // Auto-authenticate function for URL parameter login
+  // Auto-authenticate function for URL parameter login with hardware validation
   const handleAutoAuthenticate = async (mode, idOrCode, pinCode) => {
+    if (!hardwareId) {
+      setTimeout(() => handleAutoAuthenticate(mode, idOrCode, pinCode), 100);
+      return;
+    }
+    
     setConnecting(true);
     try {
       const screens = await base44.entities.Screen.list();
@@ -152,7 +157,6 @@ export default function ScreenPlayer() {
         foundScreen = screens.find(s => s.setup_code === idOrCode.toUpperCase());
       } else {
         foundScreen = screens.find(s => s.device_id === idOrCode || s.id === idOrCode);
-        // Check PIN if screen has one
         if (foundScreen?.player_pin && foundScreen.player_pin !== pinCode) {
           setError("Invalid PIN");
           setConnecting(false);
@@ -161,13 +165,32 @@ export default function ScreenPlayer() {
       }
 
       if (foundScreen) {
-        setScreen(foundScreen);
-        setAuthenticated(true);
-        await base44.entities.Screen.update(foundScreen.id, { 
+        // Hardware validation
+        if (foundScreen.hardware_id && foundScreen.hardware_id !== hardwareId) {
+          setError("Unauthorized device. This screen is registered to a different B.One hardware.");
+          setSessionBlocked(true);
+          setConnecting(false);
+          return;
+        }
+
+        // Register hardware if first time
+        const updateData = { 
           status: "online", 
           player_active: true, 
-          last_heartbeat: new Date().toISOString() 
-        });
+          last_heartbeat: new Date().toISOString(),
+          current_session_id: sessionId,
+          session_started_at: new Date().toISOString(),
+          uptime_seconds: 0
+        };
+
+        if (!foundScreen.hardware_id) {
+          updateData.hardware_id = hardwareId;
+          updateData.hardware_registered_at = new Date().toISOString();
+        }
+
+        setScreen(foundScreen);
+        setAuthenticated(true);
+        await base44.entities.Screen.update(foundScreen.id, updateData);
       } else {
         setError("Screen not found");
       }
@@ -230,9 +253,23 @@ export default function ScreenPlayer() {
         setIsPaused(true);
       } else if (command === "resume") {
         setIsPaused(false);
+      } else if (command === "refresh") {
+        // Force content refresh
+        refetchBookings();
+        refetchCampaigns();
+      } else if (command === "restart") {
+        // Reload the page
+        window.location.reload();
       }
       // Clear the command after processing
       base44.entities.Screen.update(screen.id, { player_command: null });
+    }
+
+    // Session validation - check if another device hijacked the session
+    if (screenData?.[0]?.current_session_id && screenData[0].current_session_id !== sessionId && authenticated) {
+      setSessionBlocked(true);
+      setAuthenticated(false);
+      setError("Session terminated. Another device has connected to this screen.");
     }
   }, [screenData]);
 
@@ -383,6 +420,26 @@ export default function ScreenPlayer() {
     }, 3000);
   };
 
+  // Uptime tracking
+  useEffect(() => {
+    if (!authenticated || isPaused) return;
+    const timer = setInterval(() => {
+      setUptimeSeconds(prev => prev + 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [authenticated, isPaused]);
+
+  // Get network strength estimate
+  const getNetworkStrength = () => {
+    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (!conn) return "good";
+    const effectiveType = conn.effectiveType;
+    if (effectiveType === "4g") return "excellent";
+    if (effectiveType === "3g") return "good";
+    if (effectiveType === "2g") return "fair";
+    return "poor";
+  };
+
   // Send heartbeat with enhanced status
   useEffect(() => {
     if (!authenticated || !screen?.id) return;
@@ -392,10 +449,14 @@ export default function ScreenPlayer() {
         await base44.entities.Screen.update(screen.id, {
           last_heartbeat: new Date().toISOString(),
           status: "online",
-          player_active: true,
+          player_active: !isPaused,
           current_ad_index: currentAdIndex,
           total_playtime: totalPlaytime,
-          ads_played_count: adsPlayed
+          ads_played_count: adsPlayed,
+          current_session_id: sessionId,
+          uptime_seconds: uptimeSeconds,
+          network_strength: getNetworkStrength(),
+          current_content_name: currentAd?.name || null
         });
         setConnectionStatus("connected");
         setLastHeartbeat(new Date());
@@ -408,13 +469,13 @@ export default function ScreenPlayer() {
     };
 
     sendHeartbeat();
-    const interval = setInterval(sendHeartbeat, 30000);
+    const interval = setInterval(sendHeartbeat, 15000); // More frequent heartbeat for real-time monitoring
 
     return () => {
       clearInterval(interval);
       base44.entities.Screen.update(screen.id, { player_active: false }).catch(() => {});
     };
-  }, [authenticated, screen?.id, currentAdIndex, totalPlaytime, adsPlayed]);
+  }, [authenticated, screen?.id, currentAdIndex, totalPlaytime, adsPlayed, uptimeSeconds, isPaused, currentAd]);
 
   // Connection status monitoring
   useEffect(() => {
@@ -449,9 +510,33 @@ export default function ScreenPlayer() {
         if (foundScreen.player_pin && foundScreen.player_pin !== pin) { setError("Invalid PIN. Please try again."); setConnecting(false); return; }
       }
 
+      // Hardware validation - check if already registered to different hardware
+      if (foundScreen.hardware_id && foundScreen.hardware_id !== hardwareId) {
+        setError("Unauthorized device. This screen is registered to a different B.One hardware.");
+        setSessionBlocked(true);
+        setConnecting(false);
+        return;
+      }
+
+      // Prepare update data with session info
+      const updateData = { 
+        status: "online", 
+        player_active: true, 
+        last_heartbeat: new Date().toISOString(),
+        current_session_id: sessionId,
+        session_started_at: new Date().toISOString(),
+        uptime_seconds: 0
+      };
+
+      // Register hardware if first time
+      if (!foundScreen.hardware_id) {
+        updateData.hardware_id = hardwareId;
+        updateData.hardware_registered_at = new Date().toISOString();
+      }
+
       setScreen(foundScreen);
       setAuthenticated(true);
-      await base44.entities.Screen.update(foundScreen.id, { status: "online", player_active: true, last_heartbeat: new Date().toISOString() });
+      await base44.entities.Screen.update(foundScreen.id, updateData);
     } catch (e) {
       setError("Failed to connect. Please try again.");
     }
