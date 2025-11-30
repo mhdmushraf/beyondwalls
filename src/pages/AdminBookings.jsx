@@ -156,8 +156,34 @@ export default function AdminBookings() {
     setProcessing(true);
     try {
       const totalCost = booking.total_cost || 0;
-      const venueShare = totalCost * 0.7; // 70% to venue owner
-      const platformShare = totalCost * 0.3; // 30% to BeyondWalls
+      const venueShare = totalCost * 0.7;
+      const platformShare = totalCost * 0.3;
+
+      // Handle campaign vs booking differently
+      if (booking.source === "campaign") {
+        await base44.entities.Campaign.update(booking.id, {
+          status: "active",
+          approved_at: new Date().toISOString(),
+          approved_by: user.email
+        });
+        
+        // Send approval email to advertiser
+        try {
+          await base44.integrations.Core.SendEmail({
+            to: booking.advertiser_id,
+            subject: `✅ Campaign Approved: ${booking.campaign_name} | BeyondWalls`,
+            body: `Your AI campaign "${booking.campaign_name}" has been approved and is now LIVE!\n\nDuration: ${booking.start_date} - ${booking.end_date}\n\nTrack your campaign performance in your dashboard.`
+          });
+        } catch (emailErr) {
+          console.log("Email failed but campaign approved");
+        }
+        
+        toast.success("Campaign approved successfully");
+        queryClient.invalidateQueries({ queryKey: ["all-campaigns-admin"] });
+        setSelectedBooking(null);
+        setProcessing(false);
+        return;
+      }
 
       await base44.entities.AdSlotBooking.update(booking.id, {
         status: "active",
@@ -315,6 +341,31 @@ www.beyondwalls.ae
 
     setProcessing(true);
     try {
+      // Handle campaign vs booking differently
+      if (booking.source === "campaign") {
+        await base44.entities.Campaign.update(booking.id, {
+          status: "rejected",
+          rejection_reason: rejectionReason
+        });
+        
+        try {
+          await base44.integrations.Core.SendEmail({
+            to: booking.advertiser_id,
+            subject: `❌ Campaign Not Approved: ${booking.campaign_name}`,
+            body: `Unfortunately, your AI campaign "${booking.campaign_name}" was not approved.\n\nReason: ${rejectionReason}\n\nPlease contact us if you have any questions.`
+          });
+        } catch (emailErr) {
+          console.log("Email failed");
+        }
+        
+        toast.success("Campaign rejected");
+        queryClient.invalidateQueries({ queryKey: ["all-campaigns-admin"] });
+        setSelectedBooking(null);
+        setRejectionReason("");
+        setProcessing(false);
+        return;
+      }
+
       await base44.entities.AdSlotBooking.update(booking.id, {
         status: "cancelled",
         rejection_reason: rejectionReason
