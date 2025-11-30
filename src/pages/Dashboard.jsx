@@ -41,9 +41,15 @@ export default function Dashboard() {
       
       const userData = await base44.auth.me();
       setUser(userData);
-      
-      // Check approval status
-      if (userData.approval_status === "pending" || userData.approval_status === "rejected") {
+
+      // Check if profile is complete - if not, redirect to complete profile
+      if (!userData.profile_complete) {
+        navigate(createPageUrl("CompleteProfile"));
+        return;
+      }
+
+      // Check approval status - only approved users can access dashboard
+      if (userData.approval_status !== "approved") {
         navigate(createPageUrl("PendingApproval"));
         return;
       }
