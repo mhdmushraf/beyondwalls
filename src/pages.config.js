@@ -65,6 +65,7 @@ import AdminARCampaigns from './pages/AdminARCampaigns';
 import AdminVenues from './pages/AdminVenues';
 import AdminVenueManager from './pages/AdminVenueManager';
 import NotificationCenter from './pages/NotificationCenter';
+import AdminBOnePlayer from './pages/AdminBOnePlayer';
 import __Layout from './Layout.jsx';
 
 
@@ -136,6 +137,7 @@ export const PAGES = {
     "AdminVenues": AdminVenues,
     "AdminVenueManager": AdminVenueManager,
     "NotificationCenter": NotificationCenter,
+    "AdminBOnePlayer": AdminBOnePlayer,
 }
 
 export const pagesConfig = {

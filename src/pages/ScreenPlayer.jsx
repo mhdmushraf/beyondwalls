@@ -29,6 +29,37 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 
+// Generate hardware fingerprint
+const generateHardwareId = () => {
+  const nav = window.navigator;
+  const screen = window.screen;
+  
+  // Create fingerprint from available browser/device info
+  const components = [
+    nav.userAgent,
+    screen.width + "x" + screen.height,
+    screen.colorDepth,
+    nav.language,
+    nav.platform,
+    new Date().getTimezoneOffset(),
+    nav.hardwareConcurrency || 0,
+    nav.deviceMemory || 0
+  ];
+  
+  // Simple hash function
+  const hash = components.join("|").split("").reduce((a, b) => {
+    a = ((a << 5) - a) + b.charCodeAt(0);
+    return a & a;
+  }, 0);
+  
+  return "BONE-" + Math.abs(hash).toString(16).toUpperCase().padStart(8, "0");
+};
+
+// Generate session ID
+const generateSessionId = () => {
+  return "SES-" + Date.now().toString(36) + "-" + Math.random().toString(36).substr(2, 9);
+};
+
 export default function ScreenPlayer() {
   const queryClient = useQueryClient();
   const [screenId, setScreenId] = useState("");
@@ -46,21 +77,34 @@ export default function ScreenPlayer() {
   const [animationType, setAnimationType] = useState("fade");
   const [isPaused, setIsPaused] = useState(false);
   const [showDashboard, setShowDashboard] = useState(true);
-  const [connectionStatus, setConnectionStatus] = useState("connected"); // connected, reconnecting, offline
+  const [connectionStatus, setConnectionStatus] = useState("connected");
   const [lastHeartbeat, setLastHeartbeat] = useState(null);
   const [adProgress, setAdProgress] = useState(0);
   const [adStartTime, setAdStartTime] = useState(null);
   const [totalPlaytime, setTotalPlaytime] = useState(0);
   const [adsPlayed, setAdsPlayed] = useState(0);
   const [mediaError, setMediaError] = useState(null);
+  const [hardwareId, setHardwareId] = useState("");
+  const [sessionId, setSessionId] = useState("");
+  const [sessionBlocked, setSessionBlocked] = useState(false);
+  const [uptimeSeconds, setUptimeSeconds] = useState(0);
   const containerRef = useRef(null);
   const videoRef = useRef(null);
   const progressIntervalRef = useRef(null);
+  const sessionCheckRef = useRef(null);
 
   const AD_DURATION = 8000;
   const animations = ["fade", "slideLeft", "slideRight", "slideUp", "slideDown", "zoom", "flip", "blur"];
 
   const [autoStartMode, setAutoStartMode] = useState(false);
+
+  // Initialize hardware ID on mount
+  useEffect(() => {
+    const hwId = generateHardwareId();
+    setHardwareId(hwId);
+    const sessId = generateSessionId();
+    setSessionId(sessId);
+  }, []);
 
   // Get setup code or screen ID from URL and handle auto-login
   useEffect(() => {
