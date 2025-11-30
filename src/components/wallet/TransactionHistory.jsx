@@ -96,9 +96,12 @@ export default function TransactionHistory({ transactions, viewType = "all" }) {
   };
 
   const formatAmount = (tx) => {
-    const isPositive = tx.type === "earning" || tx.type === "top_up" || tx.type === "refund";
-    const amount = Math.abs(tx.amount || 0);
-    return `${isPositive ? "+" : "-"}AED ${amount.toLocaleString()}`;
+    const isPositiveType = tx.type === "earning" || tx.type === "top_up" || tx.type === "refund";
+    const amount = tx.amount || 0;
+    // If amount is negative, it's a deduction regardless of type
+    const isPositive = amount > 0 ? isPositiveType : false;
+    const displayAmount = Math.abs(amount);
+    return `${isPositive ? "+" : "-"}AED ${displayAmount.toLocaleString()}`;
   };
 
   const exportCSV = () => {
@@ -202,10 +205,12 @@ export default function TransactionHistory({ transactions, viewType = "all" }) {
       ) : (
         <div className="space-y-2">
           {filteredTransactions.map((tx) => {
-            const colors = getTypeColor(tx.type);
-            const isPositive = tx.type === "earning" || tx.type === "top_up" || tx.type === "refund";
+          const colors = getTypeColor(tx.type);
+          const isPositiveType = tx.type === "earning" || tx.type === "top_up" || tx.type === "refund";
+          const amount = tx.amount || 0;
+          const isPositive = amount > 0 ? isPositiveType : false;
 
-            return (
+          return (
               <div
                 key={tx.id}
                 className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-xl hover:shadow-sm transition-shadow"

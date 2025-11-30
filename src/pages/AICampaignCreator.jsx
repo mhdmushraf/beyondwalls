@@ -414,7 +414,8 @@ Generate the following recommendations:
       // Deduct from advertiser wallet
       const newBalance = userWalletBalance - totalCost;
       await base44.auth.updateMe({
-        wallet_balance: newBalance
+        wallet_balance: newBalance,
+        total_spent: (currentUser.total_spent || 0) + totalCost
       });
 
       // Create deduction transaction
