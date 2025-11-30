@@ -311,11 +311,10 @@ export default function AdminBookings() {
 
           // Send earning notification to venue owner
           const venue = venues.find(v => v.id === screen.venue_id);
-          try {
-            await base44.integrations.Core.SendEmail({
-              to: owner.email,
-              subject: `💰 New Earning: AED ${venueShare.toLocaleString()} | BeyondWalls`,
-              body: `
+          await base44.integrations.Core.SendEmail({
+            to: owner.email,
+            subject: `💰 New Earning: AED ${venueShare.toLocaleString()} | BeyondWalls`,
+            body: `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         BEYONDWALLS
    Venue Partner Earnings
@@ -340,11 +339,8 @@ Download your earnings statement from My Bookings.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 BeyondWalls - Advertise Beyond Boundaries
-              `.trim()
-            });
-          } catch (emailErr) {
-            console.log("Venue owner email failed but earnings credited");
-          }
+            `.trim()
+          });
         }
       }
 
@@ -382,11 +378,10 @@ BeyondWalls - Advertise Beyond Boundaries
       });
 
       // Send approval email to advertiser
-      try {
-        await base44.integrations.Core.SendEmail({
-          to: booking.advertiser_id,
-          subject: `✅ Campaign Approved: ${booking.campaign_name} | BeyondWalls`,
-          body: `
+      await base44.integrations.Core.SendEmail({
+        to: booking.advertiser_id,
+        subject: `✅ Campaign Approved: ${booking.campaign_name} | BeyondWalls`,
+        body: `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         BEYONDWALLS
    Digital Out-of-Home Advertising
@@ -412,11 +407,8 @@ Your ad is now displaying on screens across our network.
 Thank you for advertising with BeyondWalls!
 www.beyondwalls.ae
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-          `.trim()
-        });
-      } catch (emailErr) {
-        console.log("Advertiser email failed but booking approved");
-      }
+        `.trim()
+      });
 
       // Update notification
       const notifications = await base44.entities.AdminNotification.filter({
@@ -499,15 +491,11 @@ www.beyondwalls.ae
       }
 
       // Send rejection email
-      try {
-        await base44.integrations.Core.SendEmail({
-          to: booking.advertiser_id,
-          subject: `❌ Campaign Not Approved: ${booking.campaign_name}`,
-          body: `Unfortunately, your campaign "${booking.campaign_name}" was not approved.\n\nReason: ${rejectionReason}\n\nYour payment of AED ${booking.total_cost} has been refunded to your wallet.\n\nPlease contact us if you have any questions.`
-        });
-      } catch (emailErr) {
-        console.log("Rejection email failed");
-      }
+      await base44.integrations.Core.SendEmail({
+        to: booking.advertiser_id,
+        subject: `❌ Campaign Not Approved: ${booking.campaign_name}`,
+        body: `Unfortunately, your campaign "${booking.campaign_name}" was not approved.\n\nReason: ${rejectionReason}\n\nYour payment of AED ${booking.total_cost} has been refunded to your wallet.\n\nPlease contact us if you have any questions.`
+      });
 
       toast.success("Booking rejected and refund processed");
       queryClient.invalidateQueries({ queryKey: ["all-bookings"] });
