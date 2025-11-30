@@ -98,21 +98,30 @@ export default function ScreenPlayer() {
 
   const [autoStartMode, setAutoStartMode] = useState(false);
 
-  // Initialize hardware ID on mount
+  const [urlParams, setUrlParams] = useState(null);
+
+  // Initialize hardware ID on mount and parse URL params
   useEffect(() => {
     const hwId = generateHardwareId();
     setHardwareId(hwId);
     const sessId = generateSessionId();
     setSessionId(sessId);
+    
+    // Parse URL parameters
+    const params = new URLSearchParams(window.location.search);
+    setUrlParams({
+      code: params.get("setup_code"),
+      id: params.get("screen_id"),
+      pin: params.get("pin"),
+      autoStart: params.get("auto_start") === "true"
+    });
   }, []);
 
-  // Get setup code or screen ID from URL and handle auto-login
+  // Handle auto-login after hardware ID is ready
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get("setup_code");
-    const id = urlParams.get("screen_id");
-    const pinParam = urlParams.get("pin");
-    const autoStart = urlParams.get("auto_start") === "true";
+    if (!urlParams || !hardwareId || !sessionId) return;
+
+    const { code, id, pin: pinParam, autoStart } = urlParams;
 
     if (autoStart) {
       setAutoStartMode(true);
@@ -121,7 +130,6 @@ export default function ScreenPlayer() {
     if (code) {
       setSetupCode(code);
       setAuthMode("setup_code");
-      // Auto-authenticate if setup_code is provided
       if (autoStart) {
         handleAutoAuthenticate("setup_code", code, null);
       }
@@ -131,22 +139,15 @@ export default function ScreenPlayer() {
       if (pinParam) {
         setPin(pinParam);
       }
-      // Auto-authenticate if screen_id and pin are provided
-      if (autoStart && pinParam) {
+      if (autoStart) {
         handleAutoAuthenticate("screen_id", id, pinParam);
-      } else if (autoStart && !pinParam) {
-        // Try without pin if not provided
-        handleAutoAuthenticate("screen_id", id, null);
       }
     }
-  }, []);
+  }, [urlParams, hardwareId, sessionId]);
 
   // Auto-authenticate function for URL parameter login with hardware validation
   const handleAutoAuthenticate = async (mode, idOrCode, pinCode) => {
-    if (!hardwareId) {
-      setTimeout(() => handleAutoAuthenticate(mode, idOrCode, pinCode), 100);
-      return;
-    }
+    if (authenticated || connecting) return;
     
     setConnecting(true);
     try {
