@@ -86,25 +86,26 @@ export default function Dashboard() {
   const onlineScreens = screens.filter(s => s.status === "online");
   
   // Calculate from actual transactions for accuracy
+  // Use Math.abs() because some transactions may be stored with negative amounts
   const totalEarnings = transactions
     .filter(t => t.type === "earning" && t.status === "completed")
-    .reduce((sum, t) => sum + (t.amount || 0), 0);
+    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
   
   const totalSpent = transactions
     .filter(t => t.type === "ad_spend" && t.status === "completed")
-    .reduce((sum, t) => sum + (t.amount || 0), 0);
+    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
   
   const totalTopUps = transactions
     .filter(t => t.type === "top_up" && t.status === "completed")
-    .reduce((sum, t) => sum + (t.amount || 0), 0);
+    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
   
   const totalWithdrawals = transactions
     .filter(t => t.type === "withdrawal" && t.status === "completed")
-    .reduce((sum, t) => sum + (t.amount || 0), 0);
+    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
 
   const totalRefunds = transactions
     .filter(t => t.type === "refund" && t.status === "completed")
-    .reduce((sum, t) => sum + (t.amount || 0), 0);
+    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
   
   // Calculated balance: topups + earnings + refunds - spent - withdrawals
   const calculatedBalance = totalTopUps + totalEarnings + totalRefunds - totalSpent - totalWithdrawals;
