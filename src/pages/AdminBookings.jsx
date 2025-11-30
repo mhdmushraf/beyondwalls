@@ -182,11 +182,15 @@ export default function AdminBookings() {
             const screen = screens.find(s => s.id === screenId);
             if (screen?.owner_id) {
               try {
+                // Fetch fresh owner data to get accurate balance
                 const ownerData = await base44.entities.User.filter({ email: screen.owner_id });
                 if (ownerData.length > 0) {
                   const owner = ownerData[0];
+                  const currentBalance = owner.wallet_balance || 0;
+                  const newBalance = currentBalance + perScreenShare;
+                  
                   await base44.entities.User.update(owner.id, {
-                    wallet_balance: (owner.wallet_balance || 0) + perScreenShare,
+                    wallet_balance: newBalance,
                     total_earnings: (owner.total_earnings || 0) + perScreenShare
                   });
 
@@ -194,7 +198,7 @@ export default function AdminBookings() {
                     user_id: owner.email,
                     type: "earning",
                     amount: perScreenShare,
-                    balance_after: (owner.wallet_balance || 0) + perScreenShare,
+                    balance_after: newBalance,
                     reference_id: booking.id,
                     description: `AI Campaign earning (70%): ${booking.campaign_name}`,
                     status: "completed"
@@ -222,6 +226,8 @@ export default function AdminBookings() {
         // Credit BeyondWalls Platform Wallet
         try {
           const platformWallets = await base44.entities.PlatformWallet.list();
+          let platformBalance = 0;
+          
           if (platformWallets.length === 0) {
             await base44.entities.PlatformWallet.create({
               name: "BeyondWalls Platform",
@@ -229,10 +235,12 @@ export default function AdminBookings() {
               total_revenue: campaignPlatformShare,
               total_tax_collected: 0
             });
+            platformBalance = campaignPlatformShare;
           } else {
             const platformWallet = platformWallets[0];
+            platformBalance = (platformWallet.balance || 0) + campaignPlatformShare;
             await base44.entities.PlatformWallet.update(platformWallet.id, {
-              balance: (platformWallet.balance || 0) + campaignPlatformShare,
+              balance: platformBalance,
               total_revenue: (platformWallet.total_revenue || 0) + campaignPlatformShare
             });
           }
@@ -241,7 +249,7 @@ export default function AdminBookings() {
             user_id: "platform@beyondwalls.ae",
             type: "earning",
             amount: campaignPlatformShare,
-            balance_after: campaignPlatformShare,
+            balance_after: platformBalance,
             reference_id: booking.id,
             description: `Platform commission (30%): ${booking.campaign_name}`,
             status: "completed"
@@ -279,11 +287,15 @@ export default function AdminBookings() {
       // Credit screen owner NOW (after approval) - 70% share
       const screen = screens.find(s => s.id === booking.screen_id);
       if (screen?.owner_id) {
+        // Fetch fresh owner data for accurate balance
         const ownerData = await base44.entities.User.filter({ email: screen.owner_id });
         if (ownerData.length > 0) {
           const owner = ownerData[0];
+          const currentBalance = owner.wallet_balance || 0;
+          const newBalance = currentBalance + venueShare;
+          
           await base44.entities.User.update(owner.id, {
-            wallet_balance: (owner.wallet_balance || 0) + venueShare,
+            wallet_balance: newBalance,
             total_earnings: (owner.total_earnings || 0) + venueShare
           });
 
@@ -291,7 +303,7 @@ export default function AdminBookings() {
             user_id: owner.email,
             type: "earning",
             amount: venueShare,
-            balance_after: (owner.wallet_balance || 0) + venueShare,
+            balance_after: newBalance,
             reference_id: booking.id,
             description: `Ad slot earning (70%): ${booking.campaign_name}`,
             status: "completed"
@@ -334,6 +346,8 @@ BeyondWalls - Advertise Beyond Boundaries
 
       // Credit BeyondWalls Platform Wallet - 30% share
       const platformWallets = await base44.entities.PlatformWallet.list();
+      let platformBalance = 0;
+      
       if (platformWallets.length === 0) {
         // Create platform wallet if doesn't exist
         await base44.entities.PlatformWallet.create({
@@ -342,10 +356,12 @@ BeyondWalls - Advertise Beyond Boundaries
           total_revenue: platformShare,
           total_tax_collected: 0
         });
+        platformBalance = platformShare;
       } else {
         const platformWallet = platformWallets[0];
+        platformBalance = (platformWallet.balance || 0) + platformShare;
         await base44.entities.PlatformWallet.update(platformWallet.id, {
-          balance: (platformWallet.balance || 0) + platformShare,
+          balance: platformBalance,
           total_revenue: (platformWallet.total_revenue || 0) + platformShare
         });
       }
@@ -355,7 +371,7 @@ BeyondWalls - Advertise Beyond Boundaries
         user_id: "platform@beyondwalls.ae",
         type: "earning",
         amount: platformShare,
-        balance_after: platformShare,
+        balance_after: platformBalance,
         reference_id: booking.id,
         description: `Platform commission (30%): ${booking.campaign_name}`,
         status: "completed"
