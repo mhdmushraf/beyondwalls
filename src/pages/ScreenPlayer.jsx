@@ -562,8 +562,40 @@ export default function ScreenPlayer() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Auto-enter fullscreen in kiosk mode
+  useEffect(() => {
+    if (autoStartMode && authenticated && containerRef.current && !document.fullscreenElement) {
+      containerRef.current.requestFullscreen?.().catch(() => {});
+      setIsFullscreen(true);
+    }
+  }, [autoStartMode, authenticated]);
+
   // Hide controls in kiosk/auto-start mode
   const isKioskMode = autoStartMode && authenticated;
+
+  // Session blocked screen
+  if (sessionBlocked) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-rose-900 to-slate-900 flex items-center justify-center p-6">
+        <Card className="w-full max-w-md border-0 shadow-2xl bg-white/10 backdrop-blur-xl">
+          <CardContent className="p-8 text-center">
+            <div className="w-20 h-20 bg-rose-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="w-10 h-10 text-rose-400" />
+            </div>
+            <h1 className="text-2xl font-bold text-white mb-2">Session Blocked</h1>
+            <p className="text-white/60 mb-4">{error || "This device is not authorized to access this screen."}</p>
+            <div className="text-xs text-white/40 font-mono mb-6">
+              Hardware ID: {hardwareId}
+            </div>
+            <Button onClick={() => window.location.reload()} className="w-full bg-rose-600 hover:bg-rose-700">
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Try Again
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // Login Screen
   if (!authenticated) {
