@@ -17,7 +17,9 @@ import {
   Clock,
   CheckCircle2,
   XCircle,
-  ExternalLink
+  ExternalLink,
+  Settings,
+  PieChart
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,15 +35,19 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import TopUpModal from "@/components/wallet/TopUpModal";
+import TransactionHistory from "@/components/wallet/TransactionHistory";
+import PayoutSettings from "@/components/wallet/PayoutSettings";
+import EarningsBreakdown from "@/components/wallet/EarningsBreakdown";
 
 export default function Wallet() {
   const [user, setUser] = useState(null);
   const [showTopUp, setShowTopUp] = useState(false);
   const [showWithdraw, setShowWithdraw] = useState(false);
+  const [showPayoutSettings, setShowPayoutSettings] = useState(false);
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [receiptUrl, setReceiptUrl] = useState("");
+  const [activeTab, setActiveTab] = useState("overview");
 
   const { data: transactions = [], refetch } = useQuery({
     queryKey: ["wallet-transactions", user?.email],
@@ -54,6 +60,31 @@ export default function Wallet() {
     queryFn: () => base44.entities.WalletRequest.filter({ user_id: user?.email }, "-created_date"),
     enabled: !!user?.email
   });
+
+  const { data: screens = [] } = useQuery({
+    queryKey: ["user-screens", user?.email],
+    queryFn: () => base44.entities.Screen.filter({ owner_id: user?.email }),
+    enabled: !!user?.email
+  });
+
+  const { data: venues = [] } = useQuery({
+    queryKey: ["user-venues", user?.email],
+    queryFn: () => base44.entities.Venue.filter({ owner_id: user?.email }),
+    enabled: !!user?.email
+  });
+
+  const { data: bookings = [] } = useQuery({
+    queryKey: ["screen-bookings-for-wallet", user?.email],
+    queryFn: async () => {
+      const screenIds = screens.map(s => s.id);
+      if (screenIds.length === 0) return [];
+      const allBookings = await base44.entities.AdSlotBooking.list();
+      return allBookings.filter(b => screenIds.includes(b.screen_id));
+    },
+    enabled: !!user?.email && screens.length > 0
+  });
+
+  const isVenueOwner = user?.is_venue_owner || screens.length > 0;
 
   useEffect(() => {
     loadUser();
@@ -212,6 +243,12 @@ export default function Wallet() {
   const earnings = transactions.filter(t => t.type === "earning" || t.type === "top_up");
   const spending = transactions.filter(t => t.type === "ad_spend" || t.type === "withdrawal");
 
+  const handleRefresh = () => {
+    refetch();
+    refetchRequests();
+    loadUser();
+  };
+
   if (!user) {
     return (
       <div className="p-6 lg:p-8 flex items-center justify-center min-h-[60vh]">
@@ -253,7 +290,7 @@ export default function Wallet() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-row gap-2 sm:gap-3">
+            <div className="flex flex-row flex-wrap gap-2 sm:gap-3">
               <Button 
                 className="flex-1 sm:flex-none bg-white text-violet-600 hover:bg-white/90"
                 onClick={() => setShowTopUp(true)}
@@ -269,6 +306,16 @@ export default function Wallet() {
                 >
                   <Download className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
                   <span className="text-sm sm:text-base">Withdraw</span>
+                </Button>
+              )}
+              {isVenueOwner && (
+                <Button 
+                  variant="outline"
+                  className="flex-1 sm:flex-none border-white/30 text-white hover:bg-white/10"
+                  onClick={() => setShowPayoutSettings(true)}
+                >
+                  <Settings className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+                  <span className="text-sm sm:text-base">Payout Settings</span>
                 </Button>
               )}
             </div>
@@ -353,125 +400,141 @@ export default function Wallet() {
         </Card>
       </div>
 
-      {/* Transactions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Transaction History</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="all">
-            <TabsList className="mb-4">
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="earnings">Earnings</TabsTrigger>
-              <TabsTrigger value="spending">Spending</TabsTrigger>
-              <TabsTrigger value="requests">My Requests</TabsTrigger>
-            </TabsList>
+      {/* Main Content Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="mb-6 w-full justify-start overflow-x-auto">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="transactions">Transactions</TabsTrigger>
+          {isVenueOwner && <TabsTrigger value="earnings">Earnings</TabsTrigger>}
+          <TabsTrigger value="requests">Requests</TabsTrigger>
+        </TabsList>
 
-            <TabsContent value="all">
-              <TransactionList transactions={transactions} />
-            </TabsContent>
-            <TabsContent value="earnings">
-              <TransactionList transactions={earnings} />
-            </TabsContent>
-            <TabsContent value="spending">
-              <TransactionList transactions={spending} />
-            </TabsContent>
-            <TabsContent value="requests">
-              <RequestList requests={walletRequests} />
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
-
-      {/* Top Up Dialog */}
-      <Dialog open={showTopUp} onOpenChange={(open) => { setShowTopUp(open); if (!open) { setAmount(""); setReceiptUrl(""); } }}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Add Funds Request</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-700">
-                <strong>How it works:</strong> Transfer the amount to our bank account, upload the receipt, and our admin will verify and add funds to your wallet.
-              </p>
-            </div>
-
-            <div className="p-4 bg-slate-50 rounded-lg space-y-2">
-              <p className="text-sm font-medium text-slate-700">Bank Details:</p>
-              <p className="text-sm text-slate-600">Bank: Emirates NBD</p>
-              <p className="text-sm text-slate-600">Account: BeyondWalls FZ LLC</p>
-              <p className="text-sm text-slate-600">IBAN: AE12 3456 7890 1234 5678 901</p>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-slate-700">Request Date</label>
-              <Input value={format(new Date(), "PPP")} disabled className="mt-1 bg-slate-50" />
-            </div>
-
-            <div className="grid grid-cols-5 gap-2">
-              {quickAmounts.map((amt) => (
-                <Button
-                  key={amt}
-                  variant={amount === String(amt) ? "default" : "outline"}
-                  onClick={() => setAmount(String(amt))}
-                  size="sm"
-                >
-                  {amt}
-                </Button>
-              ))}
-            </div>
-            <div>
-              <Input
-                type="number"
-                placeholder="Enter amount"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="text-lg"
-              />
-              <p className="text-sm text-slate-500 mt-1">Minimum: AED 50</p>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-slate-700">Bank Transfer Receipt *</label>
-              {receiptUrl ? (
-                <div className="mt-2 p-3 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <FileText className="w-5 h-5 text-emerald-600" />
-                    <span className="text-sm text-emerald-700">Receipt uploaded</span>
+        <TabsContent value="overview">
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6">
+            <Card>
+              <CardContent className="p-3 sm:p-4">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <ArrowDownRight className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
                   </div>
-                  <Button variant="ghost" size="sm" onClick={() => setReceiptUrl("")}>
-                    <XCircle className="w-4 h-4" />
-                  </Button>
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm text-slate-500">Earnings</p>
+                    <p className="text-sm sm:text-lg font-bold text-emerald-600 truncate">
+                      AED {totalEarnings.toLocaleString()}
+                    </p>
+                  </div>
                 </div>
-              ) : (
-                <label className="block mt-2">
-                  <div className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all ${
-                    uploading ? "border-violet-300 bg-violet-50" : "border-slate-200 hover:border-violet-300"
-                  }`}>
-                    {uploading ? (
-                      <Loader2 className="w-6 h-6 text-violet-600 animate-spin mx-auto" />
-                    ) : (
-                      <>
-                        <Upload className="w-6 h-6 text-slate-400 mx-auto mb-2" />
-                        <p className="text-sm text-slate-600">Upload PDF or image</p>
-                      </>
-                    )}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-3 sm:p-4">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-rose-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5 text-rose-600" />
                   </div>
-                  <input type="file" className="hidden" accept=".pdf,image/*" onChange={handleReceiptUpload} />
-                </label>
-              )}
-            </div>
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm text-slate-500">Spending</p>
+                    <p className="text-sm sm:text-lg font-bold text-rose-600 truncate">
+                      AED {totalSpent.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-3 sm:p-4">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-violet-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-violet-600" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm text-slate-500">Net</p>
+                    <p className="text-sm sm:text-lg font-bold text-violet-600 truncate">
+                      AED {(totalEarnings - totalSpent).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-3 sm:p-4">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm text-slate-500">Transactions</p>
+                    <p className="text-sm sm:text-lg font-bold text-blue-600">{transactions.length}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowTopUp(false)}>Cancel</Button>
-            <Button 
-              onClick={handleTopUp}
-              disabled={loading || !amount || !receiptUrl}
-              className="bg-gradient-to-r from-violet-600 to-indigo-600"
-            >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : `Submit Request`}
-            </Button>
-          </DialogFooter>
+
+          {/* Recent Transactions */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Recent Transactions</CardTitle>
+              <Button variant="ghost" size="sm" onClick={() => setActiveTab("transactions")}>
+                View All
+              </Button>
+            </CardHeader>
+            <CardContent>
+              <TransactionList transactions={transactions.slice(0, 5)} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="transactions">
+          <Card>
+            <CardHeader>
+              <CardTitle>Transaction History</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TransactionHistory transactions={transactions} viewType="all" />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {isVenueOwner && (
+          <TabsContent value="earnings">
+            <EarningsBreakdown 
+              transactions={transactions}
+              screens={screens}
+              venues={venues}
+              bookings={bookings}
+            />
+          </TabsContent>
+        )}
+
+        <TabsContent value="requests">
+          <Card>
+            <CardHeader>
+              <CardTitle>My Requests</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <RequestList requests={walletRequests} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      {/* Top Up Modal */}
+      <TopUpModal
+        open={showTopUp}
+        onOpenChange={setShowTopUp}
+        user={user}
+        onSuccess={handleRefresh}
+      />
+
+      {/* Payout Settings Dialog */}
+      <Dialog open={showPayoutSettings} onOpenChange={setShowPayoutSettings}>
+        <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Payout Settings</DialogTitle>
+          </DialogHeader>
+          <PayoutSettings user={user} onUpdate={handleRefresh} />
         </DialogContent>
       </Dialog>
 
