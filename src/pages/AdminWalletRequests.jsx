@@ -30,6 +30,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { NotificationService } from "@/components/notifications/NotificationService";
 
 export default function AdminWalletRequests() {
   const [user, setUser] = useState(null);
@@ -112,29 +113,9 @@ export default function AdminWalletRequests() {
           payment_method: "bank_transfer"
         });
 
-        // Send approval email
-        try {
-          await base44.integrations.Core.SendEmail({
-            to: selectedRequest.user_id,
-            subject: "✅ Top-up Request Approved | BeyondWalls",
-            body: `
-Dear ${selectedRequest.user_name || "Valued Customer"},
-
-Great news! Your top-up request has been approved.
-
-Amount: AED ${selectedRequest.amount.toLocaleString()}
-New Balance: AED ${newBalance.toLocaleString()}
-
-The funds are now available in your wallet.
-
-Thank you for using BeyondWalls!
-
-Best regards,
-BeyondWalls Team
-            `.trim()
-          });
-        } catch (e) {
-          console.log("Email failed but request processed");
+        // Send top-up approval notification (in-app + email)
+        if (targetUser) {
+          await NotificationService.topUpApproved(targetUser, selectedRequest.amount);
         }
       } else {
         // Withdrawal - deduct from wallet
@@ -151,28 +132,9 @@ BeyondWalls Team
           status: "completed"
         });
 
-        // Send approval email
-        try {
-          await base44.integrations.Core.SendEmail({
-            to: selectedRequest.user_id,
-            subject: "✅ Withdrawal Request Approved | BeyondWalls",
-            body: `
-Dear ${selectedRequest.user_name || "Valued Customer"},
-
-Your withdrawal request has been approved and processed.
-
-Amount: AED ${selectedRequest.amount.toLocaleString()}
-
-The funds will be transferred to your registered bank account within 3-5 business days.
-
-Thank you for using BeyondWalls!
-
-Best regards,
-BeyondWalls Team
-            `.trim()
-          });
-        } catch (e) {
-          console.log("Email failed but request processed");
+        // Send payout completed notification (in-app + email)
+        if (targetUser) {
+          await NotificationService.payoutCompleted(targetUser, selectedRequest.amount, selectedRequest.id);
         }
       }
 
