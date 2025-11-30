@@ -103,11 +103,11 @@ export default function CartCheckout({
         total_spent: (user.total_spent || 0) + successfulTotal
       });
 
-      // Create transaction (negative amount for deduction)
+      // Create transaction (positive amount - type determines if it's debit/credit)
       await base44.entities.Transaction.create({
         user_id: user.email,
         type: "ad_spend",
-        amount: -successfulTotal,
+        amount: successfulTotal,
         balance_after: (user.wallet_balance || 0) - successfulTotal,
         reference_id: "cart-checkout",
         description: `Bulk booking: ${successfulBookings.length} ad slots`,
