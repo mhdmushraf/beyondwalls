@@ -161,24 +161,107 @@ export default function AdminBookings() {
 
       // Handle campaign vs booking differently
       if (booking.source === "campaign") {
+        const campaignCost = booking.total_cost || 0;
+        const campaignVenueShare = campaignCost * 0.7;
+        const campaignPlatformShare = campaignCost * 0.3;
+
         await base44.entities.Campaign.update(booking.id, {
           status: "active",
           approved_at: new Date().toISOString(),
-          approved_by: user.email
+          approved_by: user.email,
+          venue_share: campaignVenueShare,
+          platform_share: campaignPlatformShare
         });
+
+        // Distribute earnings to venue owners for each screen
+        const screenIds = booking.screen_ids || [];
+        if (screenIds.length > 0) {
+          const perScreenShare = campaignVenueShare / screenIds.length;
+          
+          for (const screenId of screenIds) {
+            const screen = screens.find(s => s.id === screenId);
+            if (screen?.owner_id) {
+              try {
+                const ownerData = await base44.entities.User.filter({ email: screen.owner_id });
+                if (ownerData.length > 0) {
+                  const owner = ownerData[0];
+                  await base44.entities.User.update(owner.id, {
+                    wallet_balance: (owner.wallet_balance || 0) + perScreenShare,
+                    total_earnings: (owner.total_earnings || 0) + perScreenShare
+                  });
+
+                  await base44.entities.Transaction.create({
+                    user_id: owner.email,
+                    type: "earning",
+                    amount: perScreenShare,
+                    balance_after: (owner.wallet_balance || 0) + perScreenShare,
+                    reference_id: booking.id,
+                    description: `AI Campaign earning (70%): ${booking.campaign_name}`,
+                    status: "completed"
+                  });
+
+                  // Send earning notification
+                  const venue = venues.find(v => v.id === screen.venue_id);
+                  try {
+                    await base44.integrations.Core.SendEmail({
+                      to: owner.email,
+                      subject: `💰 New Earning: AED ${perScreenShare.toLocaleString()} | BeyondWalls`,
+                      body: `Great news! A new AI campaign has been approved on your screen!\n\nScreen: ${screen.name}\nVenue: ${venue?.name || 'N/A'}\nCampaign: ${booking.campaign_name}\n\n💵 Your Share (70%): AED ${perScreenShare.toLocaleString()}\n\nThe earnings have been credited to your wallet.`
+                    });
+                  } catch (emailErr) {
+                    console.log("Venue owner email failed");
+                  }
+                }
+              } catch (ownerErr) {
+                console.log("Failed to credit venue owner:", ownerErr);
+              }
+            }
+          }
+        }
+
+        // Credit BeyondWalls Platform Wallet
+        try {
+          const platformWallets = await base44.entities.PlatformWallet.list();
+          if (platformWallets.length === 0) {
+            await base44.entities.PlatformWallet.create({
+              name: "BeyondWalls Platform",
+              balance: campaignPlatformShare,
+              total_revenue: campaignPlatformShare,
+              total_tax_collected: 0
+            });
+          } else {
+            const platformWallet = platformWallets[0];
+            await base44.entities.PlatformWallet.update(platformWallet.id, {
+              balance: (platformWallet.balance || 0) + campaignPlatformShare,
+              total_revenue: (platformWallet.total_revenue || 0) + campaignPlatformShare
+            });
+          }
+
+          await base44.entities.Transaction.create({
+            user_id: "platform@beyondwalls.ae",
+            type: "earning",
+            amount: campaignPlatformShare,
+            balance_after: campaignPlatformShare,
+            reference_id: booking.id,
+            description: `Platform commission (30%): ${booking.campaign_name}`,
+            status: "completed"
+          });
+        } catch (platformErr) {
+          console.log("Platform wallet update failed:", platformErr);
+        }
         
         // Send approval email to advertiser
         try {
           await base44.integrations.Core.SendEmail({
             to: booking.advertiser_id,
             subject: `✅ Campaign Approved: ${booking.campaign_name} | BeyondWalls`,
-            body: `Your AI campaign "${booking.campaign_name}" has been approved and is now LIVE!\n\nDuration: ${booking.start_date} - ${booking.end_date}\n\nTrack your campaign performance in your dashboard.`
+            body: `Your AI campaign "${booking.campaign_name}" has been approved and is now LIVE!\n\nDuration: ${booking.start_date} - ${booking.end_date}\nInvestment: AED ${campaignCost.toLocaleString()}\nScreens: ${screenIds.length}\n\nTrack your campaign performance in your dashboard.`
           });
         } catch (emailErr) {
           console.log("Email failed but campaign approved");
         }
         
-        toast.success("Campaign approved successfully");
+        toast.success("Campaign approved! Earnings distributed to venue owners.");
         queryClient.invalidateQueries({ queryKey: ["all-campaigns-admin"] });
         setSelectedBooking(null);
         setProcessing(false);
