@@ -603,20 +603,19 @@ function TransactionList({ transactions }) {
   return (
     <div className="space-y-3">
       {transactions.map((tx) => {
-        // Determine if transaction is positive based on type and amount
-        const isPositiveType = tx.type === "earning" || tx.type === "top_up" || tx.type === "refund";
-        const amount = tx.amount || 0;
-        // If amount is negative, it's a deduction. If positive and earning/topup/refund, it's income
-        const isPositive = amount > 0 ? isPositiveType : false;
-        const displayAmount = Math.abs(amount);
+        // Determine if transaction adds or removes money based on type
+        // Credits: earning, top_up, refund (money coming in)
+        // Debits: ad_spend, withdrawal (money going out)
+        const isCreditType = tx.type === "earning" || tx.type === "top_up" || tx.type === "refund";
+        const displayAmount = Math.abs(tx.amount || 0);
         
         return (
           <div key={tx.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
             <div className="flex items-center gap-4">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                isPositive ? "bg-emerald-100" : "bg-rose-100"
+                isCreditType ? "bg-emerald-100" : "bg-rose-100"
               }`}>
-                {isPositive ? (
+                {isCreditType ? (
                   <ArrowDownRight className="w-5 h-5 text-emerald-600" />
                 ) : (
                   <ArrowUpRight className="w-5 h-5 text-rose-600" />
@@ -630,8 +629,8 @@ function TransactionList({ transactions }) {
               </div>
             </div>
             <div className="text-right">
-              <p className={`font-semibold ${isPositive ? "text-emerald-600" : "text-rose-600"}`}>
-                {isPositive ? "+" : "-"}AED {displayAmount.toLocaleString()}
+              <p className={`font-semibold ${isCreditType ? "text-emerald-600" : "text-rose-600"}`}>
+                {isCreditType ? "+" : "-"}AED {displayAmount.toLocaleString()}
               </p>
               <Badge variant={tx.status === "completed" ? "secondary" : "outline"} className="text-xs">
                 {tx.status}
