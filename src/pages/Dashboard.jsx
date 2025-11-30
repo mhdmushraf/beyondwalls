@@ -347,35 +347,34 @@ export default function Dashboard() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {transactions.map((tx) => (
-                    <div key={tx.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                          tx.type === "earning" || tx.type === "top_up" 
-                            ? "bg-emerald-100" 
-                            : "bg-rose-100"
-                        }`}>
-                          {tx.type === "earning" || tx.type === "top_up" ? (
-                            <ArrowDownRight className="w-5 h-5 text-emerald-600" />
-                          ) : (
-                            <ArrowUpRight className="w-5 h-5 text-rose-600" />
-                          )}
+                  {transactions.map((tx) => {
+                    // Credits: earning, top_up, refund | Debits: ad_spend, withdrawal
+                    const isCreditType = tx.type === "earning" || tx.type === "top_up" || tx.type === "refund";
+                    const displayAmount = Math.abs(tx.amount || 0);
+                    
+                    return (
+                      <div key={tx.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                            isCreditType ? "bg-emerald-100" : "bg-rose-100"
+                          }`}>
+                            {isCreditType ? (
+                              <ArrowDownRight className="w-5 h-5 text-emerald-600" />
+                            ) : (
+                              <ArrowUpRight className="w-5 h-5 text-rose-600" />
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-medium text-slate-900">{tx.description}</p>
+                            <p className="text-sm text-slate-500">{tx.type}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium text-slate-900">{tx.description}</p>
-                          <p className="text-sm text-slate-500">{tx.type}</p>
-                        </div>
+                        <p className={`font-semibold ${isCreditType ? "text-emerald-600" : "text-rose-600"}`}>
+                          {isCreditType ? "+" : "-"}AED {displayAmount.toLocaleString()}
+                        </p>
                       </div>
-                      <p className={`font-semibold ${
-                        tx.type === "earning" || tx.type === "top_up" 
-                          ? "text-emerald-600" 
-                          : "text-rose-600"
-                      }`}>
-                        {tx.type === "earning" || tx.type === "top_up" ? "+" : "-"}
-                        AED {tx.amount}
-                      </p>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </CardContent>
