@@ -60,19 +60,78 @@ export default function ScreenPlayer() {
   const AD_DURATION = 8000;
   const animations = ["fade", "slideLeft", "slideRight", "slideUp", "slideDown", "zoom", "flip", "blur"];
 
-  // Get setup code or screen ID from URL
+  const [autoStartMode, setAutoStartMode] = useState(false);
+
+  // Get setup code or screen ID from URL and handle auto-login
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get("setup_code");
     const id = urlParams.get("screen_id");
+    const pinParam = urlParams.get("pin");
+    const autoStart = urlParams.get("auto_start") === "true";
+
+    if (autoStart) {
+      setAutoStartMode(true);
+    }
+
     if (code) {
       setSetupCode(code);
       setAuthMode("setup_code");
+      // Auto-authenticate if setup_code is provided
+      if (autoStart) {
+        handleAutoAuthenticate("setup_code", code, null);
+      }
     } else if (id) {
       setScreenId(id);
       setAuthMode("screen_id");
+      if (pinParam) {
+        setPin(pinParam);
+      }
+      // Auto-authenticate if screen_id and pin are provided
+      if (autoStart && pinParam) {
+        handleAutoAuthenticate("screen_id", id, pinParam);
+      } else if (autoStart && !pinParam) {
+        // Try without pin if not provided
+        handleAutoAuthenticate("screen_id", id, null);
+      }
     }
   }, []);
+
+  // Auto-authenticate function for URL parameter login
+  const handleAutoAuthenticate = async (mode, idOrCode, pinCode) => {
+    setConnecting(true);
+    try {
+      const screens = await base44.entities.Screen.list();
+      let foundScreen = null;
+
+      if (mode === "setup_code") {
+        foundScreen = screens.find(s => s.setup_code === idOrCode.toUpperCase());
+      } else {
+        foundScreen = screens.find(s => s.device_id === idOrCode || s.id === idOrCode);
+        // Check PIN if screen has one
+        if (foundScreen?.player_pin && foundScreen.player_pin !== pinCode) {
+          setError("Invalid PIN");
+          setConnecting(false);
+          return;
+        }
+      }
+
+      if (foundScreen) {
+        setScreen(foundScreen);
+        setAuthenticated(true);
+        await base44.entities.Screen.update(foundScreen.id, { 
+          status: "online", 
+          player_active: true, 
+          last_heartbeat: new Date().toISOString() 
+        });
+      } else {
+        setError("Screen not found");
+      }
+    } catch (e) {
+      setError("Auto-connect failed");
+    }
+    setConnecting(false);
+  };
 
   // Fetch ad slot bookings
   const { data: bookings = [], refetch: refetchBookings } = useQuery({
