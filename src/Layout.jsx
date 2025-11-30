@@ -160,6 +160,37 @@ export default function Layout({ children, currentPageName }) {
     );
   }
 
+  // SECURITY: Check if user profile is complete (except for admins)
+  const isAdmin = user?.user_role === "admin" || user?.role === "admin";
+  if (!isAdmin && !user?.profile_complete) {
+    navigate(createPageUrl("CompleteProfile"));
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+            <MonitorPlay className="w-6 h-6 text-white" />
+          </div>
+          <p className="text-slate-500">Completing profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // SECURITY: Check approval status for non-admin users
+  if (!isAdmin && user?.approval_status !== "approved") {
+    navigate(createPageUrl("PendingApproval"));
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+            <MonitorPlay className="w-6 h-6 text-white" />
+          </div>
+          <p className="text-slate-500">Checking approval status...</p>
+        </div>
+      </div>
+    );
+  }
+
   // SECURITY: Admin pages protection
   const adminPages = [
     "AdminDashboard", "AdminUserApprovals", "AdminUsers", "AdminBookings",
@@ -168,8 +199,6 @@ export default function Layout({ children, currentPageName }) {
     "AdminPlatformWallet", "AdminBlog", "AdminCRM", "AdminDefaultContent",
     "LogoGenerator"
   ];
-  
-  const isAdmin = user?.user_role === "admin" || user?.role === "admin";
   
   if (adminPages.includes(currentPageName) && !isAdmin) {
     // Non-admin trying to access admin page - redirect to user dashboard
