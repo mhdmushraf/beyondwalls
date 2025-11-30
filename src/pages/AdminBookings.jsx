@@ -33,13 +33,38 @@ import { toast } from "sonner";
 import LiveScreenPreview from "@/components/previews/LiveScreenPreview";
 
 export default function AdminBookings() {
+  const queryClient = useQueryClient();
   const [user, setUser] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [search, setSearch] = useState("");
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const [processing, setProcessing] = useState(false);
-  const queryClient = useQueryClient();
+
+  // All hooks MUST be called before any conditional returns
+  const { data: bookings = [], isLoading: bookingsLoading, error: bookingsError } = useQuery({
+    queryKey: ["all-bookings"],
+    queryFn: () => base44.entities.AdSlotBooking.list("-created_date", 100),
+    enabled: authChecked && !!user
+  });
+
+  const { data: campaigns = [], isLoading: campaignsLoading } = useQuery({
+    queryKey: ["all-campaigns-admin"],
+    queryFn: () => base44.entities.Campaign.list("-created_date", 100),
+    enabled: authChecked && !!user
+  });
+
+  const { data: screens = [] } = useQuery({
+    queryKey: ["all-screens"],
+    queryFn: () => base44.entities.Screen.list(),
+    enabled: authChecked && !!user
+  });
+
+  const { data: venues = [] } = useQuery({
+    queryKey: ["all-venues"],
+    queryFn: () => base44.entities.Venue.list(),
+    enabled: authChecked && !!user
+  });
 
   useEffect(() => {
     loadUser();
@@ -65,6 +90,8 @@ export default function AdminBookings() {
     }
   };
 
+  const isLoading = bookingsLoading || campaignsLoading;
+
   if (!authChecked) {
     return (
       <div className="p-6 lg:p-8 flex items-center justify-center min-h-[60vh]">
@@ -76,27 +103,43 @@ export default function AdminBookings() {
     );
   }
 
-  const { data: bookings = [], isLoading } = useQuery({
-    queryKey: ["all-bookings"],
-    queryFn: () => base44.entities.AdSlotBooking.list("-created_date", 100),
-    enabled: !!user
-  });
+  if (bookingsError) {
+    return (
+      <div className="p-6 lg:p-8 flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <XCircle className="w-10 h-10 text-red-500 mx-auto mb-4" />
+          <p className="text-slate-700 font-medium">Failed to load bookings</p>
+          <p className="text-slate-500 text-sm">{bookingsError.message}</p>
+          <Button onClick={() => queryClient.invalidateQueries({ queryKey: ["all-bookings"] })} className="mt-4">
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
-  const { data: screens = [] } = useQuery({
-    queryKey: ["all-screens"],
-    queryFn: () => base44.entities.Screen.list(),
-    enabled: !!user
-  });
+  // Combine bookings and campaigns for unified view
+  const allItems = [
+    ...bookings.map(b => ({ ...b, source: "booking" })),
+    ...campaigns.map(c => ({
+      id: c.id,
+      campaign_name: c.name,
+      advertiser_id: c.advertiser_id,
+      status: c.status === "pending_approval" ? "pending" : c.status,
+      start_date: c.start_date,
+      end_date: c.end_date,
+      creative_url: c.creative_url,
+      creative_type: c.creative_type,
+      total_cost: c.total_cost || c.budget,
+      screen_ids: c.screen_ids || [],
+      created_date: c.created_date,
+      source: "campaign"
+    }))
+  ];
 
-  const { data: venues = [] } = useQuery({
-    queryKey: ["all-venues"],
-    queryFn: () => base44.entities.Venue.list(),
-    enabled: !!user
-  });
-
-  const pendingBookings = bookings.filter(b => b.status === "pending");
-  const activeBookings = bookings.filter(b => b.status === "active");
-  const completedBookings = bookings.filter(b => b.status === "completed" || b.status === "cancelled");
+  const pendingBookings = allItems.filter(b => b.status === "pending" || b.status === "pending_approval");
+  const activeBookings = allItems.filter(b => b.status === "active");
+  const completedBookings = allItems.filter(b => b.status === "completed" || b.status === "cancelled");
 
   const filteredBookings = (list) => list.filter(b => 
     b.campaign_name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -328,8 +371,19 @@ www.beyondwalls.ae
   };
 
   const BookingCard = ({ booking, showActions = false }) => {
-    const { screen, venue } = getScreenInfo(booking.screen_id);
-    const screenSlots = booking.status === "active" ? getScreenSlots(booking.screen_id) : [];
+    const { screen, venue } = booking.source === "campaign" 
+      ? { screen: null, venue: null }
+      : getScreenInfo(booking.screen_id);
+    const screenSlots = booking.status === "active" && booking.screen_id ? getScreenSlots(booking.screen_id) : [];
+    
+    // For campaigns, get screen info from screen_ids array
+    const campaignScreens = booking.source === "campaign" && booking.screen_ids?.length > 0
+      ? booking.screen_ids.map(sid => {
+          const s = screens.find(sc => sc.id === sid);
+          const v = s ? venues.find(ve => ve.id === s.venue_id) : null;
+          return s ? { screen: s, venue: v } : null;
+        }).filter(Boolean)
+      : [];
     
     return (
       <Card className="hover:shadow-lg transition-shadow">
@@ -373,9 +427,17 @@ www.beyondwalls.ae
               <div className="flex items-center gap-4 mt-2 text-sm text-slate-500">
                 <span className="flex items-center gap-1">
                   <MonitorPlay className="w-3 h-3" />
-                  {screen?.name || "Unknown Screen"}
+                  {booking.source === "campaign" 
+                    ? (campaignScreens.length > 0 
+                        ? `${campaignScreens.length} screen${campaignScreens.length > 1 ? 's' : ''}`
+                        : "No screens assigned")
+                    : (screen?.name || "Unknown Screen")
+                  }
                 </span>
-                <span>Slot #{booking.slot_number}</span>
+                {booking.slot_number && <span>Slot #{booking.slot_number}</span>}
+                {booking.source === "campaign" && (
+                  <Badge variant="outline" className="text-violet-600 border-violet-300">AI Campaign</Badge>
+                )}
               </div>
               <div className="flex items-center gap-4 mt-1 text-sm text-slate-500">
                 <span className="flex items-center gap-1">
