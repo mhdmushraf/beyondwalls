@@ -56,11 +56,50 @@ export default function AdminUserApprovals() {
       // Send notification email
       const user = users.find(u => u.id === userId);
       if (user) {
-        await base44.integrations.Core.SendEmail({
-          to: user.email,
-          subject: "Your BeyondWalls Account is Approved!",
-          body: `Dear ${user.full_name},\n\nGreat news! Your BeyondWalls account has been approved. You can now log in and start using our platform.\n\nBest regards,\nBeyondWalls Team`
-        });
+        try {
+          await base44.integrations.Core.SendEmail({
+            to: user.email,
+            subject: "✅ Your BeyondWalls Account is Approved!",
+            body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Digital Out-of-Home Advertising
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dear ${user.full_name || "Valued User"},
+
+🎉 CONGRATULATIONS! Your account has been APPROVED!
+
+You now have full access to the BeyondWalls platform.
+
+${user.user_role === "venue_owner" ? `
+🏢 AS A VENUE OWNER, YOU CAN:
+• Add your venues and screens
+• Earn 70% revenue from ad placements
+• Manage your own promotional content
+• Track earnings in real-time
+` : `
+📣 AS AN ADVERTISER, YOU CAN:
+• Browse 500+ premium screens across UAE
+• Create AI-powered campaigns
+• Book ad slots instantly
+• Track campaign performance
+`}
+
+🚀 GET STARTED NOW:
+Log in to your dashboard at www.beyondwalls.ae
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Need help? Contact us at info@beyondwalls.ae
+Phone: +971 55 614 0067
+
+BeyondWalls - Advertise Beyond Boundaries
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            `.trim()
+          });
+        } catch (emailErr) {
+          console.log("Email failed but user approved");
+        }
       }
     },
     onSuccess: () => {
@@ -79,11 +118,39 @@ export default function AdminUserApprovals() {
       
       const user = users.find(u => u.id === userId);
       if (user) {
-        await base44.integrations.Core.SendEmail({
-          to: user.email,
-          subject: "BeyondWalls Account Application Update",
-          body: `Dear ${user.full_name},\n\nUnfortunately, your BeyondWalls account application was not approved.\n\nReason: ${reason}\n\nIf you have questions, please contact support at info@beyondwalls.ae.\n\nBest regards,\nBeyondWalls Team`
-        });
+        try {
+          await base44.integrations.Core.SendEmail({
+            to: user.email,
+            subject: "❌ BeyondWalls Account Application Update",
+            body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Digital Out-of-Home Advertising
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dear ${user.full_name || "Applicant"},
+
+Unfortunately, your BeyondWalls account application was not approved.
+
+❌ REASON FOR REJECTION:
+${reason}
+
+📋 WHAT YOU CAN DO:
+• Review the rejection reason above
+• Ensure all documents are valid and clear
+• Contact our support team for assistance
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Questions? Contact us at info@beyondwalls.ae
+Phone: +971 55 614 0067
+
+BeyondWalls - Advertise Beyond Boundaries
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            `.trim()
+          });
+        } catch (emailErr) {
+          console.log("Email failed but user rejected");
+        }
       }
     },
     onSuccess: () => {
