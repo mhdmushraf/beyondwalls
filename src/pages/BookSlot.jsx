@@ -504,13 +504,13 @@ The ads will be displayed on digital screens in ${venue?.type || "public"} venue
         total_spent: (user.total_spent || 0) + totalCost
       });
 
-      // Create transaction
+      // Create transaction (negative amount for deduction)
       await base44.entities.Transaction.create({
         user_id: user.email,
         type: "ad_spend",
-        amount: totalCost,
+        amount: -totalCost,
         balance_after: (user.wallet_balance || 0) - totalCost,
-        reference_id: selectedScreen.id,
+        reference_id: booking.id,
         description: `Ad slot booking on ${selectedScreen.name}`,
         status: "completed"
       });

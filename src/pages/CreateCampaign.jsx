@@ -156,23 +156,56 @@ export default function CreateCampaign() {
   };
 
   const handleSubmit = async () => {
-    if (totalCost > (user?.wallet_balance || 0)) {
-      toast.error("Insufficient wallet balance");
+    // Check wallet balance
+    const currentUser = await base44.auth.me();
+    const userWalletBalance = currentUser.wallet_balance || 0;
+    
+    if (totalCost > userWalletBalance) {
+      toast.error(`Insufficient wallet balance. You have AED ${userWalletBalance.toLocaleString()} but need AED ${totalCost.toLocaleString()}`);
       return;
     }
 
     setLoading(true);
     try {
-      await base44.entities.Campaign.create({
+      // Deduct from advertiser wallet
+      const newBalance = userWalletBalance - totalCost;
+      await base44.auth.updateMe({
+        wallet_balance: newBalance,
+        total_spent: (currentUser.total_spent || 0) + totalCost
+      });
+
+      // Create deduction transaction
+      await base44.entities.Transaction.create({
+        user_id: user.email,
+        type: "ad_spend",
+        amount: -totalCost,
+        balance_after: newBalance,
+        reference_id: `campaign-${Date.now()}`,
+        description: `Campaign: ${formData.name}`,
+        status: "completed"
+      });
+
+      // Create the campaign
+      const campaign = await base44.entities.Campaign.create({
         ...formData,
         advertiser_id: user.email,
         total_cost: totalCost,
         status: "pending_approval",
         impressions: 0,
-        spend: 0
+        spend: totalCost
       });
 
-      toast.success("Campaign submitted for approval!");
+      // Create admin notification
+      await base44.entities.AdminNotification.create({
+        type: "campaign_approval",
+        title: "New Campaign Submitted",
+        message: `${user.full_name || user.email} submitted campaign "${formData.name}" for AED ${totalCost.toLocaleString()}`,
+        reference_id: campaign.id,
+        reference_type: "Campaign",
+        status: "unread"
+      });
+
+      toast.success("Campaign submitted! Payment deducted from wallet.");
       navigate(createPageUrl("MyCampaigns"));
     } catch (error) {
       toast.error("Failed to create campaign");
