@@ -1303,8 +1303,97 @@ BeyondWalls Admin System
               </Button>
             )}
           </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
-  );
-}
+          </DialogContent>
+          </Dialog>
+
+          {/* Alert Settings Dialog */}
+          <Dialog open={showSettingsDialog} onOpenChange={setShowSettingsDialog}>
+          <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Bell className="w-5 h-5" />
+              Alert Settings
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div>
+              <label className="text-sm font-medium">Poor Network Alert Threshold</label>
+              <div className="flex items-center gap-2 mt-1">
+                <Input
+                  type="number"
+                  value={alertSettings.poor_network_threshold_minutes}
+                  onChange={(e) => setAlertSettings({...alertSettings, poor_network_threshold_minutes: parseInt(e.target.value) || 30})}
+                  className="w-24"
+                />
+                <span className="text-sm text-slate-500">minutes of poor network</span>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Offline Alert Threshold</label>
+              <div className="flex items-center gap-2 mt-1">
+                <Input
+                  type="number"
+                  value={alertSettings.offline_threshold_minutes}
+                  onChange={(e) => setAlertSettings({...alertSettings, offline_threshold_minutes: parseInt(e.target.value) || 60})}
+                  className="w-24"
+                />
+                <span className="text-sm text-slate-500">minutes offline</span>
+              </div>
+            </div>
+
+            <div className="border-t pt-4">
+              <label className="text-sm font-medium mb-2 block">Notification Methods</label>
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={alertSettings.email_notifications}
+                    onChange={(e) => setAlertSettings({...alertSettings, email_notifications: e.target.checked})}
+                    className="rounded"
+                  />
+                  <span className="text-sm">Email notifications</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={alertSettings.in_app_notifications}
+                    onChange={(e) => setAlertSettings({...alertSettings, in_app_notifications: e.target.checked})}
+                    className="rounded"
+                  />
+                  <span className="text-sm">In-app notifications</span>
+                </label>
+              </div>
+            </div>
+
+            {alertSettings.email_notifications && (
+              <div>
+                <label className="text-sm font-medium">Notification Emails</label>
+                <Input
+                  value={alertSettings.notification_emails?.join(", ") || ""}
+                  onChange={(e) => setAlertSettings({
+                    ...alertSettings, 
+                    notification_emails: e.target.value.split(",").map(s => s.trim()).filter(Boolean)
+                  })}
+                  placeholder="email1@example.com, email2@example.com"
+                  className="mt-1"
+                />
+                <p className="text-xs text-slate-500 mt-1">Comma-separated email addresses</p>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowSettingsDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={saveAlertSettings} className="bg-violet-600 hover:bg-violet-700">
+              Save Settings
+            </Button>
+          </DialogFooter>
+          </DialogContent>
+          </Dialog>
+          </div>
+          );
+          }
