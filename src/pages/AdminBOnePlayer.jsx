@@ -355,10 +355,10 @@ export default function AdminBOnePlayer() {
     }
   };
 
-  // Check for extended alerts and send notifications
+  // Check for extended alerts and create in-app notifications
   useEffect(() => {
     const checkExtendedAlerts = async () => {
-      if (!alertSettings.email_notifications && !alertSettings.in_app_notifications) return;
+      if (!alertSettings.in_app_notifications) return;
       
       const now = new Date();
       
@@ -386,30 +386,16 @@ export default function AdminBOnePlayer() {
               status: "active"
             });
             
-            // Send email notification
-            if (alertSettings.email_notifications && alertSettings.notification_emails?.length > 0) {
-              for (const email of alertSettings.notification_emails) {
-                await base44.integrations.Core.SendEmail({
-                  to: email,
-                  subject: `🚨 Alert: Device Offline - ${screen.name}`,
-                  body: `
-BEYONDWALLS DEVICE ALERT
-━━━━━━━━━━━━━━━━━━━━━━━━
-
-⚠️ DEVICE OFFLINE
-
-Device: ${screen.name}
-Device ID: ${screen.device_id || "N/A"}
-Duration: ${Math.round(minutesOffline)} minutes
-Last Seen: ${format(lastHB, "PPp")}
-
-Please check the device connection.
-
-━━━━━━━━━━━━━━━━━━━━━━━━
-BeyondWalls Admin System
-                  `.trim()
-                });
-              }
+            // Create admin notification for in-app alerts
+            if (alertSettings.in_app_notifications) {
+              await base44.entities.AdminNotification.create({
+                type: "new_screen",
+                title: `Device Offline Alert: ${screen.name}`,
+                message: `Device ${screen.name} has been offline for ${Math.round(minutesOffline)} minutes. Last seen: ${format(lastHB, "PPp")}`,
+                reference_id: screen.id,
+                reference_type: "Screen",
+                status: "unread"
+              });
             }
             
             refetchAlerts();
@@ -1350,39 +1336,15 @@ BeyondWalls Admin System
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={alertSettings.email_notifications}
-                    onChange={(e) => setAlertSettings({...alertSettings, email_notifications: e.target.checked})}
-                    className="rounded"
-                  />
-                  <span className="text-sm">Email notifications</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
                     checked={alertSettings.in_app_notifications}
                     onChange={(e) => setAlertSettings({...alertSettings, in_app_notifications: e.target.checked})}
                     className="rounded"
                   />
-                  <span className="text-sm">In-app notifications</span>
+                  <span className="text-sm">In-app notifications (Admin Dashboard)</span>
                 </label>
               </div>
+              <p className="text-xs text-slate-500 mt-2">Alerts will appear in the admin notification center</p>
             </div>
-
-            {alertSettings.email_notifications && (
-              <div>
-                <label className="text-sm font-medium">Notification Emails</label>
-                <Input
-                  value={alertSettings.notification_emails?.join(", ") || ""}
-                  onChange={(e) => setAlertSettings({
-                    ...alertSettings, 
-                    notification_emails: e.target.value.split(",").map(s => s.trim()).filter(Boolean)
-                  })}
-                  placeholder="email1@example.com, email2@example.com"
-                  className="mt-1"
-                />
-                <p className="text-xs text-slate-500 mt-1">Comma-separated email addresses</p>
-              </div>
-            )}
           </div>
 
           <DialogFooter>
