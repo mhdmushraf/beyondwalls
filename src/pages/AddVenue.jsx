@@ -30,6 +30,8 @@ import { toast } from "sonner";
 import UAEPhoneInput from "@/components/forms/UAEPhoneInput";
 import UAEAddressInput from "@/components/forms/UAEAddressInput";
 import VenueLocationPicker from "@/components/maps/VenueLocationPicker";
+import VenueAudienceForm from "@/components/venue/VenueAudienceForm";
+import { calculateEstimatedViewers, calculateEstimatedEarnings } from "@/components/analytics/VenueAnalyticsCalculator";
 
 const VENUE_TYPES = [
   { value: "restaurant", label: "Restaurant" },
@@ -39,6 +41,7 @@ const VENUE_TYPES = [
   { value: "coworking", label: "Coworking Space" },
   { value: "hotel", label: "Hotel" },
   { value: "hospital", label: "Hospital / Clinic" },
+  { value: "salon", label: "Salon / Spa" },
   { value: "other", label: "Other" }
 ];
 
@@ -64,7 +67,16 @@ export default function AddVenue() {
     operating_hours: "",
     avg_daily_footfall: "",
     trade_license_url: "",
-    image_url: ""
+    image_url: "",
+    // New analytics fields
+    daily_customers: "",
+    screen_location: "",
+    screen_visibility_percent: 50,
+    peak_hours: [],
+    customer_dwell_time_minutes: 30,
+    customer_age_groups: [],
+    customer_gender_mix: "unknown",
+    special_events: ""
   });
 
   useEffect(() => {
@@ -107,9 +119,16 @@ export default function AddVenue() {
     setLoading(true);
 
     try {
+      // Calculate estimated viewers and earnings
+      const analytics = calculateEstimatedViewers(formData);
+      const earnings = calculateEstimatedEarnings(formData);
+      
       await base44.entities.Venue.create({
         ...formData,
-        avg_daily_footfall: parseInt(formData.avg_daily_footfall) || 0,
+        avg_daily_footfall: parseInt(formData.daily_customers) || parseInt(formData.avg_daily_footfall) || 0,
+        daily_customers: parseInt(formData.daily_customers) || 0,
+        estimated_daily_viewers: analytics.estimatedDailyViewers,
+        estimated_monthly_earnings: earnings.monthlyEarnings,
         owner_id: user.email,
         status: "pending"
       });
@@ -316,17 +335,17 @@ www.beyondwalls.ae
               required
             />
 
-            <div className="space-y-2">
-              <Label>Average Daily Footfall</Label>
-              <Input
-                type="number"
-                placeholder="e.g., 500"
-                value={formData.avg_daily_footfall}
-                onChange={(e) => setFormData({ ...formData, avg_daily_footfall: e.target.value })}
-              />
-            </div>
           </CardContent>
         </Card>
+
+        {/* NEW: Audience & Traffic Analytics Form */}
+        <div className="mb-6">
+          <VenueAudienceForm 
+            formData={formData} 
+            setFormData={setFormData}
+            venueType={formData.type}
+          />
+        </div>
 
         <Card className="border-0 shadow-xl mb-6">
           <CardHeader>
