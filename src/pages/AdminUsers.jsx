@@ -46,9 +46,12 @@ export default function AdminUsers() {
   const [walletLoading, setWalletLoading] = useState(false);
   const [showAdminDialog, setShowAdminDialog] = useState(false);
   const [adminForm, setAdminForm] = useState({
+    email: "",
+    full_name: "",
     permissions: []
   });
   const [authChecked, setAuthChecked] = useState(false);
+  const [inviteLoading, setInviteLoading] = useState(false);
 
   useEffect(() => {
     checkAdminAuth();
@@ -106,9 +109,85 @@ export default function AdminUsers() {
   const handleOpenAdminDialog = (user = null) => {
     setSelectedUser(user);
     setAdminForm({
+      email: "",
+      full_name: "",
       permissions: user?.admin_permissions || []
     });
     setShowAdminDialog(true);
+  };
+
+  const handleInviteAdmin = async () => {
+    if (!adminForm.email || !adminForm.full_name) {
+      toast.error("Please enter email and name");
+      return;
+    }
+    if (adminForm.permissions.length === 0) {
+      toast.error("Please select at least one permission");
+      return;
+    }
+
+    setInviteLoading(true);
+    try {
+      // Send invitation email
+      await base44.integrations.Core.SendEmail({
+        to: adminForm.email,
+        subject: "🎉 You've Been Invited as Admin | BeyondWalls",
+        body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS ADMIN INVITATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dear ${adminForm.full_name},
+
+You have been invited to join BeyondWalls as an Administrator!
+
+📋 YOUR ACCESS DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+Email: ${adminForm.email}
+Role: Administrator
+Permissions: ${adminForm.permissions.includes("all") ? "Full Access" : adminForm.permissions.join(", ")}
+
+🚀 GETTING STARTED
+━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Visit: https://beyondwalls.ae
+2. Click "Sign In" or "Get Started"
+3. Register with this email address: ${adminForm.email}
+4. Your admin access will be automatically activated
+
+📊 AS AN ADMIN, YOU CAN:
+• Manage users and approvals
+• Review and approve campaigns
+• Monitor screen performance
+• Handle wallet transactions
+• Access analytics and reports
+
+Need help? Contact us at info@beyondwalls.ae
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BeyondWalls - Advertise Beyond Boundaries
+www.beyondwalls.ae
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        `.trim()
+      });
+
+      // Create admin notification for tracking
+      await base44.entities.AdminNotification.create({
+        type: "new_user",
+        title: "Admin Invitation Sent",
+        message: `Invitation sent to ${adminForm.full_name} (${adminForm.email}) with ${adminForm.permissions.includes("all") ? "Full Access" : adminForm.permissions.join(", ")} permissions`,
+        reference_id: adminForm.email,
+        reference_type: "AdminInvite",
+        status: "unread"
+      });
+
+      toast.success(`Invitation email sent to ${adminForm.email}!`);
+      setShowAdminDialog(false);
+      setAdminForm({ email: "", full_name: "", permissions: [] });
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to send invitation");
+    }
+    setInviteLoading(false);
   };
 
   const handleSaveAdminPermissions = async () => {
@@ -471,11 +550,11 @@ export default function AdminUsers() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Shield className="w-5 h-5 text-violet-600" />
-              {selectedUser ? "Edit Admin Permissions" : "Create Admin User"}
+              {selectedUser ? "Edit Admin Permissions" : "Invite New Admin"}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            {selectedUser && (
+            {selectedUser ? (
               <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
                 <Avatar>
                   <AvatarImage src={selectedUser?.avatar_url} />
@@ -488,6 +567,28 @@ export default function AdminUsers() {
                   <p className="text-sm text-slate-500">{selectedUser?.email}</p>
                 </div>
               </div>
+            ) : (
+              <>
+                <div>
+                  <Label>Full Name</Label>
+                  <Input
+                    placeholder="Enter admin's full name"
+                    value={adminForm.full_name}
+                    onChange={(e) => setAdminForm({...adminForm, full_name: e.target.value})}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label>Email Address</Label>
+                  <Input
+                    type="email"
+                    placeholder="Enter admin's email"
+                    value={adminForm.email}
+                    onChange={(e) => setAdminForm({...adminForm, email: e.target.value})}
+                    className="mt-1"
+                  />
+                </div>
+              </>
             )}
 
             <div>
@@ -522,17 +623,31 @@ export default function AdminUsers() {
             <Button variant="outline" onClick={() => setShowAdminDialog(false)}>
               Cancel
             </Button>
-            <Button 
-              onClick={handleSaveAdminPermissions}
-              disabled={walletLoading || adminForm.permissions.length === 0}
-              className="bg-gradient-to-r from-violet-600 to-indigo-600"
-            >
-              {walletLoading ? (
-                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving...</>
-              ) : (
-                <><Shield className="w-4 h-4 mr-2" /> Save Permissions</>
-              )}
-            </Button>
+            {selectedUser ? (
+              <Button 
+                onClick={handleSaveAdminPermissions}
+                disabled={walletLoading || adminForm.permissions.length === 0}
+                className="bg-gradient-to-r from-violet-600 to-indigo-600"
+              >
+                {walletLoading ? (
+                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving...</>
+                ) : (
+                  <><Shield className="w-4 h-4 mr-2" /> Save Permissions</>
+                )}
+              </Button>
+            ) : (
+              <Button 
+                onClick={handleInviteAdmin}
+                disabled={inviteLoading || !adminForm.email || !adminForm.full_name || adminForm.permissions.length === 0}
+                className="bg-gradient-to-r from-violet-600 to-indigo-600"
+              >
+                {inviteLoading ? (
+                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Sending...</>
+                ) : (
+                  <><Mail className="w-4 h-4 mr-2" /> Send Invitation</>
+                )}
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
