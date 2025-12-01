@@ -1,11 +1,12 @@
 import React, { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { Download, Loader2, RefreshCw, MonitorPlay, Sparkles, FileText } from "lucide-react";
+import { Download, Loader2, RefreshCw, MonitorPlay, Sparkles, FileText, CreditCard, Mail, Phone, Globe, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function LogoGenerator() {
   const [generating, setGenerating] = useState(false);
@@ -585,6 +586,257 @@ export default function LogoGenerator() {
             </ul>
           </CardContent>
         </Card>
+
+        {/* Business Cards Section */}
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CreditCard className="w-5 h-5 text-violet-600" />
+              Professional Business Cards
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="ceo">
+              <TabsList className="mb-6">
+                <TabsTrigger value="ceo">CEO Card</TabsTrigger>
+                <TabsTrigger value="coo">COO Card</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="ceo">
+                <BusinessCard
+                  name="Mohammed Al Rashid"
+                  title="Chief Executive Officer"
+                  email="ceo@beyondwalls.ae"
+                  phone="+971 55 614 0067"
+                  onDownload={() => downloadBusinessCard("ceo")}
+                />
+              </TabsContent>
+
+              <TabsContent value="coo">
+                <BusinessCard
+                  name="Sarah Ahmed"
+                  title="Chief Operating Officer"
+                  email="coo@beyondwalls.ae"
+                  phone="+971 55 614 0068"
+                  onDownload={() => downloadBusinessCard("coo")}
+                />
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+
+  function downloadBusinessCard(role) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Business card dimensions (standard 3.5 x 2 inches at 300 DPI scaled down)
+    canvas.width = 700;
+    canvas.height = 400;
+    
+    // White background with subtle gradient
+    const bgGradient = ctx.createLinearGradient(0, 0, 700, 400);
+    bgGradient.addColorStop(0, '#ffffff');
+    bgGradient.addColorStop(1, '#f8fafc');
+    ctx.fillStyle = bgGradient;
+    ctx.fillRect(0, 0, 700, 400);
+    
+    // Left accent bar with gradient
+    const accentGradient = ctx.createLinearGradient(0, 0, 0, 400);
+    accentGradient.addColorStop(0, '#8B5CF6');
+    accentGradient.addColorStop(1, '#6366F1');
+    ctx.fillStyle = accentGradient;
+    ctx.fillRect(0, 0, 8, 400);
+    
+    // Logo icon background
+    const logoGradient = ctx.createLinearGradient(40, 30, 100, 90);
+    logoGradient.addColorStop(0, '#8B5CF6');
+    logoGradient.addColorStop(1, '#6366F1');
+    ctx.beginPath();
+    ctx.roundRect(40, 30, 60, 60, 12);
+    ctx.fillStyle = logoGradient;
+    ctx.fill();
+    
+    // Monitor icon in logo
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.roundRect(52, 42, 36, 26, 3);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(70, 68);
+    ctx.lineTo(70, 78);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(58, 78);
+    ctx.lineTo(82, 78);
+    ctx.stroke();
+    
+    // Play icon
+    ctx.fillStyle = 'white';
+    ctx.beginPath();
+    ctx.moveTo(65, 50);
+    ctx.lineTo(65, 62);
+    ctx.lineTo(77, 56);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Company name
+    ctx.font = 'bold 28px system-ui, -apple-system, sans-serif';
+    const nameGradient = ctx.createLinearGradient(115, 0, 300, 0);
+    nameGradient.addColorStop(0, '#8B5CF6');
+    nameGradient.addColorStop(1, '#6366F1');
+    ctx.fillStyle = nameGradient;
+    ctx.fillText('BeyondWalls', 115, 65);
+    
+    // Tagline
+    ctx.font = '12px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = '#64748b';
+    ctx.fillText('Digital Out-of-Home Advertising', 115, 85);
+    
+    // Divider line
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(40, 120);
+    ctx.lineTo(660, 120);
+    ctx.stroke();
+    
+    // Person details
+    const personName = role === 'ceo' ? 'Mohammed Al Rashid' : 'Sarah Ahmed';
+    const personTitle = role === 'ceo' ? 'Chief Executive Officer' : 'Chief Operating Officer';
+    const personEmail = role === 'ceo' ? 'ceo@beyondwalls.ae' : 'coo@beyondwalls.ae';
+    const personPhone = role === 'ceo' ? '+971 55 614 0067' : '+971 55 614 0068';
+    
+    // Name
+    ctx.font = 'bold 32px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = '#0f172a';
+    ctx.fillText(personName, 40, 175);
+    
+    // Title
+    ctx.font = '16px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = '#8B5CF6';
+    ctx.fillText(personTitle, 40, 205);
+    
+    // Contact details with icons
+    ctx.font = '14px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = '#475569';
+    
+    // Email
+    ctx.fillText('✉  ' + personEmail, 40, 260);
+    
+    // Phone
+    ctx.fillText('📞  ' + personPhone, 40, 285);
+    
+    // Website
+    ctx.fillText('🌐  www.beyondwalls.ae', 40, 310);
+    
+    // Address
+    ctx.fillText('📍  Dubai, United Arab Emirates', 40, 335);
+    
+    // QR code placeholder (stylized square)
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(560, 240, 100, 100, 8);
+    ctx.stroke();
+    
+    // QR pattern simulation
+    ctx.fillStyle = '#0f172a';
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 5; j++) {
+        if (Math.random() > 0.4) {
+          ctx.fillRect(572 + i * 16, 252 + j * 16, 12, 12);
+        }
+      }
+    }
+    ctx.font = '10px system-ui';
+    ctx.fillStyle = '#94a3b8';
+    ctx.textAlign = 'center';
+    ctx.fillText('Scan to connect', 610, 355);
+    ctx.textAlign = 'left';
+    
+    // Bottom accent
+    const bottomGradient = ctx.createLinearGradient(0, 380, 700, 400);
+    bottomGradient.addColorStop(0, '#8B5CF6');
+    bottomGradient.addColorStop(1, '#6366F1');
+    ctx.fillStyle = bottomGradient;
+    ctx.fillRect(0, 392, 700, 8);
+    
+    // Download
+    canvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `beyondwalls-${role}-business-card.png`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }, 'image/png');
+  }
+}
+
+function BusinessCard({ name, title, email, phone, onDownload }) {
+  return (
+    <div className="space-y-4">
+      {/* Card Preview */}
+      <div className="bg-white rounded-2xl shadow-xl overflow-hidden border max-w-lg mx-auto">
+        {/* Top accent */}
+        <div className="h-2 bg-gradient-to-r from-violet-600 to-indigo-600" />
+        
+        <div className="p-6">
+          {/* Header with logo */}
+          <div className="flex items-center gap-3 mb-4 pb-4 border-b">
+            <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+              <MonitorPlay className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <span className="font-bold text-xl bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
+                BeyondWalls
+              </span>
+              <p className="text-xs text-slate-500">Digital Out-of-Home Advertising</p>
+            </div>
+          </div>
+          
+          {/* Person info */}
+          <div className="mb-6">
+            <h3 className="text-2xl font-bold text-slate-900">{name}</h3>
+            <p className="text-violet-600 font-medium">{title}</p>
+          </div>
+          
+          {/* Contact details */}
+          <div className="space-y-2 text-sm">
+            <div className="flex items-center gap-3 text-slate-600">
+              <Mail className="w-4 h-4 text-violet-500" />
+              <span>{email}</span>
+            </div>
+            <div className="flex items-center gap-3 text-slate-600">
+              <Phone className="w-4 h-4 text-violet-500" />
+              <span>{phone}</span>
+            </div>
+            <div className="flex items-center gap-3 text-slate-600">
+              <Globe className="w-4 h-4 text-violet-500" />
+              <span>www.beyondwalls.ae</span>
+            </div>
+            <div className="flex items-center gap-3 text-slate-600">
+              <MapPin className="w-4 h-4 text-violet-500" />
+              <span>Dubai, United Arab Emirates</span>
+            </div>
+          </div>
+        </div>
+        
+        {/* Bottom accent */}
+        <div className="h-2 bg-gradient-to-r from-violet-600 to-indigo-600" />
+      </div>
+      
+      {/* Download buttons */}
+      <div className="flex justify-center gap-3">
+        <Button onClick={onDownload} className="bg-gradient-to-r from-violet-600 to-indigo-600">
+          <Download className="w-4 h-4 mr-2" />
+          Download PNG
+        </Button>
       </div>
     </div>
   );
