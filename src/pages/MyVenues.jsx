@@ -13,7 +13,9 @@ import {
   Settings,
   Loader2,
   Ban,
-  AlertTriangle
+  AlertTriangle,
+  Eye,
+  TrendingUp
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import SuspensionRequestForm from "@/components/suspension/SuspensionRequestForm";
+import { calculateEstimatedViewers, calculateEstimatedEarnings } from "@/components/analytics/VenueAnalyticsCalculator";
 
 export default function MyVenues() {
   const navigate = useNavigate();
@@ -207,7 +210,7 @@ export default function MyVenues() {
                   </div>
                 </div>
                 <CardContent className="p-4">
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-1 text-sm text-slate-600">
                         <MonitorPlay className="w-4 h-4" />
@@ -220,6 +223,20 @@ export default function MyVenues() {
                     </div>
                     <Badge variant="secondary" className="capitalize">{venue.type}</Badge>
                   </div>
+                  
+                  {/* Analytics Summary */}
+                  {venue.daily_customers > 0 && (
+                    <div className="bg-violet-50 rounded-lg p-2 mb-3 flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-1 text-violet-700">
+                        <Eye className="w-3 h-3" />
+                        <span>~{calculateEstimatedViewers(venue).estimatedDailyViewers.toLocaleString()} viewers/day</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-emerald-600">
+                        <TrendingUp className="w-3 h-3" />
+                        <span>AED {calculateEstimatedEarnings(venue).monthlyEarnings.toLocaleString()}/mo</span>
+                      </div>
+                    </div>
+                  )}
                   {venue.status === "suspended" ? (
                     <div className="space-y-2">
                       <div className="p-2 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-sm text-red-700">
