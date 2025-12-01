@@ -29,32 +29,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 
-// Generate hardware fingerprint
-const generateHardwareId = () => {
-  const nav = window.navigator;
-  const screen = window.screen;
-  
-  // Create fingerprint from available browser/device info
-  const components = [
-    nav.userAgent,
-    screen.width + "x" + screen.height,
-    screen.colorDepth,
-    nav.language,
-    nav.platform,
-    new Date().getTimezoneOffset(),
-    nav.hardwareConcurrency || 0,
-    nav.deviceMemory || 0
-  ];
-  
-  // Simple hash function
-  const hash = components.join("|").split("").reduce((a, b) => {
-    a = ((a << 5) - a) + b.charCodeAt(0);
-    return a & a;
-  }, 0);
-  
-  return "BONE-" + Math.abs(hash).toString(16).toUpperCase().padStart(8, "0");
-};
-
 // Generate session ID
 const generateSessionId = () => {
   return "SES-" + Date.now().toString(36) + "-" + Math.random().toString(36).substr(2, 9);
@@ -84,9 +58,7 @@ export default function ScreenPlayer() {
   const [totalPlaytime, setTotalPlaytime] = useState(0);
   const [adsPlayed, setAdsPlayed] = useState(0);
   const [mediaError, setMediaError] = useState(null);
-  const [hardwareId, setHardwareId] = useState("");
   const [sessionId, setSessionId] = useState("");
-  const [sessionBlocked, setSessionBlocked] = useState(false);
   const [uptimeSeconds, setUptimeSeconds] = useState(0);
   const containerRef = useRef(null);
   const videoRef = useRef(null);
@@ -101,10 +73,8 @@ export default function ScreenPlayer() {
 
   const [urlParams, setUrlParams] = useState(null);
 
-  // Initialize hardware ID on mount and parse URL params
+  // Initialize session ID on mount and parse URL params
   useEffect(() => {
-    const hwId = generateHardwareId();
-    setHardwareId(hwId);
     const sessId = generateSessionId();
     setSessionId(sessId);
     
@@ -118,9 +88,9 @@ export default function ScreenPlayer() {
     });
   }, []);
 
-  // Handle auto-login after hardware ID is ready
+  // Handle auto-login after session ID is ready
   useEffect(() => {
-    if (!urlParams || !hardwareId || !sessionId) return;
+    if (!urlParams || !sessionId) return;
 
     const { code, id, pin: pinParam, autoStart } = urlParams;
 
@@ -144,9 +114,9 @@ export default function ScreenPlayer() {
         handleAutoAuthenticate("screen_id", id, pinParam);
       }
     }
-  }, [urlParams, hardwareId, sessionId]);
+  }, [urlParams, sessionId]);
 
-  // Auto-authenticate function for URL parameter login with hardware validation
+  // Auto-authenticate function for URL parameter login
   const handleAutoAuthenticate = async (mode, idOrCode, pinCode) => {
     if (authenticated || connecting) return;
     
@@ -167,31 +137,15 @@ export default function ScreenPlayer() {
       }
 
       if (foundScreen) {
-        // Hardware validation
-        if (foundScreen.hardware_id && foundScreen.hardware_id !== hardwareId) {
-          setError("Unauthorized device. This screen is registered to a different B.One hardware.");
-          setSessionBlocked(true);
-          setConnecting(false);
-          return;
-        }
-
-        // Register hardware if first time
         const updateData = { 
           status: "online", 
           player_active: true, 
           last_heartbeat: new Date().toISOString(),
           current_session_id: sessionId,
           session_started_at: new Date().toISOString(),
-          uptime_seconds: 0
+          uptime_seconds: 0,
+          player_version: PLAYER_VERSION
         };
-
-        if (!foundScreen.hardware_id) {
-          updateData.hardware_id = hardwareId;
-          updateData.hardware_registered_at = new Date().toISOString();
-        }
-        
-        // Report player version
-        updateData.player_version = PLAYER_VERSION;
 
         setScreen(foundScreen);
         setAuthenticated(true);
@@ -270,12 +224,6 @@ export default function ScreenPlayer() {
       base44.entities.Screen.update(screen.id, { player_command: null });
     }
 
-    // Session validation - check if another device hijacked the session
-    if (screenData?.[0]?.current_session_id && screenData[0].current_session_id !== sessionId && authenticated) {
-      setSessionBlocked(true);
-      setAuthenticated(false);
-      setError("Session terminated. Another device has connected to this screen.");
-    }
   }, [screenData]);
 
   const defaultContentUrl = platformSettings.find(s => s.setting_key === "default_screen_content_url")?.setting_value || "";
@@ -581,34 +529,18 @@ export default function ScreenPlayer() {
         foundScreen = screens.find(s => s.device_id === screenId || s.id === screenId);
         if (!foundScreen) { setError("Screen not found. Check your screen ID."); setConnecting(false); return; }
         if (foundScreen.player_pin && foundScreen.player_pin !== pin) { setError("Invalid PIN. Please try again."); setConnecting(false); return; }
-      }
+        }
 
-      // Hardware validation - check if already registered to different hardware
-      if (foundScreen.hardware_id && foundScreen.hardware_id !== hardwareId) {
-        setError("Unauthorized device. This screen is registered to a different B.One hardware.");
-        setSessionBlocked(true);
-        setConnecting(false);
-        return;
-      }
-
-      // Prepare update data with session info
-      const updateData = { 
+        // Prepare update data with session info
+        const updateData = { 
         status: "online", 
         player_active: true, 
         last_heartbeat: new Date().toISOString(),
         current_session_id: sessionId,
         session_started_at: new Date().toISOString(),
-        uptime_seconds: 0
-      };
-
-      // Register hardware if first time
-      if (!foundScreen.hardware_id) {
-        updateData.hardware_id = hardwareId;
-        updateData.hardware_registered_at = new Date().toISOString();
-      }
-      
-      // Report player version
-      updateData.player_version = PLAYER_VERSION;
+        uptime_seconds: 0,
+        player_version: PLAYER_VERSION
+        };
 
       setScreen(foundScreen);
       setAuthenticated(true);
@@ -648,30 +580,6 @@ export default function ScreenPlayer() {
 
   // Hide controls in kiosk/auto-start mode
   const isKioskMode = autoStartMode && authenticated;
-
-  // Session blocked screen
-  if (sessionBlocked) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-rose-900 to-slate-900 flex items-center justify-center p-6">
-        <Card className="w-full max-w-md border-0 shadow-2xl bg-white/10 backdrop-blur-xl">
-          <CardContent className="p-8 text-center">
-            <div className="w-20 h-20 bg-rose-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <AlertCircle className="w-10 h-10 text-rose-400" />
-            </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Session Blocked</h1>
-            <p className="text-white/60 mb-4">{error || "This device is not authorized to access this screen."}</p>
-            <div className="text-xs text-white/40 font-mono mb-6">
-              Hardware ID: {hardwareId}
-            </div>
-            <Button onClick={() => window.location.reload()} className="w-full bg-rose-600 hover:bg-rose-700">
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Try Again
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   // Login Screen
   if (!authenticated) {
