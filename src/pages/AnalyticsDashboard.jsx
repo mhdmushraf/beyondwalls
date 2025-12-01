@@ -63,6 +63,7 @@ import PerformanceByLocation from "@/components/analytics/PerformanceByLocation"
 import PerformanceByTimeSlot from "@/components/analytics/PerformanceByTimeSlot";
 import PerformanceByVenueType from "@/components/analytics/PerformanceByVenueType";
 import AIOptimizationRecommendations from "@/components/analytics/AIOptimizationRecommendations";
+import { MetricExplainer } from "@/components/onboarding/MetricExplainer";
 
 export default function AnalyticsDashboard() {
   const navigate = useNavigate();
@@ -269,7 +270,7 @@ export default function AnalyticsDashboard() {
         </div>
       </div>
 
-      {/* Key Metrics Grid - DOOH Specific */}
+      {/* Key Metrics Grid - DOOH Specific with Explainers */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <Card className="bg-gradient-to-br from-violet-500 to-violet-600 text-white border-0">
           <CardContent className="p-4">
@@ -281,7 +282,9 @@ export default function AnalyticsDashboard() {
               </Badge>
             </div>
             <p className="text-2xl font-bold">{metrics.totalPlayouts.toLocaleString()}</p>
-            <p className="text-violet-200 text-sm">Ad Playouts</p>
+            <MetricExplainer metric="playouts">
+              <p className="text-violet-200 text-sm">Ad Playouts</p>
+            </MetricExplainer>
           </CardContent>
         </Card>
 
@@ -295,7 +298,9 @@ export default function AnalyticsDashboard() {
               </Badge>
             </div>
             <p className="text-2xl font-bold">{metrics.totalImpressions.toLocaleString()}</p>
-            <p className="text-indigo-200 text-sm">Impressions</p>
+            <MetricExplainer metric="impressions">
+              <p className="text-indigo-200 text-sm">Impressions</p>
+            </MetricExplainer>
           </CardContent>
         </Card>
 
@@ -303,10 +308,14 @@ export default function AnalyticsDashboard() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
               <Users className="w-5 h-5 opacity-80" />
-              <span className="text-xs text-blue-200">{metrics.totalFrequency}x freq</span>
+              <MetricExplainer metric="frequency">
+                <span className="text-xs text-blue-200">{metrics.totalFrequency}x freq</span>
+              </MetricExplainer>
             </div>
             <p className="text-2xl font-bold">{metrics.totalReach.toLocaleString()}</p>
-            <p className="text-blue-200 text-sm">Unique Reach</p>
+            <MetricExplainer metric="reach">
+              <p className="text-blue-200 text-sm">Unique Reach</p>
+            </MetricExplainer>
           </CardContent>
         </Card>
 
@@ -317,7 +326,9 @@ export default function AnalyticsDashboard() {
               <span className="text-xs text-emerald-200">{metrics.activeScreensCount} screens</span>
             </div>
             <p className="text-2xl font-bold">{metrics.totalScreenTime} min</p>
-            <p className="text-emerald-200 text-sm">Screen Time</p>
+            <MetricExplainer metric="screenTime">
+              <p className="text-emerald-200 text-sm">Screen Time</p>
+            </MetricExplainer>
           </CardContent>
         </Card>
 
@@ -328,7 +339,9 @@ export default function AnalyticsDashboard() {
               <span className="text-xs text-amber-200">Est. Lift</span>
             </div>
             <p className="text-2xl font-bold">{metrics.estimatedBrandLift}%</p>
-            <p className="text-amber-200 text-sm">Brand Awareness</p>
+            <MetricExplainer metric="brandLift">
+              <p className="text-amber-200 text-sm">Brand Awareness</p>
+            </MetricExplainer>
           </CardContent>
         </Card>
 
@@ -344,37 +357,63 @@ export default function AnalyticsDashboard() {
         </Card>
       </div>
 
-      {/* Secondary Metrics - DOOH Specific */}
+      {/* Secondary Metrics - DOOH Specific with Help */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4 text-center">
-            <p className="text-sm text-slate-500">Frequency</p>
+            <MetricExplainer metric="frequency">
+              <p className="text-sm text-slate-500">Frequency</p>
+            </MetricExplainer>
             <p className="text-xl font-bold text-slate-900">{metrics.totalFrequency}x</p>
-            <p className="text-xs text-slate-400">Avg. views per person</p>
+            <p className="text-xs text-slate-400">How often each person saw your ad</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <p className="text-sm text-slate-500">CPM</p>
+            <MetricExplainer metric="cpm">
+              <p className="text-sm text-slate-500">CPM</p>
+            </MetricExplainer>
             <p className="text-xl font-bold text-slate-900">AED {metrics.cpm}</p>
-            <p className="text-xs text-slate-400">Cost per 1000 impressions</p>
+            <p className="text-xs text-slate-400">Cost per 1,000 views</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <p className="text-sm text-slate-500">Cost per Playout</p>
+            <MetricExplainer metric="costPerPlayout">
+              <p className="text-sm text-slate-500">Cost per Playout</p>
+            </MetricExplainer>
             <p className="text-xl font-bold text-slate-900">AED {metrics.costPerPlayout}</p>
-            <p className="text-xs text-slate-400">Per ad display</p>
+            <p className="text-xs text-slate-400">Cost each time ad displays</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <p className="text-sm text-slate-500">Daily Avg.</p>
+            <p className="text-sm text-slate-500">Daily Average</p>
             <p className="text-xl font-bold text-emerald-600">{metrics.avgDailyImpressions.toLocaleString()}</p>
-            <p className="text-xs text-slate-400">Impressions per day</p>
+            <p className="text-xs text-slate-400">People seeing your ad daily</p>
           </CardContent>
         </Card>
       </div>
+
+      {/* Simple Explanation Banner */}
+      <Card className="bg-gradient-to-r from-violet-50 to-indigo-50 border-violet-200">
+        <CardContent className="p-4">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <Lightbulb className="w-5 h-5 text-violet-600" />
+            </div>
+            <div>
+              <h4 className="font-semibold text-slate-900 mb-1">📊 What do these numbers mean?</h4>
+              <p className="text-sm text-slate-600">
+                Your ads played <strong>{metrics.totalPlayouts.toLocaleString()}</strong> times on screens, 
+                reaching approximately <strong>{metrics.totalReach.toLocaleString()}</strong> unique people. 
+                On average, each person saw your ad <strong>{metrics.totalFrequency} times</strong>, 
+                which helps build brand recognition. Click on any metric label to learn more!
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Main Charts Section */}
       <div className="grid lg:grid-cols-3 gap-6">

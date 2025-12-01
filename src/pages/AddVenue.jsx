@@ -12,7 +12,9 @@ import {
   Clock,
   Users,
   Loader2,
-  CheckCircle2
+  CheckCircle2,
+  HelpCircle,
+  Lightbulb
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,6 +34,7 @@ import UAEAddressInput from "@/components/forms/UAEAddressInput";
 import VenueLocationPicker from "@/components/maps/VenueLocationPicker";
 import VenueAudienceForm from "@/components/venue/VenueAudienceForm";
 import { calculateEstimatedViewers, calculateEstimatedEarnings } from "@/components/analytics/VenueAnalyticsCalculator";
+import VenueOnboardingGuide from "@/components/onboarding/VenueOnboardingGuide";
 
 const VENUE_TYPES = [
   { value: "restaurant", label: "Restaurant" },
@@ -236,8 +239,22 @@ www.beyondwalls.ae
     </div>
   );
 
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    // Show onboarding for new users
+    if (user && !user.onboarding_completed && !user.venues_count) {
+      setShowOnboarding(true);
+    }
+  }, [user]);
+
   return (
     <div className="p-6 lg:p-8 max-w-3xl mx-auto">
+      {/* Onboarding Guide */}
+      {showOnboarding && (
+        <VenueOnboardingGuide user={user} onComplete={() => setShowOnboarding(false)} />
+      )}
+
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
@@ -247,7 +264,33 @@ www.beyondwalls.ae
           <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Add New Venue</h1>
           <p className="text-slate-500">Register your venue to start earning</p>
         </div>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={() => setShowOnboarding(true)}
+          className="ml-auto"
+        >
+          <HelpCircle className="w-4 h-4 mr-1" />
+          Help Guide
+        </Button>
       </div>
+
+      {/* Quick Tips Banner */}
+      <Card className="mb-6 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
+        <CardContent className="p-4">
+          <div className="flex items-start gap-3">
+            <Lightbulb className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-amber-800">💡 Quick Tips for Better Earnings</p>
+              <ul className="text-xs text-amber-700 mt-1 space-y-0.5">
+                <li>• Accurate customer counts help attract more advertisers</li>
+                <li>• Screens in high-visibility areas earn up to 40% more</li>
+                <li>• Add peak hours to qualify for premium pricing</li>
+              </ul>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <form onSubmit={handleSubmit}>
         <Card className="border-0 shadow-xl mb-6">

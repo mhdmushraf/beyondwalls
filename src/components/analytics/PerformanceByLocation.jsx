@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, TrendingUp, TrendingDown, Eye, MousePointer, Target } from "lucide-react";
+import { MapPin, TrendingUp, Eye, Play, Users, MonitorPlay } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -12,9 +12,10 @@ import {
   ResponsiveContainer,
   Cell
 } from "recharts";
+import { MetricExplainer } from "@/components/onboarding/MetricExplainer";
 
 export default function PerformanceByLocation({ bookings, screens, venues }) {
-  // Group performance data by city
+  // Group performance data by city - DOOH specific metrics
   const locationData = {};
   
   bookings.forEach(booking => {
@@ -26,20 +27,24 @@ export default function PerformanceByLocation({ bookings, screens, venues }) {
       locationData[city] = {
         city,
         impressions: 0,
-        clicks: 0,
-        conversions: 0,
+        playouts: 0,
+        reach: 0,
         spend: 0,
-        screens: 0
+        screens: 0,
+        screenTime: 0
       };
     }
     
-    const avgDailyViews = screen?.avg_daily_views || 500;
+    // Use venue's estimated viewers if available
+    const dailyViewers = venue?.estimated_daily_viewers || screen?.avg_daily_views || 500;
     const days = booking.weeks_booked ? booking.weeks_booked * 7 : 7;
-    const impressions = avgDailyViews * days;
+    const impressions = dailyViewers * days;
+    const playoutsPerDay = 6 * 12; // 6 per hour × 12 operating hours
     
     locationData[city].impressions += impressions;
-    locationData[city].clicks += Math.round(impressions * 0.028);
-    locationData[city].conversions += Math.round(impressions * 0.028 * 0.14);
+    locationData[city].reach += Math.round(impressions * 0.65);
+    locationData[city].playouts += playoutsPerDay * days;
+    locationData[city].screenTime += Math.round((playoutsPerDay * 15 / 60) * days);
     locationData[city].spend += booking.total_cost || 0;
     locationData[city].screens += 1;
   });
@@ -47,8 +52,8 @@ export default function PerformanceByLocation({ bookings, screens, venues }) {
   const chartData = Object.values(locationData)
     .map(loc => ({
       ...loc,
-      ctr: loc.impressions > 0 ? ((loc.clicks / loc.impressions) * 100).toFixed(2) : 0,
-      cpc: loc.clicks > 0 ? (loc.spend / loc.clicks).toFixed(2) : 0
+      frequency: loc.reach > 0 ? (loc.impressions / loc.reach).toFixed(1) : 0,
+      cpm: loc.impressions > 0 ? ((loc.spend / loc.impressions) * 1000).toFixed(2) : 0
     }))
     .sort((a, b) => b.impressions - a.impressions);
 
@@ -117,24 +122,30 @@ export default function PerformanceByLocation({ bookings, screens, venues }) {
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
                   <div className="flex items-center justify-center gap-1 text-slate-500 mb-1">
-                    <Eye className="w-3 h-3" />
-                    <span className="text-xs">Impressions</span>
+                    <MetricExplainer metric="playouts" showIcon={false}>
+                      <Play className="w-3 h-3" />
+                      <span className="text-xs">Playouts</span>
+                    </MetricExplainer>
+                  </div>
+                  <p className="font-bold text-slate-900">{location.playouts.toLocaleString()}</p>
+                </div>
+                <div>
+                  <div className="flex items-center justify-center gap-1 text-slate-500 mb-1">
+                    <MetricExplainer metric="impressions" showIcon={false}>
+                      <Eye className="w-3 h-3" />
+                      <span className="text-xs">Views</span>
+                    </MetricExplainer>
                   </div>
                   <p className="font-bold text-slate-900">{location.impressions.toLocaleString()}</p>
                 </div>
                 <div>
                   <div className="flex items-center justify-center gap-1 text-slate-500 mb-1">
-                    <MousePointer className="w-3 h-3" />
-                    <span className="text-xs">CTR</span>
+                    <MetricExplainer metric="reach" showIcon={false}>
+                      <Users className="w-3 h-3" />
+                      <span className="text-xs">Reach</span>
+                    </MetricExplainer>
                   </div>
-                  <p className="font-bold text-slate-900">{location.ctr}%</p>
-                </div>
-                <div>
-                  <div className="flex items-center justify-center gap-1 text-slate-500 mb-1">
-                    <Target className="w-3 h-3" />
-                    <span className="text-xs">Conv.</span>
-                  </div>
-                  <p className="font-bold text-emerald-600">{location.conversions}</p>
+                  <p className="font-bold text-emerald-600">{location.reach.toLocaleString()}</p>
                 </div>
               </div>
 
@@ -147,7 +158,7 @@ export default function PerformanceByLocation({ bookings, screens, venues }) {
         ))}
       </div>
 
-      {/* Location Insights */}
+      {/* Location Insights - Simplified */}
       {topCity && (
         <Card className="bg-gradient-to-r from-violet-50 to-indigo-50 border-violet-100">
           <CardContent className="p-6">
@@ -156,11 +167,10 @@ export default function PerformanceByLocation({ bookings, screens, venues }) {
                 <TrendingUp className="w-6 h-6 text-violet-600" />
               </div>
               <div>
-                <h3 className="font-semibold text-slate-900 mb-1">Location Insight</h3>
+                <h3 className="font-semibold text-slate-900 mb-1">📍 Location Insight</h3>
                 <p className="text-slate-600">
-                  <strong>{topCity.city}</strong> is your best performing location with{" "}
-                  <strong>{topCity.impressions.toLocaleString()}</strong> impressions and{" "}
-                  <strong>{topCity.ctr}%</strong> CTR. Consider allocating more budget to this area for maximum impact.
+                  <strong>{topCity.city}</strong> is your best performing location! Your ads were seen by approximately{" "}
+                  <strong>{topCity.reach.toLocaleString()}</strong> unique people. Consider increasing your presence in this area.
                 </p>
               </div>
             </div>
