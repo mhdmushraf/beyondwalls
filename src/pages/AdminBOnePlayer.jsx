@@ -134,6 +134,16 @@ export default function AdminBOnePlayer() {
   const [showDetails, setShowDetails] = useState(false);
   const [actionLoading, setActionLoading] = useState(null);
   const [activeTab, setActiveTab] = useState("devices");
+  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
+  const [selectedDevices, setSelectedDevices] = useState([]);
+  const [bulkActionLoading, setBulkActionLoading] = useState(false);
+  const [alertSettings, setAlertSettings] = useState({
+    poor_network_threshold_minutes: 30,
+    offline_threshold_minutes: 60,
+    email_notifications: true,
+    in_app_notifications: true,
+    notification_emails: ["info@beyondwalls.ae"]
+  });
 
   useEffect(() => {
     loadUser();
@@ -184,6 +194,25 @@ export default function AdminBOnePlayer() {
     queryKey: ["content-analytics"],
     queryFn: () => base44.entities.ContentAnalytics.list("-impressions", 100)
   });
+
+  const { data: savedAlertSettings = [] } = useQuery({
+    queryKey: ["alert-settings"],
+    queryFn: () => base44.entities.AlertSettings.filter({ setting_type: "global" })
+  });
+
+  // Load saved settings
+  useEffect(() => {
+    if (savedAlertSettings.length > 0) {
+      const settings = savedAlertSettings[0];
+      setAlertSettings({
+        poor_network_threshold_minutes: settings.poor_network_threshold_minutes || 30,
+        offline_threshold_minutes: settings.offline_threshold_minutes || 60,
+        email_notifications: settings.email_notifications ?? true,
+        in_app_notifications: settings.in_app_notifications ?? true,
+        notification_emails: settings.notification_emails || ["info@beyondwalls.ae"]
+      });
+    }
+  }, [savedAlertSettings]);
 
   // Calculate stats
   const onlineScreens = screens.filter(s => {
@@ -257,6 +286,156 @@ export default function AdminBOnePlayer() {
   const isVersionOutdated = (version) => {
     if (!version) return false;
     return version !== LATEST_PLAYER_VERSION;
+  };
+
+  // Bulk update command
+  const sendBulkCommand = async (command, screenIds = null) => {
+    const targetIds = screenIds || selectedDevices;
+    if (targetIds.length === 0) {
+      toast.error("No devices selected");
+      return;
+    }
+    
+    setBulkActionLoading(true);
+    try {
+      for (const screenId of targetIds) {
+        await base44.entities.Screen.update(screenId, { player_command: command });
+      }
+      toast.success(`Command "${command}" sent to ${targetIds.length} device(s)`);
+      setSelectedDevices([]);
+      refetch();
+    } catch (error) {
+      toast.error("Failed to send command");
+    }
+    setBulkActionLoading(false);
+  };
+
+  // Remote update all outdated devices
+  const updateAllOutdatedDevices = async () => {
+    const outdatedIds = outdatedVersionScreens.map(s => s.id);
+    if (outdatedIds.length === 0) {
+      toast.info("All devices are up to date");
+      return;
+    }
+    await sendBulkCommand("restart", outdatedIds);
+    toast.success(`Update triggered for ${outdatedIds.length} device(s). They will update to v${LATEST_PLAYER_VERSION} on restart.`);
+  };
+
+  // Refresh content on all online devices
+  const refreshAllContent = async () => {
+    const onlineIds = onlineScreens.map(s => s.id);
+    if (onlineIds.length === 0) {
+      toast.error("No online devices");
+      return;
+    }
+    await sendBulkCommand("refresh", onlineIds);
+  };
+
+  // Save alert settings
+  const saveAlertSettings = async () => {
+    try {
+      if (savedAlertSettings.length > 0) {
+        await base44.entities.AlertSettings.update(savedAlertSettings[0].id, {
+          ...alertSettings,
+          setting_type: "global"
+        });
+      } else {
+        await base44.entities.AlertSettings.create({
+          ...alertSettings,
+          setting_type: "global",
+          created_by: user?.email
+        });
+      }
+      toast.success("Alert settings saved");
+      queryClient.invalidateQueries({ queryKey: ["alert-settings"] });
+      setShowSettingsDialog(false);
+    } catch (error) {
+      toast.error("Failed to save settings");
+    }
+  };
+
+  // Check for extended alerts and send notifications
+  useEffect(() => {
+    const checkExtendedAlerts = async () => {
+      if (!alertSettings.email_notifications && !alertSettings.in_app_notifications) return;
+      
+      const now = new Date();
+      
+      // Check offline devices
+      for (const screen of screens) {
+        if (!screen.last_heartbeat) continue;
+        const lastHB = new Date(screen.last_heartbeat);
+        const minutesOffline = (now - lastHB) / 60000;
+        
+        if (minutesOffline >= alertSettings.offline_threshold_minutes) {
+          // Check if we already have an active alert for this
+          const existingAlert = networkAlerts.find(
+            a => a.screen_id === screen.id && a.alert_type === "offline" && a.status === "active"
+          );
+          
+          if (!existingAlert) {
+            // Create alert
+            await base44.entities.NetworkAlert.create({
+              screen_id: screen.id,
+              screen_name: screen.name,
+              alert_type: "offline",
+              severity: "critical",
+              message: `Device has been offline for ${Math.round(minutesOffline)} minutes`,
+              duration_minutes: Math.round(minutesOffline),
+              status: "active"
+            });
+            
+            // Send email notification
+            if (alertSettings.email_notifications && alertSettings.notification_emails?.length > 0) {
+              for (const email of alertSettings.notification_emails) {
+                await base44.integrations.Core.SendEmail({
+                  to: email,
+                  subject: `🚨 Alert: Device Offline - ${screen.name}`,
+                  body: `
+BEYONDWALLS DEVICE ALERT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ DEVICE OFFLINE
+
+Device: ${screen.name}
+Device ID: ${screen.device_id || "N/A"}
+Duration: ${Math.round(minutesOffline)} minutes
+Last Seen: ${format(lastHB, "PPp")}
+
+Please check the device connection.
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+BeyondWalls Admin System
+                  `.trim()
+                });
+              }
+            }
+            
+            refetchAlerts();
+          }
+        }
+      }
+    };
+    
+    if (screens.length > 0 && user) {
+      checkExtendedAlerts();
+    }
+  }, [screens, alertSettings, user]);
+
+  const toggleDeviceSelection = (screenId) => {
+    setSelectedDevices(prev => 
+      prev.includes(screenId) 
+        ? prev.filter(id => id !== screenId)
+        : [...prev, screenId]
+    );
+  };
+
+  const selectAllDevices = () => {
+    if (selectedDevices.length === filteredScreens.length) {
+      setSelectedDevices([]);
+    } else {
+      setSelectedDevices(filteredScreens.map(s => s.id));
+    }
   };
 
   // Filter screens
@@ -350,11 +529,17 @@ export default function AdminBOnePlayer() {
           </h1>
           <p className="text-slate-500 mt-1">Real-time monitoring and control of all B.One devices</p>
         </div>
-        <Button onClick={() => refetch()} variant="outline">
-          <RefreshCw className="w-4 h-4 mr-2" />
-          Refresh
-        </Button>
-      </div>
+        <div className="flex gap-2">
+          <Button onClick={() => setShowSettingsDialog(true)} variant="outline">
+            <Bell className="w-4 h-4 mr-2" />
+            Alert Settings
+          </Button>
+          <Button onClick={() => refetch()} variant="outline">
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Refresh
+          </Button>
+        </div>
+        </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
@@ -487,6 +672,74 @@ export default function AdminBOnePlayer() {
 
       {activeTab === "devices" && (
         <>
+      {/* Bulk Actions */}
+      {selectedDevices.length > 0 && (
+        <Card className="mb-4 bg-violet-50 border-violet-200">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-violet-600" />
+                <span className="font-medium text-violet-800">{selectedDevices.length} device(s) selected</span>
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  onClick={() => sendBulkCommand("refresh")}
+                  disabled={bulkActionLoading}
+                  className="border-violet-300"
+                >
+                  <RefreshCw className="w-4 h-4 mr-1" />
+                  Refresh Content
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  onClick={() => sendBulkCommand("restart")}
+                  disabled={bulkActionLoading}
+                  className="border-violet-300"
+                >
+                  <Power className="w-4 h-4 mr-1" />
+                  Restart
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  onClick={() => setSelectedDevices([])}
+                  className="border-violet-300"
+                >
+                  Clear Selection
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Quick Actions */}
+      <div className="flex gap-2 mb-4 flex-wrap">
+        <Button 
+          size="sm" 
+          variant="outline" 
+          onClick={refreshAllContent}
+          disabled={onlineScreens.length === 0}
+        >
+          <RefreshCw className="w-4 h-4 mr-1" />
+          Refresh All Online ({onlineScreens.length})
+        </Button>
+        {outdatedVersionScreens.length > 0 && (
+          <Button 
+            size="sm" 
+            variant="outline" 
+            onClick={updateAllOutdatedDevices}
+            className="border-orange-300 text-orange-700"
+          >
+            <Download className="w-4 h-4 mr-1" />
+            Update All Outdated ({outdatedVersionScreens.length})
+          </Button>
+        )}
+      </div>
+
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <div className="relative flex-1 max-w-md">
@@ -498,15 +751,24 @@ export default function AdminBOnePlayer() {
             className="pl-10"
           />
         </div>
-        <Tabs value={statusFilter} onValueChange={setStatusFilter}>
-          <TabsList>
-            <TabsTrigger value="all">All ({screens.length})</TabsTrigger>
-            <TabsTrigger value="online">Online ({onlineScreens.length})</TabsTrigger>
-            <TabsTrigger value="playing">Playing ({playingScreens.length})</TabsTrigger>
-            <TabsTrigger value="offline">Offline ({offlineScreens.length})</TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </div>
+        <div className="flex items-center gap-4">
+          <Tabs value={statusFilter} onValueChange={setStatusFilter}>
+            <TabsList>
+              <TabsTrigger value="all">All ({screens.length})</TabsTrigger>
+              <TabsTrigger value="online">Online ({onlineScreens.length})</TabsTrigger>
+              <TabsTrigger value="playing">Playing ({playingScreens.length})</TabsTrigger>
+              <TabsTrigger value="offline">Offline ({offlineScreens.length})</TabsTrigger>
+            </TabsList>
+          </Tabs>
+          <Button 
+            size="sm" 
+            variant="outline" 
+            onClick={selectAllDevices}
+          >
+            {selectedDevices.length === filteredScreens.length ? "Deselect All" : "Select All"}
+          </Button>
+        </div>
+        </div>
 
       {/* Screens Grid */}
       {isLoading ? (
@@ -531,9 +793,10 @@ export default function AdminBOnePlayer() {
             return (
               <Card 
                 key={screen.id} 
-                className={`relative overflow-hidden transition-all hover:shadow-lg ${
+                className={`relative overflow-hidden transition-all hover:shadow-lg cursor-pointer ${
                   status === "playing" ? "ring-2 ring-violet-500" : ""
-                }`}
+                } ${selectedDevices.includes(screen.id) ? "ring-2 ring-blue-500 bg-blue-50" : ""}`}
+                onClick={() => toggleDeviceSelection(screen.id)}
               >
                 {/* Status Indicator */}
                 <div className={`absolute top-0 left-0 right-0 h-1 ${
