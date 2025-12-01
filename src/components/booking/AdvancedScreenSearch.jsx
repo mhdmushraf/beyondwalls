@@ -15,7 +15,8 @@ import {
   X,
   ChevronDown,
   ChevronUp,
-  Check
+  Check,
+  Eye
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,6 +43,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { calculateEstimatedViewers } from "@/components/analytics/VenueAnalyticsCalculator";
 
 // Fix Leaflet default marker
 delete L.Icon.Default.prototype._getIconUrl;
@@ -274,10 +276,10 @@ export default function AdvancedScreenSearch({
                 <span>{screen.size}</span>
                 <span className="hidden sm:inline">•</span>
                 <span className="hidden sm:inline capitalize">{screen.orientation}</span>
-                {venue?.avg_daily_footfall && (
-                  <span className="hidden lg:flex items-center gap-1">
-                    • <Users className="w-3 h-3" />
-                    {venue.avg_daily_footfall}/day
+                {venue?.daily_customers > 0 && (
+                  <span className="hidden lg:flex items-center gap-1 text-violet-500">
+                    • <Eye className="w-3 h-3" />
+                    ~{calculateEstimatedViewers(venue).estimatedDailyViewers.toLocaleString()} viewers/day
                   </span>
                 )}
               </div>
