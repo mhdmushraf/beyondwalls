@@ -1030,93 +1030,81 @@ export default function AdminBOnePlayer() {
                   </CardTitle>
                   </CardHeader>
                   <CardContent>
-                  <NetworkAlertsTable alerts={networkAlerts} onAcknowledge={acknowledgeAlert} onResolve={resolveAlert} />
+                  {networkAlerts.length === 0 ? (
+                    <div className="text-center py-12">
+                      <CheckCircle2 className="w-12 h-12 text-emerald-300 mx-auto mb-3" />
+                      <p className="text-slate-500">No alerts to display</p>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead className="bg-slate-50 border-b">
+                          <tr>
+                            <th className="text-left p-3 font-medium text-slate-600">Screen</th>
+                            <th className="text-left p-3 font-medium text-slate-600">Alert Type</th>
+                            <th className="text-left p-3 font-medium text-slate-600">Message</th>
+                            <th className="text-center p-3 font-medium text-slate-600">Severity</th>
+                            <th className="text-center p-3 font-medium text-slate-600">Status</th>
+                            <th className="text-left p-3 font-medium text-slate-600">Created</th>
+                            <th className="text-right p-3 font-medium text-slate-600">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {networkAlerts.map((alert) => (
+                            <tr key={alert.id} className="border-b hover:bg-slate-50">
+                              <td className="p-3 font-medium">{alert.screen_name}</td>
+                              <td className="p-3">
+                                <Badge variant="outline">
+                                  {alert.alert_type === "poor_network" && <Signal className="w-3 h-3 mr-1" />}
+                                  {alert.alert_type === "offline" && <WifiOff className="w-3 h-3 mr-1" />}
+                                  {alert.alert_type === "version_outdated" && <Download className="w-3 h-3 mr-1" />}
+                                  {alert.alert_type?.replace("_", " ")}
+                                </Badge>
+                              </td>
+                              <td className="p-3 text-slate-600 max-w-xs truncate">{alert.message}</td>
+                              <td className="p-3 text-center">
+                                <Badge className={alert.severity === "critical" ? "bg-rose-100 text-rose-700" : "bg-amber-100 text-amber-700"}>
+                                  {alert.severity}
+                                </Badge>
+                              </td>
+                              <td className="p-3 text-center">
+                                <Badge className={
+                                  alert.status === "active" ? "bg-rose-100 text-rose-700" :
+                                  alert.status === "acknowledged" ? "bg-amber-100 text-amber-700" :
+                                  "bg-emerald-100 text-emerald-700"
+                                }>
+                                  {alert.status}
+                                </Badge>
+                              </td>
+                              <td className="p-3 text-sm text-slate-500">
+                                {alert.created_date ? formatDistanceToNow(new Date(alert.created_date), { addSuffix: true }) : "Unknown"}
+                              </td>
+                              <td className="p-3 text-right">
+                                {alert.status === "active" && (
+                                  <div className="flex gap-1 justify-end">
+                                    <Button size="sm" variant="ghost" onClick={() => acknowledgeAlert(alert.id)} className="h-7 text-xs">
+                                      Acknowledge
+                                    </Button>
+                                    <Button size="sm" variant="ghost" onClick={() => resolveAlert(alert.id)} className="h-7 text-xs text-emerald-600">
+                                      Resolve
+                                    </Button>
+                                  </div>
+                                )}
+                                {alert.status === "acknowledged" && (
+                                  <Button size="sm" variant="ghost" onClick={() => resolveAlert(alert.id)} className="h-7 text-xs text-emerald-600">
+                                    Resolve
+                                  </Button>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                   </CardContent>
                   </Card>
                   )}
-
-      {/* Network Alerts Table Component */}
-      {(() => {
-        const NetworkAlertsTable = ({ alerts, onAcknowledge, onResolve }) => {
-          const allAlerts = alerts || [];
-          if (allAlerts.length === 0) {
-            return (
-              <div className="text-center py-12">
-                <CheckCircle2 className="w-12 h-12 text-emerald-300 mx-auto mb-3" />
-                <p className="text-slate-500">No alerts to display</p>
-              </div>
-            );
-          }
-          return (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-slate-50 border-b">
-                  <tr>
-                    <th className="text-left p-3 font-medium text-slate-600">Screen</th>
-                    <th className="text-left p-3 font-medium text-slate-600">Alert Type</th>
-                    <th className="text-left p-3 font-medium text-slate-600">Message</th>
-                    <th className="text-center p-3 font-medium text-slate-600">Severity</th>
-                    <th className="text-center p-3 font-medium text-slate-600">Status</th>
-                    <th className="text-left p-3 font-medium text-slate-600">Created</th>
-                    <th className="text-right p-3 font-medium text-slate-600">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {allAlerts.map((alert) => (
-                    <tr key={alert.id} className="border-b hover:bg-slate-50">
-                      <td className="p-3 font-medium">{alert.screen_name}</td>
-                      <td className="p-3">
-                        <Badge variant="outline">
-                          {alert.alert_type === "poor_network" && <Signal className="w-3 h-3 mr-1" />}
-                          {alert.alert_type === "offline" && <WifiOff className="w-3 h-3 mr-1" />}
-                          {alert.alert_type === "version_outdated" && <Download className="w-3 h-3 mr-1" />}
-                          {alert.alert_type?.replace("_", " ")}
-                        </Badge>
-                      </td>
-                      <td className="p-3 text-slate-600 max-w-xs truncate">{alert.message}</td>
-                      <td className="p-3 text-center">
-                        <Badge className={alert.severity === "critical" ? "bg-rose-100 text-rose-700" : "bg-amber-100 text-amber-700"}>
-                          {alert.severity}
-                        </Badge>
-                      </td>
-                      <td className="p-3 text-center">
-                        <Badge className={
-                          alert.status === "active" ? "bg-rose-100 text-rose-700" :
-                          alert.status === "acknowledged" ? "bg-amber-100 text-amber-700" :
-                          "bg-emerald-100 text-emerald-700"
-                        }>
-                          {alert.status}
-                        </Badge>
-                      </td>
-                      <td className="p-3 text-sm text-slate-500">
-                        {alert.created_date ? formatDistanceToNow(new Date(alert.created_date), { addSuffix: true }) : "Unknown"}
-                      </td>
-                      <td className="p-3 text-right">
-                        {alert.status === "active" && (
-                          <div className="flex gap-1 justify-end">
-                            <Button size="sm" variant="ghost" onClick={() => onAcknowledge(alert.id)} className="h-7 text-xs">
-                              Acknowledge
-                            </Button>
-                            <Button size="sm" variant="ghost" onClick={() => onResolve(alert.id)} className="h-7 text-xs text-emerald-600">
-                              Resolve
-                            </Button>
-                          </div>
-                        )}
-                        {alert.status === "acknowledged" && (
-                          <Button size="sm" variant="ghost" onClick={() => onResolve(alert.id)} className="h-7 text-xs text-emerald-600">
-                            Resolve
-                          </Button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          );
-        };
-        return null;
-      })()}
 
       {/* Details Dialog */}
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
