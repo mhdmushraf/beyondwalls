@@ -39,7 +39,7 @@ export default function PerformanceByTimeSlot({ bookings, screens }) {
     { hour: "11PM", impressions: 220, engagement: 2.2, label: "Late Night" },
   ];
 
-  // Time slot categories
+  // Time slot categories - DOOH friendly descriptions
   const timeSlots = [
     { 
       name: "Morning", 
@@ -47,9 +47,9 @@ export default function PerformanceByTimeSlot({ bookings, screens }) {
       icon: Sun, 
       color: "#f59e0b",
       impressions: 2270,
-      ctr: 2.7,
+      viewers: 1500,
       bestHour: "9AM",
-      recommendation: "Great for business and commuter audiences"
+      recommendation: "☕ Best for reaching commuters and professionals"
     },
     { 
       name: "Afternoon", 
@@ -57,9 +57,9 @@ export default function PerformanceByTimeSlot({ bookings, screens }) {
       icon: Sun, 
       color: "#3b82f6",
       impressions: 2900,
-      ctr: 3.1,
+      viewers: 1900,
       bestHour: "1PM",
-      recommendation: "Ideal for lunch crowd and shopping traffic"
+      recommendation: "🍽️ Great for lunch crowds and shoppers"
     },
     { 
       name: "Evening", 
@@ -67,9 +67,9 @@ export default function PerformanceByTimeSlot({ bookings, screens }) {
       icon: Sunset, 
       color: "#8b5cf6",
       impressions: 3370,
-      ctr: 3.9,
+      viewers: 2200,
       bestHour: "7PM",
-      recommendation: "Peak engagement - maximize budget here"
+      recommendation: "🌟 Peak time! Most people see ads now"
     },
     { 
       name: "Night", 
@@ -77,9 +77,9 @@ export default function PerformanceByTimeSlot({ bookings, screens }) {
       icon: Moon, 
       color: "#6366f1",
       impressions: 1360,
-      ctr: 2.8,
+      viewers: 900,
       bestHour: "9PM",
-      recommendation: "Best for entertainment and dining venues"
+      recommendation: "🍸 Perfect for dining and entertainment venues"
     }
   ];
 
@@ -129,16 +129,16 @@ export default function PerformanceByTimeSlot({ bookings, screens }) {
                 <div className="grid grid-cols-2 gap-2 mb-3">
                   <div className="bg-slate-50 rounded-lg p-2 text-center">
                     <p className="text-lg font-bold text-slate-900">{slot.impressions.toLocaleString()}</p>
-                    <p className="text-xs text-slate-500">Impressions</p>
+                    <p className="text-xs text-slate-500">Views</p>
                   </div>
                   <div className="bg-slate-50 rounded-lg p-2 text-center">
-                    <p className="text-lg font-bold" style={{ color: slot.color }}>{slot.ctr}%</p>
-                    <p className="text-xs text-slate-500">Avg CTR</p>
+                    <p className="text-lg font-bold" style={{ color: slot.color }}>{slot.viewers.toLocaleString()}</p>
+                    <p className="text-xs text-slate-500">People</p>
                   </div>
                 </div>
 
                 <p className="text-xs text-slate-600">
-                  <span className="font-medium">Best hour:</span> {slot.bestHour}
+                  {slot.recommendation}
                 </p>
               </CardContent>
             </Card>
@@ -229,7 +229,7 @@ export default function PerformanceByTimeSlot({ bookings, screens }) {
         </CardContent>
       </Card>
 
-      {/* Peak Hour Insight */}
+      {/* Peak Hour Insight - Simplified */}
       <Card className="bg-gradient-to-r from-violet-50 to-indigo-50 border-violet-100">
         <CardContent className="p-6">
           <div className="flex items-start gap-4">
@@ -237,12 +237,14 @@ export default function PerformanceByTimeSlot({ bookings, screens }) {
               <Zap className="w-6 h-6 text-violet-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-900 mb-1">Peak Performance Time</h3>
+              <h3 className="font-semibold text-slate-900 mb-1">⏰ Best Time to Reach People</h3>
               <p className="text-slate-600">
-                Your campaigns perform best at <strong>{peakHour.hour}</strong> with{" "}
-                <strong>{peakHour.impressions.toLocaleString()}</strong> impressions and{" "}
-                <strong>{peakHour.engagement}%</strong> engagement rate. This is{" "}
-                <strong>35% higher</strong> than the daily average.
+                <strong>{peakHour.hour}</strong> is your golden hour! More people 
+                (<strong>{peakHour.impressions.toLocaleString()}</strong>) see your ads at this time 
+                than any other hour. That's <strong>35% more</strong> than average!
+              </p>
+              <p className="text-sm text-violet-600 mt-2">
+                💡 Tip: Consider premium slots during 6-8 PM for maximum visibility
               </p>
             </div>
           </div>

@@ -9,8 +9,10 @@ import {
   Briefcase,
   Hotel,
   TrendingUp,
-  Target,
-  DollarSign
+  Eye,
+  DollarSign,
+  Users,
+  Play
 } from "lucide-react";
 import {
   BarChart,
@@ -23,13 +25,9 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar
+  Legend
 } from "recharts";
+import { MetricExplainer } from "@/components/onboarding/MetricExplainer";
 
 export default function PerformanceByVenueType({ bookings, screens, venues }) {
   const venueIcons = {
@@ -40,6 +38,7 @@ export default function PerformanceByVenueType({ bookings, screens, venues }) {
     coworking: Briefcase,
     hotel: Hotel,
     hospital: Building2,
+    salon: Building2,
     other: Building2
   };
 
@@ -51,10 +50,11 @@ export default function PerformanceByVenueType({ bookings, screens, venues }) {
     coworking: "#3b82f6",
     hotel: "#6366f1",
     hospital: "#14b8a6",
+    salon: "#ec4899",
     other: "#64748b"
   };
 
-  // Group performance by venue type
+  // Group performance by venue type - DOOH metrics
   const venueTypeData = {};
   
   bookings.forEach(booking => {
@@ -67,33 +67,33 @@ export default function PerformanceByVenueType({ bookings, screens, venues }) {
         type,
         name: type.charAt(0).toUpperCase() + type.slice(1).replace("_", " "),
         impressions: 0,
-        clicks: 0,
-        conversions: 0,
+        playouts: 0,
+        reach: 0,
         spend: 0,
         screens: 0,
         avgFootfall: 0
       };
     }
     
-    const avgDailyViews = screen?.avg_daily_views || 500;
+    // Use venue's estimated viewers if available
+    const dailyViewers = venue?.estimated_daily_viewers || screen?.avg_daily_views || 500;
     const days = booking.weeks_booked ? booking.weeks_booked * 7 : 7;
-    const impressions = avgDailyViews * days;
+    const impressions = dailyViewers * days;
+    const playoutsPerDay = 6 * 12; // 6 per hour × 12 operating hours
     
     venueTypeData[type].impressions += impressions;
-    venueTypeData[type].clicks += Math.round(impressions * 0.028);
-    venueTypeData[type].conversions += Math.round(impressions * 0.028 * 0.14);
+    venueTypeData[type].reach += Math.round(impressions * 0.65);
+    venueTypeData[type].playouts += playoutsPerDay * days;
     venueTypeData[type].spend += booking.total_cost || 0;
     venueTypeData[type].screens += 1;
-    venueTypeData[type].avgFootfall += venue?.avg_daily_footfall || 500;
+    venueTypeData[type].avgFootfall += venue?.daily_customers || venue?.avg_daily_footfall || 500;
   });
 
   const chartData = Object.values(venueTypeData)
     .map(v => ({
       ...v,
-      ctr: v.impressions > 0 ? ((v.clicks / v.impressions) * 100).toFixed(2) : 0,
-      convRate: v.clicks > 0 ? ((v.conversions / v.clicks) * 100).toFixed(1) : 0,
-      cpc: v.clicks > 0 ? (v.spend / v.clicks).toFixed(2) : 0,
-      roi: v.spend > 0 ? (((v.conversions * 150 - v.spend) / v.spend) * 100).toFixed(0) : 0,
+      frequency: v.reach > 0 ? (v.impressions / v.reach).toFixed(1) : 0,
+      cpm: v.impressions > 0 ? ((v.spend / v.impressions) * 1000).toFixed(2) : 0,
       avgFootfall: v.screens > 0 ? Math.round(v.avgFootfall / v.screens) : 0
     }))
     .sort((a, b) => b.impressions - a.impressions);
@@ -141,22 +141,28 @@ export default function PerformanceByVenueType({ bookings, screens, venues }) {
 
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">Impressions</span>
+                    <MetricExplainer metric="playouts" showIcon={false}>
+                      <span className="text-slate-500">Playouts</span>
+                    </MetricExplainer>
+                    <span className="font-medium">{venue.playouts.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <MetricExplainer metric="impressions" showIcon={false}>
+                      <span className="text-slate-500">Views</span>
+                    </MetricExplainer>
                     <span className="font-medium">{venue.impressions.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">CTR</span>
-                    <span className="font-medium">{venue.ctr}%</span>
+                    <MetricExplainer metric="reach" showIcon={false}>
+                      <span className="text-slate-500">Reach</span>
+                    </MetricExplainer>
+                    <span className="font-medium text-emerald-600">{venue.reach.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">Conversions</span>
-                    <span className="font-medium text-emerald-600">{venue.conversions}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">ROI</span>
-                    <span className={`font-medium ${venue.roi > 0 ? "text-emerald-600" : "text-rose-600"}`}>
-                      {venue.roi}%
-                    </span>
+                    <MetricExplainer metric="cpm" showIcon={false}>
+                      <span className="text-slate-500">CPM</span>
+                    </MetricExplainer>
+                    <span className="font-medium">AED {venue.cpm}</span>
                   </div>
                 </div>
 
@@ -172,13 +178,14 @@ export default function PerformanceByVenueType({ bookings, screens, venues }) {
 
       {/* Charts Row */}
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* Impressions by Venue Type */}
+        {/* Audience Reach by Venue Type */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Building2 className="w-5 h-5 text-violet-600" />
-              Impressions Distribution
+              Audience Reach by Venue Type
             </CardTitle>
+            <CardDescription>Where your ads reached the most people</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-72">
@@ -191,7 +198,7 @@ export default function PerformanceByVenueType({ bookings, screens, venues }) {
                     innerRadius={60}
                     outerRadius={100}
                     paddingAngle={2}
-                    dataKey="impressions"
+                    dataKey="reach"
                     label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                   >
                     {chartData.map((entry) => (
@@ -202,7 +209,7 @@ export default function PerformanceByVenueType({ bookings, screens, venues }) {
                     ))}
                   </Pie>
                   <Tooltip 
-                    formatter={(value) => [value.toLocaleString(), "Impressions"]}
+                    formatter={(value) => [value.toLocaleString(), "People Reached"]}
                     contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0" }}
                   />
                 </PieChart>
@@ -211,13 +218,14 @@ export default function PerformanceByVenueType({ bookings, screens, venues }) {
           </CardContent>
         </Card>
 
-        {/* Performance Comparison */}
+        {/* Playouts & Views Comparison */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Target className="w-5 h-5 text-violet-600" />
-              CTR & Conversion by Venue
+              <Eye className="w-5 h-5 text-violet-600" />
+              Playouts & Views by Venue
             </CardTitle>
+            <CardDescription>How your ads performed at each venue type</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-72">
@@ -228,8 +236,8 @@ export default function PerformanceByVenueType({ bookings, screens, venues }) {
                   <YAxis stroke="#94a3b8" fontSize={12} />
                   <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0" }} />
                   <Legend />
-                  <Bar dataKey="ctr" name="CTR %" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="convRate" name="Conv Rate %" fill="#10b981" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="playouts" name="Ad Playouts" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="reach" name="People Reached" fill="#10b981" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -237,29 +245,33 @@ export default function PerformanceByVenueType({ bookings, screens, venues }) {
         </Card>
       </div>
 
-      {/* ROI Comparison */}
+      {/* CPM Comparison - Cost Efficiency */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <DollarSign className="w-5 h-5 text-violet-600" />
-            ROI by Venue Type
+            Cost Efficiency by Venue Type
           </CardTitle>
-          <CardDescription>Compare return on investment across different venue categories</CardDescription>
+          <CardDescription>
+            <MetricExplainer metric="cpm">
+              <span>CPM (Cost per 1,000 views) - Lower is better value</span>
+            </MetricExplainer>
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
             {chartData.map((venue) => {
               const color = venueColors[venue.type] || "#64748b";
-              const roiValue = parseFloat(venue.roi);
-              const maxRoi = Math.max(...chartData.map(v => Math.abs(parseFloat(v.roi))));
-              const width = maxRoi > 0 ? Math.abs(roiValue / maxRoi * 100) : 0;
+              const cpmValue = parseFloat(venue.cpm);
+              const maxCpm = Math.max(...chartData.map(v => parseFloat(v.cpm) || 0));
+              const width = maxCpm > 0 ? (cpmValue / maxCpm * 100) : 0;
 
               return (
                 <div key={venue.type}>
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm font-medium text-slate-700">{venue.name}</span>
-                    <span className={`text-sm font-bold ${roiValue >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
-                      {roiValue >= 0 ? "+" : ""}{venue.roi}%
+                    <span className="text-sm font-bold text-slate-900">
+                      AED {venue.cpm}
                     </span>
                   </div>
                   <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
@@ -267,7 +279,7 @@ export default function PerformanceByVenueType({ bookings, screens, venues }) {
                       className="h-full rounded-full transition-all duration-500"
                       style={{ 
                         width: `${width}%`, 
-                        backgroundColor: roiValue >= 0 ? "#10b981" : "#ef4444" 
+                        backgroundColor: color 
                       }}
                     />
                   </div>
@@ -278,7 +290,7 @@ export default function PerformanceByVenueType({ bookings, screens, venues }) {
         </CardContent>
       </Card>
 
-      {/* Venue Type Insight */}
+      {/* Venue Type Insight - Simplified */}
       {topVenue && (
         <Card className="bg-gradient-to-r from-violet-50 to-indigo-50 border-violet-100">
           <CardContent className="p-6">
@@ -287,11 +299,12 @@ export default function PerformanceByVenueType({ bookings, screens, venues }) {
                 <TrendingUp className="w-6 h-6 text-violet-600" />
               </div>
               <div>
-                <h3 className="font-semibold text-slate-900 mb-1">Venue Type Recommendation</h3>
+                <h3 className="font-semibold text-slate-900 mb-1">🎯 Best Performing Venue Type</h3>
                 <p className="text-slate-600">
-                  <strong>{topVenue.name}</strong> venues deliver the highest performance with{" "}
-                  <strong>{topVenue.ctr}%</strong> CTR and <strong>{topVenue.roi}%</strong> ROI. 
-                  Consider focusing your campaign budget on these venues for optimal results.
+                  <strong>{topVenue.name}</strong> venues reached the most people - 
+                  <strong> {topVenue.reach.toLocaleString()}</strong> unique viewers! 
+                  Your ads played <strong>{topVenue.playouts.toLocaleString()}</strong> times 
+                  at these locations. Consider increasing your presence at {topVenue.name.toLowerCase()} venues.
                 </p>
               </div>
             </div>
