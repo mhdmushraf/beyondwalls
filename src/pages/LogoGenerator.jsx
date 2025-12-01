@@ -622,7 +622,7 @@ export default function LogoGenerator() {
                   cardData={ceoCard}
                   cardType="ceo"
                   onEdit={() => setEditingCard("ceo")}
-                  onDownload={() => downloadBusinessCardCreative("ceo", ceoCard)}
+                  onDownload={(side) => downloadBusinessCardCreative("ceo", ceoCard, side)}
                 />
               </TabsContent>
 
@@ -631,7 +631,7 @@ export default function LogoGenerator() {
                   cardData={cooCard}
                   cardType="coo"
                   onEdit={() => setEditingCard("coo")}
-                  onDownload={() => downloadBusinessCardCreative("coo", cooCard)}
+                  onDownload={(side) => downloadBusinessCardCreative("coo", cooCard, side)}
                 />
               </TabsContent>
             </Tabs>
@@ -702,195 +702,334 @@ export default function LogoGenerator() {
     </div>
   );
 
-  function downloadBusinessCardCreative(role, cardData) {
+  function downloadBusinessCardCreative(role, cardData, side = 'front') {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     
-    // Business card dimensions
     canvas.width = 800;
     canvas.height = 450;
     
-    // Background with colorful gradient
-    const bgGradient = ctx.createLinearGradient(0, 0, 800, 450);
-    if (role === 'ceo') {
+    if (side === 'back') {
+      // === BACK SIDE DESIGN ===
+      // Dark elegant background
+      const bgGradient = ctx.createLinearGradient(0, 0, 800, 450);
+      bgGradient.addColorStop(0, '#0f0a1e');
+      bgGradient.addColorStop(0.5, '#1a1035');
+      bgGradient.addColorStop(1, '#0f172a');
+      ctx.fillStyle = bgGradient;
+      ctx.fillRect(0, 0, 800, 450);
+      
+      // Geometric pattern overlay
+      ctx.globalAlpha = 0.03;
+      for (let i = 0; i < 20; i++) {
+        for (let j = 0; j < 12; j++) {
+          ctx.strokeStyle = '#8B5CF6';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(i * 45, j * 45);
+          ctx.lineTo(i * 45 + 30, j * 45 + 30);
+          ctx.stroke();
+        }
+      }
+      ctx.globalAlpha = 1;
+      
+      // Large decorative circles
+      ctx.globalAlpha = 0.08;
+      const circleGrad1 = ctx.createRadialGradient(650, 100, 0, 650, 100, 200);
+      circleGrad1.addColorStop(0, '#8B5CF6');
+      circleGrad1.addColorStop(1, 'transparent');
+      ctx.fillStyle = circleGrad1;
+      ctx.beginPath();
+      ctx.arc(650, 100, 200, 0, Math.PI * 2);
+      ctx.fill();
+      
+      const circleGrad2 = ctx.createRadialGradient(150, 380, 0, 150, 380, 180);
+      circleGrad2.addColorStop(0, '#6366F1');
+      circleGrad2.addColorStop(1, 'transparent');
+      ctx.fillStyle = circleGrad2;
+      ctx.beginPath();
+      ctx.arc(150, 380, 180, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      
+      // Center logo large
+      const logoSize = 120;
+      const logoX = (800 - logoSize) / 2;
+      const logoY = 100;
+      
+      const logoGradient = ctx.createLinearGradient(logoX, logoY, logoX + logoSize, logoY + logoSize);
+      logoGradient.addColorStop(0, '#8B5CF6');
+      logoGradient.addColorStop(1, '#6366F1');
+      ctx.beginPath();
+      ctx.roundRect(logoX, logoY, logoSize, logoSize, 28);
+      ctx.fillStyle = logoGradient;
+      ctx.fill();
+      
+      // Shadow for logo
+      ctx.shadowColor = '#8B5CF6';
+      ctx.shadowBlur = 40;
+      ctx.beginPath();
+      ctx.roundRect(logoX, logoY, logoSize, logoSize, 28);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      
+      // Monitor icon
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 6;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.roundRect(logoX + 25, logoY + 25, 70, 50, 6);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(logoX + 60, logoY + 75);
+      ctx.lineTo(logoX + 60, logoY + 95);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(logoX + 40, logoY + 95);
+      ctx.lineTo(logoX + 80, logoY + 95);
+      ctx.stroke();
+      
+      // Play icon
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.moveTo(logoX + 48, logoY + 40);
+      ctx.lineTo(logoX + 48, logoY + 65);
+      ctx.lineTo(logoX + 75, logoY + 52);
+      ctx.closePath();
+      ctx.fill();
+      
+      // Company name centered
+      ctx.font = 'bold 48px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.fillText('BeyondWalls', 400, 280);
+      
+      // Tagline
+      ctx.font = '18px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
+      ctx.fillText('Digital Out-of-Home Advertising', 400, 315);
+      
+      // Decorative line
+      const lineGrad = ctx.createLinearGradient(200, 0, 600, 0);
+      lineGrad.addColorStop(0, 'transparent');
+      lineGrad.addColorStop(0.2, '#8B5CF6');
+      lineGrad.addColorStop(0.8, '#6366F1');
+      lineGrad.addColorStop(1, 'transparent');
+      ctx.strokeStyle = lineGrad;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(200, 340);
+      ctx.lineTo(600, 340);
+      ctx.stroke();
+      
+      // Website
+      ctx.font = '16px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#a78bfa';
+      ctx.fillText('www.beyondwalls.ae', 400, 380);
+      
+      // Social icons row
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.font = '14px system-ui';
+      ctx.fillText('LinkedIn  •  Instagram  •  Twitter', 400, 415);
+      
+      ctx.textAlign = 'left';
+      
+      // Corner accents
+      ctx.strokeStyle = '#8B5CF6';
+      ctx.lineWidth = 3;
+      // Top left
+      ctx.beginPath();
+      ctx.moveTo(20, 50);
+      ctx.lineTo(20, 20);
+      ctx.lineTo(50, 20);
+      ctx.stroke();
+      // Top right
+      ctx.beginPath();
+      ctx.moveTo(750, 20);
+      ctx.lineTo(780, 20);
+      ctx.lineTo(780, 50);
+      ctx.stroke();
+      // Bottom left
+      ctx.beginPath();
+      ctx.moveTo(20, 400);
+      ctx.lineTo(20, 430);
+      ctx.lineTo(50, 430);
+      ctx.stroke();
+      // Bottom right
+      ctx.beginPath();
+      ctx.moveTo(750, 430);
+      ctx.lineTo(780, 430);
+      ctx.lineTo(780, 400);
+      ctx.stroke();
+      
+    } else {
+      // === FRONT SIDE DESIGN ===
+      // Background gradient matching brand colors
+      const bgGradient = ctx.createLinearGradient(0, 0, 800, 450);
       bgGradient.addColorStop(0, '#1e1b4b');
       bgGradient.addColorStop(0.5, '#312e81');
       bgGradient.addColorStop(1, '#4c1d95');
-    } else {
-      bgGradient.addColorStop(0, '#0c4a6e');
-      bgGradient.addColorStop(0.5, '#0369a1');
-      bgGradient.addColorStop(1, '#7c3aed');
-    }
-    ctx.fillStyle = bgGradient;
-    ctx.fillRect(0, 0, 800, 450);
-    
-    // Decorative circles
-    ctx.globalAlpha = 0.1;
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.arc(700, 80, 150, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(100, 400, 120, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(750, 400, 100, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.globalAlpha = 1;
-    
-    // Colorful accent bar
-    const accentGradient = ctx.createLinearGradient(0, 0, 0, 450);
-    accentGradient.addColorStop(0, '#f97316');
-    accentGradient.addColorStop(0.33, '#ec4899');
-    accentGradient.addColorStop(0.66, '#8b5cf6');
-    accentGradient.addColorStop(1, '#06b6d4');
-    ctx.fillStyle = accentGradient;
-    ctx.fillRect(0, 0, 10, 450);
-    
-    // Logo icon background
-    const logoGradient = ctx.createLinearGradient(40, 35, 110, 105);
-    logoGradient.addColorStop(0, '#f97316');
-    logoGradient.addColorStop(1, '#ec4899');
-    ctx.beginPath();
-    ctx.roundRect(40, 35, 70, 70, 16);
-    ctx.fillStyle = logoGradient;
-    ctx.fill();
-    
-    // Monitor icon in logo
-    ctx.strokeStyle = 'white';
-    ctx.lineWidth = 4;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.roundRect(55, 50, 40, 30, 4);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(75, 80);
-    ctx.lineTo(75, 92);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(60, 92);
-    ctx.lineTo(90, 92);
-    ctx.stroke();
-    
-    // Play icon
-    ctx.fillStyle = 'white';
-    ctx.beginPath();
-    ctx.moveTo(68, 58);
-    ctx.lineTo(68, 72);
-    ctx.lineTo(82, 65);
-    ctx.closePath();
-    ctx.fill();
-    
-    // Company name
-    ctx.font = 'bold 32px system-ui, -apple-system, sans-serif';
-    ctx.fillStyle = '#ffffff';
-    ctx.fillText('BeyondWalls', 125, 75);
-    
-    // Tagline
-    ctx.font = '14px system-ui, -apple-system, sans-serif';
-    ctx.fillStyle = 'rgba(255,255,255,0.7)';
-    ctx.fillText('Digital Out-of-Home Advertising', 125, 98);
-    
-    // Divider line with gradient
-    const lineGradient = ctx.createLinearGradient(40, 0, 760, 0);
-    lineGradient.addColorStop(0, '#f97316');
-    lineGradient.addColorStop(0.5, '#ec4899');
-    lineGradient.addColorStop(1, '#8b5cf6');
-    ctx.strokeStyle = lineGradient;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(40, 135);
-    ctx.lineTo(760, 135);
-    ctx.stroke();
-    
-    // Name with glow effect
-    ctx.shadowColor = role === 'ceo' ? '#f97316' : '#06b6d4';
-    ctx.shadowBlur = 20;
-    ctx.font = 'bold 42px system-ui, -apple-system, sans-serif';
-    ctx.fillStyle = '#ffffff';
-    ctx.fillText(cardData.name, 40, 195);
-    ctx.shadowBlur = 0;
-    
-    // Title badge
-    const titleGradient = ctx.createLinearGradient(40, 210, 300, 240);
-    titleGradient.addColorStop(0, '#f97316');
-    titleGradient.addColorStop(1, '#ec4899');
-    ctx.fillStyle = titleGradient;
-    ctx.beginPath();
-    ctx.roundRect(40, 210, ctx.measureText(cardData.title).width * 0.55 + 30, 32, 16);
-    ctx.fill();
-    
-    ctx.font = 'bold 16px system-ui, -apple-system, sans-serif';
-    ctx.fillStyle = '#ffffff';
-    ctx.fillText(cardData.title, 55, 232);
-    
-    // Contact details
-    ctx.font = '15px system-ui, -apple-system, sans-serif';
-    ctx.fillStyle = 'rgba(255,255,255,0.9)';
-    
-    // Email icon and text
-    ctx.fillText('✉️  ' + cardData.email, 40, 295);
-    
-    // Phone icon and text
-    ctx.fillText('📱  ' + cardData.phone, 40, 325);
-    
-    // Website
-    ctx.fillText('🌐  www.beyondwalls.ae', 40, 355);
-    
-    // Address
-    ctx.fillText('📍  Dubai, United Arab Emirates', 40, 385);
-    
-    // QR code area with colorful border
-    const qrGradient = ctx.createLinearGradient(580, 260, 760, 400);
-    qrGradient.addColorStop(0, '#f97316');
-    qrGradient.addColorStop(0.5, '#ec4899');
-    qrGradient.addColorStop(1, '#8b5cf6');
-    ctx.strokeStyle = qrGradient;
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.roundRect(590, 260, 160, 140, 12);
-    ctx.stroke();
-    
-    // QR background
-    ctx.fillStyle = 'rgba(255,255,255,0.95)';
-    ctx.beginPath();
-    ctx.roundRect(593, 263, 154, 134, 10);
-    ctx.fill();
-    
-    // QR pattern simulation
-    ctx.fillStyle = '#1e1b4b';
-    const qrStartX = 610;
-    const qrStartY = 280;
-    for (let i = 0; i < 6; i++) {
-      for (let j = 0; j < 5; j++) {
-        if ((i + j) % 2 === 0 || Math.random() > 0.5) {
-          ctx.fillRect(qrStartX + i * 18, qrStartY + j * 18, 14, 14);
+      ctx.fillStyle = bgGradient;
+      ctx.fillRect(0, 0, 800, 450);
+      
+      // Decorative circles
+      ctx.globalAlpha = 0.1;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(700, 80, 150, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(100, 400, 120, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(750, 400, 100, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      
+      // Left accent bar - brand colors
+      const accentGradient = ctx.createLinearGradient(0, 0, 0, 450);
+      accentGradient.addColorStop(0, '#8B5CF6');
+      accentGradient.addColorStop(1, '#6366F1');
+      ctx.fillStyle = accentGradient;
+      ctx.fillRect(0, 0, 10, 450);
+      
+      // Logo icon background - brand colors
+      const logoGradient = ctx.createLinearGradient(40, 35, 110, 105);
+      logoGradient.addColorStop(0, '#8B5CF6');
+      logoGradient.addColorStop(1, '#6366F1');
+      ctx.beginPath();
+      ctx.roundRect(40, 35, 70, 70, 16);
+      ctx.fillStyle = logoGradient;
+      ctx.fill();
+      
+      // Glow effect
+      ctx.shadowColor = '#8B5CF6';
+      ctx.shadowBlur = 20;
+      ctx.beginPath();
+      ctx.roundRect(40, 35, 70, 70, 16);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      
+      // Monitor icon in logo
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 4;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.roundRect(55, 50, 40, 30, 4);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(75, 80);
+      ctx.lineTo(75, 92);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(60, 92);
+      ctx.lineTo(90, 92);
+      ctx.stroke();
+      
+      // Play icon
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.moveTo(68, 58);
+      ctx.lineTo(68, 72);
+      ctx.lineTo(82, 65);
+      ctx.closePath();
+      ctx.fill();
+      
+      // Company name
+      ctx.font = 'bold 32px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText('BeyondWalls', 125, 75);
+      
+      // Tagline
+      ctx.font = '14px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.fillText('Digital Out-of-Home Advertising', 125, 98);
+      
+      // Divider line
+      const lineGradient = ctx.createLinearGradient(40, 0, 760, 0);
+      lineGradient.addColorStop(0, '#8B5CF6');
+      lineGradient.addColorStop(1, '#6366F1');
+      ctx.strokeStyle = lineGradient;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(40, 135);
+      ctx.lineTo(760, 135);
+      ctx.stroke();
+      
+      // Name with glow
+      ctx.shadowColor = '#8B5CF6';
+      ctx.shadowBlur = 25;
+      ctx.font = 'bold 42px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(cardData.name, 40, 195);
+      ctx.shadowBlur = 0;
+      
+      // Title badge - brand colors
+      const titleGradient = ctx.createLinearGradient(40, 210, 300, 240);
+      titleGradient.addColorStop(0, '#8B5CF6');
+      titleGradient.addColorStop(1, '#6366F1');
+      ctx.fillStyle = titleGradient;
+      ctx.beginPath();
+      ctx.roundRect(40, 210, ctx.measureText(cardData.title).width * 0.55 + 30, 32, 16);
+      ctx.fill();
+      
+      ctx.font = 'bold 16px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(cardData.title, 55, 232);
+      
+      // Contact details
+      ctx.font = '15px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.fillText('✉️  ' + cardData.email, 40, 295);
+      ctx.fillText('📱  ' + cardData.phone, 40, 325);
+      ctx.fillText('🌐  www.beyondwalls.ae', 40, 355);
+      ctx.fillText('📍  Dubai, United Arab Emirates', 40, 385);
+      
+      // QR code area
+      const qrGradient = ctx.createLinearGradient(580, 260, 760, 400);
+      qrGradient.addColorStop(0, '#8B5CF6');
+      qrGradient.addColorStop(1, '#6366F1');
+      ctx.strokeStyle = qrGradient;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.roundRect(590, 260, 160, 140, 12);
+      ctx.stroke();
+      
+      ctx.fillStyle = 'rgba(255,255,255,0.95)';
+      ctx.beginPath();
+      ctx.roundRect(593, 263, 154, 134, 10);
+      ctx.fill();
+      
+      ctx.fillStyle = '#1e1b4b';
+      const qrStartX = 610;
+      const qrStartY = 280;
+      for (let i = 0; i < 6; i++) {
+        for (let j = 0; j < 5; j++) {
+          if ((i + j) % 2 === 0 || Math.random() > 0.5) {
+            ctx.fillRect(qrStartX + i * 18, qrStartY + j * 18, 14, 14);
+          }
         }
       }
+      
+      ctx.font = '11px system-ui';
+      ctx.fillStyle = '#64748b';
+      ctx.textAlign = 'center';
+      ctx.fillText('Scan to connect', 670, 388);
+      ctx.textAlign = 'left';
+      
+      // Bottom bar - brand colors
+      const bottomGradient = ctx.createLinearGradient(0, 440, 800, 450);
+      bottomGradient.addColorStop(0, '#8B5CF6');
+      bottomGradient.addColorStop(1, '#6366F1');
+      ctx.fillStyle = bottomGradient;
+      ctx.fillRect(0, 440, 800, 10);
     }
     
-    ctx.font = '11px system-ui';
-    ctx.fillStyle = '#64748b';
-    ctx.textAlign = 'center';
-    ctx.fillText('Scan to connect', 670, 388);
-    ctx.textAlign = 'left';
-    
-    // Bottom colorful bar
-    const bottomGradient = ctx.createLinearGradient(0, 440, 800, 450);
-    bottomGradient.addColorStop(0, '#f97316');
-    bottomGradient.addColorStop(0.25, '#ec4899');
-    bottomGradient.addColorStop(0.5, '#8b5cf6');
-    bottomGradient.addColorStop(0.75, '#3b82f6');
-    bottomGradient.addColorStop(1, '#06b6d4');
-    ctx.fillStyle = bottomGradient;
-    ctx.fillRect(0, 440, 800, 10);
-    
-    // Download
     canvas.toBlob((blob) => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `beyondwalls-${role}-business-card.png`;
+      link.download = `beyondwalls-${role}-${side}.png`;
       link.click();
       URL.revokeObjectURL(url);
     }, 'image/png');
@@ -898,88 +1037,150 @@ export default function LogoGenerator() {
 }
 
 function BusinessCardCreative({ cardData, cardType, onEdit, onDownload }) {
-  const isCeo = cardType === "ceo";
+  const [showBack, setShowBack] = useState(false);
   
   return (
-    <div className="space-y-4">
-      {/* Card Preview - Creative Colorful Design */}
-      <div className={`relative rounded-2xl shadow-2xl overflow-hidden max-w-xl mx-auto ${
-        isCeo 
-          ? "bg-gradient-to-br from-indigo-950 via-purple-900 to-violet-900"
-          : "bg-gradient-to-br from-sky-900 via-blue-800 to-violet-800"
-      }`}>
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
-        <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/4 translate-x-1/4" />
-        
-        {/* Left colorful accent */}
-        <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-b from-orange-500 via-pink-500 to-cyan-500" />
-        
-        <div className="relative p-6">
-          {/* Header with logo */}
-          <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/20">
-            <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg shadow-pink-500/30">
-              <MonitorPlay className="w-7 h-7 text-white" />
+    <div className="space-y-6">
+      {/* Card Side Toggle */}
+      <div className="flex justify-center gap-2">
+        <Button 
+          variant={!showBack ? "default" : "outline"} 
+          size="sm"
+          onClick={() => setShowBack(false)}
+          className={!showBack ? "bg-gradient-to-r from-violet-600 to-indigo-600" : ""}
+        >
+          Front Side
+        </Button>
+        <Button 
+          variant={showBack ? "default" : "outline"} 
+          size="sm"
+          onClick={() => setShowBack(true)}
+          className={showBack ? "bg-gradient-to-r from-violet-600 to-indigo-600" : ""}
+        >
+          Back Side
+        </Button>
+      </div>
+
+      {!showBack ? (
+        /* FRONT SIDE PREVIEW */
+        <div className="relative rounded-2xl shadow-2xl overflow-hidden max-w-xl mx-auto bg-gradient-to-br from-indigo-950 via-purple-900 to-violet-900">
+          {/* Decorative elements */}
+          <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/4 translate-x-1/4" />
+          
+          {/* Left accent - brand colors */}
+          <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-b from-violet-500 to-indigo-600" />
+          
+          <div className="relative p-6">
+            {/* Header with logo */}
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/20">
+              <div className="w-14 h-14 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-violet-500/30">
+                <MonitorPlay className="w-7 h-7 text-white" />
+              </div>
+              <div>
+                <span className="font-bold text-2xl text-white">
+                  BeyondWalls
+                </span>
+                <p className="text-sm text-white/60">Digital Out-of-Home Advertising</p>
+              </div>
             </div>
-            <div>
-              <span className="font-bold text-2xl text-white">
-                BeyondWalls
+            
+            {/* Person info */}
+            <div className="mb-6">
+              <h3 className="text-3xl font-bold text-white mb-2 drop-shadow-lg">{cardData.name}</h3>
+              <span className="inline-block px-4 py-1.5 bg-gradient-to-r from-violet-500 to-indigo-600 rounded-full text-white text-sm font-semibold shadow-lg">
+                {cardData.title}
               </span>
-              <p className="text-sm text-white/60">Digital Out-of-Home Advertising</p>
+            </div>
+            
+            {/* Contact details */}
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="flex items-center gap-3 text-white/90">
+                <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                  <Mail className="w-4 h-4 text-violet-400" />
+                </div>
+                <span className="text-xs sm:text-sm truncate">{cardData.email}</span>
+              </div>
+              <div className="flex items-center gap-3 text-white/90">
+                <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                  <Phone className="w-4 h-4 text-indigo-400" />
+                </div>
+                <span className="text-xs sm:text-sm">{cardData.phone}</span>
+              </div>
+              <div className="flex items-center gap-3 text-white/90">
+                <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                  <Globe className="w-4 h-4 text-violet-400" />
+                </div>
+                <span className="text-xs sm:text-sm">www.beyondwalls.ae</span>
+              </div>
+              <div className="flex items-center gap-3 text-white/90">
+                <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                  <MapPin className="w-4 h-4 text-indigo-400" />
+                </div>
+                <span className="text-xs sm:text-sm">Dubai, UAE</span>
+              </div>
             </div>
           </div>
           
-          {/* Person info */}
-          <div className="mb-6">
-            <h3 className="text-3xl font-bold text-white mb-2 drop-shadow-lg">{cardData.name}</h3>
-            <span className="inline-block px-4 py-1.5 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full text-white text-sm font-semibold shadow-lg">
-              {cardData.title}
-            </span>
+          {/* Bottom bar - brand colors */}
+          <div className="h-2 bg-gradient-to-r from-violet-500 to-indigo-600" />
+        </div>
+      ) : (
+        /* BACK SIDE PREVIEW */
+        <div className="relative rounded-2xl shadow-2xl overflow-hidden max-w-xl mx-auto bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 min-h-[280px]">
+          {/* Geometric pattern overlay */}
+          <div className="absolute inset-0 opacity-5">
+            {[...Array(12)].map((_, i) => (
+              <div key={i} className="absolute w-px h-full bg-violet-500" style={{ left: `${i * 8.33}%`, transform: 'rotate(45deg)' }} />
+            ))}
           </div>
           
-          {/* Contact details */}
-          <div className="grid grid-cols-2 gap-3 text-sm">
-            <div className="flex items-center gap-3 text-white/90">
-              <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-                <Mail className="w-4 h-4 text-orange-400" />
-              </div>
-              <span>{cardData.email}</span>
+          {/* Decorative glows */}
+          <div className="absolute top-0 right-0 w-48 h-48 bg-violet-600/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-600/10 rounded-full blur-3xl" />
+          
+          {/* Corner accents */}
+          <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-violet-500/50" />
+          <div className="absolute top-4 right-4 w-8 h-8 border-r-2 border-t-2 border-violet-500/50" />
+          <div className="absolute bottom-4 left-4 w-8 h-8 border-l-2 border-b-2 border-violet-500/50" />
+          <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-violet-500/50" />
+          
+          <div className="relative p-8 flex flex-col items-center justify-center min-h-[280px]">
+            {/* Large centered logo */}
+            <div className="w-24 h-24 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-violet-500/30 mb-6">
+              <MonitorPlay className="w-12 h-12 text-white" />
             </div>
-            <div className="flex items-center gap-3 text-white/90">
-              <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-                <Phone className="w-4 h-4 text-pink-400" />
-              </div>
-              <span>{cardData.phone}</span>
-            </div>
-            <div className="flex items-center gap-3 text-white/90">
-              <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-                <Globe className="w-4 h-4 text-violet-400" />
-              </div>
-              <span>www.beyondwalls.ae</span>
-            </div>
-            <div className="flex items-center gap-3 text-white/90">
-              <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-                <MapPin className="w-4 h-4 text-cyan-400" />
-              </div>
-              <span>Dubai, UAE</span>
-            </div>
+            
+            {/* Company name */}
+            <h2 className="text-4xl font-bold text-white mb-2">BeyondWalls</h2>
+            <p className="text-white/50 mb-6">Digital Out-of-Home Advertising</p>
+            
+            {/* Decorative line */}
+            <div className="w-32 h-0.5 bg-gradient-to-r from-transparent via-violet-500 to-transparent mb-6" />
+            
+            {/* Website */}
+            <p className="text-violet-400 font-medium">www.beyondwalls.ae</p>
+            
+            {/* Social links */}
+            <p className="text-white/40 text-sm mt-4">LinkedIn • Instagram • Twitter</p>
           </div>
         </div>
-        
-        {/* Bottom colorful bar */}
-        <div className="h-2 bg-gradient-to-r from-orange-500 via-pink-500 via-violet-500 to-cyan-500" />
-      </div>
+      )}
       
       {/* Action buttons */}
-      <div className="flex justify-center gap-3">
+      <div className="flex justify-center gap-3 flex-wrap">
         <Button onClick={onEdit} variant="outline" className="border-violet-300">
           <CreditCard className="w-4 h-4 mr-2" />
           Edit Details
         </Button>
-        <Button onClick={onDownload} className="bg-gradient-to-r from-orange-500 via-pink-500 to-violet-600">
+        <Button onClick={() => onDownload('front')} className="bg-gradient-to-r from-violet-600 to-indigo-600">
           <Download className="w-4 h-4 mr-2" />
-          Download PNG
+          Download Front
+        </Button>
+        <Button onClick={() => onDownload('back')} variant="outline" className="border-violet-300">
+          <Download className="w-4 h-4 mr-2" />
+          Download Back
         </Button>
       </div>
     </div>
