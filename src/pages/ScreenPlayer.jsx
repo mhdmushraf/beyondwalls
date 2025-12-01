@@ -95,6 +95,7 @@ export default function ScreenPlayer() {
 
   const AD_DURATION = 8000;
   const animations = ["fade", "slideLeft", "slideRight", "slideUp", "slideDown", "zoom", "flip", "blur"];
+  const PLAYER_VERSION = "2.1.0";
 
   const [autoStartMode, setAutoStartMode] = useState(false);
 
@@ -188,6 +189,9 @@ export default function ScreenPlayer() {
           updateData.hardware_id = hardwareId;
           updateData.hardware_registered_at = new Date().toISOString();
         }
+        
+        // Report player version
+        updateData.player_version = PLAYER_VERSION;
 
         setScreen(foundScreen);
         setAuthenticated(true);
@@ -365,7 +369,59 @@ export default function ScreenPlayer() {
     return () => clearInterval(timer);
   }, [authenticated, isPaused]);
 
+  // Track content analytics
+  const trackContentImpression = async (ad, completed = false, watchTime = 0) => {
+    if (!screen?.id || !ad) return;
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      // Find existing analytics for this content today
+      const existingAnalytics = await base44.entities.ContentAnalytics.filter({
+        screen_id: screen.id,
+        content_id: ad.id,
+        date: today
+      });
+      
+      if (existingAnalytics.length > 0) {
+        const existing = existingAnalytics[0];
+        const newImpressions = (existing.impressions || 0) + 1;
+        const newCompletions = (existing.completions || 0) + (completed ? 1 : 0);
+        const newTotalWatchTime = (existing.total_watch_time || 0) + watchTime;
+        await base44.entities.ContentAnalytics.update(existing.id, {
+          impressions: newImpressions,
+          completions: newCompletions,
+          total_watch_time: newTotalWatchTime,
+          avg_watch_time: newTotalWatchTime / newImpressions,
+          completion_rate: (newCompletions / newImpressions) * 100,
+          skips: (existing.skips || 0) + (completed ? 0 : 1)
+        });
+      } else {
+        await base44.entities.ContentAnalytics.create({
+          screen_id: screen.id,
+          content_id: ad.id,
+          content_type: ad.type === "owner" ? "owner_slot" : ad.type,
+          content_name: ad.name,
+          creative_url: ad.creative_url,
+          media_type: ad.creative_type || "image",
+          impressions: 1,
+          completions: completed ? 1 : 0,
+          total_watch_time: watchTime,
+          avg_watch_time: watchTime,
+          completion_rate: completed ? 100 : 0,
+          skips: completed ? 0 : 1,
+          date: today
+        });
+      }
+    } catch (e) {
+      console.log("Analytics tracking error:", e);
+    }
+  };
+
   const goToNextAd = useCallback(() => {
+    // Track impression for current ad (not completed since it's being skipped/cycled)
+    const watchTime = adStartTime ? (Date.now() - adStartTime) / 1000 : 0;
+    const completed = watchTime >= (AD_DURATION / 1000) * 0.9; // 90% watch = completion
+    trackContentImpression(currentAd, completed, watchTime);
+    
     setMediaError(null);
     const randomAnim = animations[Math.floor(Math.random() * animations.length)];
     setAnimationType(randomAnim);
@@ -378,7 +434,7 @@ export default function ScreenPlayer() {
       setAdProgress(0);
       setTimeout(() => setTransitioning(false), 50);
     }, 400);
-  }, [allAds.length]);
+  }, [allAds.length, currentAd, adStartTime]);
 
   const goToPrevAd = () => {
     setMediaError(null);
@@ -402,7 +458,22 @@ export default function ScreenPlayer() {
   };
 
   const handleVideoEnded = () => {
-    goToNextAd();
+    // Video completed fully
+    const watchTime = videoRef.current?.duration || AD_DURATION / 1000;
+    trackContentImpression(currentAd, true, watchTime);
+    
+    setMediaError(null);
+    const randomAnim = animations[Math.floor(Math.random() * animations.length)];
+    setAnimationType(randomAnim);
+    setTransitioning(true);
+    setAdsPlayed(prev => prev + 1);
+
+    setTimeout(() => {
+      setCurrentAdIndex(prev => (prev + 1) % allAds.length);
+      setAdStartTime(Date.now());
+      setAdProgress(0);
+      setTimeout(() => setTransitioning(false), 50);
+    }, 400);
   };
 
   const handleVideoProgress = () => {
@@ -457,7 +528,8 @@ export default function ScreenPlayer() {
           current_session_id: sessionId,
           uptime_seconds: uptimeSeconds,
           network_strength: getNetworkStrength(),
-          current_content_name: currentAd?.name || null
+          current_content_name: currentAd?.name || null,
+          player_version: PLAYER_VERSION
         });
         setConnectionStatus("connected");
         setLastHeartbeat(new Date());
@@ -534,6 +606,9 @@ export default function ScreenPlayer() {
         updateData.hardware_id = hardwareId;
         updateData.hardware_registered_at = new Date().toISOString();
       }
+      
+      // Report player version
+      updateData.player_version = PLAYER_VERSION;
 
       setScreen(foundScreen);
       setAuthenticated(true);
