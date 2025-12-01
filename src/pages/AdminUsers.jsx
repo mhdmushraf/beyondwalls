@@ -128,64 +128,27 @@ export default function AdminUsers() {
 
     setInviteLoading(true);
     try {
-      // Send invitation email
-      await base44.integrations.Core.SendEmail({
-        to: adminForm.email,
-        subject: "🎉 You've Been Invited as Admin | BeyondWalls",
-        body: `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        BEYONDWALLS ADMIN INVITATION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Dear ${adminForm.full_name},
-
-You have been invited to join BeyondWalls as an Administrator!
-
-📋 YOUR ACCESS DETAILS
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Email: ${adminForm.email}
-Role: Administrator
-Permissions: ${adminForm.permissions.includes("all") ? "Full Access" : adminForm.permissions.join(", ")}
-
-🚀 GETTING STARTED
-━━━━━━━━━━━━━━━━━━━━━━━━━
-1. Visit: https://beyondwalls.ae
-2. Click "Sign In" or "Get Started"
-3. Register with this email address: ${adminForm.email}
-4. Your admin access will be automatically activated
-
-📊 AS AN ADMIN, YOU CAN:
-• Manage users and approvals
-• Review and approve campaigns
-• Monitor screen performance
-• Handle wallet transactions
-• Access analytics and reports
-
-Need help? Contact us at info@beyondwalls.ae
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-BeyondWalls - Advertise Beyond Boundaries
-www.beyondwalls.ae
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        `.trim()
-      });
-
-      // Create admin notification for tracking
+      // Create a pending admin invite record for tracking
       await base44.entities.AdminNotification.create({
         type: "new_user",
-        title: "Admin Invitation Sent",
-        message: `Invitation sent to ${adminForm.full_name} (${adminForm.email}) with ${adminForm.permissions.includes("all") ? "Full Access" : adminForm.permissions.join(", ")} permissions`,
+        title: "Admin Invitation Created",
+        message: `Pending admin invite for ${adminForm.full_name} (${adminForm.email}) with ${adminForm.permissions.includes("all") ? "Full Access" : adminForm.permissions.join(", ")} permissions. When they register, grant them admin access.`,
         reference_id: adminForm.email,
         reference_type: "AdminInvite",
         status: "unread"
       });
 
-      toast.success(`Invitation email sent to ${adminForm.email}!`);
+      // Show success with manual instructions
+      toast.success(
+        `Admin invite created! Please manually share these details with ${adminForm.full_name}:\n\nEmail: ${adminForm.email}\nPermissions: ${adminForm.permissions.includes("all") ? "Full Access" : adminForm.permissions.join(", ")}\n\nThey should register at beyondwalls.ae, then you can grant them admin access.`,
+        { duration: 10000 }
+      );
+      
       setShowAdminDialog(false);
       setAdminForm({ email: "", full_name: "", permissions: [] });
     } catch (error) {
       console.error(error);
-      toast.error("Failed to send invitation");
+      toast.error("Failed to create invitation");
     }
     setInviteLoading(false);
   };
