@@ -26,7 +26,11 @@ import {
   Loader2,
   BarChart3,
   Zap,
-  Shield
+  Shield,
+  Bell,
+  Download,
+  TrendingUp,
+  AlertTriangle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,6 +52,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 
 // Screen Preview Component
@@ -119,6 +124,8 @@ function ScreenPreviewContent({ screen, bookings }) {
   );
 }
 
+const LATEST_PLAYER_VERSION = "2.1.0";
+
 export default function AdminBOnePlayer() {
   const queryClient = useQueryClient();
   const [user, setUser] = useState(null);
@@ -127,6 +134,7 @@ export default function AdminBOnePlayer() {
   const [selectedScreen, setSelectedScreen] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
   const [actionLoading, setActionLoading] = useState(null);
+  const [activeTab, setActiveTab] = useState("devices");
 
   useEffect(() => {
     loadUser();
@@ -167,6 +175,17 @@ export default function AdminBOnePlayer() {
     queryFn: () => base44.entities.AdSlotBooking.filter({ status: "active" })
   });
 
+  const { data: networkAlerts = [], refetch: refetchAlerts } = useQuery({
+    queryKey: ["network-alerts"],
+    queryFn: () => base44.entities.NetworkAlert.filter({ status: "active" }, "-created_date"),
+    refetchInterval: 30000
+  });
+
+  const { data: contentAnalytics = [] } = useQuery({
+    queryKey: ["content-analytics"],
+    queryFn: () => base44.entities.ContentAnalytics.list("-impressions", 100)
+  });
+
   // Calculate stats
   const onlineScreens = screens.filter(s => {
     if (!s.last_heartbeat) return false;
@@ -183,6 +202,63 @@ export default function AdminBOnePlayer() {
     return (now - lastHB) >= 60000;
   });
   const registeredDevices = screens.filter(s => s.hardware_id);
+  const poorNetworkScreens = screens.filter(s => s.network_strength === "poor");
+  const outdatedVersionScreens = screens.filter(s => s.player_version && s.player_version !== LATEST_PLAYER_VERSION);
+
+  // Check and create alerts for poor network
+  useEffect(() => {
+    const checkNetworkAlerts = async () => {
+      for (const screen of poorNetworkScreens) {
+        const existingAlert = networkAlerts.find(a => a.screen_id === screen.id && a.alert_type === "poor_network" && a.status === "active");
+        if (!existingAlert) {
+          await base44.entities.NetworkAlert.create({
+            screen_id: screen.id,
+            screen_name: screen.name,
+            alert_type: "poor_network",
+            severity: "warning",
+            message: `Network strength dropped to poor on ${screen.name}`,
+            network_strength: screen.network_strength,
+            status: "active"
+          });
+          refetchAlerts();
+        }
+      }
+    };
+    if (poorNetworkScreens.length > 0) {
+      checkNetworkAlerts();
+    }
+  }, [poorNetworkScreens.length]);
+
+  const acknowledgeAlert = async (alertId) => {
+    try {
+      await base44.entities.NetworkAlert.update(alertId, { 
+        status: "acknowledged",
+        acknowledged_by: user?.email
+      });
+      toast.success("Alert acknowledged");
+      refetchAlerts();
+    } catch (error) {
+      toast.error("Failed to acknowledge alert");
+    }
+  };
+
+  const resolveAlert = async (alertId) => {
+    try {
+      await base44.entities.NetworkAlert.update(alertId, { 
+        status: "resolved",
+        resolved_at: new Date().toISOString()
+      });
+      toast.success("Alert resolved");
+      refetchAlerts();
+    } catch (error) {
+      toast.error("Failed to resolve alert");
+    }
+  };
+
+  const isVersionOutdated = (version) => {
+    if (!version) return false;
+    return version !== LATEST_PLAYER_VERSION;
+  };
 
   // Filter screens
   const filteredScreens = screens.filter(s => {
@@ -282,16 +358,16 @@ export default function AdminBOnePlayer() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
         <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center">
-                <Wifi className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center">
+                <Wifi className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-sm text-emerald-700">Online</p>
-                <p className="text-3xl font-bold text-emerald-800">{onlineScreens.length}</p>
+                <p className="text-xs text-emerald-700">Online</p>
+                <p className="text-2xl font-bold text-emerald-800">{onlineScreens.length}</p>
               </div>
             </div>
           </CardContent>
@@ -300,12 +376,12 @@ export default function AdminBOnePlayer() {
         <Card className="bg-gradient-to-br from-violet-50 to-violet-100 border-violet-200">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-violet-500 rounded-xl flex items-center justify-center">
-                <Play className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 bg-violet-500 rounded-xl flex items-center justify-center">
+                <Play className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-sm text-violet-700">Playing</p>
-                <p className="text-3xl font-bold text-violet-800">{playingScreens.length}</p>
+                <p className="text-xs text-violet-700">Playing</p>
+                <p className="text-2xl font-bold text-violet-800">{playingScreens.length}</p>
               </div>
             </div>
           </CardContent>
@@ -314,12 +390,12 @@ export default function AdminBOnePlayer() {
         <Card className="bg-gradient-to-br from-rose-50 to-rose-100 border-rose-200">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-rose-500 rounded-xl flex items-center justify-center">
-                <WifiOff className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 bg-rose-500 rounded-xl flex items-center justify-center">
+                <WifiOff className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-sm text-rose-700">Offline</p>
-                <p className="text-3xl font-bold text-rose-800">{offlineScreens.length}</p>
+                <p className="text-xs text-rose-700">Offline</p>
+                <p className="text-2xl font-bold text-rose-800">{offlineScreens.length}</p>
               </div>
             </div>
           </CardContent>
@@ -328,18 +404,90 @@ export default function AdminBOnePlayer() {
         <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
-                <Shield className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center">
+                <Shield className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-sm text-blue-700">Registered</p>
-                <p className="text-3xl font-bold text-blue-800">{registeredDevices.length}</p>
+                <p className="text-xs text-blue-700">Registered</p>
+                <p className="text-2xl font-bold text-blue-800">{registeredDevices.length}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className={`bg-gradient-to-br ${poorNetworkScreens.length > 0 ? "from-amber-50 to-amber-100 border-amber-200" : "from-slate-50 to-slate-100 border-slate-200"}`}>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 ${poorNetworkScreens.length > 0 ? "bg-amber-500" : "bg-slate-400"} rounded-xl flex items-center justify-center`}>
+                <Signal className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className={`text-xs ${poorNetworkScreens.length > 0 ? "text-amber-700" : "text-slate-600"}`}>Poor Network</p>
+                <p className={`text-2xl font-bold ${poorNetworkScreens.length > 0 ? "text-amber-800" : "text-slate-700"}`}>{poorNetworkScreens.length}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className={`bg-gradient-to-br ${outdatedVersionScreens.length > 0 ? "from-orange-50 to-orange-100 border-orange-200" : "from-slate-50 to-slate-100 border-slate-200"}`}>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 ${outdatedVersionScreens.length > 0 ? "bg-orange-500" : "bg-slate-400"} rounded-xl flex items-center justify-center`}>
+                <Download className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className={`text-xs ${outdatedVersionScreens.length > 0 ? "text-orange-700" : "text-slate-600"}`}>Outdated</p>
+                <p className={`text-2xl font-bold ${outdatedVersionScreens.length > 0 ? "text-orange-800" : "text-slate-700"}`}>{outdatedVersionScreens.length}</p>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
+      {/* Active Alerts */}
+      {networkAlerts.length > 0 && (
+        <Card className="mb-6 border-amber-200 bg-amber-50">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Bell className="w-5 h-5 text-amber-600" />
+              <h3 className="font-semibold text-amber-800">Active Alerts ({networkAlerts.length})</h3>
+            </div>
+            <div className="space-y-2 max-h-40 overflow-y-auto">
+              {networkAlerts.slice(0, 5).map(alert => (
+                <div key={alert.id} className="flex items-center justify-between p-2 bg-white rounded-lg border border-amber-200">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className={`w-4 h-4 ${alert.severity === "critical" ? "text-rose-500" : "text-amber-500"}`} />
+                    <div>
+                      <p className="text-sm font-medium text-slate-900">{alert.screen_name}</p>
+                      <p className="text-xs text-slate-500">{alert.message}</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-1">
+                    <Button size="sm" variant="ghost" onClick={() => acknowledgeAlert(alert.id)} className="h-7 text-xs">
+                      Acknowledge
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => resolveAlert(alert.id)} className="h-7 text-xs text-emerald-600">
+                      Resolve
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Main Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
+        <TabsList>
+          <TabsTrigger value="devices">Devices</TabsTrigger>
+          <TabsTrigger value="analytics">Content Analytics</TabsTrigger>
+          <TabsTrigger value="alerts">Alerts History</TabsTrigger>
+        </TabsList>
+      </Tabs>
+
+      {activeTab === "devices" && (
+        <>
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <div className="relative flex-1 max-w-md">
@@ -484,7 +632,13 @@ export default function AdminBOnePlayer() {
                         {screen.network_strength}
                       </Badge>
                     )}
-                  </div>
+                    {screen.player_version && isVersionOutdated(screen.player_version) && (
+                      <Badge className="bg-orange-100 text-orange-700">
+                        <Download className="w-3 h-3 mr-1" />
+                        v{screen.player_version}
+                      </Badge>
+                    )}
+                    </div>
 
                   {/* Current Content */}
                   {screen.current_content_name && isOnline && (
@@ -515,22 +669,122 @@ export default function AdminBOnePlayer() {
                     </div>
                   </div>
 
-                  {/* Hardware ID */}
-                  {screen.hardware_id && (
-                    <div className="mt-3 pt-3 border-t">
-                      <p className="text-xs text-slate-500 flex items-center gap-1">
-                        <Cpu className="w-3 h-3" />
-                        Hardware ID
-                      </p>
-                      <p className="text-xs font-mono text-slate-600 truncate">{screen.hardware_id}</p>
-                    </div>
+                  {/* Hardware ID & Version */}
+                  <div className="mt-3 pt-3 border-t grid grid-cols-2 gap-2">
+                    {screen.hardware_id && (
+                      <div>
+                        <p className="text-xs text-slate-500 flex items-center gap-1">
+                          <Cpu className="w-3 h-3" />
+                          Hardware ID
+                        </p>
+                        <p className="text-xs font-mono text-slate-600 truncate">{screen.hardware_id}</p>
+                      </div>
+                    )}
+                    {screen.player_version && (
+                      <div>
+                        <p className="text-xs text-slate-500 flex items-center gap-1">
+                          <Download className="w-3 h-3" />
+                          Version
+                        </p>
+                        <p className={`text-xs font-mono ${isVersionOutdated(screen.player_version) ? "text-orange-600" : "text-emerald-600"}`}>
+                          v{screen.player_version}
+                          {isVersionOutdated(screen.player_version) && " (outdated)"}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                  </CardContent>
+                  </Card>
+                  );
+                  })}
+                  </div>
                   )}
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      )}
+                  </>
+                  )}
+
+                  {/* Content Analytics Tab */}
+                  {activeTab === "analytics" && (
+                  <Card>
+                  <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5" />
+                  Content Performance Analytics
+                  </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                  {contentAnalytics.length === 0 ? (
+                  <div className="text-center py-12">
+                  <BarChart3 className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                  <p className="text-slate-500">No analytics data yet</p>
+                  <p className="text-sm text-slate-400">Analytics will appear as content plays on screens</p>
+                  </div>
+                  ) : (
+                  <div className="overflow-x-auto">
+                  <table className="w-full">
+                  <thead className="bg-slate-50 border-b">
+                    <tr>
+                      <th className="text-left p-3 font-medium text-slate-600">Content</th>
+                      <th className="text-left p-3 font-medium text-slate-600">Screen</th>
+                      <th className="text-center p-3 font-medium text-slate-600">Impressions</th>
+                      <th className="text-center p-3 font-medium text-slate-600">Completions</th>
+                      <th className="text-center p-3 font-medium text-slate-600">Completion Rate</th>
+                      <th className="text-center p-3 font-medium text-slate-600">Avg Watch Time</th>
+                      <th className="text-center p-3 font-medium text-slate-600">Skips</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {contentAnalytics.map((analytics) => {
+                      const screen = screens.find(s => s.id === analytics.screen_id);
+                      return (
+                        <tr key={analytics.id} className="border-b hover:bg-slate-50">
+                          <td className="p-3">
+                            <div className="flex items-center gap-3">
+                              {analytics.creative_url && (
+                                <img src={analytics.creative_url} className="w-10 h-10 rounded object-cover" alt="" />
+                              )}
+                              <div>
+                                <p className="font-medium text-slate-900">{analytics.content_name || "Unknown"}</p>
+                                <Badge variant="outline" className="text-xs">
+                                  {analytics.content_type}
+                                </Badge>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="p-3 text-slate-600">{screen?.name || "Unknown"}</td>
+                          <td className="p-3 text-center font-semibold">{analytics.impressions?.toLocaleString() || 0}</td>
+                          <td className="p-3 text-center">{analytics.completions?.toLocaleString() || 0}</td>
+                          <td className="p-3 text-center">
+                            <Badge className={analytics.completion_rate >= 80 ? "bg-emerald-100 text-emerald-700" : analytics.completion_rate >= 50 ? "bg-amber-100 text-amber-700" : "bg-rose-100 text-rose-700"}>
+                              {analytics.completion_rate?.toFixed(1) || 0}%
+                            </Badge>
+                          </td>
+                          <td className="p-3 text-center">{analytics.avg_watch_time?.toFixed(1) || 0}s</td>
+                          <td className="p-3 text-center text-slate-500">{analytics.skips || 0}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                  </table>
+                  </div>
+                  )}
+                  </CardContent>
+                  </Card>
+                  )}
+
+                  {/* Alerts History Tab */}
+                  {activeTab === "alerts" && (
+                  <Card>
+                  <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                  <Bell className="w-5 h-5" />
+                  Network & Version Alerts History
+                  </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                  <NetworkAlertsTable alerts={networkAlerts} onAcknowledge={acknowledgeAlert} onResolve={resolveAlert} />
+                  </CardContent>
+                  </Card>
+                  )}
 
       {/* Details Dialog */}
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
