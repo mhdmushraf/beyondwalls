@@ -50,6 +50,7 @@ import AIRecommendations from "@/components/recommendations/AIRecommendations";
 import AdvancedScreenSearch from "@/components/booking/AdvancedScreenSearch";
 import BookingCart from "@/components/booking/BookingCart";
 import CartCheckout from "@/components/booking/CartCheckout";
+import VenueAnalyticsCalculator, { calculateEstimatedViewers } from "@/components/analytics/VenueAnalyticsCalculator";
 
 export default function BookSlot() {
   const navigate = useNavigate();
@@ -1062,6 +1063,14 @@ Please review and approve/reject this campaign in the admin dashboard.
               bookings={allBookings}
               selectedDate={formData.start_date}
               weeks={formData.weeks}
+            />
+          )}
+
+          {/* Venue Analytics - Estimated Viewers */}
+          {selectedScreen && (
+            <VenueAnalyticsCalculator 
+              venue={venues.find(v => v.id === selectedScreen.venue_id)} 
+              showEarnings={false}
             />
           )}
 
