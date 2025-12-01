@@ -7,7 +7,7 @@ import { format, subDays, parseISO, differenceInDays } from "date-fns";
 import {
   BarChart3,
   Eye,
-  MousePointer,
+  MonitorPlay,
   Target,
   TrendingUp,
   DollarSign,
@@ -24,7 +24,9 @@ import {
   Lightbulb,
   ArrowUpRight,
   ArrowDownRight,
-  ChevronRight
+  ChevronRight,
+  Play,
+  Repeat
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -119,62 +121,73 @@ export default function AnalyticsDashboard() {
   const relevantBookings = bookings.filter(b => ["active", "completed"].includes(b.status));
   const activeBookings = bookings.filter(b => b.status === "active");
 
-  // Calculate comprehensive metrics
+  // Calculate comprehensive metrics for DOOH (Digital Out-of-Home)
   const days = dateRange === "7d" ? 7 : dateRange === "14d" ? 14 : dateRange === "30d" ? 30 : 90;
   
   const calculateMetrics = () => {
     let totalImpressions = 0;
     let totalReach = 0;
-    let totalClicks = 0;
-    let totalConversions = 0;
+    let totalPlayouts = 0;
+    let totalScreenTime = 0; // in minutes
     let totalSpend = 0;
-    let totalFrequency = 0;
+    let activeScreensCount = 0;
 
     relevantBookings.forEach(booking => {
       const screen = screens.find(s => s.id === booking.screen_id);
+      const venue = venues.find(v => v.id === screen?.venue_id);
       const startDate = parseISO(booking.start_date);
       const endDate = parseISO(booking.end_date);
       const campaignDays = Math.max(1, differenceInDays(endDate, startDate));
-      const avgDailyViews = screen?.avg_daily_views || 500;
       
-      const impressions = avgDailyViews * Math.min(campaignDays, days);
+      // Use venue's estimated daily viewers if available, otherwise screen avg_daily_views
+      const dailyViewers = venue?.estimated_daily_viewers || screen?.avg_daily_views || 500;
+      
+      const impressions = dailyViewers * Math.min(campaignDays, days);
       totalImpressions += impressions;
-      totalReach += impressions * 0.65; // Unique reach
+      totalReach += impressions * 0.65; // Unique reach (accounting for repeat visitors)
+      
+      // Calculate playouts: ads play in 10-minute loop, 15 sec each = ~6 playouts per hour
+      // Operating hours avg ~12 hours/day
+      const playoutsPerDay = 6 * 12; // 72 playouts per day
+      totalPlayouts += playoutsPerDay * Math.min(campaignDays, days);
+      
+      // Screen time: 15 seconds per playout
+      totalScreenTime += (playoutsPerDay * 15 / 60) * Math.min(campaignDays, days);
+      
       totalSpend += booking.total_cost || 0;
+      activeScreensCount++;
     });
 
-    totalClicks = Math.round(totalImpressions * 0.028);
-    totalConversions = Math.round(totalClicks * 0.14);
-    totalFrequency = totalReach > 0 ? (totalImpressions / totalReach).toFixed(1) : 0;
-
-    const ctr = totalImpressions > 0 ? ((totalClicks / totalImpressions) * 100).toFixed(2) : 0;
-    const conversionRate = totalClicks > 0 ? ((totalConversions / totalClicks) * 100).toFixed(1) : 0;
+    const totalFrequency = totalReach > 0 ? (totalImpressions / totalReach).toFixed(1) : 0;
+    
+    // DOOH-specific metrics
     const cpm = totalImpressions > 0 ? ((totalSpend / totalImpressions) * 1000).toFixed(2) : 0;
-    const cpc = totalClicks > 0 ? (totalSpend / totalClicks).toFixed(2) : 0;
-    const cpa = totalConversions > 0 ? (totalSpend / totalConversions).toFixed(2) : 0;
-    const estimatedRevenue = totalConversions * 150;
-    const roi = totalSpend > 0 ? (((estimatedRevenue - totalSpend) / totalSpend) * 100).toFixed(0) : 0;
-
+    const costPerPlayout = totalPlayouts > 0 ? (totalSpend / totalPlayouts).toFixed(2) : 0;
+    const avgDailyImpressions = totalImpressions / days;
+    const avgScreenTime = totalScreenTime / days; // minutes per day
+    
+    // Estimated brand lift (industry benchmark for DOOH is 15-25%)
+    const estimatedBrandLift = 18;
+    
     return {
       totalImpressions,
       totalReach: Math.round(totalReach),
-      totalClicks,
-      totalConversions,
+      totalPlayouts,
+      totalScreenTime: Math.round(totalScreenTime),
       totalSpend,
       totalFrequency,
-      ctr,
-      conversionRate,
       cpm,
-      cpc,
-      cpa,
-      estimatedRevenue,
-      roi
+      costPerPlayout,
+      avgDailyImpressions: Math.round(avgDailyImpressions),
+      avgScreenTime: avgScreenTime.toFixed(1),
+      activeScreensCount,
+      estimatedBrandLift
     };
   };
 
   const metrics = calculateMetrics();
 
-  // Generate time series data
+  // Generate time series data for DOOH
   const generateTimeSeriesData = () => {
     const data = [];
     for (let i = days - 1; i >= 0; i--) {
@@ -183,8 +196,8 @@ export default function AnalyticsDashboard() {
       const baseImpressions = (metrics.totalImpressions / days) * dayVariance;
       const impressions = Math.round(baseImpressions);
       const reach = Math.round(impressions * 0.65);
-      const clicks = Math.round(impressions * 0.028 * (0.8 + Math.random() * 0.4));
-      const conversions = Math.round(clicks * 0.14 * (0.7 + Math.random() * 0.6));
+      const playouts = Math.round((metrics.totalPlayouts / days) * dayVariance);
+      const screenTime = Math.round((metrics.totalScreenTime / days) * dayVariance);
       const spend = Math.round((metrics.totalSpend / days) * dayVariance);
 
       data.push({
@@ -192,10 +205,9 @@ export default function AnalyticsDashboard() {
         fullDate: format(date, "MMM d, yyyy"),
         impressions,
         reach,
-        clicks,
-        conversions,
+        playouts,
+        screenTime,
         spend,
-        ctr: impressions > 0 ? ((clicks / impressions) * 100).toFixed(2) : 0,
         frequency: reach > 0 ? (impressions / reach).toFixed(1) : 0
       });
     }
@@ -204,12 +216,11 @@ export default function AnalyticsDashboard() {
 
   const timeSeriesData = generateTimeSeriesData();
 
-  // Engagement funnel data
+  // Audience funnel data for DOOH
   const funnelData = [
-    { stage: "Impressions", value: metrics.totalImpressions, color: "#8b5cf6" },
-    { stage: "Reach", value: metrics.totalReach, color: "#6366f1" },
-    { stage: "Clicks", value: metrics.totalClicks, color: "#3b82f6" },
-    { stage: "Conversions", value: metrics.totalConversions, color: "#10b981" }
+    { stage: "Total Playouts", value: metrics.totalPlayouts, color: "#8b5cf6", desc: "Times your ad played" },
+    { stage: "Impressions", value: metrics.totalImpressions, color: "#6366f1", desc: "Estimated views" },
+    { stage: "Unique Reach", value: metrics.totalReach, color: "#3b82f6", desc: "Individual viewers" },
   ];
 
   if (!user) {
@@ -258,58 +269,55 @@ export default function AnalyticsDashboard() {
         </div>
       </div>
 
-      {/* Key Metrics Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      {/* Key Metrics Grid - DOOH Specific */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <Card className="bg-gradient-to-br from-violet-500 to-violet-600 text-white border-0">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
-              <Eye className="w-5 h-5 opacity-80" />
+              <Play className="w-5 h-5 opacity-80" />
               <Badge className="bg-white/20 text-white border-0 text-xs">
                 <ArrowUpRight className="w-3 h-3 mr-1" />
                 +12%
               </Badge>
             </div>
-            <p className="text-2xl font-bold">{metrics.totalImpressions.toLocaleString()}</p>
-            <p className="text-violet-200 text-sm">Impressions</p>
+            <p className="text-2xl font-bold">{metrics.totalPlayouts.toLocaleString()}</p>
+            <p className="text-violet-200 text-sm">Ad Playouts</p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-indigo-500 to-indigo-600 text-white border-0">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
-              <Users className="w-5 h-5 opacity-80" />
+              <Eye className="w-5 h-5 opacity-80" />
               <Badge className="bg-white/20 text-white border-0 text-xs">
                 <ArrowUpRight className="w-3 h-3 mr-1" />
                 +8%
               </Badge>
             </div>
-            <p className="text-2xl font-bold">{metrics.totalReach.toLocaleString()}</p>
-            <p className="text-indigo-200 text-sm">Unique Reach</p>
+            <p className="text-2xl font-bold">{metrics.totalImpressions.toLocaleString()}</p>
+            <p className="text-indigo-200 text-sm">Impressions</p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
-              <MousePointer className="w-5 h-5 opacity-80" />
-              <span className="text-xs text-blue-200">{metrics.ctr}% CTR</span>
+              <Users className="w-5 h-5 opacity-80" />
+              <span className="text-xs text-blue-200">{metrics.totalFrequency}x freq</span>
             </div>
-            <p className="text-2xl font-bold">{metrics.totalClicks.toLocaleString()}</p>
-            <p className="text-blue-200 text-sm">Total Clicks</p>
+            <p className="text-2xl font-bold">{metrics.totalReach.toLocaleString()}</p>
+            <p className="text-blue-200 text-sm">Unique Reach</p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white border-0">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
-              <Target className="w-5 h-5 opacity-80" />
-              <Badge className="bg-white/20 text-white border-0 text-xs">
-                <ArrowUpRight className="w-3 h-3 mr-1" />
-                +15%
-              </Badge>
+              <MonitorPlay className="w-5 h-5 opacity-80" />
+              <span className="text-xs text-emerald-200">{metrics.activeScreensCount} screens</span>
             </div>
-            <p className="text-2xl font-bold">{metrics.totalConversions.toLocaleString()}</p>
-            <p className="text-emerald-200 text-sm">Conversions</p>
+            <p className="text-2xl font-bold">{metrics.totalScreenTime} min</p>
+            <p className="text-emerald-200 text-sm">Screen Time</p>
           </CardContent>
         </Card>
 
@@ -317,12 +325,10 @@ export default function AnalyticsDashboard() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
               <TrendingUp className="w-5 h-5 opacity-80" />
-              <span className={`text-xs ${metrics.roi > 0 ? "text-amber-200" : "text-red-200"}`}>
-                {metrics.roi > 0 ? "Profitable" : "Loss"}
-              </span>
+              <span className="text-xs text-amber-200">Est. Lift</span>
             </div>
-            <p className="text-2xl font-bold">{metrics.roi}%</p>
-            <p className="text-amber-200 text-sm">Est. ROI</p>
+            <p className="text-2xl font-bold">{metrics.estimatedBrandLift}%</p>
+            <p className="text-amber-200 text-sm">Brand Awareness</p>
           </CardContent>
         </Card>
 
@@ -338,8 +344,8 @@ export default function AnalyticsDashboard() {
         </Card>
       </div>
 
-      {/* Secondary Metrics */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      {/* Secondary Metrics - DOOH Specific */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-sm text-slate-500">Frequency</p>
@@ -351,28 +357,21 @@ export default function AnalyticsDashboard() {
           <CardContent className="p-4 text-center">
             <p className="text-sm text-slate-500">CPM</p>
             <p className="text-xl font-bold text-slate-900">AED {metrics.cpm}</p>
-            <p className="text-xs text-slate-400">Cost per 1000 imp.</p>
+            <p className="text-xs text-slate-400">Cost per 1000 impressions</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <p className="text-sm text-slate-500">CPC</p>
-            <p className="text-xl font-bold text-slate-900">AED {metrics.cpc}</p>
-            <p className="text-xs text-slate-400">Cost per click</p>
+            <p className="text-sm text-slate-500">Cost per Playout</p>
+            <p className="text-xl font-bold text-slate-900">AED {metrics.costPerPlayout}</p>
+            <p className="text-xs text-slate-400">Per ad display</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <p className="text-sm text-slate-500">CPA</p>
-            <p className="text-xl font-bold text-slate-900">AED {metrics.cpa}</p>
-            <p className="text-xs text-slate-400">Cost per conversion</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <p className="text-sm text-slate-500">Conv. Rate</p>
-            <p className="text-xl font-bold text-emerald-600">{metrics.conversionRate}%</p>
-            <p className="text-xs text-slate-400">Click to conversion</p>
+            <p className="text-sm text-slate-500">Daily Avg.</p>
+            <p className="text-xl font-bold text-emerald-600">{metrics.avgDailyImpressions.toLocaleString()}</p>
+            <p className="text-xs text-slate-400">Impressions per day</p>
           </CardContent>
         </Card>
       </div>
@@ -392,8 +391,8 @@ export default function AnalyticsDashboard() {
             <Tabs defaultValue="reach">
               <TabsList className="mb-4">
                 <TabsTrigger value="reach">Reach & Frequency</TabsTrigger>
-                <TabsTrigger value="engagement">Engagement</TabsTrigger>
-                <TabsTrigger value="spend">Spend & ROI</TabsTrigger>
+                <TabsTrigger value="engagement">Playouts & Views</TabsTrigger>
+                <TabsTrigger value="spend">Ad Spend</TabsTrigger>
               </TabsList>
 
               <TabsContent value="reach">
@@ -440,11 +439,11 @@ export default function AnalyticsDashboard() {
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={timeSeriesData}>
                       <defs>
-                        <linearGradient id="clicksGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                        <linearGradient id="playoutsGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
                         </linearGradient>
-                        <linearGradient id="conversionsGradient" x1="0" y1="0" x2="0" y2="1">
+                        <linearGradient id="impressionsGradient" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
                           <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                         </linearGradient>
@@ -456,19 +455,19 @@ export default function AnalyticsDashboard() {
                       <Legend />
                       <Area 
                         type="monotone" 
-                        dataKey="clicks" 
-                        stroke="#3b82f6" 
+                        dataKey="playouts" 
+                        stroke="#8b5cf6" 
                         strokeWidth={2}
-                        fill="url(#clicksGradient)"
-                        name="Clicks"
+                        fill="url(#playoutsGradient)"
+                        name="Playouts"
                       />
                       <Area 
                         type="monotone" 
-                        dataKey="conversions" 
+                        dataKey="impressions" 
                         stroke="#10b981" 
                         strokeWidth={2}
-                        fill="url(#conversionsGradient)"
-                        name="Conversions"
+                        fill="url(#impressionsGradient)"
+                        name="Impressions"
                       />
                     </AreaChart>
                   </ResponsiveContainer>
@@ -495,40 +494,35 @@ export default function AnalyticsDashboard() {
           </CardContent>
         </Card>
 
-        {/* Engagement Funnel */}
+        {/* Audience Funnel - DOOH */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Filter className="w-5 h-5 text-violet-600" />
-              Engagement Funnel
+              Audience Funnel
             </CardTitle>
-            <CardDescription>From impression to conversion</CardDescription>
+            <CardDescription>From playouts to unique viewers</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {funnelData.map((item, index) => {
                 const maxValue = funnelData[0].value;
                 const percentage = ((item.value / maxValue) * 100).toFixed(0);
-                const convRate = index > 0 
-                  ? ((item.value / funnelData[index - 1].value) * 100).toFixed(1) 
-                  : "100";
 
                 return (
                   <div key={item.stage}>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium text-slate-700">{item.stage}</span>
-                      <span className="text-sm text-slate-500">{item.value.toLocaleString()}</span>
+                      <div>
+                        <span className="text-sm font-medium text-slate-700">{item.stage}</span>
+                        <p className="text-xs text-slate-400">{item.desc}</p>
+                      </div>
+                      <span className="text-sm font-semibold text-slate-700">{item.value.toLocaleString()}</span>
                     </div>
                     <div className="h-8 bg-slate-100 rounded-lg overflow-hidden relative">
                       <div 
                         className="h-full rounded-lg transition-all duration-500"
                         style={{ width: `${percentage}%`, backgroundColor: item.color }}
                       />
-                      <div className="absolute inset-0 flex items-center justify-end pr-2">
-                        <span className="text-xs font-medium text-white drop-shadow">
-                          {index > 0 && `${convRate}% conv`}
-                        </span>
-                      </div>
                     </div>
                     {index < funnelData.length - 1 && (
                       <div className="flex justify-center py-1">
@@ -538,6 +532,16 @@ export default function AnalyticsDashboard() {
                   </div>
                 );
               })}
+            </div>
+            
+            {/* DOOH specific insights */}
+            <div className="mt-6 p-3 bg-violet-50 rounded-lg border border-violet-100">
+              <p className="text-xs font-medium text-violet-800 mb-2">📊 DOOH Insights</p>
+              <ul className="text-xs text-violet-600 space-y-1">
+                <li>• Your ads play ~72 times/day per screen</li>
+                <li>• Average dwell time exposure: 15 seconds</li>
+                <li>• Industry avg brand recall: 47%</li>
+              </ul>
             </div>
           </CardContent>
         </Card>
