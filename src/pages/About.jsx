@@ -166,20 +166,20 @@ export default function About() {
           </div>
           <div className="grid md:grid-cols-4 gap-6">
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 text-center">
-              <p className="text-4xl font-bold text-violet-400 mb-2">$45B</p>
-              <p className="text-slate-400">Global DOOH Market by 2027</p>
+              <p className="text-4xl font-bold text-violet-400 mb-2">9,000+</p>
+              <p className="text-slate-400">Daily Audience Reach</p>
             </div>
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 text-center">
-              <p className="text-4xl font-bold text-emerald-400 mb-2">$1.2B</p>
-              <p className="text-slate-400">MENA DOOH Market Size</p>
+              <p className="text-4xl font-bold text-emerald-400 mb-2">72%</p>
+              <p className="text-slate-400">Brand Recall Rate</p>
             </div>
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 text-center">
-              <p className="text-4xl font-bold text-amber-400 mb-2">12.4%</p>
-              <p className="text-slate-400">Annual Growth Rate (CAGR)</p>
+              <p className="text-4xl font-bold text-amber-400 mb-2">144+</p>
+              <p className="text-slate-400">Plays Per Day/Screen</p>
             </div>
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 text-center">
               <p className="text-4xl font-bold text-rose-400 mb-2">90%</p>
-              <p className="text-slate-400">SMBs Can't Access DOOH</p>
+              <p className="text-slate-400">Cost Savings vs OOH</p>
             </div>
           </div>
           <div className="mt-8 text-center">
