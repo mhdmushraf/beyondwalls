@@ -68,6 +68,11 @@ import NotificationCenter from './pages/NotificationCenter';
 import AdminBOnePlayer from './pages/AdminBOnePlayer';
 import Sitemap from './pages/Sitemap';
 import SitemapPage from './pages/SitemapPage';
+import DOOHAdvertisingDubai from './pages/DOOHAdvertisingDubai';
+import DigitalSignageUAE from './pages/DigitalSignageUAE';
+import AdPlatformDubai from './pages/AdPlatformDubai';
+import VenueAdvertisingUAE from './pages/VenueAdvertisingUAE';
+import BeyondWallsUAEvsUSA from './pages/BeyondWallsUAEvsUSA';
 import __Layout from './Layout.jsx';
 
 
@@ -142,6 +147,11 @@ export const PAGES = {
     "AdminBOnePlayer": AdminBOnePlayer,
     "Sitemap": Sitemap,
     "SitemapPage": SitemapPage,
+    "DOOHAdvertisingDubai": DOOHAdvertisingDubai,
+    "DigitalSignageUAE": DigitalSignageUAE,
+    "AdPlatformDubai": AdPlatformDubai,
+    "VenueAdvertisingUAE": VenueAdvertisingUAE,
+    "BeyondWallsUAEvsUSA": BeyondWallsUAEvsUSA,
 }
 
 export const pagesConfig = {
