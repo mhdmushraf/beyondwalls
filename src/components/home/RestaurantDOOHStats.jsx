@@ -11,10 +11,10 @@ import { Badge } from "@/components/ui/badge";
 
 export default function RestaurantDOOHStats() {
   const liveStats = [
-    { icon: Users, value: "9,000+", label: "Daily Audience Reach", sublabel: "Across all screens" },
-    { icon: Eye, value: "4,800+", label: "Unique Viewers Daily", sublabel: "Individual reach" },
-    { icon: Play, value: "144+", label: "Ad Plays Per Day", sublabel: "Per screen" },
-    { icon: MapPin, value: "13+", label: "Premium Locations", sublabel: "High-traffic venues" },
+    { icon: Users, value: "50,000+", label: "Daily Audience Reach", sublabel: "Across all screens" },
+    { icon: Eye, value: "25,000+", label: "Unique Viewers Daily", sublabel: "Individual reach" },
+    { icon: Play, value: "200+", label: "Ad Plays Per Day", sublabel: "Per screen" },
+    { icon: MapPin, value: "200+", label: "Premium Locations", sublabel: "High-traffic venues" },
   ];
 
   const screenSpecs = [
