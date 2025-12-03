@@ -82,14 +82,33 @@ export default function Sitemap() {
           <pre className="p-4 text-xs overflow-x-auto bg-slate-50 max-h-96">{sitemapXML}</pre>
         </div>
 
+        <div className="mt-6 p-4 bg-violet-50 border border-violet-200 rounded-lg">
+          <h3 className="font-semibold text-violet-800 mb-2">Download for Cloudflare Pages:</h3>
+          <p className="text-sm text-violet-700 mb-4">Click below to download the sitemap.xml file, then upload it to Cloudflare Pages.</p>
+          <Button 
+            onClick={() => {
+              const blob = new Blob([sitemapXML], { type: 'application/xml' });
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = 'sitemap.xml';
+              link.click();
+              URL.revokeObjectURL(url);
+            }}
+            className="bg-gradient-to-r from-violet-600 to-indigo-600"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Download sitemap.xml
+          </Button>
+        </div>
+
         <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
           <h3 className="font-semibold text-amber-800 mb-2">Google Search Console Instructions:</h3>
           <ol className="text-sm text-amber-700 space-y-1 list-decimal list-inside">
-            <li>Go to Google Search Console</li>
-            <li>Select your property (beyondwalls.ae)</li>
-            <li>Go to "Sitemaps" in the left menu</li>
-            <li>Add URLs individually via "URL Inspection" tool</li>
-            <li>Or copy the XML above and host it on a separate server</li>
+            <li>Download the sitemap.xml above</li>
+            <li>Upload to Cloudflare Pages (Direct Upload)</li>
+            <li>Your URL will be: https://your-project.pages.dev/sitemap.xml</li>
+            <li>Submit that URL to Google Search Console → Sitemaps</li>
           </ol>
         </div>
       </div>
