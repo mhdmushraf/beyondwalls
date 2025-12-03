@@ -279,119 +279,247 @@ export default function ScreenLocations() {
       {/* Map View */}
       {viewMode === "map" && (
         <section className="px-6 py-8">
-          <div className="max-w-6xl mx-auto">
-            <div className="relative rounded-2xl overflow-hidden shadow-xl border border-slate-200" style={{ height: "600px" }}>
-              <MapContainer
-                center={uaeCenter}
-                zoom={defaultZoom}
-                style={{ height: "100%", width: "100%" }}
-                scrollWheelZoom={true}
-                zoomControl={true}
-              >
-                <TileLayer
-                  attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-                  url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-                />
-                {venuesWithCoords.map((venue) => (
-                  <Marker
-                    key={venue.id}
-                    position={[venue.latitude, venue.longitude]}
-                    icon={screenIcon}
-                    eventHandlers={{
-                      click: () => setSelectedVenue(venue)
-                    }}
-                  >
-                    <Popup>
-                      <div className="p-2 min-w-[200px]">
-                        <h3 className="font-bold text-slate-900">{venue.name}</h3>
-                        <p className="text-sm text-slate-500">{typeLabels[venue.type] || venue.type}</p>
-                        <p className="text-sm text-slate-600 mt-1">{venue.area}, {venue.city}</p>
-                        <div className="flex items-center gap-1 mt-2 text-violet-600 font-medium text-sm">
-                          <MonitorPlay className="w-4 h-4" />
-                          {getScreenCount(venue.id)} Screens
-                        </div>
-                        <Button
-                          size="sm"
-                          className="w-full mt-3 bg-violet-600 hover:bg-violet-700"
-                          onClick={() => setSelectedVenue(venue)}
+          <div className="max-w-7xl mx-auto">
+            <div className="grid lg:grid-cols-4 gap-6">
+              {/* Filter Sidebar */}
+              <div className="lg:col-span-1 space-y-4">
+                <Card className="p-4">
+                  <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-violet-600" />
+                    Filter by City
+                  </h3>
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => setCityFilter("all")}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                        cityFilter === "all" ? "bg-violet-100 text-violet-700 font-medium" : "hover:bg-slate-100"
+                      }`}
+                    >
+                      All UAE ({venues.length})
+                    </button>
+                    {cities.map(city => {
+                      const count = venues.filter(v => v.city === city).length;
+                      return (
+                        <button
+                          key={city}
+                          onClick={() => setCityFilter(city)}
+                          className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex justify-between ${
+                            cityFilter === city ? "bg-violet-100 text-violet-700 font-medium" : "hover:bg-slate-100"
+                          }`}
                         >
-                          View Details
-                        </Button>
-                      </div>
-                    </Popup>
-                  </Marker>
-                ))}
-              </MapContainer>
-
-              {/* Venue Detail Panel */}
-              {selectedVenue && (
-                <div className="absolute top-4 right-4 bg-white rounded-xl shadow-2xl p-5 w-80 z-[1000] max-h-[550px] overflow-y-auto">
-                  <button
-                    onClick={() => setSelectedVenue(null)}
-                    className="absolute top-3 right-3 p-1 hover:bg-slate-100 rounded-full"
-                  >
-                    <X className="w-5 h-5 text-slate-500" />
-                  </button>
-                  <img
-                    src={selectedVenue.image_url || "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=200&fit=crop"}
-                    alt={selectedVenue.name}
-                    className="w-full h-32 object-cover rounded-lg mb-4"
-                  />
-                  <Badge className="bg-amber-100 text-slate-900 mb-2">
-                    {typeLabels[selectedVenue.type] || selectedVenue.type}
-                  </Badge>
-                  <h3 className="text-lg font-bold text-slate-900">{selectedVenue.name}</h3>
-                  <p className="text-sm text-slate-500 mt-1">
-                    {selectedVenue.area}, {selectedVenue.city}
-                  </p>
-                  
-                  <div className="mt-4 space-y-2 text-sm">
-                    <div className="flex items-center gap-2 text-slate-600">
-                      <Users className="w-4 h-4 text-violet-600" />
-                      {selectedVenue.avg_daily_footfall?.toLocaleString() || "N/A"} daily visitors
-                    </div>
-                    <div className="flex items-center gap-2 text-slate-600">
-                      <Clock className="w-4 h-4 text-violet-600" />
-                      {selectedVenue.operating_hours || "N/A"}
-                    </div>
+                          <span>{city}</span>
+                          <span className="text-slate-500">{count}</span>
+                        </button>
+                      );
+                    })}
                   </div>
+                </Card>
 
-                  {/* Screens List */}
-                  <div className="mt-4">
-                    <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
-                      <MonitorPlay className="w-4 h-4 text-violet-600" />
-                      {getScreenCount(selectedVenue.id)} Available Screens
-                    </h4>
-                    <div className="space-y-2">
-                      {getVenueScreens(selectedVenue.id).map((screen) => (
-                        <div key={screen.id} className="bg-slate-50 rounded-lg p-3">
-                          <p className="font-medium text-slate-900">{screen.name}</p>
-                          <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
-                            <span>{screen.size}</span>
-                            <span>•</span>
-                            <span>{screen.orientation}</span>
-                            <span>•</span>
-                            <span className="text-violet-600 font-medium">AED {screen.slot_price}/week</span>
+                <Card className="p-4">
+                  <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-violet-600" />
+                    Filter by Venue Type
+                  </h3>
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => setTypeFilter("all")}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                        typeFilter === "all" ? "bg-violet-100 text-violet-700 font-medium" : "hover:bg-slate-100"
+                      }`}
+                    >
+                      All Types
+                    </button>
+                    {venueTypes.map(type => {
+                      const count = venues.filter(v => v.type === type).length;
+                      return (
+                        <button
+                          key={type}
+                          onClick={() => setTypeFilter(type)}
+                          className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center justify-between ${
+                            typeFilter === type ? "bg-violet-100 text-violet-700 font-medium" : "hover:bg-slate-100"
+                          }`}
+                        >
+                          <span className="flex items-center gap-2">
+                            <span 
+                              className="w-3 h-3 rounded-full" 
+                              style={{ backgroundColor: venueTypeColors[type] || "violet" }}
+                            />
+                            {typeLabels[type] || type}
+                          </span>
+                          <span className="text-slate-500">{count}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </Card>
+
+                {/* Legend */}
+                <Card className="p-4">
+                  <h3 className="font-semibold text-slate-900 mb-3">Map Legend</h3>
+                  <div className="space-y-2 text-sm">
+                    {Object.entries(venueTypeColors).slice(0, 7).map(([type, color]) => (
+                      <div key={type} className="flex items-center gap-2">
+                        <span className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
+                        <span className="text-slate-600 capitalize">{typeLabels[type] || type}</span>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </div>
+
+              {/* Map */}
+              <div className="lg:col-span-3">
+                <div className="relative rounded-2xl overflow-hidden shadow-xl border border-slate-200" style={{ height: "700px" }}>
+                  <MapContainer
+                    center={getMapCenter()}
+                    zoom={getMapZoom()}
+                    style={{ height: "100%", width: "100%" }}
+                    scrollWheelZoom={true}
+                    zoomControl={true}
+                  >
+                    <MapController center={getMapCenter()} zoom={getMapZoom()} />
+                    <TileLayer
+                      attribution='&copy; <a href="https://carto.com/">CARTO</a>'
+                      url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                    />
+                    {venuesWithCoords.map((venue) => (
+                      <Marker
+                        key={venue.id}
+                        position={[venue.latitude, venue.longitude]}
+                        icon={createVenueIcon(venue.type)}
+                        eventHandlers={{
+                          click: () => setSelectedVenue(venue)
+                        }}
+                      >
+                        <Popup>
+                          <div className="p-2 min-w-[220px]">
+                            <div className="flex items-start gap-2 mb-2">
+                              <span 
+                                className="w-3 h-3 rounded-full mt-1.5 flex-shrink-0" 
+                                style={{ backgroundColor: venueTypeColors[venue.type] || "violet" }}
+                              />
+                              <div>
+                                <h3 className="font-bold text-slate-900">{venue.name}</h3>
+                                <p className="text-xs text-slate-500">{typeLabels[venue.type] || venue.type}</p>
+                              </div>
+                            </div>
+                            <p className="text-sm text-slate-600">{venue.area}, {venue.city}</p>
+                            <div className="flex items-center gap-1 mt-2 text-violet-600 font-medium text-sm">
+                              <MonitorPlay className="w-4 h-4" />
+                              {getScreenCount(venue.id)} Screens Available
+                            </div>
+                            {venue.avg_daily_footfall && (
+                              <div className="flex items-center gap-1 mt-1 text-slate-600 text-sm">
+                                <Users className="w-4 h-4" />
+                                {venue.avg_daily_footfall.toLocaleString()} daily visitors
+                              </div>
+                            )}
+                            <Button
+                              size="sm"
+                              className="w-full mt-3 bg-violet-600 hover:bg-violet-700"
+                              onClick={() => setSelectedVenue(venue)}
+                            >
+                              View Details & Screens
+                            </Button>
+                          </div>
+                        </Popup>
+                      </Marker>
+                    ))}
+                  </MapContainer>
+
+                  {/* Venue Detail Panel */}
+                  {selectedVenue && (
+                    <div className="absolute top-4 right-4 bg-white rounded-xl shadow-2xl p-5 w-80 z-[1000] max-h-[650px] overflow-y-auto">
+                      <button
+                        onClick={() => setSelectedVenue(null)}
+                        className="absolute top-3 right-3 p-1 hover:bg-slate-100 rounded-full"
+                      >
+                        <X className="w-5 h-5 text-slate-500" />
+                      </button>
+                      <img
+                        src={selectedVenue.image_url || "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=200&fit=crop"}
+                        alt={selectedVenue.name}
+                        className="w-full h-36 object-cover rounded-lg mb-4"
+                      />
+                      <div className="flex items-center gap-2 mb-2">
+                        <span 
+                          className="w-3 h-3 rounded-full" 
+                          style={{ backgroundColor: venueTypeColors[selectedVenue.type] || "violet" }}
+                        />
+                        <Badge className="bg-slate-100 text-slate-700">
+                          {typeLabels[selectedVenue.type] || selectedVenue.type}
+                        </Badge>
+                      </div>
+                      <h3 className="text-lg font-bold text-slate-900">{selectedVenue.name}</h3>
+                      <p className="text-sm text-slate-500 mt-1 flex items-center gap-1">
+                        <MapPin className="w-3 h-3" />
+                        {selectedVenue.area}, {selectedVenue.city}
+                      </p>
+                      
+                      <div className="mt-4 p-3 bg-violet-50 rounded-lg">
+                        <div className="grid grid-cols-2 gap-3 text-sm">
+                          <div>
+                            <p className="text-violet-600 font-semibold">{selectedVenue.avg_daily_footfall?.toLocaleString() || "N/A"}</p>
+                            <p className="text-slate-500 text-xs">Daily Visitors</p>
+                          </div>
+                          <div>
+                            <p className="text-violet-600 font-semibold">{getScreenCount(selectedVenue.id)}</p>
+                            <p className="text-slate-500 text-xs">Screens</p>
                           </div>
                         </div>
-                      ))}
-                      {getScreenCount(selectedVenue.id) === 0 && (
-                        <p className="text-sm text-slate-500">No screens listed yet</p>
-                      )}
-                    </div>
-                  </div>
+                      </div>
 
-                  <Link to={createPageUrl("Register")}>
-                    <Button className="w-full mt-4 bg-gradient-to-r from-violet-600 to-indigo-600">
-                      Advertise Here
-                    </Button>
-                  </Link>
+                      <div className="mt-3 space-y-2 text-sm">
+                        <div className="flex items-center gap-2 text-slate-600">
+                          <Clock className="w-4 h-4 text-violet-600" />
+                          {selectedVenue.operating_hours || "Hours not specified"}
+                        </div>
+                      </div>
+
+                      {/* Screens List */}
+                      <div className="mt-4">
+                        <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
+                          <MonitorPlay className="w-4 h-4 text-violet-600" />
+                          Available Screens ({getScreenCount(selectedVenue.id)})
+                        </h4>
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                          {getVenueScreens(selectedVenue.id).map((screen) => (
+                            <div key={screen.id} className="bg-slate-50 rounded-lg p-3 border border-slate-100">
+                              <p className="font-medium text-slate-900 text-sm">{screen.name}</p>
+                              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 mt-1">
+                                <Badge variant="outline" className="text-xs">{screen.size}</Badge>
+                                <Badge variant="outline" className="text-xs">{screen.orientation}</Badge>
+                              </div>
+                              <p className="text-violet-600 font-semibold text-sm mt-2">
+                                AED {screen.slot_price}/week
+                              </p>
+                            </div>
+                          ))}
+                          {getScreenCount(selectedVenue.id) === 0 && (
+                            <p className="text-sm text-slate-500 text-center py-4">No screens listed yet</p>
+                          )}
+                        </div>
+                      </div>
+
+                      <Link to={createPageUrl("Register")}>
+                        <Button className="w-full mt-4 bg-gradient-to-r from-violet-600 to-indigo-600">
+                          Advertise at This Venue
+                        </Button>
+                      </Link>
+                    </div>
+                  )}
+
+                  {/* Results Count Badge */}
+                  <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg z-[1000]">
+                    <p className="text-sm font-medium text-slate-700">
+                      <span className="text-violet-600 font-bold">{venuesWithCoords.length}</span> venues 
+                      {cityFilter !== "all" && <span> in {cityFilter}</span>}
+                      {typeFilter !== "all" && <span> • {typeLabels[typeFilter] || typeFilter}</span>}
+                    </p>
+                  </div>
                 </div>
-              )}
+              </div>
             </div>
-            <p className="text-center text-sm text-slate-500 mt-4">
-              Showing {venuesWithCoords.length} venues with map coordinates. Click on markers to view details.
-            </p>
           </div>
         </section>
       )}
