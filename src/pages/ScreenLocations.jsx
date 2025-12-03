@@ -95,9 +95,34 @@ export default function ScreenLocations() {
     hospital: "Hospital"
   };
 
-  // UAE center coordinates
+  // UAE city coordinates for focused zoom
+  const cityCoords = {
+    "Dubai": { center: [25.2048, 55.2708], zoom: 11 },
+    "Abu Dhabi": { center: [24.4539, 54.3773], zoom: 11 },
+    "Sharjah": { center: [25.3463, 55.4209], zoom: 12 },
+    "Ajman": { center: [25.4052, 55.5136], zoom: 13 },
+    "RAK": { center: [25.7895, 55.9432], zoom: 12 },
+    "Fujairah": { center: [25.1288, 56.3265], zoom: 12 },
+    "Umm Al Quwain": { center: [25.5647, 55.5533], zoom: 13 }
+  };
+  
   const uaeCenter = [24.4539, 54.3773];
   const defaultZoom = 7;
+  
+  // Get map center based on city filter
+  const getMapCenter = () => {
+    if (cityFilter !== "all" && cityCoords[cityFilter]) {
+      return cityCoords[cityFilter].center;
+    }
+    return uaeCenter;
+  };
+  
+  const getMapZoom = () => {
+    if (cityFilter !== "all" && cityCoords[cityFilter]) {
+      return cityCoords[cityFilter].zoom;
+    }
+    return defaultZoom;
+  };
 
   return (
     <div className="min-h-screen bg-white">
