@@ -135,6 +135,13 @@ export default function Layout({ children, currentPageName }) {
         "DOOHDubaiShoppingFestival", "DOOHUAENationalDay", "DOOHRamadanAdvertising", 
         "DOOHDubaiSummerSurprises", "DOOHExpoCity", "DOOHEidAdvertising"
       ];
+
+  // Scroll to top when navigating to public pages
+  useEffect(() => {
+    if (publicPages.includes(currentPageName)) {
+      window.scrollTo(0, 0);
+    }
+  }, [currentPageName]);
   
   if (publicPages.includes(currentPageName)) {
     return <>{children}</>;
