@@ -35,66 +35,66 @@ export default function Services() {
   const advertiserServices = [
     {
       icon: Target,
-      title: "Precision Targeting",
-      description: "Target by city, venue type, time of day, and audience demographics"
+      title: "2X More Impressions",
+      description: "100% more audience reach than traditional outdoor advertising"
     },
     {
       icon: Upload,
-      title: "Easy Creative Upload",
-      description: "Upload images or videos in seconds, preview before going live"
+      title: "5-Minute Setup",
+      description: "Upload and go live instantly vs weeks of traditional OOH setup"
     },
     {
       icon: BarChart3,
-      title: "Real-time Analytics",
-      description: "Track impressions, reach, and ROI with detailed dashboards"
+      title: "72% Recall Rate",
+      description: "Captive audiences in relaxed settings retain your message better"
     },
     {
       icon: Clock,
-      title: "Flexible Scheduling",
-      description: "Choose specific time slots - morning, afternoon, evening, or peak hours"
+      title: "45+ Min Dwell Time",
+      description: "Extended exposure vs 2-second billboard drive-by viewing"
     },
     {
       icon: Shield,
-      title: "Brand Safety",
-      description: "Premium venues only - your brand in trusted environments"
+      title: "Guaranteed Attention",
+      description: "Screens show menus - viewers must look at your ad"
     },
     {
       icon: Zap,
-      title: "Fast Approval",
-      description: "Campaigns reviewed within 2-4 hours, go live the same day"
+      title: "144+ Plays Per Day",
+      description: "Ads repeat every 5 minutes for maximum brand frequency"
     }
   ];
 
   const venueServices = [
     {
       icon: DollarSign,
-      title: "Passive Revenue",
-      description: "Earn 70% revenue share on all ads displayed on your screens"
+      title: "70% Revenue Share",
+      description: "Industry-leading payout - earn AED 2,000-4,000+ per screen monthly"
     },
     {
       icon: MonitorPlay,
-      title: "Easy Screen Setup",
-      description: "Web-based player works on any smart TV or display device"
+      title: "Use Existing Screens",
+      description: "Works on 43\", 55\", 65\" smart TVs - no new equipment needed"
     },
     {
       icon: Settings,
-      title: "Full Control",
-      description: "Set your own rates, approve ad categories, manage schedules"
+      title: "Keep 3 Own Slots",
+      description: "Display your own promotions on 3 reserved ad slots"
     },
     {
       icon: Wifi,
-      title: "Remote Monitoring",
-      description: "Real-time status updates, offline alerts, and remote management"
+      title: "Weekly Payouts",
+      description: "Get paid every week directly to your bank account"
     },
     {
       icon: Shield,
-      title: "Secure & Reliable",
-      description: "PIN-protected screens with encrypted connections"
+      title: "Full Ad Control",
+      description: "Approve ad categories - only show content you're comfortable with"
     },
     {
       icon: BarChart3,
-      title: "Detailed Reports",
-      description: "Track earnings, impressions, and screen performance"
+      title: "Real-time Earnings",
+      description: "Track every impression and revenue as it happens"
     }
   ];
 
@@ -193,20 +193,20 @@ export default function Services() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center">
-              <p className="text-3xl md:text-4xl font-bold text-white mb-1">500+</p>
-              <p className="text-slate-400">Active Screens</p>
+              <p className="text-3xl md:text-4xl font-bold text-white mb-1">9,000+</p>
+              <p className="text-slate-400">Daily Audience Reach</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl md:text-4xl font-bold text-white mb-1">30 min</p>
-              <p className="text-slate-400">Go-Live Time</p>
+              <p className="text-3xl md:text-4xl font-bold text-white mb-1">72%</p>
+              <p className="text-slate-400">Recall Rate</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl md:text-4xl font-bold text-white mb-1">70%</p>
-              <p className="text-slate-400">Venue Revenue Share</p>
+              <p className="text-3xl md:text-4xl font-bold text-white mb-1">144+</p>
+              <p className="text-slate-400">Plays Per Day</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl md:text-4xl font-bold text-white mb-1">98%</p>
-              <p className="text-slate-400">Platform Uptime</p>
+              <p className="text-3xl md:text-4xl font-bold text-white mb-1">90%</p>
+              <p className="text-slate-400">Cost Savings vs OOH</p>
             </div>
           </div>
         </div>
