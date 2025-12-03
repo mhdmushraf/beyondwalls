@@ -41,6 +41,8 @@ export default function PublicFooter() {
               <Link to={createPageUrl("HowItWorks")} className="block text-slate-400 hover:text-white">How It Works</Link>
               <Link to={createPageUrl("ScreenLocations")} className="block text-slate-400 hover:text-white">Screen Locations</Link>
               <Link to={createPageUrl("HelpCenter")} className="block text-slate-400 hover:text-white">Help Center</Link>
+              <Link to={createPageUrl("DOOHAdvertisingDubai")} className="block text-slate-400 hover:text-white">DOOH Advertising Dubai</Link>
+              <Link to={createPageUrl("DigitalSignageUAE")} className="block text-slate-400 hover:text-white">Digital Signage UAE</Link>
             </div>
           </div>
           <div>
@@ -78,12 +80,18 @@ export default function PublicFooter() {
           </div>
         </div>
         <div className="border-t border-slate-700 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-slate-400 text-sm">
-            © {new Date().getFullYear()} BeyondWalls. All rights reserved. | <a href="https://www.beyondwalls.ae" className="hover:text-white">www.beyondwalls.ae</a>
-          </p>
+          <div>
+            <p className="text-slate-400 text-sm">
+              © {new Date().getFullYear()} BeyondWalls UAE. All rights reserved.
+            </p>
+            <p className="text-slate-500 text-xs mt-1">
+              🇦🇪 Based in Dubai, UAE | in5 Tech, Dubai Internet City | <a href="https://www.beyondwalls.ae" className="hover:text-white">www.beyondwalls.ae</a>
+            </p>
+          </div>
           <div className="flex gap-6 text-sm">
-            <Link to={createPageUrl("Terms")} className="text-slate-400 hover:text-white">Terms of Service</Link>
-            <Link to={createPageUrl("Privacy")} className="text-slate-400 hover:text-white">Privacy Policy</Link>
+            <Link to={createPageUrl("Terms")} className="text-slate-400 hover:text-white">Terms</Link>
+            <Link to={createPageUrl("Privacy")} className="text-slate-400 hover:text-white">Privacy</Link>
+            <Link to={createPageUrl("SitemapPage")} className="text-slate-400 hover:text-white">Sitemap</Link>
           </div>
         </div>
       </div>
