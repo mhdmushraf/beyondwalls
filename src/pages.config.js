@@ -67,6 +67,7 @@ import AdminVenueManager from './pages/AdminVenueManager';
 import NotificationCenter from './pages/NotificationCenter';
 import AdminBOnePlayer from './pages/AdminBOnePlayer';
 import Sitemap from './pages/Sitemap';
+import SitemapPage from './pages/SitemapPage';
 import __Layout from './Layout.jsx';
 
 
@@ -140,6 +141,7 @@ export const PAGES = {
     "NotificationCenter": NotificationCenter,
     "AdminBOnePlayer": AdminBOnePlayer,
     "Sitemap": Sitemap,
+    "SitemapPage": SitemapPage,
 }
 
 export const pagesConfig = {
