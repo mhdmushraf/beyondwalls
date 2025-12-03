@@ -28,7 +28,18 @@ const SITEMAP_PAGES = [
   { url: "/DOOHDowntownDubai", priority: "0.9", changefreq: "weekly" },
   { url: "/DOOHDIFC", priority: "0.8", changefreq: "weekly" },
   { url: "/DOOHAbuDhabi", priority: "0.9", changefreq: "weekly" },
-  { url: "/DOOHSharjah", priority: "0.8", changefreq: "weekly" }
+  { url: "/DOOHSharjah", priority: "0.8", changefreq: "weekly" },
+  { url: "/DOOHJBRDubai", priority: "0.9", changefreq: "weekly" },
+  { url: "/DOOHBusinessBay", priority: "0.8", changefreq: "weekly" },
+  { url: "/DOOHDubaiMall", priority: "0.9", changefreq: "weekly" },
+  // Venue-Type SEO Pages
+  { url: "/CafeAdvertisingDubai", priority: "0.8", changefreq: "weekly" },
+  { url: "/GymAdvertisingDubai", priority: "0.8", changefreq: "weekly" },
+  { url: "/MallAdvertisingUAE", priority: "0.8", changefreq: "weekly" },
+  { url: "/HotelAdvertisingDubai", priority: "0.8", changefreq: "weekly" },
+  { url: "/CoworkingAdvertisingDubai", priority: "0.8", changefreq: "weekly" },
+  { url: "/DigitalBillboardDubai", priority: "0.8", changefreq: "weekly" },
+  { url: "/ScreenAdvertisingUAE", priority: "0.8", changefreq: "weekly" }
 ];
 
 export default function SitemapPage() {
