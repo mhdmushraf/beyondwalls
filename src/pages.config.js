@@ -88,6 +88,12 @@ import HotelAdvertisingDubai from './pages/HotelAdvertisingDubai';
 import CoworkingAdvertisingDubai from './pages/CoworkingAdvertisingDubai';
 import DigitalBillboardDubai from './pages/DigitalBillboardDubai';
 import ScreenAdvertisingUAE from './pages/ScreenAdvertisingUAE';
+import DOOHDubaiShoppingFestival from './pages/DOOHDubaiShoppingFestival';
+import DOOHUAENationalDay from './pages/DOOHUAENationalDay';
+import DOOHRamadanAdvertising from './pages/DOOHRamadanAdvertising';
+import DOOHDubaiSummerSurprises from './pages/DOOHDubaiSummerSurprises';
+import DOOHExpoCity from './pages/DOOHExpoCity';
+import DOOHEidAdvertising from './pages/DOOHEidAdvertising';
 import __Layout from './Layout.jsx';
 
 
@@ -182,6 +188,12 @@ export const PAGES = {
     "CoworkingAdvertisingDubai": CoworkingAdvertisingDubai,
     "DigitalBillboardDubai": DigitalBillboardDubai,
     "ScreenAdvertisingUAE": ScreenAdvertisingUAE,
+    "DOOHDubaiShoppingFestival": DOOHDubaiShoppingFestival,
+    "DOOHUAENationalDay": DOOHUAENationalDay,
+    "DOOHRamadanAdvertising": DOOHRamadanAdvertising,
+    "DOOHDubaiSummerSurprises": DOOHDubaiSummerSurprises,
+    "DOOHExpoCity": DOOHExpoCity,
+    "DOOHEidAdvertising": DOOHEidAdvertising,
 }
 
 export const pagesConfig = {
