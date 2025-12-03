@@ -22,7 +22,13 @@ const SITEMAP_PAGES = [
   { url: "/DigitalSignageUAE", priority: "0.9", changefreq: "weekly" },
   { url: "/AdPlatformDubai", priority: "0.8", changefreq: "weekly" },
   { url: "/VenueAdvertisingUAE", priority: "0.8", changefreq: "weekly" },
-  { url: "/BeyondWallsUAEvsUSA", priority: "0.7", changefreq: "monthly" }
+  { url: "/BeyondWallsUAEvsUSA", priority: "0.7", changefreq: "monthly" },
+  // Location-Specific SEO Pages
+  { url: "/DOOHDubaiMarina", priority: "0.9", changefreq: "weekly" },
+  { url: "/DOOHDowntownDubai", priority: "0.9", changefreq: "weekly" },
+  { url: "/DOOHDIFC", priority: "0.8", changefreq: "weekly" },
+  { url: "/DOOHAbuDhabi", priority: "0.9", changefreq: "weekly" },
+  { url: "/DOOHSharjah", priority: "0.8", changefreq: "weekly" }
 ];
 
 export default function SitemapPage() {
