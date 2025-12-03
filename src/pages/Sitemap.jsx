@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 const SITEMAP_PAGES = [
   { url: "/Home", priority: "1.0", changefreq: "daily" },
@@ -18,7 +18,6 @@ export default function Sitemap() {
   const baseUrl = "https://www.beyondwalls.ae";
   const today = new Date().toISOString().split('T')[0];
 
-  // Generate XML sitemap content
   const generateXML = () => {
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
     xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
@@ -46,7 +45,6 @@ export default function Sitemap() {
           For Google Search Console, submit the following URLs manually or copy the XML below:
         </p>
 
-        {/* Visual Sitemap */}
         <div className="bg-white rounded-lg border p-6 mb-6">
           <h2 className="font-semibold mb-4">Public Pages</h2>
           <ul className="space-y-2">
@@ -66,7 +64,6 @@ export default function Sitemap() {
           </ul>
         </div>
 
-        {/* XML Sitemap */}
         <div className="bg-white rounded-lg border overflow-hidden">
           <div className="bg-slate-100 px-4 py-3 flex items-center justify-between">
             <span className="font-mono text-sm">sitemap.xml</span>
@@ -89,7 +86,7 @@ export default function Sitemap() {
             <li>Go to Google Search Console</li>
             <li>Select your property (beyondwalls.ae)</li>
             <li>Go to "Sitemaps" in the left menu</li>
-            <li>Since Base44 doesn't serve static XML files, add URLs individually via "URL Inspection"</li>
+            <li>Add URLs individually via "URL Inspection" tool</li>
             <li>Or copy the XML above and host it on a separate server</li>
           </ol>
         </div>
