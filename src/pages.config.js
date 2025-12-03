@@ -78,6 +78,16 @@ import DOOHDowntownDubai from './pages/DOOHDowntownDubai';
 import DOOHDIFC from './pages/DOOHDIFC';
 import DOOHAbuDhabi from './pages/DOOHAbuDhabi';
 import DOOHSharjah from './pages/DOOHSharjah';
+import DOOHJBRDubai from './pages/DOOHJBRDubai';
+import DOOHBusinessBay from './pages/DOOHBusinessBay';
+import DOOHDubaiMall from './pages/DOOHDubaiMall';
+import CafeAdvertisingDubai from './pages/CafeAdvertisingDubai';
+import GymAdvertisingDubai from './pages/GymAdvertisingDubai';
+import MallAdvertisingUAE from './pages/MallAdvertisingUAE';
+import HotelAdvertisingDubai from './pages/HotelAdvertisingDubai';
+import CoworkingAdvertisingDubai from './pages/CoworkingAdvertisingDubai';
+import DigitalBillboardDubai from './pages/DigitalBillboardDubai';
+import ScreenAdvertisingUAE from './pages/ScreenAdvertisingUAE';
 import __Layout from './Layout.jsx';
 
 
@@ -162,6 +172,16 @@ export const PAGES = {
     "DOOHDIFC": DOOHDIFC,
     "DOOHAbuDhabi": DOOHAbuDhabi,
     "DOOHSharjah": DOOHSharjah,
+    "DOOHJBRDubai": DOOHJBRDubai,
+    "DOOHBusinessBay": DOOHBusinessBay,
+    "DOOHDubaiMall": DOOHDubaiMall,
+    "CafeAdvertisingDubai": CafeAdvertisingDubai,
+    "GymAdvertisingDubai": GymAdvertisingDubai,
+    "MallAdvertisingUAE": MallAdvertisingUAE,
+    "HotelAdvertisingDubai": HotelAdvertisingDubai,
+    "CoworkingAdvertisingDubai": CoworkingAdvertisingDubai,
+    "DigitalBillboardDubai": DigitalBillboardDubai,
+    "ScreenAdvertisingUAE": ScreenAdvertisingUAE,
 }
 
 export const pagesConfig = {
