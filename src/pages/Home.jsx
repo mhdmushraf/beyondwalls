@@ -35,6 +35,9 @@ import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
 import PublicAIChatWidget from "@/components/chat/PublicAIChatWidget";
 import ARFeatureSection from "@/components/home/ARFeatureSection";
 import BOneShowcase from "@/components/home/BOneShowcase";
+import DOOHAdvantageSection from "@/components/home/DOOHAdvantageSection";
+import RestaurantDOOHStats from "@/components/home/RestaurantDOOHStats";
+import VenueOwnerBenefits from "@/components/home/VenueOwnerBenefits";
 
 export default function Home() {
   const [showInvestorModal, setShowInvestorModal] = useState(false);
@@ -80,18 +83,18 @@ export default function Home() {
 
   const stats = [
     { value: "500+", label: "Active Screens", icon: MonitorPlay },
-    { value: "1M+", label: "Daily Impressions", icon: TrendingUp },
+    { value: "9,000+", label: "Daily Audience Reach", icon: TrendingUp },
     { value: "200+", label: "Premium Venues", icon: Building2 },
-    { value: "98%", label: "Uptime", icon: Zap }
+    { value: "72%", label: "Recall Rate", icon: Zap }
   ];
 
   const advertiserBenefits = [
-    { icon: Target, title: "Precision Targeting", desc: "Location, time, and venue-type targeting" },
-    { icon: Clock, title: "Go Live in 30 mins", desc: "Instant campaign activation" },
-    { icon: BarChart3, title: "Real-time Analytics", desc: "Track impressions & ROI live" },
-    { icon: DollarSign, title: "Pay Per Screen", desc: "No hidden fees, transparent pricing" },
-    { icon: Sparkles, title: "AI Campaign Builder", desc: "Let AI optimize your ads" },
-    { icon: Shield, title: "Brand Safe", desc: "Premium venues only" }
+    { icon: Target, title: "2X More Impressions", desc: "100% more reach than traditional OOH" },
+    { icon: Clock, title: "Go Live in 5 mins", desc: "Instant vs weeks of OOH setup" },
+    { icon: BarChart3, title: "72% Recall Rate", desc: "Ads stick in captive audiences" },
+    { icon: DollarSign, title: "90% Cost Savings", desc: "vs traditional billboard advertising" },
+    { icon: Sparkles, title: "45+ Min Dwell Time", desc: "Not 2-second drive-by exposure" },
+    { icon: Shield, title: "144+ Plays/Day", desc: "Maximum brand frequency" }
   ];
 
   const venueBenefits = [
@@ -480,6 +483,12 @@ export default function Home() {
         </div>
       </section>
 
+      {/* DOOH Advantage Section */}
+      <DOOHAdvantageSection />
+
+      {/* Restaurant Network Stats */}
+      <RestaurantDOOHStats />
+
       {/* AR Feature Section - Premium Feature Highlight */}
       <ARFeatureSection />
 
@@ -659,58 +668,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* For Venue Owners */}
-      <section className="py-20 px-6 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="order-2 lg:order-1 relative">
-              <img 
-                src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=700&h=500&fit=crop&q=80" 
-                alt="Modern café with digital screen" 
-                className="rounded-2xl shadow-2xl"
-                loading="lazy"
-              />
-              <div className="absolute -bottom-6 -right-6 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-6 shadow-xl text-white">
-                <div className="flex items-center gap-4">
-                  <Wallet className="w-10 h-10" />
-                  <div>
-                    <p className="font-bold text-2xl">70%</p>
-                    <p className="text-emerald-100">Revenue Share</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="order-1 lg:order-2">
-              <Badge className="bg-emerald-100 text-emerald-700 border-0 mb-4">For Venue Owners</Badge>
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
-                Turn Your Screens Into Revenue Streams
-              </h2>
-              <p className="text-xl text-slate-600 mb-8">
-                Have a screen in your café, gym, or office? Monetize it! 
-                Earn passive income while displaying relevant ads to your visitors.
-              </p>
-              
-              <div className="grid grid-cols-2 gap-4 mb-8">
-                {venueBenefits.map((benefit, i) => (
-                  <div key={i} className="bg-slate-50 rounded-xl p-4">
-                    <benefit.icon className="w-8 h-8 text-emerald-600 mb-3" />
-                    <p className="font-semibold text-slate-900">{benefit.title}</p>
-                    <p className="text-slate-600 text-sm">{benefit.desc}</p>
-                  </div>
-                ))}
-              </div>
-
-              <Link to={createPageUrl("Register")}>
-                <Button size="lg" className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 h-14 px-8 text-lg">
-                  List Your Venue
-                  <Building2 className="w-5 h-5 ml-2" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* For Venue Owners - Enhanced */}
+      <VenueOwnerBenefits />
 
       {/* Venue Types */}
       <section className="py-20 px-6 bg-slate-50">
