@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { Download, Loader2, RefreshCw, MonitorPlay, Sparkles, FileText, CreditCard, Mail, Phone, Globe, MapPin } from "lucide-react";
+import { Download, Loader2, RefreshCw, MonitorPlay, Sparkles, FileText, CreditCard, Mail, Phone, Globe, MapPin, FileImage } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
