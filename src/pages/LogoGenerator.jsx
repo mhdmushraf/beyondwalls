@@ -476,12 +476,15 @@ export default function LogoGenerator() {
                   </div>
                 </div>
                 <p className="text-xs text-slate-500 mb-2">B.One Player</p>
-                <div className="flex gap-1">
+                <div className="flex gap-1 flex-wrap">
                   <Button size="sm" variant="outline" onClick={() => downloadCurrentLogo('bone')}>
                     <Download className="w-3 h-3 mr-1" /> PNG
                   </Button>
                   <Button size="sm" variant="outline" onClick={() => downloadAsPDF('bone')}>
                     <FileText className="w-3 h-3 mr-1" /> PDF
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => downloadAsSVG('bone')} className="border-orange-300 text-orange-600 hover:bg-orange-50">
+                    <FileImage className="w-3 h-3 mr-1" /> SVG/AI
                   </Button>
                 </div>
               </div>
