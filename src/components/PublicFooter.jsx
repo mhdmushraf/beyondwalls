@@ -84,7 +84,7 @@ export default function PublicFooter() {
           <div className="flex gap-6 text-sm">
             <Link to={createPageUrl("Terms")} className="text-slate-400 hover:text-white">Terms of Service</Link>
             <Link to={createPageUrl("Privacy")} className="text-slate-400 hover:text-white">Privacy Policy</Link>
-            <Link to={createPageUrl("SitemapPage")} className="text-slate-400 hover:text-white">Sitemap</Link>
+            <Link to={createPageUrl("Sitemap")} className="text-slate-400 hover:text-white">Sitemap</Link>
           </div>
         </div>
       </div>
