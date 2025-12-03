@@ -39,7 +39,14 @@ const SITEMAP_PAGES = [
   { url: "/HotelAdvertisingDubai", priority: "0.8", changefreq: "weekly" },
   { url: "/CoworkingAdvertisingDubai", priority: "0.8", changefreq: "weekly" },
   { url: "/DigitalBillboardDubai", priority: "0.8", changefreq: "weekly" },
-  { url: "/ScreenAdvertisingUAE", priority: "0.8", changefreq: "weekly" }
+  { url: "/ScreenAdvertisingUAE", priority: "0.8", changefreq: "weekly" },
+  // UAE Events & Seasonal SEO Pages
+  { url: "/DOOHDubaiShoppingFestival", priority: "0.9", changefreq: "monthly" },
+  { url: "/DOOHUAENationalDay", priority: "0.8", changefreq: "monthly" },
+  { url: "/DOOHRamadanAdvertising", priority: "0.9", changefreq: "monthly" },
+  { url: "/DOOHDubaiSummerSurprises", priority: "0.8", changefreq: "monthly" },
+  { url: "/DOOHExpoCity", priority: "0.8", changefreq: "weekly" },
+  { url: "/DOOHEidAdvertising", priority: "0.8", changefreq: "monthly" }
 ];
 
 export default function SitemapPage() {

@@ -131,7 +131,9 @@ export default function Layout({ children, currentPageName }) {
         "VenueAdvertisingUAE", "BeyondWallsUAEvsUSA", "DOOHDubaiMarina", "DOOHDowntownDubai",
         "DOOHDIFC", "DOOHAbuDhabi", "DOOHSharjah", "DOOHJBRDubai", "DOOHBusinessBay",
         "DOOHDubaiMall", "CafeAdvertisingDubai", "GymAdvertisingDubai", "MallAdvertisingUAE",
-        "HotelAdvertisingDubai", "CoworkingAdvertisingDubai", "DigitalBillboardDubai", "ScreenAdvertisingUAE"
+        "HotelAdvertisingDubai", "CoworkingAdvertisingDubai", "DigitalBillboardDubai", "ScreenAdvertisingUAE",
+        "DOOHDubaiShoppingFestival", "DOOHUAENationalDay", "DOOHRamadanAdvertising", 
+        "DOOHDubaiSummerSurprises", "DOOHExpoCity", "DOOHEidAdvertising"
       ];
   
   if (publicPages.includes(currentPageName)) {
