@@ -68,6 +68,7 @@ import NotificationCenter from './pages/NotificationCenter';
 import AdminBOnePlayer from './pages/AdminBOnePlayer';
 import Sitemap from './pages/Sitemap';
 import SitemapPage from './pages/SitemapPage';
+import BeyondWallsUAEvsUSA from './pages/BeyondWallsUAEvsUSA';
 import __Layout from './Layout.jsx';
 
 
@@ -142,6 +143,7 @@ export const PAGES = {
     "AdminBOnePlayer": AdminBOnePlayer,
     "Sitemap": Sitemap,
     "SitemapPage": SitemapPage,
+    "BeyondWallsUAEvsUSA": BeyondWallsUAEvsUSA,
 }
 
 export const pagesConfig = {
