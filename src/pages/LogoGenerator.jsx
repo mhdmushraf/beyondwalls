@@ -237,6 +237,56 @@ export default function LogoGenerator() {
     }, 'image/png');
   };
 
+  const downloadAsSVG = (type) => {
+    let svgContent = '';
+    
+    if (type === 'bone') {
+      // B.One Player Logo as SVG (vector format compatible with Adobe Illustrator)
+      svgContent = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="400" height="120">
+  <defs>
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6"/>
+      <stop offset="100%" style="stop-color:#6366F1"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect x="0" y="0" width="400" height="120" rx="16" fill="#0f172a"/>
+  
+  <!-- Icon Background -->
+  <rect x="15" y="20" width="80" height="80" rx="16" fill="url(#iconGradient)"/>
+  
+  <!-- Monitor Screen -->
+  <rect x="30" y="35" width="50" height="38" rx="4" fill="none" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Monitor Stand -->
+  <line x1="55" y1="73" x2="55" y2="85" stroke="white" stroke-width="5" stroke-linecap="round"/>
+  
+  <!-- Monitor Base -->
+  <line x1="40" y1="85" x2="70" y2="85" stroke="white" stroke-width="5" stroke-linecap="round"/>
+  
+  <!-- Play Icon -->
+  <polygon points="48,45 48,63 65,54" fill="white"/>
+  
+  <!-- Text: B.One -->
+  <text x="115" y="70" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="42" font-weight="bold" fill="white">B.One</text>
+  
+  <!-- Text: Player -->
+  <text x="115" y="95" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" fill="#a78bfa">Player</text>
+</svg>`;
+    }
+    
+    // Create downloadable SVG file
+    const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = type === 'bone' ? 'bone-player-logo.svg' : 'beyondwalls-logo.svg';
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   const downloadAsPDF = (type) => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
