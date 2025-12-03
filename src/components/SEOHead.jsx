@@ -71,16 +71,19 @@ export const PAGE_SEO = {
 // Sitemap data for generation
 export const SITEMAP_PAGES = [
   { url: "/", priority: "1.0", changefreq: "daily" },
-  { url: "/about", priority: "0.8", changefreq: "monthly" },
-  { url: "/services", priority: "0.9", changefreq: "weekly" },
-  { url: "/contact", priority: "0.7", changefreq: "monthly" },
-  { url: "/blog", priority: "0.8", changefreq: "daily" },
-  { url: "/screen-locations", priority: "0.9", changefreq: "daily" },
-  { url: "/how-it-works", priority: "0.8", changefreq: "monthly" },
-  { url: "/register", priority: "0.9", changefreq: "monthly" },
-  { url: "/terms", priority: "0.3", changefreq: "yearly" },
-  { url: "/privacy", priority: "0.3", changefreq: "yearly" },
-  { url: "/help", priority: "0.6", changefreq: "weekly" }
+  { url: "/About", priority: "0.8", changefreq: "monthly" },
+  { url: "/Services", priority: "0.9", changefreq: "weekly" },
+  { url: "/Contact", priority: "0.7", changefreq: "monthly" },
+  { url: "/Blog", priority: "0.8", changefreq: "daily" },
+  { url: "/ScreenLocations", priority: "0.9", changefreq: "daily" },
+  { url: "/HowItWorks", priority: "0.8", changefreq: "monthly" },
+  { url: "/Register", priority: "0.9", changefreq: "monthly" },
+  { url: "/Terms", priority: "0.3", changefreq: "yearly" },
+  { url: "/Privacy", priority: "0.3", changefreq: "yearly" },
+  { url: "/HelpCenter", priority: "0.6", changefreq: "weekly" },
+  { url: "/ARPremium", priority: "0.7", changefreq: "weekly" },
+  { url: "/Connect", priority: "0.6", changefreq: "monthly" },
+  { url: "/Sitemap", priority: "0.3", changefreq: "monthly" }
 ];
 
 export default function SEOHead({ 

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 
 const SITEMAP_PAGES = [
-  { url: "/Home", priority: "1.0", changefreq: "daily" },
+  { url: "/", priority: "1.0", changefreq: "daily" },
   { url: "/About", priority: "0.8", changefreq: "monthly" },
   { url: "/Services", priority: "0.9", changefreq: "weekly" },
   { url: "/Contact", priority: "0.7", changefreq: "monthly" },
@@ -13,7 +13,10 @@ const SITEMAP_PAGES = [
   { url: "/Register", priority: "0.9", changefreq: "monthly" },
   { url: "/Terms", priority: "0.3", changefreq: "yearly" },
   { url: "/Privacy", priority: "0.3", changefreq: "yearly" },
-  { url: "/HelpCenter", priority: "0.6", changefreq: "weekly" }
+  { url: "/HelpCenter", priority: "0.6", changefreq: "weekly" },
+  { url: "/ARPremium", priority: "0.7", changefreq: "weekly" },
+  { url: "/Connect", priority: "0.6", changefreq: "monthly" },
+  { url: "/Sitemap", priority: "0.3", changefreq: "monthly" }
 ];
 
 export default function SitemapPage() {
