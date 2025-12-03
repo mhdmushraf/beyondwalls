@@ -123,13 +123,14 @@ export default function Layout({ children, currentPageName }) {
 
   // Public pages without sidebar - no auth required
   const publicPages = [
-    "Home", "Login", "Register", "CompleteProfile", "ScreenPlayer", 
-    "About", "Services", "Contact", "ScreenLocations", "Blog", 
-    "HelpCenter", "Terms", "Privacy", "HowItWorks", "PendingApproval", 
-    "Connect", "BlogPost", "AuthorProfile", "NotFound", "ARPremium", "Sitemap",
-    "SitemapPage", "DOOHAdvertisingDubai", "DigitalSignageUAE", "AdPlatformDubai", 
-    "VenueAdvertisingUAE", "BeyondWallsUAEvsUSA"
-  ];
+        "Home", "Login", "Register", "CompleteProfile", "ScreenPlayer", 
+        "About", "Services", "Contact", "ScreenLocations", "Blog", 
+        "HelpCenter", "Terms", "Privacy", "HowItWorks", "PendingApproval", 
+        "Connect", "BlogPost", "AuthorProfile", "NotFound", "ARPremium", "Sitemap",
+        "SitemapPage", "DOOHAdvertisingDubai", "DigitalSignageUAE", "AdPlatformDubai", 
+        "VenueAdvertisingUAE", "BeyondWallsUAEvsUSA", "DOOHDubaiMarina", "DOOHDowntownDubai",
+        "DOOHDIFC", "DOOHAbuDhabi", "DOOHSharjah"
+      ];
   
   if (publicPages.includes(currentPageName)) {
     return <>{children}</>;
