@@ -85,24 +85,45 @@ export default function SitemapPage() {
           <pre className="p-4 text-xs overflow-x-auto bg-slate-50 max-h-96">{sitemapXML}</pre>
         </div>
 
-        <div className="mt-6 p-4 bg-violet-50 border border-violet-200 rounded-lg">
-          <h3 className="font-semibold text-violet-800 mb-2">Download for Cloudflare Pages:</h3>
-          <p className="text-sm text-violet-700 mb-4">Click below to download the sitemap.xml file, then upload it to Cloudflare Pages.</p>
-          <Button 
-            onClick={() => {
-              const blob = new Blob([sitemapXML], { type: 'application/xml' });
-              const url = URL.createObjectURL(blob);
-              const link = document.createElement('a');
-              link.href = url;
-              link.download = 'sitemap.xml';
-              link.click();
-              URL.revokeObjectURL(url);
-            }}
-            className="bg-gradient-to-r from-violet-600 to-indigo-600"
-          >
-            <Download className="w-4 h-4 mr-2" />
-            Download sitemap.xml
-          </Button>
+        <div className="mt-6 p-6 bg-gradient-to-br from-violet-50 to-indigo-50 border border-violet-200 rounded-xl">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Download className="w-6 h-6 text-white" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-bold text-violet-900 text-lg mb-1">Download for Cloudflare Pages</h3>
+              <p className="text-sm text-violet-700 mb-4">
+                Download the sitemap.xml file and upload it to your Cloudflare Pages project for Google Search Console submission.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Button 
+                  onClick={() => {
+                    const blob = new Blob([sitemapXML], { type: 'application/xml' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'sitemap.xml';
+                    link.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                  className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 shadow-lg shadow-violet-500/25"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Download sitemap.xml
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={() => {
+                    navigator.clipboard.writeText(sitemapXML);
+                    alert('Sitemap XML copied to clipboard!');
+                  }}
+                  className="border-violet-300 text-violet-700 hover:bg-violet-100"
+                >
+                  Copy to Clipboard
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
