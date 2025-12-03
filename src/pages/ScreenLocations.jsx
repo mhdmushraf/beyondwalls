@@ -42,7 +42,28 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
-// Custom marker icon
+// Custom marker icons by venue type
+const venueTypeColors = {
+  restaurant: "red",
+  cafe: "orange", 
+  mall: "violet",
+  gym: "green",
+  coworking: "blue",
+  hotel: "gold",
+  hospital: "grey",
+  salon: "pink",
+  other: "violet"
+};
+
+const createVenueIcon = (type) => new L.Icon({
+  iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${venueTypeColors[type] || "violet"}.png`,
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
 const screenIcon = new L.Icon({
   iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png",
   shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
@@ -51,6 +72,15 @@ const screenIcon = new L.Icon({
   popupAnchor: [1, -34],
   shadowSize: [41, 41]
 });
+
+// Map controller component for dynamic center/zoom
+function MapController({ center, zoom }) {
+  const map = useMap();
+  React.useEffect(() => {
+    map.setView(center, zoom, { animate: true });
+  }, [center, zoom, map]);
+  return null;
+}
 
 export default function ScreenLocations() {
   const [search, setSearch] = useState("");
