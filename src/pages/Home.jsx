@@ -35,7 +35,7 @@ import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
 import PublicAIChatWidget from "@/components/chat/PublicAIChatWidget";
 import ARFeatureSection from "@/components/home/ARFeatureSection";
 import BOneShowcase from "@/components/home/BOneShowcase";
-import DOOHAdvantageSection from "@/components/home/DOOHAdvantageSection";
+
 import RestaurantDOOHStats from "@/components/home/RestaurantDOOHStats";
 import VenueOwnerBenefits from "@/components/home/VenueOwnerBenefits";
 
@@ -483,8 +483,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* DOOH Advantage Section */}
-      <DOOHAdvantageSection />
+
 
       {/* Restaurant Network Stats */}
       <RestaurantDOOHStats />
