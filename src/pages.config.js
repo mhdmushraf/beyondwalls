@@ -69,6 +69,10 @@ import AdminBOnePlayer from './pages/AdminBOnePlayer';
 import Sitemap from './pages/Sitemap';
 import SitemapPage from './pages/SitemapPage';
 import BeyondWallsUAEvsUSA from './pages/BeyondWallsUAEvsUSA';
+import DOOHAdvertisingDubai from './pages/DOOHAdvertisingDubai';
+import DigitalSignageUAE from './pages/DigitalSignageUAE';
+import AdPlatformDubai from './pages/AdPlatformDubai';
+import VenueAdvertisingUAE from './pages/VenueAdvertisingUAE';
 import __Layout from './Layout.jsx';
 
 
@@ -144,6 +148,10 @@ export const PAGES = {
     "Sitemap": Sitemap,
     "SitemapPage": SitemapPage,
     "BeyondWallsUAEvsUSA": BeyondWallsUAEvsUSA,
+    "DOOHAdvertisingDubai": DOOHAdvertisingDubai,
+    "DigitalSignageUAE": DigitalSignageUAE,
+    "AdPlatformDubai": AdPlatformDubai,
+    "VenueAdvertisingUAE": VenueAdvertisingUAE,
 }
 
 export const pagesConfig = {
