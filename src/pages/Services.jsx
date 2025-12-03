@@ -30,6 +30,7 @@ import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
 import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
 import PublicAIChatWidget from "@/components/chat/PublicAIChatWidget";
+import DOOHvsOOHComparison from "@/components/services/DOOHvsOOHComparison";
 
 export default function Services() {
   const advertiserServices = [
@@ -376,6 +377,9 @@ export default function Services() {
           </div>
         </div>
       </section>
+
+      {/* DOOH vs OOH Comparison */}
+      <DOOHvsOOHComparison />
 
       {/* Why Choose Us */}
       <section className="py-20 px-6 bg-white">
