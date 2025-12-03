@@ -73,6 +73,11 @@ import DOOHAdvertisingDubai from './pages/DOOHAdvertisingDubai';
 import DigitalSignageUAE from './pages/DigitalSignageUAE';
 import AdPlatformDubai from './pages/AdPlatformDubai';
 import VenueAdvertisingUAE from './pages/VenueAdvertisingUAE';
+import DOOHDubaiMarina from './pages/DOOHDubaiMarina';
+import DOOHDowntownDubai from './pages/DOOHDowntownDubai';
+import DOOHDIFC from './pages/DOOHDIFC';
+import DOOHAbuDhabi from './pages/DOOHAbuDhabi';
+import DOOHSharjah from './pages/DOOHSharjah';
 import __Layout from './Layout.jsx';
 
 
@@ -152,6 +157,11 @@ export const PAGES = {
     "DigitalSignageUAE": DigitalSignageUAE,
     "AdPlatformDubai": AdPlatformDubai,
     "VenueAdvertisingUAE": VenueAdvertisingUAE,
+    "DOOHDubaiMarina": DOOHDubaiMarina,
+    "DOOHDowntownDubai": DOOHDowntownDubai,
+    "DOOHDIFC": DOOHDIFC,
+    "DOOHAbuDhabi": DOOHAbuDhabi,
+    "DOOHSharjah": DOOHSharjah,
 }
 
 export const pagesConfig = {
