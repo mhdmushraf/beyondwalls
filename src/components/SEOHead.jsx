@@ -83,7 +83,13 @@ export const SITEMAP_PAGES = [
   { url: "/HelpCenter", priority: "0.6", changefreq: "weekly" },
   { url: "/ARPremium", priority: "0.7", changefreq: "weekly" },
   { url: "/Connect", priority: "0.6", changefreq: "monthly" },
-  { url: "/Sitemap", priority: "0.3", changefreq: "monthly" }
+  { url: "/Sitemap", priority: "0.3", changefreq: "monthly" },
+  // SEO Landing Pages
+  { url: "/DOOHAdvertisingDubai", priority: "0.9", changefreq: "weekly" },
+  { url: "/DigitalSignageUAE", priority: "0.9", changefreq: "weekly" },
+  { url: "/AdPlatformDubai", priority: "0.8", changefreq: "weekly" },
+  { url: "/VenueAdvertisingUAE", priority: "0.8", changefreq: "weekly" },
+  { url: "/BeyondWallsUAEvsUSA", priority: "0.7", changefreq: "monthly" }
 ];
 
 export default function SEOHead({ 

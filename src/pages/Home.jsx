@@ -179,10 +179,10 @@ export default function Home() {
           "@graph": [
             {
               "@type": "WebSite",
-              "name": "BeyondWalls - Best Advertising Company in Dubai & UAE",
-              "alternateName": ["BeyondWalls DOOH", "BeyondWalls UAE", "BeyondWalls Advertising"],
+              "name": "BeyondWalls UAE - Best Digital Advertising Company in Dubai",
+              "alternateName": ["BeyondWalls DOOH", "BeyondWalls UAE", "BeyondWalls Advertising Dubai", "BeyondWalls.ae"],
               "url": "https://www.beyondwalls.ae",
-              "description": "UAE's #1 Digital Out-of-Home (DOOH) Advertising Platform. Self-serve advertising on 500+ digital screens across Dubai, Abu Dhabi, Sharjah.",
+              "description": "UAE's #1 Digital Out-of-Home (DOOH) Advertising Platform. Self-serve advertising on 500+ digital screens across Dubai, Abu Dhabi, Sharjah. Based in Dubai Internet City.",
               "inLanguage": "en-AE",
               "potentialAction": {
                 "@type": "SearchAction",
@@ -192,23 +192,45 @@ export default function Home() {
             },
             {
               "@type": "Organization",
-              "name": "BeyondWalls",
+              "@id": "https://www.beyondwalls.ae/#organization",
+              "name": "BeyondWalls UAE",
+              "legalName": "BeyondWalls DOOH Advertising LLC",
               "url": "https://www.beyondwalls.ae",
-              "logo": "https://www.beyondwalls.ae/logo.png",
-              "description": "Best advertising company in Dubai. Self-serve DOOH advertising platform for businesses in UAE.",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://www.beyondwalls.ae/logo.png",
+                "width": "512",
+                "height": "512"
+              },
+              "description": "Best advertising company in Dubai, UAE. Self-serve DOOH advertising platform for businesses. Book digital screens in cafés, malls, gyms across Emirates.",
               "foundingDate": "2025",
+              "foundingLocation": "Dubai, UAE",
+              "numberOfEmployees": "10-50",
               "address": {
                 "@type": "PostalAddress",
                 "streetAddress": "in5 Tech, Dubai Internet City",
                 "addressLocality": "Dubai",
+                "addressRegion": "Dubai",
+                "postalCode": "500001",
                 "addressCountry": "AE"
               },
-              "contactPoint": {
-                "@type": "ContactPoint",
-                "telephone": "+971-55-614-0067",
-                "contactType": "customer service",
-                "email": "hello@beyondwalls.ae"
-              },
+              "contactPoint": [
+                {
+                  "@type": "ContactPoint",
+                  "telephone": "+971-55-614-0067",
+                  "contactType": "customer service",
+                  "email": "hello@beyondwalls.ae",
+                  "availableLanguage": ["English", "Arabic"],
+                  "areaServed": "AE"
+                },
+                {
+                  "@type": "ContactPoint",
+                  "telephone": "+971-55-614-0067",
+                  "contactType": "sales",
+                  "email": "sales@beyondwalls.ae",
+                  "availableLanguage": ["English", "Arabic"]
+                }
+              ],
               "sameAs": [
                 "https://x.com/BeyondWallsae",
                 "https://www.instagram.com/beyondwallsae/",
@@ -217,11 +239,13 @@ export default function Home() {
                 "https://www.linkedin.com/company/beyondwallsae",
                 "https://www.tiktok.com/@beyondwallsae"
               ],
-              "award": "Global Recognition Award 2025"
+              "award": "Global Recognition Award 2025",
+              "knowsAbout": ["DOOH Advertising", "Digital Signage", "Programmatic Advertising", "Screen Advertising UAE"]
             },
             {
               "@type": "LocalBusiness",
-              "name": "BeyondWalls - Advertising Company Dubai",
+              "@id": "https://www.beyondwalls.ae/#localbusiness",
+              "name": "BeyondWalls - DOOH Advertising Company Dubai",
               "image": "https://www.beyondwalls.ae/og-image.jpg",
               "priceRange": "AED 99 - AED 10,000",
               "address": {
@@ -238,23 +262,94 @@ export default function Home() {
                 "longitude": "55.1548"
               },
               "telephone": "+971-55-614-0067",
-              "openingHoursSpecification": {
-                "@type": "OpeningHoursSpecification",
-                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-                "opens": "00:00",
-                "closes": "23:59"
+              "email": "hello@beyondwalls.ae",
+              "url": "https://www.beyondwalls.ae",
+              "openingHoursSpecification": [
+                {
+                  "@type": "OpeningHoursSpecification",
+                  "dayOfWeek": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
+                  "opens": "09:00",
+                  "closes": "18:00"
+                }
+              ],
+              "paymentAccepted": ["Credit Card", "Bank Transfer", "Apple Pay"],
+              "currenciesAccepted": "AED",
+              "areaServed": {
+                "@type": "GeoCircle",
+                "geoMidpoint": {
+                  "@type": "GeoCoordinates",
+                  "latitude": "25.0957",
+                  "longitude": "55.1548"
+                },
+                "geoRadius": "500000"
+              },
+              "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "DOOH Advertising Services",
+                "itemListElement": [
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service",
+                      "name": "Digital Screen Advertising Dubai"
+                    }
+                  },
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service",
+                      "name": "Venue Screen Monetization UAE"
+                    }
+                  }
+                ]
               }
             },
             {
               "@type": "Service",
-              "name": "DOOH Advertising Dubai",
+              "name": "DOOH Advertising Dubai & UAE",
               "provider": {
                 "@type": "Organization",
-                "name": "BeyondWalls"
+                "name": "BeyondWalls UAE"
               },
               "serviceType": "Digital Out-of-Home Advertising",
-              "areaServed": ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "RAK", "UAE"],
-              "description": "Book digital advertising screens in cafés, malls, gyms, and coworking spaces across UAE. Start from AED 99/week."
+              "areaServed": ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "RAK", "UAE", "GCC"],
+              "description": "Book digital advertising screens in Dubai cafés, malls, gyms, and coworking spaces. Self-serve platform. Start from AED 99/week. No contracts.",
+              "offers": {
+                "@type": "Offer",
+                "price": "99",
+                "priceCurrency": "AED",
+                "priceValidUntil": "2026-12-31",
+                "availability": "https://schema.org/InStock"
+              }
+            },
+            {
+              "@type": "FAQPage",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": "What is BeyondWalls UAE?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "BeyondWalls UAE (beyondwalls.ae) is Dubai's leading self-serve DOOH advertising platform. We connect advertisers with 500+ digital screens in cafés, malls, gyms across UAE."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "How much does digital advertising cost in Dubai?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Digital screen advertising in Dubai starts from AED 99 per week per screen with BeyondWalls. No minimum spend, no contracts required."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Where are BeyondWalls screens located in UAE?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "BeyondWalls has 500+ screens across Dubai (Marina, Downtown, DIFC, JBR), Abu Dhabi, Sharjah, Ajman, and RAK in venues like cafés, gyms, malls, and coworking spaces."
+                  }
+                }
+              ]
             }
           ]
         }}
