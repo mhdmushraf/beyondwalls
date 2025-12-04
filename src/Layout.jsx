@@ -90,6 +90,7 @@ export default function Layout({ children, currentPageName }) {
                 if (hasPermission("all")) adminItems.push({ name: "Default Content", icon: MonitorPlay, page: "AdminDefaultContent" });
               if (hasPermission("all")) adminItems.push({ name: "AR Campaigns", icon: Megaphone, page: "AdminARCampaigns" });
                       if (hasPermission("all")) adminItems.push({ name: "Logo Generator", icon: Settings, page: "LogoGenerator" });
+                if (hasPermission("all")) adminItems.push({ name: "Social Media", icon: Megaphone, page: "SocialMediaGenerator" });
                     if (hasPermission("all") || hasPermission("screens")) adminItems.push({ name: "B.One Players", icon: MonitorPlay, page: "AdminBOnePlayer" });
 
                 return adminItems;
