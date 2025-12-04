@@ -55,6 +55,8 @@ export default function SocialMediaGenerator() {
   const [posts, setPosts] = useState(null);
   const [copied, setCopied] = useState({});
   const [activeTab, setActiveTab] = useState("facebook");
+  const [generatingImage, setGeneratingImage] = useState({});
+  const [generatedImages, setGeneratedImages] = useState({});
 
   const postTypes = [
     { value: "promotional", label: "Promotional", icon: Megaphone },
@@ -189,6 +191,44 @@ Include relevant hashtags for each platform. Make content UAE/Dubai specific whe
     await generatePosts();
   };
 
+  const generateImageForPlatform = async (platform, imageIdea) => {
+    if (!imageIdea) {
+      toast.error("No image suggestion available for this platform");
+      return;
+    }
+
+    setGeneratingImage({ ...generatingImage, [platform]: true });
+    try {
+      const platformInfo = platforms.find(p => p.id === platform);
+      const aspectRatio = platform === 'instagram' ? 'square 1:1' : 
+                         platform === 'linkedin' ? 'landscape 1200x627' :
+                         platform === 'facebook' ? 'landscape 1200x630' :
+                         platform === 'twitter' ? 'landscape 1600x900' :
+                         'landscape 1200x900';
+
+      const prompt = `Professional social media marketing image for ${platformInfo?.name}. 
+${imageIdea}
+Style: Modern, clean, professional digital marketing aesthetic. 
+Brand colors: violet/purple and indigo gradients.
+Include subtle tech/digital elements.
+Aspect ratio: ${aspectRatio}
+For BeyondWalls - UAE's #1 DOOH advertising platform.
+High quality, vibrant, eye-catching for social media.`;
+
+      const result = await base44.integrations.Core.GenerateImage({ prompt });
+      
+      if (result?.url) {
+        setGeneratedImages({ ...generatedImages, [platform]: result.url });
+        toast.success(`${platformInfo?.name} image generated!`);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to generate image. Please try again.");
+    } finally {
+      setGeneratingImage({ ...generatingImage, [platform]: false });
+    }
+  };
+
   const renderPostCard = (platform, data) => {
     if (!data) return null;
     
@@ -254,11 +294,67 @@ Include relevant hashtags for each platform. Make content UAE/Dubai specific whe
 
           {data.imageIdea && (
             <div className="bg-violet-50 rounded-xl p-3 border border-violet-100">
-              <div className="flex items-center gap-2 mb-1">
-                <Image className="w-4 h-4 text-violet-500" />
-                <span className="text-xs font-medium text-violet-700">Image Suggestion</span>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Image className="w-4 h-4 text-violet-500" />
+                  <span className="text-xs font-medium text-violet-700">Image Suggestion</span>
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-7 text-xs"
+                  onClick={() => generateImageForPlatform(platform, data.imageIdea)}
+                  disabled={generatingImage[platform]}
+                >
+                  {generatingImage[platform] ? (
+                    <>
+                      <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-3 h-3 mr-1" />
+                      Generate Image
+                    </>
+                  )}
+                </Button>
               </div>
-              <p className="text-xs text-violet-600">{data.imageIdea}</p>
+              <p className="text-xs text-violet-600 mb-2">{data.imageIdea}</p>
+              
+              {generatedImages[platform] && (
+                <div className="mt-3 space-y-2">
+                  <img 
+                    src={generatedImages[platform]} 
+                    alt={`Generated ${platform} image`}
+                    className="w-full rounded-lg border border-violet-200"
+                  />
+                  <div className="flex gap-2">
+                    <a
+                      href={generatedImages[platform]}
+                      download={`beyondwalls-${platform}-post.png`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1"
+                    >
+                      <Button size="sm" variant="outline" className="w-full h-7 text-xs">
+                        <Download className="w-3 h-3 mr-1" />
+                        Download
+                      </Button>
+                    </a>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-7 text-xs"
+                      onClick={() => {
+                        navigator.clipboard.writeText(generatedImages[platform]);
+                        toast.success("Image URL copied!");
+                      }}
+                    >
+                      <Copy className="w-3 h-3" />
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
