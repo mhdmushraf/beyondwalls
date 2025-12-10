@@ -329,4 +329,215 @@ www.beyondwalls.ae
   }
 };
 
+// User registration notification - send to admins
+  async newUserRegistration(user) {
+    try {
+      await base44.integrations.Core.SendEmail({
+        to: "info@beyondwalls.ae",
+        subject: `🆕 New User Registration: ${user.full_name} | BeyondWalls`,
+        body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS ADMIN
+   New User Registration Alert
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+A new user has registered and is awaiting approval.
+
+👤 USER DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+Name: ${user.full_name || "N/A"}
+Email: ${user.email}
+Phone: ${user.phone || "N/A"}
+Account Type: ${user.account_type || "Individual"}
+User Role: ${user.user_role || "Advertiser"}
+${user.company_name ? `Company: ${user.company_name}` : ''}
+
+📅 Registration Date: ${new Date().toLocaleDateString()}
+
+⚠️ ACTION REQUIRED: Please review and approve/reject this user from the Admin Dashboard.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Log in to admin panel to review
+www.beyondwalls.ae
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        `.trim()
+      });
+    } catch (e) {
+      console.error("Failed to send new user registration email to admin", e);
+    }
+  },
+
+  // Venue/Screen approval notification
+  async venueApproved(venue, venueOwner) {
+    const notification = await base44.entities.UserNotification.create({
+      user_id: venueOwner.email,
+      type: "venue_approved",
+      title: "Venue Approved! 🎉",
+      message: `Your venue "${venue.name}" has been approved. You can now add screens and start earning.`,
+      reference_id: venue.id,
+      reference_type: "Venue",
+      action_url: `/MyVenues`,
+      is_read: false,
+      email_sent: true
+    });
+
+    try {
+      await base44.integrations.Core.SendEmail({
+        to: venueOwner.email,
+        subject: `✅ Venue Approved: ${venue.name} | BeyondWalls`,
+        body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Your Venue is Approved!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dear ${venueOwner.full_name || "Venue Partner"},
+
+Great news! Your venue has been approved and is now active in the BeyondWalls network.
+
+📋 VENUE DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+📍 Venue: ${venue.name}
+🏢 Type: ${venue.type}
+📍 Location: ${venue.city}${venue.area ? `, ${venue.area}` : ''}
+
+💡 NEXT STEPS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Add screens to your venue
+2. Configure screen settings
+3. Start earning 70% revenue share from advertisers
+
+Log in to your dashboard to get started!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Questions? Contact us at info@beyondwalls.ae
+Phone: +971 55 614 0067
+
+BeyondWalls - Advertise Beyond Boundaries
+www.beyondwalls.ae
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        `.trim()
+      });
+    } catch (e) {
+      console.error("Failed to send venue approved email", e);
+    }
+
+    return notification;
+  },
+
+  async screenApproved(screen, screenOwner, venue) {
+    const notification = await base44.entities.UserNotification.create({
+      user_id: screenOwner.email,
+      type: "screen_approved",
+      title: "Screen Approved! 📺",
+      message: `Your screen "${screen.name}" has been approved and is now live in the network.`,
+      reference_id: screen.id,
+      reference_type: "Screen",
+      action_url: `/MyScreens`,
+      is_read: false,
+      email_sent: true
+    });
+
+    try {
+      await base44.integrations.Core.SendEmail({
+        to: screenOwner.email,
+        subject: `📺 Screen Approved: ${screen.name} | BeyondWalls`,
+        body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Your Screen is Live!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dear ${screenOwner.full_name || "Venue Partner"},
+
+Congratulations! Your screen has been approved and is now available for advertisers.
+
+📋 SCREEN DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+📺 Screen: ${screen.name}
+📍 Venue: ${venue?.name || "N/A"}
+📐 Size: ${screen.size}
+📱 Orientation: ${screen.orientation}
+💰 Slot Price: AED ${screen.slot_price}/week
+
+Your screen is now discoverable by advertisers and you'll start earning revenue from bookings.
+
+💰 EARNINGS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+• You earn 70% of every booking
+• Weekly automatic payouts
+• Track earnings in your dashboard
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Questions? Contact us at info@beyondwalls.ae
+Phone: +971 55 614 0067
+
+BeyondWalls - Advertise Beyond Boundaries
+www.beyondwalls.ae
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        `.trim()
+      });
+    } catch (e) {
+      console.error("Failed to send screen approved email", e);
+    }
+
+    return notification;
+  },
+
+  // Booking confirmation for advertiser
+  async bookingCreated(booking, advertiser, screen, venue) {
+    const notification = await base44.entities.UserNotification.create({
+      user_id: advertiser.email,
+      type: "booking_created",
+      title: "Booking Confirmed! 🎯",
+      message: `Your ad booking on ${screen?.name} is confirmed and pending admin approval.`,
+      reference_id: booking.id,
+      reference_type: "AdSlotBooking",
+      action_url: `/MyBookings`,
+      is_read: false,
+      email_sent: true
+    });
+
+    try {
+      await base44.integrations.Core.SendEmail({
+        to: advertiser.email,
+        subject: `✅ Booking Confirmed: ${booking.campaign_name} | BeyondWalls`,
+        body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Booking Confirmation
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dear ${advertiser.full_name || "Valued Advertiser"},
+
+Your ad booking has been confirmed and is now pending admin approval!
+
+📋 BOOKING DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 Campaign: ${booking.campaign_name}
+📺 Screen: ${screen?.name || "N/A"}
+📍 Venue: ${venue?.name || "N/A"} - ${venue?.city || "N/A"}
+📅 Start Date: ${booking.start_date}
+📅 End Date: ${booking.end_date}
+💰 Total Cost: AED ${booking.total_cost}
+
+Your creative will be reviewed by our team and approved shortly. You'll receive a confirmation email once your campaign goes live.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Questions? Contact us at info@beyondwalls.ae
+Phone: +971 55 614 0067
+
+BeyondWalls - Advertise Beyond Boundaries
+www.beyondwalls.ae
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        `.trim()
+      });
+    } catch (e) {
+      console.error("Failed to send booking created email", e);
+    }
+
+    return notification;
+  }
+};
+
 export default NotificationService;
