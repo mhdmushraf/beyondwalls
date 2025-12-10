@@ -328,8 +328,9 @@ www.beyondwalls.ae
     return notification;
   },
 
-  // User registration notification - send to admins
+  // User registration notification - send to admins and welcome email to user
   async newUserRegistration(user) {
+    // Send notification to admin
     try {
       await base44.integrations.Core.SendEmail({
         to: "info@beyondwalls.ae",
@@ -363,6 +364,62 @@ www.beyondwalls.ae
       });
     } catch (e) {
       console.error("Failed to send new user registration email to admin", e);
+    }
+
+    // Send welcome email to user
+    try {
+      await base44.integrations.Core.SendEmail({
+        to: user.email,
+        subject: `🎉 Welcome to BeyondWalls!`,
+        body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Welcome to the Future of Advertising!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dear ${user.full_name || "Valued User"},
+
+Welcome to BeyondWalls! We're thrilled to have you join UAE's #1 Digital Out-of-Home advertising platform.
+
+🎯 WHAT'S NEXT?
+━━━━━━━━━━━━━━━━━━━━━━━━━
+Your account is currently under review. Our team will verify your information and approve your account within 24-48 hours.
+
+You'll receive an email notification once your account is approved.
+
+💡 WHILE YOU WAIT
+━━━━━━━━━━━━━━━━━━━━━━━━━
+${user.user_role === "advertiser" ? `
+• Explore our 500+ premium screens across UAE
+• Plan your first campaign
+• Check out our advertising tips and best practices
+` : `
+• Learn about our 70% revenue share model
+• Prepare your venue documentation
+• Explore venue owner success stories
+`}
+
+🌟 WHY BEYONDWALLS?
+━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ Self-serve platform - Launch in 30 minutes
+✓ No long-term contracts
+✓ Real-time analytics & reporting
+✓ AI-powered campaign optimization
+✓ 24/7 customer support
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Questions? We're here to help!
+Email: info@beyondwalls.ae
+Phone: +971 55 614 0067
+WhatsApp: +971 55 614 0067
+
+BeyondWalls - Advertise Beyond Boundaries
+www.beyondwalls.ae
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        `.trim()
+      });
+    } catch (e) {
+      console.error("Failed to send welcome email to user", e);
     }
   },
 

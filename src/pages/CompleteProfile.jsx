@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
+import { NotificationService } from "@/components/notifications/NotificationService";
 import { motion, AnimatePresence } from "framer-motion";
 import UAEPhoneInput from "@/components/forms/UAEPhoneInput";
 import UAEAddressInput from "@/components/forms/UAEAddressInput";

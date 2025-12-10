@@ -29,6 +29,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import DocumentPreview from "@/components/DocumentPreview";
+import { NotificationService } from "@/components/notifications/NotificationService";
 
 export default function AdminUserApprovals() {
   const [selectedUser, setSelectedUser] = useState(null);
@@ -48,18 +49,68 @@ export default function AdminUserApprovals() {
 
   const approveMutation = useMutation({
     mutationFn: async (userId) => {
+      const user = users.find(u => u.id === userId);
+      
       await base44.entities.User.update(userId, {
         approval_status: "approved",
         approved_at: new Date().toISOString()
       });
       
-      // Send notification email
-      const user = users.find(u => u.id === userId);
+      // Create user notification
       if (user) {
+        await base44.entities.UserNotification.create({
+          user_id: user.email,
+          type: "account_approved",
+          title: "Account Approved! 🎉",
+          message: "Your BeyondWalls account has been approved. You can now access all features.",
+          action_url: "/Dashboard",
+          is_read: false,
+          email_sent: true
+        });
+
+        // Send approval email
         await base44.integrations.Core.SendEmail({
           to: user.email,
-          subject: "Your BeyondWalls Account is Approved!",
-          body: `Dear ${user.full_name},\n\nGreat news! Your BeyondWalls account has been approved. You can now log in and start using our platform.\n\nBest regards,\nBeyondWalls Team`
+          subject: "✅ Your BeyondWalls Account is Approved!",
+          body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Account Approved!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dear ${user.full_name},
+
+Great news! Your BeyondWalls account has been approved and is now active.
+
+🎉 YOU'RE ALL SET!
+━━━━━━━━━━━━━━━━━━━━━━━━━
+You can now log in to your dashboard and start using the platform.
+
+${user.user_role === "advertiser" ? `
+📱 NEXT STEPS FOR ADVERTISERS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Browse 500+ premium screens across UAE
+2. Top up your wallet
+3. Create your first ad campaign
+4. Track performance in real-time
+` : `
+💰 NEXT STEPS FOR VENUE OWNERS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Add your venue details
+2. Register your screens
+3. Start earning 70% revenue share
+4. Track earnings in your dashboard
+`}
+
+🚀 Let's get started: www.beyondwalls.ae
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Questions? Contact us at info@beyondwalls.ae
+Phone: +971 55 614 0067
+
+BeyondWalls - Advertise Beyond Boundaries
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          `.trim()
         });
       }
     },
@@ -72,17 +123,56 @@ export default function AdminUserApprovals() {
 
   const rejectMutation = useMutation({
     mutationFn: async ({ userId, reason }) => {
+      const user = users.find(u => u.id === userId);
+      
       await base44.entities.User.update(userId, {
         approval_status: "rejected",
         rejection_reason: reason
       });
       
-      const user = users.find(u => u.id === userId);
       if (user) {
+        // Create user notification
+        await base44.entities.UserNotification.create({
+          user_id: user.email,
+          type: "account_rejected",
+          title: "Account Application Update",
+          message: `Your account application was not approved. Reason: ${reason}`,
+          is_read: false,
+          email_sent: true
+        });
+
+        // Send rejection email
         await base44.integrations.Core.SendEmail({
           to: user.email,
           subject: "BeyondWalls Account Application Update",
-          body: `Dear ${user.full_name},\n\nUnfortunately, your BeyondWalls account application was not approved.\n\nReason: ${reason}\n\nIf you have questions, please contact support at info@beyondwalls.ae.\n\nBest regards,\nBeyondWalls Team`
+          body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Account Application Update
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dear ${user.full_name},
+
+We have reviewed your BeyondWalls account application.
+
+Unfortunately, we are unable to approve your account at this time.
+
+📋 REASON
+━━━━━━━━━━━━━━━━━━━━━━━━━
+${reason}
+
+💡 WHAT YOU CAN DO
+━━━━━━━━━━━━━━━━━━━━━━━━━
+If you believe this is an error or would like to reapply with updated information, please contact our support team.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Contact Support: info@beyondwalls.ae
+Phone: +971 55 614 0067
+
+BeyondWalls - Advertise Beyond Boundaries
+www.beyondwalls.ae
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          `.trim()
         });
       }
     },
