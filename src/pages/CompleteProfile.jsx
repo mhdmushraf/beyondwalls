@@ -125,16 +125,22 @@ export default function CompleteProfile() {
         updateData.emirates_id_url = formData.emirates_id_front_url;
       }
 
-      await base44.auth.updateMe(updateData);
+      const updatedUser = await base44.auth.updateMe(updateData);
       
       await base44.entities.AdminNotification.create({
         type: "new_user",
         title: "New User Registration",
-        message: `${user?.full_name || "A new user"} has registered and is pending approval`,
-        reference_id: user?.email,
-        reference_type: "user",
-        status: "unread"
+        message: `${formData.full_name} (${accountType}) has registered as ${userRole}`,
+        reference_id: updatedUser.id,
+        reference_type: "User"
       });
+
+      // Send registration notification emails (admin + welcome)
+      try {
+        await NotificationService.newUserRegistration(updatedUser);
+      } catch (e) {
+        console.error("Failed to send registration emails", e);
+      }
       
       sessionStorage.removeItem("registration_account_type");
       sessionStorage.removeItem("registration_user_role");
