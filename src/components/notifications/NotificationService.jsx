@@ -326,10 +326,9 @@ www.beyondwalls.ae
     }
 
     return notification;
-  }
-};
+  },
 
-// User registration notification - send to admins
+  // User registration notification - send to admins
   async newUserRegistration(user) {
     try {
       await base44.integrations.Core.SendEmail({
