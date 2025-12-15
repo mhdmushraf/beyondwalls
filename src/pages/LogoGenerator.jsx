@@ -287,6 +287,178 @@ export default function LogoGenerator() {
     URL.revokeObjectURL(url);
   };
 
+  const downloadEmailSignature = () => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Signature dimensions (600x250px for better email compatibility)
+    canvas.width = 600;
+    canvas.height = 220;
+    
+    // White background
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, 600, 220);
+    
+    // === Logo Icon ===
+    const logoSize = 60;
+    const logoX = 20;
+    const logoY = 20;
+    
+    const logoGradient = ctx.createLinearGradient(logoX, logoY, logoX + logoSize, logoY + logoSize);
+    logoGradient.addColorStop(0, '#8B5CF6');
+    logoGradient.addColorStop(1, '#6366F1');
+    ctx.beginPath();
+    ctx.roundRect(logoX, logoY, logoSize, logoSize, 12);
+    ctx.fillStyle = logoGradient;
+    ctx.fill();
+    
+    // Shadow for logo
+    ctx.shadowColor = 'rgba(139, 92, 246, 0.25)';
+    ctx.shadowBlur = 15;
+    ctx.beginPath();
+    ctx.roundRect(logoX, logoY, logoSize, logoSize, 12);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    
+    // Monitor icon in logo
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 3.5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.roundRect(logoX + 12, logoY + 12, 36, 26, 3);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(logoX + 30, logoY + 38);
+    ctx.lineTo(logoX + 30, logoY + 48);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(logoX + 20, logoY + 48);
+    ctx.lineTo(logoX + 40, logoY + 48);
+    ctx.stroke();
+    
+    // Play icon
+    ctx.fillStyle = 'white';
+    ctx.beginPath();
+    ctx.moveTo(logoX + 24, logoY + 18);
+    ctx.lineTo(logoX + 24, logoY + 32);
+    ctx.lineTo(logoX + 38, logoY + 25);
+    ctx.closePath();
+    ctx.fill();
+    
+    // === Vertical Line Separator ===
+    const lineX = 100;
+    ctx.strokeStyle = '#8B5CF6';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(lineX, 20);
+    ctx.lineTo(lineX, 200);
+    ctx.stroke();
+    
+    // === Company Name ===
+    const contentX = 125;
+    let currentY = 40;
+    
+    // "BEYOND" in dark gray
+    ctx.font = 'bold 28px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = '#1e293b';
+    ctx.fillText('BEYOND', contentX, currentY);
+    
+    // "WALLS" in yellow/gold
+    const beyondWidth = ctx.measureText('BEYOND').width;
+    ctx.fillStyle = '#d97706';
+    ctx.fillText('WALLS', contentX + beyondWidth, currentY);
+    
+    // === Tagline ===
+    currentY += 18;
+    ctx.font = '11px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = '#64748b';
+    ctx.fillText('A Linkzone Global FZ Company', contentX, currentY);
+    
+    // === Contact Information ===
+    currentY += 30;
+    ctx.font = '13px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = '#334155';
+    
+    // Phone
+    ctx.fillText('Phone: +971 55 614 0067', contentX, currentY);
+    
+    // Web
+    currentY += 20;
+    ctx.fillText('Web: www.beyondwalls.ae', contentX, currentY);
+    
+    // Address
+    currentY += 20;
+    ctx.font = '12px system-ui, -apple-system, sans-serif';
+    ctx.fillText('Address: in5 Tech - Dubai Internet City', contentX, currentY);
+    currentY += 16;
+    ctx.fillText('Dubai, United Arab Emirates', contentX, currentY);
+    
+    // === Social Media Icons ===
+    currentY += 30;
+    const iconSize = 24;
+    const iconSpacing = 32;
+    let iconX = contentX;
+    
+    // Facebook (blue)
+    ctx.fillStyle = '#1877f2';
+    ctx.beginPath();
+    ctx.roundRect(iconX, currentY, iconSize, iconSize, 4);
+    ctx.fill();
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 16px system-ui';
+    ctx.fillText('f', iconX + 8, currentY + 18);
+    
+    // LinkedIn (blue)
+    iconX += iconSpacing;
+    ctx.fillStyle = '#0077b5';
+    ctx.beginPath();
+    ctx.roundRect(iconX, currentY, iconSize, iconSize, 4);
+    ctx.fill();
+    ctx.fillStyle = 'white';
+    ctx.font = '11px system-ui';
+    ctx.fillText('in', iconX + 6, currentY + 16);
+    
+    // Instagram (gradient - using solid purple for simplicity)
+    iconX += iconSpacing;
+    ctx.fillStyle = '#e4405f';
+    ctx.beginPath();
+    ctx.roundRect(iconX, currentY, iconSize, iconSize, 4);
+    ctx.fill();
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 14px system-ui';
+    ctx.fillText('ig', iconX + 5, currentY + 17);
+    
+    // X/Twitter (black)
+    iconX += iconSpacing;
+    ctx.fillStyle = '#000000';
+    ctx.beginPath();
+    ctx.roundRect(iconX, currentY, iconSize, iconSize, 4);
+    ctx.fill();
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 16px system-ui';
+    ctx.fillText('𝕏', iconX + 6, currentY + 18);
+    
+    // YouTube (red)
+    iconX += iconSpacing;
+    ctx.fillStyle = '#ff0000';
+    ctx.beginPath();
+    ctx.roundRect(iconX, currentY, iconSize, iconSize, 4);
+    ctx.fill();
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 14px system-ui';
+    ctx.fillText('▶', iconX + 6, currentY + 17);
+    
+    // Download as PNG
+    canvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'beyondwalls-email-signature.png';
+      link.click();
+      URL.revokeObjectURL(url);
+    }, 'image/png');
+  };
+
   const downloadAsPDF = (type) => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -652,6 +824,102 @@ export default function LogoGenerator() {
               <li>Add "vector-style" or "professional" for cleaner results</li>
               <li>For icons, keep it simple with "no text" and "geometric shape"</li>
             </ul>
+          </CardContent>
+        </Card>
+
+        {/* Email Signature Section */}
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Mail className="w-5 h-5 text-violet-600" />
+              Email Signature Generator
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {/* Email Signature Preview */}
+              <div className="bg-white rounded-xl shadow-lg p-8 border-2 border-slate-200">
+                <div className="flex items-start gap-6">
+                  {/* Logo */}
+                  <div className="flex-shrink-0">
+                    <div className="w-16 h-16 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/25">
+                      <MonitorPlay className="w-8 h-8 text-white" />
+                    </div>
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="flex-1 border-l-2 border-violet-600 pl-6">
+                    {/* Company Name */}
+                    <div className="mb-3">
+                      <h3 className="text-2xl font-bold mb-0">
+                        <span className="text-slate-800">BEYOND</span>
+                        <span className="text-amber-500">WALLS</span>
+                      </h3>
+                      <p className="text-xs text-slate-600 mt-0.5">A Linkzone Global FZ Company</p>
+                    </div>
+                    
+                    {/* Contact Information */}
+                    <div className="space-y-1.5 text-sm">
+                      <div className="flex items-center gap-2">
+                        <Phone className="w-3.5 h-3.5 text-violet-600" />
+                        <span className="text-slate-700">+971 55 614 0067</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Globe className="w-3.5 h-3.5 text-violet-600" />
+                        <a href="https://www.beyondwalls.ae" className="text-violet-600 hover:underline">www.beyondwalls.ae</a>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-3.5 h-3.5 text-violet-600" />
+                        <span className="text-slate-700">in5 Tech - Dubai Internet City, Dubai, UAE</span>
+                      </div>
+                    </div>
+                    
+                    {/* Social Media Icons */}
+                    <div className="flex gap-2 mt-4">
+                      <a href="https://www.facebook.com/beyondwallsae" className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center text-white text-xs hover:opacity-80 transition-opacity">
+                        f
+                      </a>
+                      <a href="https://www.linkedin.com/company/beyondwallsae" className="w-6 h-6 bg-blue-700 rounded flex items-center justify-center text-white text-xs hover:opacity-80 transition-opacity">
+                        in
+                      </a>
+                      <a href="https://www.instagram.com/beyondwallsae" className="w-6 h-6 bg-gradient-to-br from-purple-600 to-pink-600 rounded flex items-center justify-center text-white text-xs hover:opacity-80 transition-opacity">
+                        ig
+                      </a>
+                      <a href="https://x.com/BeyondWallsae" className="w-6 h-6 bg-black rounded flex items-center justify-center text-white text-xs hover:opacity-80 transition-opacity">
+                        𝕏
+                      </a>
+                      <a href="https://www.youtube.com/@BeyondWallsAE" className="w-6 h-6 bg-red-600 rounded flex items-center justify-center text-white text-xs hover:opacity-80 transition-opacity">
+                        ▶
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Download Button */}
+              <div className="flex justify-center">
+                <Button 
+                  onClick={downloadEmailSignature}
+                  className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700"
+                  size="lg"
+                >
+                  <Download className="w-5 h-5 mr-2" />
+                  Download Email Signature (PNG)
+                </Button>
+              </div>
+              
+              {/* Instructions */}
+              <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                <h4 className="font-semibold text-blue-900 mb-2">How to Add to Gmail:</h4>
+                <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
+                  <li>Download the signature image using the button above</li>
+                  <li>Open Gmail → Settings → See all settings</li>
+                  <li>Scroll to "Signature" section</li>
+                  <li>Click the image icon and upload the downloaded signature</li>
+                  <li>Click "Save Changes" at the bottom</li>
+                </ol>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
