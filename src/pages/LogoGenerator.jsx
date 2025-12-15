@@ -836,57 +836,70 @@ export default function LogoGenerator() {
           <CardContent>
             <div className="space-y-6">
               {/* Email Signature Preview */}
-              <div className="bg-white rounded-xl shadow-lg p-8 border-2 border-slate-200">
-                <div className="flex items-start gap-6">
+              <div className="bg-gradient-to-br from-slate-50 to-white rounded-xl shadow-2xl p-8 border border-slate-200 relative overflow-hidden">
+                {/* Decorative background elements */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-violet-500/5 to-indigo-500/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-violet-500/5 to-indigo-500/5 rounded-full translate-y-1/2 -translate-x-1/2" />
+                
+                <div className="relative flex items-start gap-6">
                   {/* Logo */}
                   <div className="flex-shrink-0">
-                    <div className="w-16 h-16 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/25">
+                    <div className="w-16 h-16 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/30 ring-2 ring-violet-100">
                       <MonitorPlay className="w-8 h-8 text-white" />
                     </div>
                   </div>
                   
                   {/* Content */}
-                  <div className="flex-1 border-l-2 border-violet-600 pl-6">
-                    {/* Company Name */}
+                  <div className="flex-1 border-l-2 border-violet-500 pl-6">
+                    {/* Company Name with gradient */}
                     <div className="mb-3">
-                      <h3 className="text-2xl font-bold mb-0">
-                        <span className="text-slate-800">BEYOND</span>
-                        <span className="text-amber-500">WALLS</span>
+                      <h3 className="text-2xl font-bold mb-0 bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
+                        BeyondWalls
                       </h3>
-                      <p className="text-xs text-slate-600 mt-0.5">A Linkzone Global FZ Company</p>
+                      <p className="text-xs text-slate-500 mt-1 font-medium">A Linkzone Global FZ Company</p>
                     </div>
                     
-                    {/* Contact Information */}
-                    <div className="space-y-1.5 text-sm">
-                      <div className="flex items-center gap-2">
-                        <Phone className="w-3.5 h-3.5 text-violet-600" />
-                        <span className="text-slate-700">+971 55 614 0067</span>
+                    {/* Contact Information with improved styling */}
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-5 h-5 bg-violet-100 rounded flex items-center justify-center flex-shrink-0">
+                          <Phone className="w-3 h-3 text-violet-600" />
+                        </div>
+                        <span className="text-slate-700 font-medium">+971 55 614 0067</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Globe className="w-3.5 h-3.5 text-violet-600" />
-                        <a href="https://www.beyondwalls.ae" className="text-violet-600 hover:underline">www.beyondwalls.ae</a>
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-5 h-5 bg-indigo-100 rounded flex items-center justify-center flex-shrink-0">
+                          <Globe className="w-3 h-3 text-indigo-600" />
+                        </div>
+                        <a href="https://www.beyondwalls.ae" className="text-violet-600 hover:text-indigo-600 font-medium hover:underline transition-colors">
+                          www.beyondwalls.ae
+                        </a>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-3.5 h-3.5 text-violet-600" />
-                        <span className="text-slate-700">in5 Tech - Dubai Internet City, Dubai, UAE</span>
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-5 h-5 bg-violet-100 rounded flex items-center justify-center flex-shrink-0">
+                          <MapPin className="w-3 h-3 text-violet-600" />
+                        </div>
+                        <span className="text-slate-600 text-xs leading-relaxed">
+                          in5 Tech - Dubai Internet City, Dubai, UAE
+                        </span>
                       </div>
                     </div>
                     
-                    {/* Social Media Icons */}
+                    {/* Social Media Icons with hover effects */}
                     <div className="flex gap-2 mt-4">
-                      <a href="https://www.facebook.com/beyondwallsae" className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center text-white text-xs hover:opacity-80 transition-opacity">
+                      <a href="https://www.facebook.com/beyondwallsae" className="w-7 h-7 bg-blue-600 rounded-md flex items-center justify-center text-white text-xs hover:scale-110 hover:shadow-lg transition-all">
                         f
                       </a>
-                      <a href="https://www.linkedin.com/company/beyondwallsae" className="w-6 h-6 bg-blue-700 rounded flex items-center justify-center text-white text-xs hover:opacity-80 transition-opacity">
+                      <a href="https://www.linkedin.com/company/beyondwallsae" className="w-7 h-7 bg-blue-700 rounded-md flex items-center justify-center text-white text-xs hover:scale-110 hover:shadow-lg transition-all">
                         in
                       </a>
-                      <a href="https://www.instagram.com/beyondwallsae" className="w-6 h-6 bg-gradient-to-br from-purple-600 to-pink-600 rounded flex items-center justify-center text-white text-xs hover:opacity-80 transition-opacity">
+                      <a href="https://www.instagram.com/beyondwallsae" className="w-7 h-7 bg-gradient-to-br from-purple-600 to-pink-600 rounded-md flex items-center justify-center text-white text-xs hover:scale-110 hover:shadow-lg transition-all">
                         ig
                       </a>
-                      <a href="https://x.com/BeyondWallsae" className="w-6 h-6 bg-black rounded flex items-center justify-center text-white text-xs hover:opacity-80 transition-opacity">
+                      <a href="https://x.com/BeyondWallsae" className="w-7 h-7 bg-black rounded-md flex items-center justify-center text-white text-xs hover:scale-110 hover:shadow-lg transition-all">
                         𝕏
                       </a>
-                      <a href="https://www.youtube.com/@BeyondWallsAE" className="w-6 h-6 bg-red-600 rounded flex items-center justify-center text-white text-xs hover:opacity-80 transition-opacity">
+                      <a href="https://www.youtube.com/@BeyondWallsAE" className="w-7 h-7 bg-red-600 rounded-md flex items-center justify-center text-white text-xs hover:scale-110 hover:shadow-lg transition-all">
                         ▶
                       </a>
                     </div>
