@@ -358,15 +358,13 @@ export default function LogoGenerator() {
     const contentX = 125;
     let currentY = 40;
     
-    // "BEYOND" in dark gray
+    // "BeyondWalls" with gradient (brand colors)
     ctx.font = 'bold 28px system-ui, -apple-system, sans-serif';
-    ctx.fillStyle = '#1e293b';
-    ctx.fillText('BEYOND', contentX, currentY);
-    
-    // "WALLS" in yellow/gold
-    const beyondWidth = ctx.measureText('BEYOND').width;
-    ctx.fillStyle = '#d97706';
-    ctx.fillText('WALLS', contentX + beyondWidth, currentY);
+    const textGradient = ctx.createLinearGradient(contentX, 0, contentX + 200, 0);
+    textGradient.addColorStop(0, '#8B5CF6');
+    textGradient.addColorStop(1, '#6366F1');
+    ctx.fillStyle = textGradient;
+    ctx.fillText('BeyondWalls', contentX, currentY);
     
     // === Tagline ===
     currentY += 18;
