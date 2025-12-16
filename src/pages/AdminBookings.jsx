@@ -517,7 +517,7 @@ BeyondWalls - Advertise Beyond Boundaries
       : [];
     
     return (
-      <Card className="group hover:shadow-2xl transition-all duration-300 bg-white/80 backdrop-blur-xl border-white/20 transform hover:-translate-y-1">
+      <Card className="hover:shadow-lg transition-shadow">
         <CardContent className="p-4">
           <div className="flex items-start gap-4">
             {booking.status === "active" && screenSlots.length > 0 ? (
@@ -599,13 +599,11 @@ BeyondWalls - Advertise Beyond Boundaries
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-pink-50/20 to-rose-50/30">
-      <div className="p-6 lg:p-8 max-w-6xl mx-auto">
-        {/* Header with Glassmorphism */}
-        <div className="mb-8 bg-white/60 backdrop-blur-xl p-6 rounded-2xl border border-white/20 shadow-2xl shadow-pink-500/10">
-          <h1 className="text-3xl lg:text-4xl font-black bg-gradient-to-r from-pink-600 via-rose-600 to-red-600 bg-clip-text text-transparent">Ad Bookings 📢</h1>
-          <p className="text-slate-600 mt-2 text-lg font-medium">Review and approve campaign bookings</p>
-        </div>
+    <div className="p-6 lg:p-8 max-w-6xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Ad Bookings</h1>
+        <p className="text-slate-500">Review and approve campaign bookings</p>
+      </div>
 
       <div className="mb-6">
         <div className="relative max-w-md">
@@ -619,8 +617,8 @@ BeyondWalls - Advertise Beyond Boundaries
         </div>
       </div>
 
-        <Tabs defaultValue="pending">
-          <TabsList className="bg-white/80 backdrop-blur-xl border border-white/20 shadow-xl p-1">
+      <Tabs defaultValue="pending">
+        <TabsList>
           <TabsTrigger value="pending" className="gap-2">
             <Clock className="w-4 h-4" />
             Pending ({pendingBookings.length})
@@ -761,7 +759,6 @@ BeyondWalls - Advertise Beyond Boundaries
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      </div>
     </div>
   );
 }

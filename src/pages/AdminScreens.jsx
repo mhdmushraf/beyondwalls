@@ -251,78 +251,56 @@ export default function AdminScreens() {
   const pendingCount = screens.filter(s => s.status === "pending_approval").length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/20 to-indigo-50/30">
-      <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-        {/* Header with Glassmorphism */}
-        <div className="mb-8 bg-white/60 backdrop-blur-xl p-6 rounded-2xl border border-white/20 shadow-2xl shadow-blue-500/10">
-          <h1 className="text-3xl lg:text-4xl font-black bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">Screen Management 📺</h1>
-          <p className="text-slate-600 mt-2 text-lg font-medium">Monitor and manage all screens on the network</p>
-        </div>
+    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Screen Management</h1>
+        <p className="text-slate-500 mt-1">Monitor and manage all screens on the network</p>
+      </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="group relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
-            <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl transform hover:-translate-y-1 transition-all duration-300 relative">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-slate-600 text-sm font-semibold tracking-wide">Online</p>
-                    <p className="text-4xl font-black text-emerald-600">{onlineCount}</p>
-                  </div>
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition-transform duration-300">
-                    <Wifi className="w-7 h-7 text-white animate-pulse" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-          <div className="group relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-400 to-slate-500 rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
-            <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl transform hover:-translate-y-1 transition-all duration-300 relative">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-slate-600 text-sm font-semibold tracking-wide">Offline</p>
-                    <p className="text-4xl font-black text-slate-700">{offlineCount}</p>
-                  </div>
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-500 to-slate-600 flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition-transform duration-300">
-                    <WifiOff className="w-7 h-7 text-white" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-          <div className="group relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-violet-400 to-purple-500 rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
-            <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl transform hover:-translate-y-1 transition-all duration-300 relative">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-slate-600 text-sm font-semibold tracking-wide">Total Screens</p>
-                    <p className="text-4xl font-black text-violet-600">{screens.length}</p>
-                  </div>
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition-transform duration-300">
-                    <MonitorPlay className="w-7 h-7 text-white" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-          <div className="group relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-400 to-blue-500 rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
-            <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl transform hover:-translate-y-1 transition-all duration-300 relative">
-              <CardContent className="p-4">
-                <div>
-                  <p className="text-slate-600 text-sm mb-2 font-semibold tracking-wide">Network Health</p>
-                  <Progress value={screens.length > 0 ? (onlineCount / screens.length) * 100 : 0} className="h-3 mb-2 bg-slate-200" />
-                  <p className="text-lg font-black text-indigo-600">
-                    {screens.length > 0 ? Math.round((onlineCount / screens.length) * 100) : 0}% Online
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <Card className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-emerald-100 text-sm">Online</p>
+                <p className="text-3xl font-bold">{onlineCount}</p>
+              </div>
+              <Wifi className="w-8 h-8 text-emerald-200" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-500 text-sm">Offline</p>
+                <p className="text-3xl font-bold text-slate-900">{offlineCount}</p>
+              </div>
+              <WifiOff className="w-8 h-8 text-slate-300" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-500 text-sm">Total Screens</p>
+                <p className="text-3xl font-bold text-slate-900">{screens.length}</p>
+              </div>
+              <MonitorPlay className="w-8 h-8 text-slate-300" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-slate-500 text-sm mb-2">Network Health</p>
+            <Progress value={screens.length > 0 ? (onlineCount / screens.length) * 100 : 0} className="h-2 mb-2" />
+            <p className="text-sm font-medium">
+              {screens.length > 0 ? Math.round((onlineCount / screens.length) * 100) : 0}% Online
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Filters */}
@@ -337,7 +315,7 @@ export default function AdminScreens() {
           />
         </div>
         <Tabs value={statusFilter} onValueChange={setStatusFilter}>
-          <TabsList className="bg-white/80 backdrop-blur-xl border border-white/20 shadow-xl p-1">
+          <TabsList>
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="pending_approval" className="relative">
               Pending
@@ -354,9 +332,9 @@ export default function AdminScreens() {
         </Tabs>
       </div>
 
-        {/* Screens Table */}
-        <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl">
-          <CardContent className="p-0">
+      {/* Screens Table */}
+      <Card>
+        <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-slate-50 border-b">
@@ -805,7 +783,6 @@ export default function AdminScreens() {
           )}
         </DialogContent>
       </Dialog>
-      </div>
     </div>
   );
 }
