@@ -709,7 +709,7 @@ BeyondWalls - Advertise Beyond Boundaries
                 </div>
               )}
             </CardContent>
-          </Card>
+            </Card>
         </TabsContent>
 
         {/* Screens Tab */}
@@ -790,7 +790,7 @@ BeyondWalls - Advertise Beyond Boundaries
             </div>
           )}
 
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl">
             <CardContent className="p-0">
               {screensLoading ? (
                 <div className="p-8 text-center">
