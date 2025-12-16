@@ -47,6 +47,8 @@ export default function Wallet() {
   const [showPayoutSettings, setShowPayoutSettings] = useState(false);
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [receiptUrl, setReceiptUrl] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
 
   const { data: transactions = [], refetch } = useQuery({
