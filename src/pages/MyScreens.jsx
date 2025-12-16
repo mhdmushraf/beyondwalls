@@ -846,14 +846,15 @@ export default function MyScreens() {
         </DialogContent>
       </Dialog>
 
-      {/* Suspension Request Form */}
-      <SuspensionRequestForm
-        open={suspensionRequest.open}
-        onOpenChange={(open) => setSuspensionRequest({ ...suspensionRequest, open })}
-        item={suspensionRequest.screen}
-        itemType="screen"
-        user={user}
-      />
+        {/* Suspension Request Form */}
+        <SuspensionRequestForm
+          open={suspensionRequest.open}
+          onOpenChange={(open) => setSuspensionRequest({ ...suspensionRequest, open })}
+          item={suspensionRequest.screen}
+          itemType="screen"
+          user={user}
+        />
+      </div>
     </div>
   );
 }

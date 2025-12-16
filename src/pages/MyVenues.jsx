@@ -277,14 +277,15 @@ export default function MyVenues() {
         </div>
       )}
 
-      {/* Suspension Request Form */}
-      <SuspensionRequestForm
-        open={suspensionRequest.open}
-        onOpenChange={(open) => setSuspensionRequest({ ...suspensionRequest, open })}
-        item={suspensionRequest.venue}
-        itemType="venue"
-        user={user}
-      />
+        {/* Suspension Request Form */}
+        <SuspensionRequestForm
+          open={suspensionRequest.open}
+          onOpenChange={(open) => setSuspensionRequest({ ...suspensionRequest, open })}
+          item={suspensionRequest.venue}
+          itemType="venue"
+          user={user}
+        />
+      </div>
     </div>
   );
 }

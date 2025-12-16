@@ -256,14 +256,15 @@ export default function MyBookings() {
           </div>
         </TabsContent>
 
-        <TabsContent value="completed" className="mt-6">
-          <div className="grid gap-4">
-            {filteredBookings(completedBookings).map((booking) => (
-              <BookingCard key={booking.id} booking={booking} />
-            ))}
-          </div>
-        </TabsContent>
-      </Tabs>
+          <TabsContent value="completed" className="mt-6">
+            <div className="grid gap-4">
+              {filteredBookings(completedBookings).map((booking) => (
+                <BookingCard key={booking.id} booking={booking} />
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 }
