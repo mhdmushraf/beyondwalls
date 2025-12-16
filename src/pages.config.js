@@ -95,6 +95,7 @@ import DOOHDubaiSummerSurprises from './pages/DOOHDubaiSummerSurprises';
 import DOOHExpoCity from './pages/DOOHExpoCity';
 import DOOHEidAdvertising from './pages/DOOHEidAdvertising';
 import SocialMediaGenerator from './pages/SocialMediaGenerator';
+import AdminAnalyticsDashboard from './pages/AdminAnalyticsDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -196,6 +197,7 @@ export const PAGES = {
     "DOOHExpoCity": DOOHExpoCity,
     "DOOHEidAdvertising": DOOHEidAdvertising,
     "SocialMediaGenerator": SocialMediaGenerator,
+    "AdminAnalyticsDashboard": AdminAnalyticsDashboard,
 }
 
 export const pagesConfig = {
