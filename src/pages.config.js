@@ -98,6 +98,9 @@ import SocialMediaGenerator from './pages/SocialMediaGenerator';
 import AdminAnalyticsDashboard from './pages/AdminAnalyticsDashboard';
 import VenueOwnerAnalytics from './pages/VenueOwnerAnalytics';
 import LocalBusinessMarketplace from './pages/LocalBusinessMarketplace';
+import AdvertiserCampaignAnalytics from './pages/AdvertiserCampaignAnalytics';
+import VenueOwnerBookingManager from './pages/VenueOwnerBookingManager';
+import AICreativeGenerator from './pages/AICreativeGenerator';
 import __Layout from './Layout.jsx';
 
 
@@ -202,6 +205,9 @@ export const PAGES = {
     "AdminAnalyticsDashboard": AdminAnalyticsDashboard,
     "VenueOwnerAnalytics": VenueOwnerAnalytics,
     "LocalBusinessMarketplace": LocalBusinessMarketplace,
+    "AdvertiserCampaignAnalytics": AdvertiserCampaignAnalytics,
+    "VenueOwnerBookingManager": VenueOwnerBookingManager,
+    "AICreativeGenerator": AICreativeGenerator,
 }
 
 export const pagesConfig = {
