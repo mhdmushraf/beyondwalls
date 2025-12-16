@@ -101,6 +101,9 @@ import LocalBusinessMarketplace from './pages/LocalBusinessMarketplace';
 import AdvertiserCampaignAnalytics from './pages/AdvertiserCampaignAnalytics';
 import VenueOwnerBookingManager from './pages/VenueOwnerBookingManager';
 import AICreativeGenerator from './pages/AICreativeGenerator';
+import AudienceAnalytics from './pages/AudienceAnalytics';
+import ProgrammaticBidding from './pages/ProgrammaticBidding';
+import VenueContentBuilder from './pages/VenueContentBuilder';
 import __Layout from './Layout.jsx';
 
 
@@ -208,6 +211,9 @@ export const PAGES = {
     "AdvertiserCampaignAnalytics": AdvertiserCampaignAnalytics,
     "VenueOwnerBookingManager": VenueOwnerBookingManager,
     "AICreativeGenerator": AICreativeGenerator,
+    "AudienceAnalytics": AudienceAnalytics,
+    "ProgrammaticBidding": ProgrammaticBidding,
+    "VenueContentBuilder": VenueContentBuilder,
 }
 
 export const pagesConfig = {
