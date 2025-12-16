@@ -96,6 +96,8 @@ import DOOHExpoCity from './pages/DOOHExpoCity';
 import DOOHEidAdvertising from './pages/DOOHEidAdvertising';
 import SocialMediaGenerator from './pages/SocialMediaGenerator';
 import AdminAnalyticsDashboard from './pages/AdminAnalyticsDashboard';
+import VenueOwnerAnalytics from './pages/VenueOwnerAnalytics';
+import LocalBusinessMarketplace from './pages/LocalBusinessMarketplace';
 import __Layout from './Layout.jsx';
 
 
@@ -198,6 +200,8 @@ export const PAGES = {
     "DOOHEidAdvertising": DOOHEidAdvertising,
     "SocialMediaGenerator": SocialMediaGenerator,
     "AdminAnalyticsDashboard": AdminAnalyticsDashboard,
+    "VenueOwnerAnalytics": VenueOwnerAnalytics,
+    "LocalBusinessMarketplace": LocalBusinessMarketplace,
 }
 
 export const pagesConfig = {
