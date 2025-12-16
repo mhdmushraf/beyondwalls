@@ -244,73 +244,95 @@ export default function AdminUsers() {
   };
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">User Management</h1>
-          <p className="text-slate-500 mt-1">View and manage platform users</p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/20 to-purple-50/30">
+      <div className="p-6 lg:p-8 max-w-7xl mx-auto">
+        {/* Header with Glassmorphism */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-white/60 backdrop-blur-xl p-6 rounded-2xl border border-white/20 shadow-2xl shadow-violet-500/10">
+          <div>
+            <h1 className="text-3xl lg:text-4xl font-black bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">User Management 👥</h1>
+            <p className="text-slate-600 mt-2 text-lg font-medium">View and manage platform users</p>
+          </div>
+          <Button 
+            onClick={() => handleOpenAdminDialog(null)}
+            className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-700 hover:via-purple-700 hover:to-indigo-700 shadow-2xl shadow-violet-500/30 transform hover:scale-105 transition-all duration-200 px-6 py-6"
+          >
+            <UserPlus className="w-5 h-5 mr-2" />
+            Create Admin
+          </Button>
         </div>
-        <Button 
-          onClick={() => handleOpenAdminDialog(null)}
-          className="bg-gradient-to-r from-violet-600 to-indigo-600"
-        >
-          <UserPlus className="w-4 h-4 mr-2" />
-          Create Admin
-        </Button>
-      </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
-        <Card>
-          <CardContent className="p-3 sm:p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-500 text-xs sm:text-sm">Total Users</p>
-                <p className="text-xl sm:text-3xl font-bold text-slate-900">{users.length}</p>
-              </div>
-              <Users className="w-6 h-6 sm:w-8 sm:h-8 text-slate-300" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-3 sm:p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-500 text-xs sm:text-sm">Advertisers</p>
-                <p className="text-xl sm:text-3xl font-bold text-violet-600">
-                  {users.filter(u => u.user_role === "advertiser").length}
-                </p>
-              </div>
-              <Megaphone className="w-6 h-6 sm:w-8 sm:h-8 text-violet-200" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-3 sm:p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-500 text-xs sm:text-sm">Venue Owners</p>
-                <p className="text-xl sm:text-3xl font-bold text-indigo-600">
-                  {users.filter(u => u.user_role === "venue_owner").length}
-                </p>
-              </div>
-              <Building2 className="w-6 h-6 sm:w-8 sm:h-8 text-indigo-200" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-3 sm:p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-500 text-xs sm:text-sm">Pending</p>
-                <p className="text-xl sm:text-3xl font-bold text-amber-600">
-                  {users.filter(u => u.verification_status === "pending").length}
-                </p>
-              </div>
-              <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-amber-200" />
-            </div>
-          </CardContent>
-        </Card>
+        {/* Stats */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
+          <div className="group relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-violet-400 to-purple-500 rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
+            <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl transform hover:-translate-y-1 transition-all duration-300 relative">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-slate-600 text-xs sm:text-sm font-semibold tracking-wide">Total Users</p>
+                    <p className="text-3xl sm:text-4xl font-black text-slate-900">{users.length}</p>
+                  </div>
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition-transform duration-300">
+                    <Users className="w-7 h-7 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="group relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-pink-400 to-rose-500 rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
+            <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl transform hover:-translate-y-1 transition-all duration-300 relative">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-slate-600 text-xs sm:text-sm font-semibold tracking-wide">Advertisers</p>
+                    <p className="text-3xl sm:text-4xl font-black text-pink-600">
+                      {users.filter(u => u.user_role === "advertiser").length}
+                    </p>
+                  </div>
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition-transform duration-300">
+                    <Megaphone className="w-7 h-7 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="group relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-400 to-blue-500 rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
+            <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl transform hover:-translate-y-1 transition-all duration-300 relative">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-slate-600 text-xs sm:text-sm font-semibold tracking-wide">Venue Owners</p>
+                    <p className="text-3xl sm:text-4xl font-black text-indigo-600">
+                      {users.filter(u => u.user_role === "venue_owner").length}
+                    </p>
+                  </div>
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition-transform duration-300">
+                    <Building2 className="w-7 h-7 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="group relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-500 rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
+            <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl transform hover:-translate-y-1 transition-all duration-300 relative">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-slate-600 text-xs sm:text-sm font-semibold tracking-wide">Pending</p>
+                    <p className="text-3xl sm:text-4xl font-black text-amber-600">
+                      {users.filter(u => u.verification_status === "pending").length}
+                    </p>
+                  </div>
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition-transform duration-300">
+                    <Clock className="w-7 h-7 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
       </div>
 
       {/* Filters */}
@@ -334,9 +356,9 @@ export default function AdminUsers() {
         </Tabs>
       </div>
 
-      {/* Users Table */}
-      <Card>
-        <CardContent className="p-0">
+        {/* Users Table */}
+        <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl">
+          <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-slate-50 border-b">
@@ -614,6 +636,7 @@ export default function AdminUsers() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   );
 }

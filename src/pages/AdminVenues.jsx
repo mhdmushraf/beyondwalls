@@ -479,75 +479,88 @@ BeyondWalls - Advertise Beyond Boundaries
   }
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Approval Center</h1>
-          <p className="text-slate-500 mt-1">Review and approve venue and screen registrations</p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/20 to-teal-50/30">
+      <div className="p-6 lg:p-8 max-w-7xl mx-auto">
+        {/* Header with Glassmorphism */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-white/60 backdrop-blur-xl p-6 rounded-2xl border border-white/20 shadow-2xl shadow-emerald-500/10">
+          <div>
+            <h1 className="text-3xl lg:text-4xl font-black bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 bg-clip-text text-transparent">Approval Center ✅</h1>
+            <p className="text-slate-600 mt-2 text-lg font-medium">Review and approve venue and screen registrations</p>
+          </div>
+          <Link to={createPageUrl("AdminVenueManager")}>
+            <Button className="bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 hover:from-emerald-700 hover:via-teal-700 hover:to-green-700 shadow-2xl shadow-emerald-500/30 transform hover:scale-105 transition-all duration-200 px-6 py-6">
+              <Settings className="w-5 h-5 mr-2" />
+              Manage Approved
+            </Button>
+          </Link>
         </div>
-        <Link to={createPageUrl("AdminVenueManager")}>
-          <Button variant="outline">
-            <Settings className="w-4 h-4 mr-2" />
-            Manage Approved
-          </Button>
-        </Link>
-      </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                <Building2 className="w-5 h-5 text-amber-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-amber-700">{pendingVenuesCount}</p>
-                <p className="text-sm text-amber-600">Pending Venues</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <MonitorPlay className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-blue-700">{pendingScreensCount}</p>
-                <p className="text-sm text-blue-600">Pending Screens</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-slate-900">{venues.filter(v => v.status === "approved").length}</p>
-                <p className="text-sm text-slate-500">Approved Venues</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center">
-                <MonitorPlay className="w-5 h-5 text-violet-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-slate-900">{screens.filter(s => s.status === "online").length}</p>
-                <p className="text-sm text-slate-500">Online Screens</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="group relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-500 rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
+            <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl transform hover:-translate-y-1 transition-all duration-300 relative">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-slate-600 text-sm font-semibold tracking-wide">Pending Venues</p>
+                    <p className="text-4xl font-black text-amber-600">{pendingVenuesCount}</p>
+                  </div>
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition-transform duration-300">
+                    <Building2 className="w-7 h-7 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="group relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
+            <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl transform hover:-translate-y-1 transition-all duration-300 relative">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-slate-600 text-sm font-semibold tracking-wide">Pending Screens</p>
+                    <p className="text-4xl font-black text-blue-600">{pendingScreensCount}</p>
+                  </div>
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition-transform duration-300">
+                    <MonitorPlay className="w-7 h-7 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="group relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
+            <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl transform hover:-translate-y-1 transition-all duration-300 relative">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-slate-600 text-sm font-semibold tracking-wide">Approved Venues</p>
+                    <p className="text-4xl font-black text-emerald-600">{venues.filter(v => v.status === "approved").length}</p>
+                  </div>
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition-transform duration-300">
+                    <CheckCircle2 className="w-7 h-7 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="group relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-violet-400 to-purple-500 rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
+            <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl transform hover:-translate-y-1 transition-all duration-300 relative">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-slate-600 text-sm font-semibold tracking-wide">Online Screens</p>
+                    <p className="text-4xl font-black text-violet-600">{screens.filter(s => s.status === "online").length}</p>
+                  </div>
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition-transform duration-300">
+                    <MonitorPlay className="w-7 h-7 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
       </div>
 
       {/* Search */}
@@ -561,9 +574,9 @@ BeyondWalls - Advertise Beyond Boundaries
         />
       </div>
 
-      {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-4">
+        {/* Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="bg-white/80 backdrop-blur-xl border border-white/20 shadow-xl p-1 mb-4">
           <TabsTrigger value="venues" className="gap-2">
             <Building2 className="w-4 h-4" />
             Venues
@@ -910,6 +923,7 @@ BeyondWalls - Advertise Beyond Boundaries
           )}
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   );
 }
