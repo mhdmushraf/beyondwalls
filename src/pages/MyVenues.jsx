@@ -95,20 +95,21 @@ export default function MyVenues() {
   }
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">My Venues</h1>
-          <p className="text-slate-500 mt-1">Manage your venues and screens</p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/20 to-teal-50/30">
+      <div className="p-6 lg:p-8 max-w-7xl mx-auto">
+        {/* Header with Glassmorphism */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-white/60 backdrop-blur-xl p-6 rounded-2xl border border-white/20 shadow-2xl shadow-emerald-500/10">
+          <div>
+            <h1 className="text-3xl lg:text-4xl font-black bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 bg-clip-text text-transparent">My Venues 🏢</h1>
+            <p className="text-slate-600 mt-2 text-lg font-medium">Manage your locations and screens</p>
+          </div>
+          <Link to={createPageUrl("AddVenue")}>
+            <Button className="bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 hover:from-emerald-700 hover:via-teal-700 hover:to-green-700 shadow-2xl shadow-emerald-500/30 transform hover:scale-105 transition-all duration-200 px-6 py-6">
+              <Plus className="w-5 h-5 mr-2" />
+              Add Venue
+            </Button>
+          </Link>
         </div>
-        <Link to={createPageUrl("AddVenue")}>
-          <Button className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 shadow-lg shadow-violet-500/25">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Venue
-          </Button>
-        </Link>
-      </div>
 
       {/* Filters */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -121,17 +122,17 @@ export default function MyVenues() {
             className="pl-10"
           />
         </div>
-        <Tabs value={statusFilter} onValueChange={setStatusFilter}>
-          <TabsList className="bg-white border border-slate-200">
-            <TabsTrigger value="all" className="data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700">
-              All ({statusCounts.all})
-            </TabsTrigger>
-            <TabsTrigger value="approved" className="data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700">
-              Active ({statusCounts.approved})
-            </TabsTrigger>
-            <TabsTrigger value="pending" className="data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700">
-              Pending ({statusCounts.pending})
-            </TabsTrigger>
+          <Tabs value={statusFilter} onValueChange={setStatusFilter}>
+            <TabsList className="bg-white/80 backdrop-blur-xl border border-white/20 shadow-xl p-1">
+              <TabsTrigger value="all" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-600 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+                All ({statusCounts.all})
+              </TabsTrigger>
+              <TabsTrigger value="approved" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-600 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+                Active ({statusCounts.approved})
+              </TabsTrigger>
+              <TabsTrigger value="pending" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-600 data-[state=active]:to-orange-600 data-[state=active]:text-white">
+                Pending ({statusCounts.pending})
+              </TabsTrigger>
             {statusCounts.suspended > 0 && (
               <TabsTrigger value="suspended" className="data-[state=active]:bg-red-100 data-[state=active]:text-red-700">
                 Suspended ({statusCounts.suspended})
@@ -184,7 +185,7 @@ export default function MyVenues() {
             const onlineCount = venueScreens.filter(s => s.status === "online").length;
             
             return (
-              <Card key={venue.id} className="overflow-hidden hover:shadow-xl transition-shadow group">
+              <Card key={venue.id} className="overflow-hidden hover:shadow-2xl transition-all duration-300 bg-white/80 backdrop-blur-xl border-white/20 transform hover:-translate-y-1 group">
                 <div className="relative aspect-video bg-slate-100">
                   {venue.image_url ? (
                     <img 

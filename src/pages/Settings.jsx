@@ -102,26 +102,27 @@ export default function Settings() {
   };
 
   return (
-    <div className="p-6 lg:p-8 max-w-4xl mx-auto">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Settings</h1>
-        <p className="text-slate-500 mt-1">Manage your account settings and preferences</p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/20 to-indigo-50/30">
+      <div className="p-6 lg:p-8 max-w-4xl mx-auto">
+        {/* Header with Glassmorphism */}
+        <div className="mb-8 bg-white/60 backdrop-blur-xl p-6 rounded-2xl border border-white/20 shadow-2xl shadow-blue-500/10">
+          <h1 className="text-3xl lg:text-4xl font-black bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">Settings ⚙️</h1>
+          <p className="text-slate-600 mt-2 text-lg font-medium">Manage your account and preferences</p>
+        </div>
 
-      <Tabs defaultValue="profile" className="space-y-6">
-        <TabsList className="bg-white border border-slate-200 p-1">
-          <TabsTrigger value="profile">Profile</TabsTrigger>
-          <TabsTrigger value="billing">Billing</TabsTrigger>
-          <TabsTrigger value="security">Security</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-        </TabsList>
+        <Tabs defaultValue="profile" className="space-y-6">
+          <TabsList className="bg-white/80 backdrop-blur-xl border border-white/20 shadow-xl p-1">
+            <TabsTrigger value="profile" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-indigo-600 data-[state=active]:text-white">Profile</TabsTrigger>
+            <TabsTrigger value="billing" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-indigo-600 data-[state=active]:text-white">Billing</TabsTrigger>
+            <TabsTrigger value="security" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-indigo-600 data-[state=active]:text-white">Security</TabsTrigger>
+            <TabsTrigger value="notifications" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-indigo-600 data-[state=active]:text-white">Notifications</TabsTrigger>
+          </TabsList>
 
         <TabsContent value="profile" className="space-y-6">
           {/* Profile Photo */}
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl">
             <CardHeader>
-              <CardTitle>Profile Photo</CardTitle>
+              <CardTitle className="text-xl font-bold">Profile Photo</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-6">
@@ -164,9 +165,9 @@ export default function Settings() {
           </Card>
 
           {/* Personal Information */}
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-xl font-bold">
                 <User className="w-5 h-5 text-violet-600" />
                 Personal Information
               </CardTitle>
@@ -215,9 +216,9 @@ export default function Settings() {
           </Card>
 
           {/* Account Type */}
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-xl font-bold">
                 <Building2 className="w-5 h-5 text-violet-600" />
                 Account Details
               </CardTitle>
@@ -258,9 +259,9 @@ export default function Settings() {
         </TabsContent>
 
         <TabsContent value="billing" className="space-y-6">
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-xl font-bold">
                 <Building2 className="w-5 h-5 text-violet-600" />
                 Billing Information
               </CardTitle>
@@ -297,9 +298,9 @@ export default function Settings() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl">
             <CardHeader>
-              <CardTitle>Wallet Balance</CardTitle>
+              <CardTitle className="text-xl font-bold">Wallet Balance</CardTitle>
               <CardDescription>Your current advertising budget</CardDescription>
             </CardHeader>
             <CardContent>
@@ -347,9 +348,9 @@ export default function Settings() {
         </TabsContent>
 
         <TabsContent value="security" className="space-y-6">
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-xl font-bold">
                 <Shield className="w-5 h-5 text-violet-600" />
                 Security Settings
               </CardTitle>
@@ -375,9 +376,9 @@ export default function Settings() {
         </TabsContent>
 
         <TabsContent value="notifications" className="space-y-6">
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-xl font-bold">
                 <Bell className="w-5 h-5 text-violet-600" />
                 Notification Preferences
               </CardTitle>

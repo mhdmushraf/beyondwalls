@@ -263,41 +263,42 @@ export default function MyScreens() {
   }
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">My Screens</h1>
-          <p className="text-slate-500 mt-1">Manage and monitor your screens</p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/20 to-indigo-50/30">
+      <div className="p-6 lg:p-8 max-w-7xl mx-auto">
+        {/* Header with Glassmorphism */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-white/60 backdrop-blur-xl p-6 rounded-2xl border border-white/20 shadow-2xl shadow-violet-500/10">
+          <div>
+            <h1 className="text-3xl lg:text-4xl font-black bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">My Screens ✨</h1>
+            <p className="text-slate-600 mt-2 text-lg font-medium">Manage and monitor your digital displays</p>
+          </div>
+          <Link to={createPageUrl("AddScreen")}>
+            <Button className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-700 hover:via-purple-700 hover:to-indigo-700 shadow-2xl shadow-violet-500/30 transform hover:scale-105 transition-all duration-200 px-6 py-6">
+              <Plus className="w-5 h-5 mr-2" />
+              Add Screen
+            </Button>
+          </Link>
         </div>
-        <Link to={createPageUrl("AddScreen")}>
-          <Button className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 shadow-lg shadow-violet-500/25">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Screen
-          </Button>
-        </Link>
-      </div>
 
-      {/* Status Summary */}
-      <div className="grid grid-cols-4 gap-3 mb-6">
-        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setStatusFilter("all")}>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="w-3 h-3 rounded-full bg-slate-400" />
-            <div>
-              <p className="text-2xl font-bold">{statusCounts.all}</p>
-              <p className="text-xs text-slate-500">Total</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setStatusFilter("online")}>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
-            <div>
-              <p className="text-2xl font-bold text-emerald-600">{statusCounts.online}</p>
-              <p className="text-xs text-slate-500">Online</p>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Enhanced Status Summary */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+          <Card className="cursor-pointer hover:shadow-xl transition-all bg-white/80 backdrop-blur-xl border-white/20 transform hover:-translate-y-1 duration-300" onClick={() => setStatusFilter("all")}>
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className="w-3 h-3 rounded-full bg-gradient-to-r from-slate-400 to-slate-500 shadow-lg" />
+              <div>
+                <p className="text-3xl font-black">{statusCounts.all}</p>
+                <p className="text-xs text-slate-600 font-semibold">Total</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="cursor-pointer hover:shadow-xl transition-all bg-white/80 backdrop-blur-xl border-white/20 transform hover:-translate-y-1 duration-300" onClick={() => setStatusFilter("online")}>
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600 animate-pulse shadow-lg shadow-emerald-500/50" />
+              <div>
+                <p className="text-3xl font-black text-emerald-600">{statusCounts.online}</p>
+                <p className="text-xs text-emerald-700 font-semibold">Online</p>
+              </div>
+            </CardContent>
+          </Card>
         <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setStatusFilter("offline")}>
           <CardContent className="p-4 flex items-center gap-3">
             <div className="w-3 h-3 rounded-full bg-rose-500" />
