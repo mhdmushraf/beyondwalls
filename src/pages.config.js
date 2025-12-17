@@ -106,6 +106,8 @@ import ProgrammaticBidding from './pages/ProgrammaticBidding';
 import VenueContentBuilder from './pages/VenueContentBuilder';
 import NotificationPreferences from './pages/NotificationPreferences';
 import VenueOwnerHub from './pages/VenueOwnerHub';
+import SitemapXML from './pages/SitemapXML';
+import RobotsTxt from './pages/RobotsTxt';
 import __Layout from './Layout.jsx';
 
 
@@ -218,6 +220,8 @@ export const PAGES = {
     "VenueContentBuilder": VenueContentBuilder,
     "NotificationPreferences": NotificationPreferences,
     "VenueOwnerHub": VenueOwnerHub,
+    "SitemapXML": SitemapXML,
+    "RobotsTxt": RobotsTxt,
 }
 
 export const pagesConfig = {
