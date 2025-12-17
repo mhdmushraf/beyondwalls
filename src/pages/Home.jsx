@@ -399,13 +399,14 @@ export default function Home() {
       />
       <PublicNav />
 
-      {/* Personalized Hero Section */}
-      <PersonalizedHero />
-
-      {/* Stats Bar */}
-      <section className="py-6 bg-slate-900 hidden">
-        <div className="max-w-7xl mx-auto px-6 hidden">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 hidden">
+      {/* Hero Section */}
+      <section className="pt-28 pb-16 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-50 via-white to-indigo-50" />
+        <div className="absolute top-10 right-10 w-[600px] h-[600px] bg-violet-200 rounded-full blur-3xl opacity-20" />
+        <div className="absolute bottom-10 left-10 w-[400px] h-[400px] bg-indigo-300 rounded-full blur-3xl opacity-20" />
+        
+        <div className="max-w-7xl mx-auto relative">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <Badge className="bg-gradient-to-r from-violet-100 to-indigo-100 text-violet-700 border-0 px-4 py-2 text-sm font-semibold mb-6">
                 🚀 UAE's #1 Self-Serve DOOH Platform
@@ -522,6 +523,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+
 
       {/* Restaurant Network Stats */}
       <RestaurantDOOHStats />
