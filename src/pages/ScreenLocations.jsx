@@ -439,6 +439,8 @@ export default function ScreenLocations() {
                         src={selectedVenue.image_url || "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=200&fit=crop"}
                         alt={selectedVenue.name}
                         className="w-full h-36 object-cover rounded-lg mb-4"
+                        loading="lazy"
+                        decoding="async"
                       />
                       <div className="flex items-center gap-2 mb-2">
                         <span 
@@ -554,6 +556,8 @@ export default function ScreenLocations() {
                       src={venue.image_url || "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop"}
                       alt={venue.name}
                       className="w-full h-full object-cover"
+                      loading="lazy"
+                      decoding="async"
                     />
                     <Badge className="absolute top-3 right-3 bg-amber-100 text-slate-900">
                       {typeLabels[venue.type] || venue.type}

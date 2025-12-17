@@ -25,21 +25,23 @@ export default function Blog() {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  const categories = ["All", "Industry News", "Tips & Tricks", "Case Studies", "Product Updates", "Guides"];
-
-  const categoryMap = {
-    "Industry News": "industry-news",
-    "Tips & Tricks": "tips",
-    "Case Studies": "case-studies",
-    "Product Updates": "product-updates",
-    "Guides": "guides"
-  };
+  const categories = [
+    { id: "all", label: "All Posts" },
+    { id: "dooh-advertising", label: "DOOH Advertising" },
+    { id: "marketing-tips", label: "Marketing Tips" },
+    { id: "uae-market-insights", label: "UAE Market Insights" },
+    { id: "case-studies", label: "Case Studies" },
+    { id: "product-updates", label: "Product Updates" },
+    { id: "industry-news", label: "Industry News" }
+  ];
 
   const categoryLabels = {
-    "industry-news": "Industry News",
-    "tips": "Tips & Tricks",
+    "dooh-advertising": "DOOH Advertising",
+    "marketing-tips": "Marketing Tips",
+    "uae-market-insights": "UAE Market Insights",
     "case-studies": "Case Studies",
     "product-updates": "Product Updates",
+    "industry-news": "Industry News",
     "guides": "Guides"
   };
 
@@ -50,8 +52,9 @@ export default function Blog() {
 
   const filteredPosts = blogPosts.filter(post => {
     const matchesSearch = post.title?.toLowerCase().includes(search.toLowerCase()) ||
-                         post.excerpt?.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || post.category === categoryMap[selectedCategory];
+                         post.excerpt?.toLowerCase().includes(search.toLowerCase()) ||
+                         post.tags?.some(tag => tag.toLowerCase().includes(search.toLowerCase()));
+    const matchesCategory = selectedCategory === "all" || post.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -112,20 +115,26 @@ export default function Blog() {
               />
             </div>
             <div className="flex gap-2 flex-wrap justify-center">
-              {categories.map((cat) => (
-                <Button
-                  key={cat}
-                  variant={selectedCategory === (cat === "All" ? "all" : cat) ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedCategory(cat === "All" ? "all" : cat)}
-                  className={selectedCategory === (cat === "All" ? "all" : cat) 
-                    ? "bg-gradient-to-r from-violet-600 to-indigo-600" 
-                    : "text-slate-900"
-                  }
-                >
-                  {cat}
-                </Button>
-              ))}
+              {categories.map((cat) => {
+                const count = cat.id === "all" 
+                  ? blogPosts.length 
+                  : blogPosts.filter(p => p.category === cat.id).length;
+                return (
+                  <Button
+                    key={cat.id}
+                    variant={selectedCategory === cat.id ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={selectedCategory === cat.id 
+                      ? "bg-gradient-to-r from-violet-600 to-indigo-600" 
+                      : "text-slate-900 hover:bg-slate-100"
+                    }
+                  >
+                    {cat.label}
+                    <Badge variant="secondary" className="ml-2 text-xs">{count}</Badge>
+                  </Button>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -156,6 +165,8 @@ export default function Blog() {
                         src={post.cover_image}
                         alt={post.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                        decoding="async"
                       />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-violet-100 to-indigo-100 flex items-center justify-center">
