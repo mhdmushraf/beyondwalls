@@ -148,6 +148,7 @@ export default function About() {
               "https://www.tiktok.com/@beyondwallsae"
             ]
           }
+            }
           ]
         }}
       />

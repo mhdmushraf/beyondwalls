@@ -180,6 +180,7 @@ export default function Services() {
               "unitText": "per week per screen"
             }
           }
+            }
           ]
         }}
       />
