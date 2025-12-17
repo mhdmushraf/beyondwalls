@@ -41,6 +41,7 @@ import {
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AIBlogAssistant from "@/components/blog/AIBlogAssistant";
 
 export default function AdminBlog() {
   const [user, setUser] = useState(null);
@@ -201,11 +202,21 @@ export default function AdminBlog() {
   };
 
   const categoryLabels = {
-    "industry-news": "Industry News",
-    "tips": "Tips & Tricks",
+    "dooh-advertising": "DOOH Advertising",
+    "marketing-tips": "Marketing Tips",
+    "uae-market-insights": "UAE Market Insights",
     "case-studies": "Case Studies",
     "product-updates": "Product Updates",
+    "industry-news": "Industry News",
     "guides": "Guides"
+  };
+
+  const handleAIApply = (aiData) => {
+    setFormData({
+      ...formData,
+      ...aiData
+    });
+    toast.success("AI content applied to editor");
   };
 
   const handleSaveAutoGenSettings = async () => {
@@ -477,12 +488,19 @@ Generate a complete blog post with title, excerpt, and content.`,
 
       {/* Blog Editor Dialog */}
       <Dialog open={showEditor} onOpenChange={setShowEditor}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editingPost ? "Edit Post" : "New Blog Post"}</DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-4">
+          <div className="grid lg:grid-cols-3 gap-6">
+            {/* AI Assistant Sidebar */}
+            <div className="lg:col-span-1">
+              <AIBlogAssistant onApply={handleAIApply} />
+            </div>
+
+            {/* Main Editor */}
+            <div className="lg:col-span-2 space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Title</Label>
@@ -560,6 +578,19 @@ Generate a complete blog post with title, excerpt, and content.`,
                 className="min-h-[250px]"
               />
             </div>
+
+            <div className="space-y-2">
+              <Label>Tags (comma-separated)</Label>
+              <Input
+                placeholder="e.g., DOOH, Dubai, Marketing"
+                value={formData.tags?.join(", ") || ""}
+                onChange={(e) => setFormData({ 
+                  ...formData, 
+                  tags: e.target.value.split(",").map(t => t.trim()).filter(Boolean) 
+                })}
+              />
+            </div>
+          </div>
           </div>
 
           <DialogFooter className="mt-4 gap-2">

@@ -59,6 +59,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import NewsletterManager from "@/components/crm/NewsletterManager";
+import LeadPipeline from "@/components/crm/LeadPipeline";
+import LeadScoreCard from "@/components/crm/LeadScoreCard";
 
 export default function AdminCRM() {
   const queryClient = useQueryClient();
@@ -101,6 +103,7 @@ export default function AdminCRM() {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [sendingEmail, setSendingEmail] = useState(false);
   const [activeTab, setActiveTab] = useState("leads");
+  const [viewMode, setViewMode] = useState("table"); // "table" or "pipeline"
 
   useEffect(() => {
     loadUser();
@@ -552,6 +555,32 @@ www.beyondwalls.ae
 
       {activeTab === "leads" && (
         <>
+          {/* View Mode Toggle */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex gap-2 border rounded-lg p-1">
+              <Button
+                variant={viewMode === "table" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("table")}
+                className={viewMode === "table" ? "bg-violet-600" : ""}
+              >
+                Table View
+              </Button>
+              <Button
+                variant={viewMode === "pipeline" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("pipeline")}
+                className={viewMode === "pipeline" ? "bg-violet-600" : ""}
+              >
+                Pipeline View
+              </Button>
+            </div>
+          </div>
+
+          {viewMode === "pipeline" ? (
+            <LeadPipeline leads={filteredLeads} onUpdateStatus={handleUpdateStatus} />
+          ) : (
+            <>
           {/* Filters */}
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="relative flex-1 max-w-md">
@@ -691,9 +720,12 @@ www.beyondwalls.ae
                         </DropdownMenu>
                       </td>
                       <td className="p-4">
-                        <Badge className={priorityColors[lead.priority]}>
-                          {lead.priority}
-                        </Badge>
+                        <div className="space-y-2">
+                          <Badge className={priorityColors[lead.priority]}>
+                            {lead.priority}
+                          </Badge>
+                          <LeadScoreCard lead={lead} />
+                        </div>
                       </td>
                       <td className="p-4">
                         {lead.next_followup_date ? (

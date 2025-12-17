@@ -31,6 +31,7 @@ import PublicFooter from "@/components/PublicFooter";
 import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
 import PublicAIChatWidget from "@/components/chat/PublicAIChatWidget";
 import DOOHvsOOHComparison from "@/components/services/DOOHvsOOHComparison";
+import CampaignIdeaGenerator from "@/components/leadgen/CampaignIdeaGenerator";
 
 export default function Services() {
   const advertiserServices = [
@@ -410,6 +411,20 @@ export default function Services() {
 
       {/* DOOH vs OOH Comparison */}
       <DOOHvsOOHComparison />
+
+      {/* Campaign Idea Generator */}
+      <section className="py-20 px-6 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-8">
+            <Badge className="bg-violet-100 text-violet-600 mb-4">Free Tool</Badge>
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">AI Campaign Idea Generator</h2>
+            <p className="text-slate-600">
+              Get personalized DOOH campaign suggestions tailored to your business
+            </p>
+          </div>
+          <CampaignIdeaGenerator />
+        </div>
+      </section>
 
       {/* Why Choose Us */}
       <section className="py-20 px-6 bg-white">

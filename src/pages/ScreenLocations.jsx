@@ -32,6 +32,7 @@ import L from "leaflet";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
 import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
+import VenueSuitabilityCalculator from "@/components/leadgen/VenueSuitabilityCalculator";
 
 // Fix for default marker icons in react-leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -600,6 +601,20 @@ export default function ScreenLocations() {
         </div>
       </section>
       )}
+
+      {/* Venue Calculator */}
+      <section className="py-20 px-6 bg-slate-50">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-8">
+            <Badge className="bg-emerald-100 text-emerald-700 mb-4">For Venue Owners</Badge>
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">Calculate Your Revenue Potential</h2>
+            <p className="text-slate-600">
+              See how much you could earn by listing your venue on BeyondWalls
+            </p>
+          </div>
+          <VenueSuitabilityCalculator />
+        </div>
+      </section>
 
       {/* CTA */}
       <section className="py-20 px-6 bg-gradient-to-br from-violet-600 to-indigo-600">
