@@ -25,6 +25,7 @@ import {
   BarChart3,
   Zap
 } from "lucide-react";
+import NotificationMonitor from "@/components/notifications/NotificationMonitor";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -37,6 +38,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import AdminNotifications from "@/components/admin/AdminNotifications";
 import UserNotifications from "@/components/notifications/UserNotifications";
+import NotificationMonitor from "@/components/notifications/NotificationMonitor";
 
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
@@ -107,13 +109,14 @@ export default function Layout({ children, currentPageName }) {
             { name: "Auto-Booking", icon: Zap, page: "AutoBooking" },
                             { name: "AR Engage", icon: Megaphone, page: "ARDashboard" },
                             { name: "Wallet", icon: Wallet, page: "Wallet" },
-                      { name: "My Venues", icon: Building2, page: "MyVenues" },
-                      { name: "My Screens", icon: MonitorPlay, page: "MyScreens" },
                     ];
 
       // Add owner-specific options if user is venue owner
       if (user?.is_venue_owner) {
         items.push(
+          { name: "Venue Hub", icon: Building2, page: "VenueOwnerHub" },
+          { name: "My Venues", icon: Building2, page: "MyVenues" },
+          { name: "My Screens", icon: MonitorPlay, page: "MyScreens" },
           { name: "My Ad Slots", icon: Settings, page: "ManageOwnerSlots" },
         );
       }
@@ -234,6 +237,9 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      {/* Real-time Notification Monitor */}
+      <NotificationMonitor user={user} />
+
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-slate-200 z-50 px-4 flex items-center justify-between">
         <button onClick={() => setSidebarOpen(true)} className="p-2 -ml-2">
@@ -384,12 +390,18 @@ export default function Layout({ children, currentPageName }) {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem asChild>
-                  <Link to={createPageUrl("Settings")} className="cursor-pointer">
-                    <Settings className="w-4 h-4 mr-2" />
-                    Settings
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
+                    <Link to={createPageUrl("Settings")} className="cursor-pointer">
+                      <Settings className="w-4 h-4 mr-2" />
+                      Settings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to={createPageUrl("NotificationPreferences")} className="cursor-pointer">
+                      <Bell className="w-4 h-4 mr-2" />
+                      Notifications
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="text-red-600 cursor-pointer">
                   <LogOut className="w-4 h-4 mr-2" />
                   Logout

@@ -104,6 +104,8 @@ import AICreativeGenerator from './pages/AICreativeGenerator';
 import AudienceAnalytics from './pages/AudienceAnalytics';
 import ProgrammaticBidding from './pages/ProgrammaticBidding';
 import VenueContentBuilder from './pages/VenueContentBuilder';
+import NotificationPreferences from './pages/NotificationPreferences';
+import VenueOwnerHub from './pages/VenueOwnerHub';
 import __Layout from './Layout.jsx';
 
 
@@ -214,6 +216,8 @@ export const PAGES = {
     "AudienceAnalytics": AudienceAnalytics,
     "ProgrammaticBidding": ProgrammaticBidding,
     "VenueContentBuilder": VenueContentBuilder,
+    "NotificationPreferences": NotificationPreferences,
+    "VenueOwnerHub": VenueOwnerHub,
 }
 
 export const pagesConfig = {
