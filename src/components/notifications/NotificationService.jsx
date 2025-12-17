@@ -2,23 +2,44 @@ import { base44 } from "@/api/base44Client";
 
 // Notification Service - handles creating notifications and sending emails
 export const NotificationService = {
+  // Check user preferences before sending
+  async shouldNotify(userId, notificationType) {
+    try {
+      const prefs = await base44.entities.NotificationPreference.filter({ user_id: userId });
+      if (!prefs || prefs.length === 0) return { email: true, inApp: true }; // Default: all enabled
+      
+      const pref = prefs[0];
+      return {
+        email: pref.email_notifications && pref[notificationType] !== false,
+        inApp: pref.in_app_notifications && pref[notificationType] !== false
+      };
+    } catch (e) {
+      return { email: true, inApp: true }; // Default on error
+    }
+  },
+
   // Campaign approved notification
   async campaignApproved(booking, user, screen, venue) {
-    const notification = await base44.entities.UserNotification.create({
-      user_id: user.email,
-      type: "campaign_approved",
-      title: "Campaign Approved! 🎉",
-      message: `Your campaign "${booking.campaign_name}" on ${screen?.name} has been approved and is now live.`,
-      reference_id: booking.id,
-      reference_type: "AdSlotBooking",
-      action_url: `/MyBookings`,
-      is_read: false,
-      email_sent: true
-    });
+    const notify = await this.shouldNotify(user.email, "campaign_approved");
+    if (!notify.inApp && !notify.email) return;
+    if (notify.inApp) {
+      await base44.entities.UserNotification.create({
+        user_id: user.email,
+        type: "campaign_approved",
+        title: "Campaign Approved! 🎉",
+        message: `Your campaign "${booking.campaign_name}" on ${screen?.name} has been approved and is now live.`,
+        reference_id: booking.id,
+        reference_type: "AdSlotBooking",
+        action_url: `/MyBookings`,
+        is_read: false,
+        email_sent: notify.email
+      });
+    }
 
     // Send email notification
-    try {
-      await base44.integrations.Core.SendEmail({
+    if (notify.email) {
+      try {
+        await base44.integrations.Core.SendEmail({
         to: user.email,
         subject: `✅ Campaign Approved: ${booking.campaign_name} | BeyondWalls`,
         body: `
@@ -48,30 +69,35 @@ BeyondWalls - Advertise Beyond Boundaries
 www.beyondwalls.ae
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         `.trim()
-      });
-    } catch (e) {
-      console.error("Failed to send campaign approved email", e);
+        });
+      } catch (e) {
+        console.error("Failed to send campaign approved email", e);
+      }
     }
-
-    return notification;
   },
 
   // Campaign rejected notification
   async campaignRejected(booking, user, reason) {
-    const notification = await base44.entities.UserNotification.create({
-      user_id: user.email,
-      type: "campaign_rejected",
-      title: "Campaign Not Approved",
-      message: `Your campaign "${booking.campaign_name}" was not approved. Reason: ${reason || "Does not meet guidelines"}`,
-      reference_id: booking.id,
-      reference_type: "AdSlotBooking",
-      action_url: `/MyBookings`,
-      is_read: false,
-      email_sent: true
-    });
+    const notify = await this.shouldNotify(user.email, "campaign_rejected");
+    if (!notify.inApp && !notify.email) return;
+    
+    if (notify.inApp) {
+      await base44.entities.UserNotification.create({
+        user_id: user.email,
+        type: "campaign_rejected",
+        title: "Campaign Not Approved",
+        message: `Your campaign "${booking.campaign_name}" was not approved. Reason: ${reason || "Does not meet guidelines"}`,
+        reference_id: booking.id,
+        reference_type: "AdSlotBooking",
+        action_url: `/MyBookings`,
+        is_read: false,
+        email_sent: notify.email
+      });
+    }
 
-    try {
-      await base44.integrations.Core.SendEmail({
+    if (notify.email) {
+      try {
+        await base44.integrations.Core.SendEmail({
         to: user.email,
         subject: `Campaign Review: ${booking.campaign_name} | BeyondWalls`,
         body: `
@@ -103,30 +129,35 @@ BeyondWalls - Advertise Beyond Boundaries
 www.beyondwalls.ae
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         `.trim()
-      });
-    } catch (e) {
-      console.error("Failed to send campaign rejected email", e);
+        });
+      } catch (e) {
+        console.error("Failed to send campaign rejected email", e);
+      }
     }
-
-    return notification;
   },
 
   // New booking notification for venue owners
   async newBookingForVenueOwner(booking, venueOwner, screen, advertiser) {
-    const notification = await base44.entities.UserNotification.create({
-      user_id: venueOwner.email,
-      type: "new_booking",
-      title: "New Ad Booking! 💰",
-      message: `${advertiser?.full_name || "An advertiser"} booked a slot on your screen "${screen?.name}" for AED ${booking.total_cost}`,
-      reference_id: booking.id,
-      reference_type: "AdSlotBooking",
-      action_url: `/MyScreens`,
-      is_read: false,
-      email_sent: true
-    });
+    const notify = await this.shouldNotify(venueOwner.email, "new_booking");
+    if (!notify.inApp && !notify.email) return;
+    
+    if (notify.inApp) {
+      await base44.entities.UserNotification.create({
+        user_id: venueOwner.email,
+        type: "new_booking",
+        title: "New Ad Booking! 💰",
+        message: `${advertiser?.full_name || "An advertiser"} booked a slot on your screen "${screen?.name}" for AED ${booking.total_cost}`,
+        reference_id: booking.id,
+        reference_type: "AdSlotBooking",
+        action_url: `/MyScreens`,
+        is_read: false,
+        email_sent: notify.email
+      });
+    }
 
-    try {
-      await base44.integrations.Core.SendEmail({
+    if (notify.email) {
+      try {
+        await base44.integrations.Core.SendEmail({
         to: venueOwner.email,
         subject: `💰 New Ad Booking on ${screen?.name} | BeyondWalls`,
         body: `
@@ -157,16 +188,17 @@ BeyondWalls - Advertise Beyond Boundaries
 www.beyondwalls.ae
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         `.trim()
-      });
-    } catch (e) {
-      console.error("Failed to send new booking email to venue owner", e);
+        });
+      } catch (e) {
+        console.error("Failed to send new booking email to venue owner", e);
+      }
     }
-
-    return notification;
   },
 
   // Low wallet balance warning
   async lowBalanceWarning(user, currentBalance, threshold = 100) {
+    const notify = await this.shouldNotify(user.email, "low_balance");
+    if (!notify.inApp && !notify.email) return;
     // Check if we already sent a low balance notification in the last 24 hours
     const recentNotifications = await base44.entities.UserNotification.filter({
       user_id: user.email,
@@ -180,18 +212,21 @@ www.beyondwalls.ae
     
     if (recentLowBalance) return null; // Don't spam with low balance notifications
 
-    const notification = await base44.entities.UserNotification.create({
-      user_id: user.email,
-      type: "low_balance",
-      title: "Low Wallet Balance ⚠️",
-      message: `Your wallet balance is AED ${currentBalance}. Top up now to keep your campaigns running.`,
-      action_url: `/Wallet`,
-      is_read: false,
-      email_sent: true
-    });
+    if (notify.inApp) {
+      await base44.entities.UserNotification.create({
+        user_id: user.email,
+        type: "low_balance",
+        title: "Low Wallet Balance ⚠️",
+        message: `Your wallet balance is AED ${currentBalance}. Top up now to keep your campaigns running.`,
+        action_url: `/Wallet`,
+        is_read: false,
+        email_sent: notify.email
+      });
+    }
 
-    try {
-      await base44.integrations.Core.SendEmail({
+    if (notify.email) {
+      try {
+        await base44.integrations.Core.SendEmail({
         to: user.email,
         subject: `⚠️ Low Wallet Balance Alert | BeyondWalls`,
         body: `
@@ -218,30 +253,35 @@ BeyondWalls - Advertise Beyond Boundaries
 www.beyondwalls.ae
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         `.trim()
-      });
-    } catch (e) {
-      console.error("Failed to send low balance email", e);
+        });
+      } catch (e) {
+        console.error("Failed to send low balance email", e);
+      }
     }
-
-    return notification;
   },
 
   // Payout/withdrawal completed
   async payoutCompleted(user, amount, transactionId) {
-    const notification = await base44.entities.UserNotification.create({
-      user_id: user.email,
-      type: "payout_completed",
-      title: "Payout Processed! 💸",
-      message: `Your withdrawal of AED ${amount} has been processed and transferred to your bank account.`,
-      reference_id: transactionId,
-      reference_type: "Transaction",
-      action_url: `/Wallet`,
-      is_read: false,
-      email_sent: true
-    });
+    const notify = await this.shouldNotify(user.email, "withdrawal_processed");
+    if (!notify.inApp && !notify.email) return;
+    
+    if (notify.inApp) {
+      await base44.entities.UserNotification.create({
+        user_id: user.email,
+        type: "payout_completed",
+        title: "Payout Processed! 💸",
+        message: `Your withdrawal of AED ${amount} has been processed and transferred to your bank account.`,
+        reference_id: transactionId,
+        reference_type: "Transaction",
+        action_url: `/Wallet`,
+        is_read: false,
+        email_sent: notify.email
+      });
+    }
 
-    try {
-      await base44.integrations.Core.SendEmail({
+    if (notify.email) {
+      try {
+        await base44.integrations.Core.SendEmail({
         to: user.email,
         subject: `✅ Withdrawal Processed: AED ${amount} | BeyondWalls`,
         body: `
@@ -270,12 +310,11 @@ BeyondWalls - Advertise Beyond Boundaries
 www.beyondwalls.ae
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         `.trim()
-      });
-    } catch (e) {
-      console.error("Failed to send payout completed email", e);
+        });
+      } catch (e) {
+        console.error("Failed to send payout completed email", e);
+      }
     }
-
-    return notification;
   },
 
   // Top-up approved
