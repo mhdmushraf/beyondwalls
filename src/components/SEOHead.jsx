@@ -7,7 +7,7 @@ export const PAGE_SEO = {
     description: "UAE's #1 Digital Out-of-Home (DOOH) Advertising Platform. Book ad space on 500+ digital screens across Dubai, Abu Dhabi, Sharjah. Self-serve platform, start from AED 99/week. No contracts, instant activation.",
     keywords: "digital advertising dubai, DOOH advertising UAE, digital billboard advertising, screen advertising dubai, outdoor advertising uae, digital signage advertising, advertising company dubai, best advertising agency uae",
     canonical: "https://www.beyondwalls.ae",
-    ogImage: "https://www.beyondwalls.ae/og-image.jpg"
+    ogImage: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&h=630&fit=crop&q=80"
   },
   about: {
     title: "About BeyondWalls - UAE's Leading DOOH Advertising Platform | Our Story",
@@ -113,13 +113,33 @@ export default function SEOHead({
   article = null
 }) {
   const baseUrl = "https://www.beyondwalls.ae";
-  const defaultOgImage = `${baseUrl}/og-image.jpg`;
+  const defaultOgImage = "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&h=630&fit=crop&q=80";
   const finalCanonical = canonical || baseUrl;
   const finalOgImage = ogImage || defaultOgImage;
 
   React.useEffect(() => {
     // Update document title
     document.title = title || "BeyondWalls - Digital Advertising Platform UAE";
+
+    // Set favicon and app icons
+    const setFavicon = () => {
+      // Remove existing favicons
+      const existingLinks = document.querySelectorAll('link[rel*="icon"]');
+      existingLinks.forEach(link => link.remove());
+
+      // Add new favicons
+      const favicon = document.createElement('link');
+      favicon.rel = 'icon';
+      favicon.type = 'image/png';
+      favicon.href = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6925a3bad1f286c6fe7d00ba/700c3204b_image.png';
+      document.head.appendChild(favicon);
+
+      const appleIcon = document.createElement('link');
+      appleIcon.rel = 'apple-touch-icon';
+      appleIcon.href = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6925a3bad1f286c6fe7d00ba/700c3204b_image.png';
+      document.head.appendChild(appleIcon);
+    };
+    setFavicon();
 
     // Helper to set or create meta tag
     const setMetaTag = (name, content, isProperty = false) => {

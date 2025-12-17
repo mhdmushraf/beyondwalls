@@ -453,7 +453,8 @@ export default function Home() {
                   src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=600&fit=crop&q=80" 
                   alt="Digital advertising screens in modern venue"
                   className="w-full h-auto"
-                  loading="eager"
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-violet-900/60 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
