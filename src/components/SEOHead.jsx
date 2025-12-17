@@ -118,8 +118,28 @@ export default function SEOHead({
   const finalOgImage = ogImage || defaultOgImage;
 
   React.useEffect(() => {
-    // Update document title
-    document.title = title || "BeyondWalls - Digital Advertising Platform UAE";
+      // Update document title
+      document.title = title || "BeyondWalls - Digital Advertising Platform UAE";
+
+      // Set BeyondWalls favicon
+      const faviconSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1"/><stop offset="100%" style="stop-color:#6366F1;stop-opacity:1"/></linearGradient></defs><rect width="48" height="48" rx="10" fill="url(#grad)"/><path d="M14 14h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H14a2 2 0 0 1-2-2V16a2 2 0 0 1 2-2z" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 34h12M24 28v6" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>`;
+      const faviconHref = 'data:image/svg+xml;base64,' + btoa(faviconSVG);
+
+      // Remove all existing favicons
+      document.querySelectorAll('link[rel*="icon"]').forEach(link => link.remove());
+
+      // Add new favicon
+      const favicon = document.createElement('link');
+      favicon.rel = 'icon';
+      favicon.type = 'image/svg+xml';
+      favicon.href = faviconHref;
+      document.head.appendChild(favicon);
+
+      // Add apple touch icon
+      const appleFavicon = document.createElement('link');
+      appleFavicon.rel = 'apple-touch-icon';
+      appleFavicon.href = faviconHref;
+      document.head.appendChild(appleFavicon);
 
 
 
