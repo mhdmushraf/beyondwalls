@@ -19,6 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
 import CommentSection from "@/components/blog/CommentSection";
+import BlogRecommendations from "@/components/personalization/BlogRecommendations";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import SEOHead from "@/components/SEOHead";
 
