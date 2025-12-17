@@ -26,6 +26,7 @@ import {
   Rocket
 } from "lucide-react";
 import InvestorInquiryModal from "@/components/InvestorInquiryModal";
+import PersonalizedHero from "@/components/personalization/PersonalizedHero";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";

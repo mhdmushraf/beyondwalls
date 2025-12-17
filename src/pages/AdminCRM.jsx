@@ -777,13 +777,15 @@ www.beyondwalls.ae
                 )}
               </tbody>
             </table>
-          </div>
-        </CardContent>
-      </Card>
-        </>
-      )}
+            </div>
+            </CardContent>
+            </Card>
+            </>
+            )}
+            </>
+            )}
 
-      {activeTab === "users" && (
+            {activeTab === "users" && (
         <>
           {/* User Filters */}
           <div className="flex flex-col md:flex-row gap-4 mb-6">

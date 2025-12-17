@@ -380,11 +380,12 @@ Generate a complete blog post with title, excerpt, and content.`,
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="industry-news">Industry News</SelectItem>
-                    <SelectItem value="tips">Tips & Tricks</SelectItem>
+                    <SelectItem value="dooh-advertising">DOOH Advertising</SelectItem>
+                    <SelectItem value="marketing-tips">Marketing Tips</SelectItem>
+                    <SelectItem value="uae-market-insights">UAE Market Insights</SelectItem>
                     <SelectItem value="case-studies">Case Studies</SelectItem>
                     <SelectItem value="product-updates">Product Updates</SelectItem>
-                    <SelectItem value="guides">Guides</SelectItem>
+                    <SelectItem value="industry-news">Industry News</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
