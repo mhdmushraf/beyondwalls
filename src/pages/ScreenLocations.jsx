@@ -90,7 +90,11 @@ export default function ScreenLocations() {
 
   const { data: venues = [], isLoading } = useQuery({
     queryKey: ["public-venues"],
-    queryFn: () => base44.entities.Venue.filter({ status: "approved" })
+    queryFn: async () => {
+      const allVenues = await base44.entities.Venue.filter({ status: "approved" });
+      // Filter to show only Dubai venues for now
+      return allVenues.filter(v => v.city === "Dubai");
+    }
   });
 
   const { data: screens = [] } = useQuery({
@@ -136,8 +140,8 @@ export default function ScreenLocations() {
     "Umm Al Quwain": { center: [25.5647, 55.5533], zoom: 13 }
   };
   
-  const uaeCenter = [24.4539, 54.3773];
-  const defaultZoom = 7;
+  const uaeCenter = [25.2048, 55.2708]; // Dubai center
+  const defaultZoom = 11; // Zoom into Dubai
   
   // Get map center based on city filter
   const getMapCenter = () => {
