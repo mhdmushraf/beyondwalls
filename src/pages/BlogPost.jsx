@@ -27,11 +27,24 @@ export default function BlogPost() {
   const urlParams = new URLSearchParams(window.location.search);
   const postId = urlParams.get("id");
 
+  // Track reading history
+  React.useEffect(() => {
+    if (post?.id) {
+      const history = JSON.parse(localStorage.getItem("blogReadHistory") || "[]");
+      if (!history.includes(post.id)) {
+        const updated = [post.id, ...history].slice(0, 10); // Keep last 10 posts
+        localStorage.setItem("blogReadHistory", JSON.stringify(updated));
+      }
+    }
+  }, [post?.id]);
+
   const categoryLabels = {
-    "industry-news": "Industry News",
-    "tips": "Tips & Tricks",
+    "dooh-advertising": "DOOH Advertising",
+    "marketing-tips": "Marketing Tips",
+    "uae-market-insights": "UAE Market Insights",
     "case-studies": "Case Studies",
     "product-updates": "Product Updates",
+    "industry-news": "Industry News",
     "guides": "Guides"
   };
 
@@ -166,6 +179,9 @@ export default function BlogPost() {
                 <p className="text-slate-600 text-sm mb-4">Subscribe to get more insights delivered to your inbox.</p>
                 <NewsletterSignup source="blog" variant="inline" />
               </div>
+
+              {/* Personalized Recommendations */}
+              <BlogRecommendations currentPostId={post.id} />
 
               {/* Comments */}
               <CommentSection postId={post.id} />
