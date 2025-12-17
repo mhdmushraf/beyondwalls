@@ -84,6 +84,34 @@ export default function Contact() {
         {...PAGE_SEO.contact}
         structuredData={{
           "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebPage",
+              "@id": "https://www.beyondwalls.ae/Contact#webpage",
+              "url": "https://www.beyondwalls.ae/Contact",
+              "name": "Contact BeyondWalls - Advertising Inquiries Dubai",
+              "isPartOf": {
+                "@id": "https://www.beyondwalls.ae/#website"
+              },
+              "breadcrumb": {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                  {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "https://www.beyondwalls.ae"
+                  },
+                  {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Contact",
+                    "item": "https://www.beyondwalls.ae/Contact"
+                  }
+                ]
+              }
+            },
+            {
           "@type": "ContactPage",
           "name": "Contact BeyondWalls - Advertising Inquiries Dubai",
           "description": "Contact BeyondWalls for DOOH advertising inquiries, venue partnerships, or support",
@@ -129,6 +157,7 @@ export default function Contact() {
               }
             ]
           }
+          ]
         }}
       />
       <PublicNav />

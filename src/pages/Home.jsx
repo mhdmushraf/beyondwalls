@@ -182,16 +182,54 @@ export default function Home() {
           "@graph": [
             {
               "@type": "WebSite",
+              "@id": "https://www.beyondwalls.ae/#website",
               "name": "BeyondWalls UAE - Best Digital Advertising Company in Dubai",
               "alternateName": ["BeyondWalls DOOH", "BeyondWalls UAE", "BeyondWalls Advertising Dubai", "BeyondWalls.ae"],
               "url": "https://www.beyondwalls.ae",
               "description": "UAE's #1 Digital Out-of-Home (DOOH) Advertising Platform. Self-serve advertising on 500+ digital screens across Dubai, Abu Dhabi, Sharjah. Based in Dubai Internet City.",
               "inLanguage": "en-AE",
-              "potentialAction": {
-                "@type": "SearchAction",
-                "target": "https://www.beyondwalls.ae/search?q={search_term_string}",
-                "query-input": "required name=search_term_string"
-              }
+              "publisher": {
+                "@id": "https://www.beyondwalls.ae/#organization"
+              },
+              "potentialAction": [
+                {
+                  "@type": "SearchAction",
+                  "target": {
+                    "@type": "EntryPoint",
+                    "urlTemplate": "https://www.beyondwalls.ae/search?q={search_term_string}"
+                  },
+                  "query-input": "required name=search_term_string"
+                }
+              ]
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://www.beyondwalls.ae/#breadcrumb",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://www.beyondwalls.ae"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://www.beyondwalls.ae/#webpage",
+              "url": "https://www.beyondwalls.ae",
+              "name": "BeyondWalls - Best Digital Advertising Company in Dubai & UAE",
+              "isPartOf": {
+                "@id": "https://www.beyondwalls.ae/#website"
+              },
+              "about": {
+                "@id": "https://www.beyondwalls.ae/#organization"
+              },
+              "description": "UAE's #1 DOOH Platform. Book digital screens from AED 99/week. No contracts.",
+              "breadcrumb": {
+                "@id": "https://www.beyondwalls.ae/#breadcrumb"
+              },
+              "inLanguage": "en-AE"
             },
             {
               "@type": "Organization",
@@ -199,6 +237,7 @@ export default function Home() {
               "name": "BeyondWalls UAE",
               "legalName": "BeyondWalls DOOH Advertising LLC",
               "url": "https://www.beyondwalls.ae",
+              "mainEntityOfPage": "https://www.beyondwalls.ae",
               "logo": {
                 "@type": "ImageObject",
                 "url": "https://www.beyondwalls.ae/logo.png",

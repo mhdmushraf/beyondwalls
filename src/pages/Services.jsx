@@ -130,6 +130,34 @@ export default function Services() {
         {...PAGE_SEO.services}
         structuredData={{
           "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebPage",
+              "@id": "https://www.beyondwalls.ae/Services#webpage",
+              "url": "https://www.beyondwalls.ae/Services",
+              "name": "DOOH Advertising Services Dubai",
+              "isPartOf": {
+                "@id": "https://www.beyondwalls.ae/#website"
+              },
+              "breadcrumb": {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                  {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "https://www.beyondwalls.ae"
+                  },
+                  {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Services",
+                    "item": "https://www.beyondwalls.ae/Services"
+                  }
+                ]
+              }
+            },
+            {
           "@type": "Service",
           "name": "BeyondWalls DOOH Advertising Services",
           "serviceType": "Digital Out-of-Home Advertising",
@@ -152,6 +180,7 @@ export default function Services() {
               "unitText": "per week per screen"
             }
           }
+          ]
         }}
       />
       <PublicNav />

@@ -69,6 +69,16 @@ export const PAGE_SEO = {
 };
 
 // Sitemap data for generation
+// Primary navigation pages for Google Sitelinks
+export const PRIMARY_SITELINKS = [
+  { name: "About Us", url: "/About", description: "Learn about BeyondWalls - UAE's leading DOOH advertising platform" },
+  { name: "Services", url: "/Services", description: "Digital advertising services for businesses and venue owners" },
+  { name: "Contact", url: "/Contact", description: "Get in touch with our team in Dubai" },
+  { name: "How It Works", url: "/HowItWorks", description: "Launch your campaign in 4 easy steps" },
+  { name: "Screen Locations", url: "/ScreenLocations", description: "Browse 500+ digital screens across UAE" },
+  { name: "Register", url: "/Register", description: "Start advertising today - Free signup" }
+];
+
 export const SITEMAP_PAGES = [
   { url: "/", priority: "1.0", changefreq: "daily" },
   { url: "/About", priority: "0.8", changefreq: "monthly" },

@@ -74,6 +74,35 @@ export default function About() {
         {...PAGE_SEO.about}
         structuredData={{
           "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebPage",
+              "@id": "https://www.beyondwalls.ae/About#webpage",
+              "url": "https://www.beyondwalls.ae/About",
+              "name": "About BeyondWalls - Award-Winning DOOH Advertising Startup Dubai",
+              "description": "Learn about BeyondWalls, UAE's first self-serve DOOH advertising marketplace",
+              "isPartOf": {
+                "@id": "https://www.beyondwalls.ae/#website"
+              },
+              "breadcrumb": {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                  {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "https://www.beyondwalls.ae"
+                  },
+                  {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "About Us",
+                    "item": "https://www.beyondwalls.ae/About"
+                  }
+                ]
+              }
+            },
+            {
           "@type": "AboutPage",
           "name": "About BeyondWalls - Award-Winning DOOH Advertising Startup Dubai",
           "description": "BeyondWalls is an award-winning DOOH advertising startup incubated by in5 Dubai. Global Recognition Award 2025 winner. Founded by Muhammed Musharaf.",
@@ -119,6 +148,7 @@ export default function About() {
               "https://www.tiktok.com/@beyondwallsae"
             ]
           }
+          ]
         }}
       />
       <PublicNav />
