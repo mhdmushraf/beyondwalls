@@ -110,6 +110,8 @@ import SitemapXML from './pages/SitemapXML';
 import RobotsTxt from './pages/RobotsTxt';
 import CampaignBundles from './pages/CampaignBundles';
 import BundleDetails from './pages/BundleDetails';
+import LocalBusinessBooking from './pages/LocalBusinessBooking';
+import SustainabilityReport from './pages/SustainabilityReport';
 import __Layout from './Layout.jsx';
 
 
@@ -226,6 +228,8 @@ export const PAGES = {
     "RobotsTxt": RobotsTxt,
     "CampaignBundles": CampaignBundles,
     "BundleDetails": BundleDetails,
+    "LocalBusinessBooking": LocalBusinessBooking,
+    "SustainabilityReport": SustainabilityReport,
 }
 
 export const pagesConfig = {
