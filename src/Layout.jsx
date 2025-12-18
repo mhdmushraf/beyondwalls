@@ -23,7 +23,9 @@ import {
   PiggyBank,
   TrendingUp,
   BarChart3,
-  Zap
+  Zap,
+  Package,
+  Leaf
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -103,10 +105,13 @@ export default function Layout({ children, currentPageName }) {
                                   { name: "Analytics", icon: BarChart3, page: "AnalyticsDashboard" },
                                   { name: "AI Campaign", icon: Megaphone, page: "AICampaignCreator" },
                       { name: "Book Ad Slot", icon: Plus, page: "BookSlot" },
+                      { name: "Campaign Bundles", icon: Package, page: "CampaignBundles" },
+                      { name: "Local Business", icon: Building2, page: "LocalBusinessBooking" },
                       { name: "Favorites", icon: MonitorPlay, page: "FavoriteScreens" },
                       { name: "My Bookings", icon: Megaphone, page: "MyBookings" },
             { name: "Auto-Booking", icon: Zap, page: "AutoBooking" },
                             { name: "AR Engage", icon: Megaphone, page: "ARDashboard" },
+                            { name: "Sustainability", icon: Leaf, page: "SustainabilityReport" },
                             { name: "Wallet", icon: Wallet, page: "Wallet" },
                     ];
 
