@@ -163,28 +163,20 @@ export default function Contact() {
       />
       <PublicNav />
 
-      {/* Hero - Madamedia Style */}
-      <section className="relative h-[60vh] min-h-[500px] overflow-hidden">
-        <div className="absolute inset-0">
-          <img 
-            src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920&h=1080&fit=crop&q=80" 
-            alt="Contact BeyondWalls" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 via-slate-900/85 to-slate-900/70" />
-        </div>
-        <div className="relative h-full max-w-7xl mx-auto px-6 flex items-center">
-          <div className="max-w-3xl">
-            <Badge className="bg-violet-500/20 text-violet-300 border-0 px-4 py-2 mb-6">
-              💬 Get in Touch
-            </Badge>
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-              Contact Us
-            </h1>
-            <p className="text-xl md:text-2xl text-slate-300 mb-0 leading-relaxed">
-              Whether you're an advertiser, venue owner, or investor - our team is ready to help you succeed.
-            </p>
-          </div>
+      {/* Hero */}
+      <section className="pt-32 pb-20 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50 relative overflow-hidden">
+        <div className="absolute top-20 right-20 w-72 h-72 bg-violet-200 rounded-full blur-3xl opacity-30" />
+        <div className="absolute bottom-20 left-20 w-64 h-64 bg-indigo-200 rounded-full blur-3xl opacity-30" />
+        <div className="max-w-4xl mx-auto text-center relative">
+          <Badge className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-0 px-4 py-2 mb-6">
+            Let's Connect
+          </Badge>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
+            We'd Love to Hear From You
+          </h1>
+          <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+            Whether you're an advertiser, venue owner, or investor - our team is ready to help you succeed.
+          </p>
         </div>
       </section>
 
