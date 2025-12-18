@@ -171,7 +171,7 @@ export default function Services() {
             "url": "https://www.beyondwalls.ae"
           },
           "areaServed": ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "RAK", "UAE"],
-          "description": "Premium DOOH advertising services for advertisers and venue owners in UAE. Self-serve platform with 500+ screens.",
+          "description": "Premium DOOH advertising services with performance scoring, campaign bundles, gamification, sustainability tracking and local business support. AI-powered platform with 500+ screens across UAE.",
           "offers": {
             "@type": "AggregateOffer",
             "priceCurrency": "AED",
@@ -183,6 +183,52 @@ export default function Services() {
               "priceCurrency": "AED",
               "unitText": "per week per screen"
             }
+          },
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "BeyondWalls Advertising Services",
+            "itemListElement": [
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Performance-Scored Advertising",
+                  "description": "Book screens with verified 1-5 star performance ratings based on real QR scan data"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Campaign Bundles",
+                  "description": "Pre-made screen packages with 20-30% discounts for targeted audience reach"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Local Business Hour",
+                  "description": "50% discount for UAE-based SMEs during prime 12-1 PM slots"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Scan & Win Gamification",
+                  "description": "Interactive games (spin-the-wheel, scratch cards, quizzes) to boost QR scan rates by 3x"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Sustainability Tracking",
+                  "description": "Real-time environmental impact metrics for ESG reporting and UAE Net Zero 2050 alignment"
+                }
+              }
+            ]
           }
             }
           ]

@@ -17,8 +17,8 @@ export const PAGE_SEO = {
   },
   services: {
     title: "DOOH Advertising Services Dubai | Digital Screen Advertising UAE | BeyondWalls",
-    description: "Premium digital advertising services across UAE. Book screens in cafés, malls, gyms & coworking spaces. AI-powered campaigns, real-time analytics, 70% revenue share for venues.",
-    keywords: "dooh services dubai, digital screen advertising, venue advertising uae, mall advertising dubai, café advertising, gym advertising screens",
+    description: "Premium digital advertising services across UAE. Performance scoring, campaign bundles, gamification, sustainability tracking & local business support. AI-powered campaigns, real-time analytics, 70% revenue share for venues.",
+    keywords: "dooh services dubai, digital screen advertising, venue advertising uae, performance score advertising, campaign bundles dubai, gamification advertising, sustainability dooh, local business advertising uae, scan and win advertising, interactive advertising dubai",
     canonical: "https://www.beyondwalls.ae/services"
   },
   contact: {
