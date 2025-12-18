@@ -21,7 +21,10 @@ import {
   Users,
   ArrowRight,
   Star,
-  Award
+  Award,
+  Package,
+  Leaf,
+  Gamepad2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -423,6 +426,195 @@ export default function Services() {
             </p>
           </div>
           <CampaignIdeaGenerator />
+        </div>
+      </section>
+
+      {/* Innovative Features */}
+      <section className="py-20 px-6 bg-gradient-to-br from-violet-50 to-indigo-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <Badge className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-0 mb-4">
+              🚀 Innovative Features
+            </Badge>
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">Industry-Leading Advertising Solutions</h2>
+            <p className="text-slate-600 max-w-2xl mx-auto">
+              BeyondWalls offers unique features that transform how you advertise and measure success
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Performance Scoring */}
+            <Card className="border-2 border-violet-200 hover:shadow-xl transition-shadow">
+              <CardContent className="p-6">
+                <div className="w-14 h-14 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-2xl flex items-center justify-center mb-4">
+                  <Star className="w-7 h-7 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">Ad Performance Scoring</h3>
+                <p className="text-slate-600 mb-4">
+                  Every screen gets a 1-5 star rating based on real QR scan data. Filter by top performers for guaranteed ROI.
+                </p>
+                <ul className="space-y-2 text-sm text-slate-600">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>Real-time performance metrics</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>Elite, Premium & Good badges</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>Data-driven screen selection</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Campaign Bundles */}
+            <Card className="border-2 border-emerald-200 hover:shadow-xl transition-shadow">
+              <CardContent className="p-6">
+                <div className="w-14 h-14 bg-gradient-to-br from-emerald-600 to-teal-600 rounded-2xl flex items-center justify-center mb-4">
+                  <Package className="w-7 h-7 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">Campaign Bundles</h3>
+                <p className="text-slate-600 mb-4">
+                  Pre-made screen packages save time and money. Book "Dubai Health & Fitness Pack" or custom bundles in one click.
+                </p>
+                <ul className="space-y-2 text-sm text-slate-600">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>20-30% bundle discounts</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>Curated by audience type</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>One-click booking</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Local Business Hour */}
+            <Card className="border-2 border-amber-200 hover:shadow-xl transition-shadow">
+              <CardContent className="p-6">
+                <div className="w-14 h-14 bg-gradient-to-br from-amber-600 to-orange-600 rounded-2xl flex items-center justify-center mb-4">
+                  <Building2 className="w-7 h-7 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">Local Business Hour</h3>
+                <p className="text-slate-600 mb-4">
+                  UAE-based SMEs get 50% off prime advertising during 12-1 PM daily. Supporting Dubai's local economy.
+                </p>
+                <ul className="space-y-2 text-sm text-slate-600">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>50% discount for UAE SMEs</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>Prime lunch hour slots</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>Community impact focus</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Scan & Win */}
+            <Card className="border-2 border-pink-200 hover:shadow-xl transition-shadow">
+              <CardContent className="p-6">
+                <div className="w-14 h-14 bg-gradient-to-br from-pink-600 to-rose-600 rounded-2xl flex items-center justify-center mb-4">
+                  <Gamepad2 className="w-7 h-7 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">Scan & Win Game Engine</h3>
+                <p className="text-slate-600 mb-4">
+                  Add instant-win games to your QR codes. Spin-the-wheel, scratch cards, quizzes - no coding required.
+                </p>
+                <ul className="space-y-2 text-sm text-slate-600">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>3x higher QR scan rates</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>4 game types included</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>Zero coding needed</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Sustainability */}
+            <Card className="border-2 border-green-200 hover:shadow-xl transition-shadow">
+              <CardContent className="p-6">
+                <div className="w-14 h-14 bg-gradient-to-br from-green-600 to-emerald-600 rounded-2xl flex items-center justify-center mb-4">
+                  <Leaf className="w-7 h-7 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">Sustainability Dashboard</h3>
+                <p className="text-slate-600 mb-4">
+                  Track your environmental impact vs traditional billboards. Paper saved, carbon offset, trees saved.
+                </p>
+                <ul className="space-y-2 text-sm text-slate-600">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>Real-time ESG metrics</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>UAE Net Zero 2050 aligned</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>Downloadable reports</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Why Choose */}
+            <Card className="border-2 border-indigo-200 hover:shadow-xl transition-shadow">
+              <CardContent className="p-6">
+                <div className="w-14 h-14 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center mb-4">
+                  <Sparkles className="w-7 h-7 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">AI-Powered Platform</h3>
+                <p className="text-slate-600 mb-4">
+                  Machine learning optimizes your campaigns automatically. Best screens, optimal timing, creative suggestions.
+                </p>
+                <ul className="space-y-2 text-sm text-slate-600">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>Smart screen recommendations</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>Auto-optimize campaigns</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>Performance forecasting</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="mt-12 text-center">
+            <Link to={createPageUrl("Register")}>
+              <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600 h-14 px-8">
+                <Sparkles className="w-5 h-5 mr-2" />
+                Experience These Features
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
