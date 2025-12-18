@@ -187,35 +187,42 @@ export default function Services() {
       />
       <PublicNav />
 
-      {/* Hero */}
-      <section className="pt-32 pb-20 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50 relative overflow-hidden">
-        <div className="absolute top-10 right-10 w-72 h-72 bg-violet-200 rounded-full blur-3xl opacity-30" />
-        <div className="absolute bottom-10 left-10 w-96 h-96 bg-indigo-200 rounded-full blur-3xl opacity-30" />
-        <div className="max-w-5xl mx-auto text-center relative">
-          <Badge className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-0 px-4 py-2 mb-6">
-            ✨ Complete DOOH Solutions
-          </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold text-slate-900 mb-6">
-            Powerful Tools for
-            <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent"> Modern Advertising</span>
-          </h1>
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8">
-            From AI-powered campaign creation to real-time analytics, BeyondWalls provides everything 
-            advertisers and venue owners need to succeed in digital out-of-home advertising.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link to={createPageUrl("Register")}>
-              <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600 h-14 px-8">
-                <Megaphone className="w-5 h-5 mr-2" />
-                Start Advertising
-              </Button>
-            </Link>
-            <Link to={createPageUrl("Contact")}>
-              <Button size="lg" variant="outline" className="h-14 px-8 border-2">
-                <Building2 className="w-5 h-5 mr-2" />
-                List Your Venue
-              </Button>
-            </Link>
+      {/* Hero - Madamedia Style */}
+      <section className="relative h-[70vh] min-h-[600px] overflow-hidden">
+        <div className="absolute inset-0">
+          <img 
+            src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1920&h=1080&fit=crop&q=80" 
+            alt="DOOH Advertising Services" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-violet-900/95 via-indigo-900/85 to-violet-900/70" />
+        </div>
+        <div className="relative h-full max-w-7xl mx-auto px-6 flex items-center">
+          <div className="max-w-3xl">
+            <Badge className="bg-white/20 text-white border-0 px-4 py-2 mb-6">
+              ✨ Complete DOOH Solutions
+            </Badge>
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+              Our Services
+            </h1>
+            <p className="text-xl md:text-2xl text-slate-200 mb-8 leading-relaxed">
+              From AI-powered campaign creation to real-time analytics, everything 
+              you need to succeed in digital out-of-home advertising.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <Link to={createPageUrl("Register")}>
+                <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8">
+                  <Megaphone className="w-5 h-5 mr-2" />
+                  Start Advertising
+                </Button>
+              </Link>
+              <Link to={createPageUrl("Contact")}>
+                <Button size="lg" variant="outline" className="h-14 px-8 border-2 border-white text-white hover:bg-white hover:text-violet-900">
+                  <Building2 className="w-5 h-5 mr-2" />
+                  List Your Venue
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -244,53 +251,77 @@ export default function Services() {
         </div>
       </section>
 
-      {/* For Advertisers */}
+      {/* For Advertisers - Card Style */}
       <section className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <Badge className="bg-violet-100 text-violet-600 mb-4">For Advertisers</Badge>
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">Powerful Advertising Tools</h2>
-            <p className="text-slate-600 max-w-2xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">Advertising Solutions</h2>
+            <p className="text-xl text-slate-600 max-w-2xl mx-auto">
               Create impactful campaigns with our self-serve platform
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-8">
             {advertiserServices.map((service, i) => (
-              <Card key={i} className="border-2 border-slate-100 hover:border-violet-200 transition-colors">
-                <CardContent className="p-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center mb-4">
-                    <service.icon className="w-6 h-6 text-white" />
+              <Link 
+                key={i}
+                to={createPageUrl("Register")}
+                className="group block"
+              >
+                <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden h-full">
+                  <div className="relative h-48 overflow-hidden bg-gradient-to-br from-violet-600 to-indigo-600">
+                    <div className="absolute inset-0 bg-black/20" />
+                    <div className="relative h-full flex items-center justify-center">
+                      <service.icon className="w-16 h-16 text-white" />
+                    </div>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-2">{service.title}</h3>
-                  <p className="text-slate-600 text-sm">{service.description}</p>
-                </CardContent>
-              </Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-violet-600 transition-colors">{service.title}</h3>
+                    <p className="text-slate-600">{service.description}</p>
+                    <div className="mt-4 flex items-center text-violet-600 font-medium">
+                      Learn More <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* For Venues */}
+      {/* For Venues - Image Card Style */}
       <section className="py-20 px-6 bg-slate-50">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <Badge className="bg-amber-100 text-slate-900 mb-4">For Venue Owners</Badge>
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">Monetize Your Screens</h2>
-            <p className="text-slate-600 max-w-2xl mx-auto">
+            <Badge className="bg-emerald-100 text-emerald-700 mb-4">For Venue Owners</Badge>
+            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">Venue Solutions</h2>
+            <p className="text-xl text-slate-600 max-w-2xl mx-auto">
               Turn your digital displays into a revenue stream
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-8">
             {venueServices.map((service, i) => (
-              <Card key={i} className="border-0 shadow-lg">
-                <CardContent className="p-6">
-                  <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center mb-4">
-                    <service.icon className="w-6 h-6 text-slate-900" />
+              <Link 
+                key={i}
+                to={createPageUrl("Contact")}
+                className="group block"
+              >
+                <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden h-full">
+                  <div className="relative h-48 overflow-hidden bg-gradient-to-br from-emerald-500 to-teal-600">
+                    <div className="absolute inset-0 bg-black/20" />
+                    <div className="relative h-full flex items-center justify-center">
+                      <service.icon className="w-16 h-16 text-white" />
+                    </div>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-2">{service.title}</h3>
-                  <p className="text-slate-600 text-sm">{service.description}</p>
-                </CardContent>
-              </Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-emerald-600 transition-colors">{service.title}</h3>
+                    <p className="text-slate-600">{service.description}</p>
+                    <div className="mt-4 flex items-center text-emerald-600 font-medium">
+                      Learn More <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>

@@ -154,35 +154,40 @@ export default function About() {
       />
       <PublicNav />
 
-      {/* Hero */}
-      <section className="pt-32 pb-20 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50 relative overflow-hidden">
-        <div className="absolute top-20 right-20 w-72 h-72 bg-violet-200 rounded-full blur-3xl opacity-30" />
-        <div className="absolute bottom-20 left-20 w-96 h-96 bg-indigo-200 rounded-full blur-3xl opacity-30" />
-        <div className="max-w-5xl mx-auto text-center relative">
-          <Badge className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-0 px-4 py-2 mb-6">
-            🚀 Disrupting a $45B Global Market
-          </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold text-slate-900 mb-6">
-            The Future of
-            <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent"> Digital Advertising </span>
-            is Here
-          </h1>
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8">
-            BeyondWalls is UAE's first self-serve marketplace for Digital Out-of-Home (DOOH) advertising. 
-            We're democratizing access to premium screen advertising while creating passive income streams for venues.
-          </p>
-          <div className="flex flex-wrap justify-center gap-6 text-sm">
-            <div className="flex items-center gap-2 text-slate-600">
-              <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-              <span>Founded June 2025</span>
-            </div>
-            <div className="flex items-center gap-2 text-slate-600">
-              <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-              <span>in5 Dubai Incubated</span>
-            </div>
-            <div className="flex items-center gap-2 text-slate-600">
-              <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-              <span>Global Recognition Award 2025</span>
+      {/* Hero - Madamedia Style */}
+      <section className="relative h-[70vh] min-h-[600px] overflow-hidden">
+        <div className="absolute inset-0">
+          <img 
+            src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&h=1080&fit=crop&q=80" 
+            alt="BeyondWalls Office" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 via-slate-900/85 to-slate-900/70" />
+        </div>
+        <div className="relative h-full max-w-7xl mx-auto px-6 flex items-center">
+          <div className="max-w-3xl">
+            <Badge className="bg-amber-500/20 text-amber-400 border-0 px-4 py-2 mb-6">
+              🏆 Global Recognition Award 2025
+            </Badge>
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+              The Way Media<br/>Comes to Life
+            </h1>
+            <p className="text-xl md:text-2xl text-slate-300 mb-8 leading-relaxed">
+              UAE's first self-serve marketplace for Digital Out-of-Home advertising.
+              Democratizing access to premium screen advertising.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <Link to={createPageUrl("Register")}>
+                <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 h-14 px-8">
+                  <Megaphone className="w-5 h-5 mr-2" />
+                  Start Advertising
+                </Button>
+              </Link>
+              <Link to={createPageUrl("Contact")}>
+                <Button size="lg" variant="outline" className="h-14 px-8 border-2 border-white text-white hover:bg-white hover:text-slate-900">
+                  Learn More
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
