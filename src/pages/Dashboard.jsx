@@ -15,7 +15,10 @@ import {
   Eye,
   Calendar,
   Sparkles,
-  Loader2
+  Loader2,
+  Package,
+  Leaf,
+  Gamepad2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -134,7 +137,7 @@ export default function Dashboard() {
               Manage your screens and advertising campaigns
             </p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             {user.is_venue_owner && (
               <Link to={createPageUrl("AddScreen")}>
                 <Button variant="outline" className="border-violet-200 hover:bg-violet-50 hover:border-violet-300 transition-all duration-200 shadow-lg">
@@ -143,6 +146,12 @@ export default function Dashboard() {
                 </Button>
               </Link>
             )}
+            <Link to={createPageUrl("BookSlot")}>
+              <Button variant="outline" className="border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 transition-all duration-200 shadow-lg">
+                <Plus className="w-4 h-4 mr-2" />
+                Book Ad
+              </Button>
+            </Link>
             <Link to={createPageUrl("AICampaignCreator")}>
               <Button className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-700 hover:via-purple-700 hover:to-indigo-700 shadow-2xl shadow-violet-500/30 transform hover:scale-105 transition-all duration-200 text-lg px-6 py-6">
                 <Sparkles className="w-5 h-5 mr-2" />
@@ -230,6 +239,50 @@ export default function Dashboard() {
               color="amber"
             />
           </div>
+        </div>
+
+        {/* Quick Actions - Innovative Features */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+          <Link to={createPageUrl("CampaignBundles")}>
+            <div className="group relative p-6 bg-white/80 backdrop-blur-xl rounded-2xl border border-emerald-200 hover:shadow-2xl hover:shadow-emerald-500/20 transition-all duration-300 cursor-pointer">
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+              <Package className="w-8 h-8 text-emerald-600 mb-3" />
+              <p className="font-bold text-slate-900">Campaign Bundles</p>
+              <p className="text-xs text-slate-600 mt-1">Save 20-30%</p>
+            </div>
+          </Link>
+          <Link to={createPageUrl("LocalBusinessBooking")}>
+            <div className="group relative p-6 bg-white/80 backdrop-blur-xl rounded-2xl border border-amber-200 hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300 cursor-pointer">
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 to-orange-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+              <Building2 className="w-8 h-8 text-amber-600 mb-3" />
+              <p className="font-bold text-slate-900">Local Business</p>
+              <p className="text-xs text-slate-600 mt-1">50% OFF</p>
+            </div>
+          </Link>
+          <Link to={createPageUrl("BookSlot")}>
+            <div className="group relative p-6 bg-white/80 backdrop-blur-xl rounded-2xl border border-pink-200 hover:shadow-2xl hover:shadow-pink-500/20 transition-all duration-300 cursor-pointer">
+              <div className="absolute inset-0 bg-gradient-to-r from-pink-500/5 to-rose-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+              <Gamepad2 className="w-8 h-8 text-pink-600 mb-3" />
+              <p className="font-bold text-slate-900">Scan & Win</p>
+              <p className="text-xs text-slate-600 mt-1">3x Engagement</p>
+            </div>
+          </Link>
+          <Link to={createPageUrl("SustainabilityReport")}>
+            <div className="group relative p-6 bg-white/80 backdrop-blur-xl rounded-2xl border border-green-200 hover:shadow-2xl hover:shadow-green-500/20 transition-all duration-300 cursor-pointer">
+              <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-emerald-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+              <Leaf className="w-8 h-8 text-green-600 mb-3" />
+              <p className="font-bold text-slate-900">Sustainability</p>
+              <p className="text-xs text-slate-600 mt-1">Track Impact</p>
+            </div>
+          </Link>
+          <Link to={createPageUrl("AnalyticsDashboard")}>
+            <div className="group relative p-6 bg-white/80 backdrop-blur-xl rounded-2xl border border-violet-200 hover:shadow-2xl hover:shadow-violet-500/20 transition-all duration-300 cursor-pointer">
+              <div className="absolute inset-0 bg-gradient-to-r from-violet-500/5 to-purple-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+              <TrendingUp className="w-8 h-8 text-violet-600 mb-3" />
+              <p className="font-bold text-slate-900">Analytics</p>
+              <p className="text-xs text-slate-600 mt-1">Performance</p>
+            </div>
+          </Link>
         </div>
 
         {/* Main Content Tabs */}
