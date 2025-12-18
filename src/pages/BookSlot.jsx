@@ -51,6 +51,7 @@ import AdvancedScreenSearch from "@/components/booking/AdvancedScreenSearch";
 import BookingCart from "@/components/booking/BookingCart";
 import CartCheckout from "@/components/booking/CartCheckout";
 import VenueAnalyticsCalculator, { calculateEstimatedViewers } from "@/components/analytics/VenueAnalyticsCalculator";
+import PerformanceBadge from "@/components/performance/PerformanceBadge";
 
 export default function BookSlot() {
   const navigate = useNavigate();
