@@ -108,6 +108,8 @@ import NotificationPreferences from './pages/NotificationPreferences';
 import VenueOwnerHub from './pages/VenueOwnerHub';
 import SitemapXML from './pages/SitemapXML';
 import RobotsTxt from './pages/RobotsTxt';
+import CampaignBundles from './pages/CampaignBundles';
+import BundleDetails from './pages/BundleDetails';
 import __Layout from './Layout.jsx';
 
 
@@ -222,6 +224,8 @@ export const PAGES = {
     "VenueOwnerHub": VenueOwnerHub,
     "SitemapXML": SitemapXML,
     "RobotsTxt": RobotsTxt,
+    "CampaignBundles": CampaignBundles,
+    "BundleDetails": BundleDetails,
 }
 
 export const pagesConfig = {
