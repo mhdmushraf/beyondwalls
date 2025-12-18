@@ -44,6 +44,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { calculateEstimatedViewers } from "@/components/analytics/VenueAnalyticsCalculator";
+import PerformanceBadge from "@/components/performance/PerformanceBadge";
 
 // Fix Leaflet default marker
 delete L.Icon.Default.prototype._getIconUrl;
@@ -286,8 +287,11 @@ export default function AdvancedScreenSearch({
             </div>
           </div>
           <div className="flex items-center justify-between mt-2 sm:mt-3 pt-2 sm:pt-3 border-t">
-            <div>
+            <div className="flex items-center gap-2">
               <p className="text-base sm:text-lg font-bold text-violet-600">AED {screen.slot_price}<span className="text-xs sm:text-sm font-normal text-slate-500">/wk</span></p>
+              {screen.performance_score > 0 && (
+                <PerformanceBadge score={screen.performance_score} badge={screen.performance_badge} size="sm" />
+              )}
             </div>
             <Badge 
               variant={availability === 0 ? "destructive" : availability <= 2 ? "secondary" : "default"}
