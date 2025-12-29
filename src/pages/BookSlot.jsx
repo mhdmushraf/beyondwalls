@@ -645,16 +645,16 @@ Please review and approve/reject this campaign in the admin dashboard.
   }
 
   return (
-    <div className="p-6 lg:p-8 max-w-6xl mx-auto">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between gap-4 mb-8">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+          <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="flex-shrink-0">
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <div>
-            <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Book Ad Slot</h1>
-            <p className="text-slate-500">Advertise on screens across the UAE</p>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900">Book Ad Slot</h1>
+            <p className="text-slate-500 text-sm sm:text-base">Advertise on screens across the UAE</p>
           </div>
         </div>
         <BookingCart
@@ -671,15 +671,15 @@ Please review and approve/reject this campaign in the admin dashboard.
       </div>
 
       {/* Progress */}
-      <div className="flex items-center gap-3 mb-8">
+      <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
         {[1, 2, 3].map((s) => (
           <React.Fragment key={s}>
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-medium ${
+            <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-medium text-sm sm:text-base ${
               step >= s ? "bg-violet-600 text-white" : "bg-slate-100 text-slate-400"
             }`}>
-              {step > s ? <CheckCircle2 className="w-5 h-5" /> : s}
+              {step > s ? <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" /> : s}
             </div>
-            {s < 3 && <div className={`flex-1 h-1 ${step > s ? "bg-violet-600" : "bg-slate-200"}`} />}
+            {s < 3 && <div className={`flex-1 h-0.5 sm:h-1 ${step > s ? "bg-violet-600" : "bg-slate-200"}`} />}
           </React.Fragment>
         ))}
       </div>

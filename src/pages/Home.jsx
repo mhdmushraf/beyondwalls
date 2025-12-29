@@ -400,55 +400,55 @@ export default function Home() {
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="pt-28 pb-16 px-6 relative overflow-hidden">
+      <section className="pt-20 sm:pt-24 lg:pt-28 pb-12 sm:pb-16 px-4 sm:px-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-violet-50 via-white to-indigo-50" />
-        <div className="absolute top-10 right-10 w-[600px] h-[600px] bg-violet-200 rounded-full blur-3xl opacity-20" />
-        <div className="absolute bottom-10 left-10 w-[400px] h-[400px] bg-indigo-300 rounded-full blur-3xl opacity-20" />
+        <div className="absolute top-10 right-10 w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] bg-violet-200 rounded-full blur-3xl opacity-20" />
+        <div className="absolute bottom-10 left-10 w-[200px] sm:w-[400px] h-[200px] sm:h-[400px] bg-indigo-300 rounded-full blur-3xl opacity-20" />
         
         <div className="max-w-7xl mx-auto relative">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
             <div>
-              <Badge className="bg-gradient-to-r from-violet-100 to-indigo-100 text-violet-700 border-0 px-4 py-2 text-sm font-semibold mb-6">
+              <Badge className="bg-gradient-to-r from-violet-100 to-indigo-100 text-violet-700 border-0 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold mb-4 sm:mb-6">
                 🚀 UAE's #1 Self-Serve DOOH Platform
               </Badge>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight mb-6">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight mb-4 sm:mb-6">
                 Advertise on
                 <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent"> Digital Screens </span>
                 Across UAE
               </h1>
-              <p className="text-xl text-slate-600 mb-8 leading-relaxed">
+              <p className="text-base sm:text-lg lg:text-xl text-slate-600 mb-6 sm:mb-8 leading-relaxed">
                 Book ad space on screens in cafés, malls, gyms, and more. 
                 <span className="font-semibold text-slate-800"> Start from AED 99/week.</span> No contracts, instant activation.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                <Link to={createPageUrl("Register")}>
-                  <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 h-14 px-8 text-lg shadow-xl shadow-violet-500/25">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8">
+                <Link to={createPageUrl("Register")} className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg shadow-xl shadow-violet-500/25">
                     Start Advertising
-                    <ArrowRight className="w-5 h-5 ml-2" />
+                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
                   </Button>
                 </Link>
-                <Link to={createPageUrl("HowItWorks")}>
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto h-14 px-8 text-lg border-2">
-                    <Play className="w-5 h-5 mr-2" />
+                <Link to={createPageUrl("HowItWorks")} className="w-full sm:w-auto">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg border-2">
+                    <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                     Watch Demo
                   </Button>
                 </Link>
               </div>
 
-              <div className="flex items-center gap-4 text-sm text-slate-500">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 text-xs sm:text-sm text-slate-500">
                 <div className="flex -space-x-2">
-                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop" className="w-8 h-8 rounded-full border-2 border-white" alt="" />
-                  <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop" className="w-8 h-8 rounded-full border-2 border-white" alt="" />
-                  <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop" className="w-8 h-8 rounded-full border-2 border-white" alt="" />
-                  <div className="w-8 h-8 rounded-full border-2 border-white bg-violet-100 flex items-center justify-center text-xs font-bold text-violet-600">+99</div>
+                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop" className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-white" alt="" />
+                  <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop" className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-white" alt="" />
+                  <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop" className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-white" alt="" />
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-white bg-violet-100 flex items-center justify-center text-xs font-bold text-violet-600">+99</div>
                 </div>
                 <span>Trusted by <span className="font-semibold text-slate-700">100+ advertisers</span> in UAE</span>
               </div>
             </div>
 
             {/* Hero Image */}
-            <div className="relative">
+            <div className="relative hidden lg:block">
               <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-violet-500/20">
                 <img 
                   src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=600&fit=crop&q=80" 
@@ -501,21 +501,21 @@ export default function Home() {
           </div>
 
           {/* Stats */}
-          <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="mt-12 sm:mt-16 lg:mt-20 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
             {stats.map((stat, index) => (
               <div 
                 key={index}
-                className="bg-white rounded-2xl p-6 border border-slate-100 shadow-lg shadow-slate-200/50 hover:shadow-xl transition-all"
+                className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-100 shadow-lg shadow-slate-200/50 hover:shadow-xl transition-all"
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-violet-100 to-indigo-100 rounded-xl flex items-center justify-center">
-                    <stat.icon className="w-6 h-6 text-violet-600" />
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-violet-100 to-indigo-100 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                    <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 text-violet-600" />
                   </div>
-                  <div>
-                    <p className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
+                  <div className="min-w-0">
+                    <p className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
                       {stat.value}
                     </p>
-                    <p className="text-slate-600 text-sm">{stat.label}</p>
+                    <p className="text-slate-600 text-xs sm:text-sm truncate">{stat.label}</p>
                   </div>
                 </div>
               </div>
@@ -533,9 +533,9 @@ export default function Home() {
       <ARFeatureSection />
 
       {/* Cities Banner */}
-      <section className="py-6 bg-slate-900">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8">
+      <section className="py-4 sm:py-6 bg-slate-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-8">
             <span className="text-slate-400 text-sm font-medium">Available in:</span>
             {cities.map((city, i) => (
               <div key={i} className="flex items-center gap-2 text-white">
@@ -548,15 +548,15 @@ export default function Home() {
       </section>
 
       {/* What is BeyondWalls */}
-      <section className="py-20 px-6 bg-gradient-to-b from-slate-50 to-white">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 bg-gradient-to-b from-slate-50 to-white">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
             <div>
-              <Badge className="bg-violet-100 text-violet-700 border-0 mb-4">What is BeyondWalls?</Badge>
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
+              <Badge className="bg-violet-100 text-violet-700 border-0 mb-3 sm:mb-4">What is BeyondWalls?</Badge>
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-4 sm:mb-6">
                 The Airbnb of Outdoor Advertising
               </h2>
-              <p className="text-lg text-slate-600 mb-6 leading-relaxed">
+              <p className="text-base sm:text-lg text-slate-600 mb-4 sm:mb-6 leading-relaxed">
                 BeyondWalls is UAE's first <span className="font-semibold">self-serve marketplace</span> for Digital Out-of-Home (DOOH) advertising. 
                 We connect businesses who want to advertise with venues that have digital screens.
               </p>

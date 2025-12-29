@@ -237,22 +237,22 @@ export default function Services() {
       <PublicNav />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50 relative overflow-hidden">
-        <div className="absolute top-10 right-10 w-72 h-72 bg-violet-200 rounded-full blur-3xl opacity-30" />
-        <div className="absolute bottom-10 left-10 w-96 h-96 bg-indigo-200 rounded-full blur-3xl opacity-30" />
+      <section className="pt-20 sm:pt-24 lg:pt-32 pb-12 sm:pb-16 lg:pb-20 px-4 sm:px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50 relative overflow-hidden">
+        <div className="absolute top-10 right-10 w-48 h-48 sm:w-72 sm:h-72 bg-violet-200 rounded-full blur-3xl opacity-30" />
+        <div className="absolute bottom-10 left-10 w-64 h-64 sm:w-96 sm:h-96 bg-indigo-200 rounded-full blur-3xl opacity-30" />
         <div className="max-w-5xl mx-auto text-center relative">
-          <Badge className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-0 px-4 py-2 mb-6">
+          <Badge className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-0 px-3 sm:px-4 py-1.5 sm:py-2 mb-4 sm:mb-6 text-xs sm:text-sm">
             ✨ Complete DOOH Solutions
           </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold text-slate-900 mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-4 sm:mb-6">
             Powerful Tools for
             <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent"> Modern Advertising</span>
           </h1>
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8">
+          <p className="text-base sm:text-lg lg:text-xl text-slate-600 max-w-3xl mx-auto mb-6 sm:mb-8">
             From AI-powered campaign creation to real-time analytics, BeyondWalls provides everything 
             advertisers and venue owners need to succeed in digital out-of-home advertising.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4">
             <Link to={createPageUrl("Register")}>
               <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600 h-14 px-8">
                 <Megaphone className="w-5 h-5 mr-2" />
@@ -270,24 +270,24 @@ export default function Services() {
       </section>
 
       {/* Platform Stats */}
-      <section className="py-12 bg-slate-900">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+      <section className="py-8 sm:py-12 bg-slate-900">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             <div className="text-center">
-              <p className="text-3xl md:text-4xl font-bold text-white mb-1">9,000+</p>
-              <p className="text-slate-400">Daily Audience Reach</p>
+              <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-1">9,000+</p>
+              <p className="text-slate-400 text-xs sm:text-sm lg:text-base">Daily Audience Reach</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl md:text-4xl font-bold text-white mb-1">72%</p>
-              <p className="text-slate-400">Recall Rate</p>
+              <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-1">72%</p>
+              <p className="text-slate-400 text-xs sm:text-sm lg:text-base">Recall Rate</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl md:text-4xl font-bold text-white mb-1">144+</p>
-              <p className="text-slate-400">Plays Per Day</p>
+              <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-1">144+</p>
+              <p className="text-slate-400 text-xs sm:text-sm lg:text-base">Plays Per Day</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl md:text-4xl font-bold text-white mb-1">90%</p>
-              <p className="text-slate-400">Cost Savings vs OOH</p>
+              <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-1">90%</p>
+              <p className="text-slate-400 text-xs sm:text-sm lg:text-base">Cost Savings vs OOH</p>
             </div>
           </div>
         </div>

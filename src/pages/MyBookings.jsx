@@ -195,26 +195,26 @@ export default function MyBookings() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/20 to-violet-50/30">
       <div className="p-6 lg:p-8">
         {/* Header with Glassmorphism */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-white/60 backdrop-blur-xl p-6 rounded-2xl border border-white/20 shadow-2xl shadow-indigo-500/10">
+        <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8 bg-white/60 backdrop-blur-xl p-4 sm:p-6 rounded-2xl border border-white/20 shadow-2xl shadow-indigo-500/10">
           <div>
-            <h1 className="text-3xl lg:text-4xl font-black bg-gradient-to-r from-indigo-600 via-blue-600 to-violet-600 bg-clip-text text-transparent">My Ad Bookings 🎯</h1>
-            <p className="text-slate-600 mt-2 text-lg font-medium">Manage your advertising campaigns</p>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black bg-gradient-to-r from-indigo-600 via-blue-600 to-violet-600 bg-clip-text text-transparent">My Ad Bookings 🎯</h1>
+            <p className="text-slate-600 mt-1 sm:mt-2 text-sm sm:text-base lg:text-lg font-medium">Manage your advertising campaigns</p>
           </div>
-          <Link to={createPageUrl("BookSlot")}>
-            <Button className="bg-gradient-to-r from-indigo-600 via-blue-600 to-violet-600 hover:from-indigo-700 hover:via-blue-700 hover:to-violet-700 shadow-2xl shadow-indigo-500/30 transform hover:scale-105 transition-all duration-200 px-6 py-6">
-              <Plus className="w-5 h-5 mr-2" />
+          <Link to={createPageUrl("BookSlot")} className="w-full sm:w-auto">
+            <Button className="w-full sm:w-auto bg-gradient-to-r from-indigo-600 via-blue-600 to-violet-600 hover:from-indigo-700 hover:via-blue-700 hover:to-violet-700 shadow-2xl shadow-indigo-500/30 transform hover:scale-105 transition-all duration-200 px-6 py-5 sm:py-6 text-sm sm:text-base">
+              <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
               Book New Slot
             </Button>
           </Link>
         </div>
 
       {/* Search */}
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input 
             placeholder="Search campaigns..." 
-            className="pl-10"
+            className="pl-10 text-sm sm:text-base"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -222,10 +222,10 @@ export default function MyBookings() {
       </div>
 
         <Tabs defaultValue="active">
-          <TabsList className="bg-white/80 backdrop-blur-xl border border-white/20 shadow-xl p-1">
-            <TabsTrigger value="active" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-600 data-[state=active]:to-teal-600 data-[state=active]:text-white">Active ({activeBookings.length})</TabsTrigger>
-            <TabsTrigger value="pending" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-600 data-[state=active]:to-orange-600 data-[state=active]:text-white">Pending ({pendingBookings.length})</TabsTrigger>
-            <TabsTrigger value="completed" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-slate-600 data-[state=active]:to-slate-700 data-[state=active]:text-white">Completed ({completedBookings.length})</TabsTrigger>
+          <TabsList className="bg-white/80 backdrop-blur-xl border border-white/20 shadow-xl p-1 w-full sm:w-auto">
+            <TabsTrigger value="active" className="text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-600 data-[state=active]:to-teal-600 data-[state=active]:text-white">Active ({activeBookings.length})</TabsTrigger>
+            <TabsTrigger value="pending" className="text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-600 data-[state=active]:to-orange-600 data-[state=active]:text-white">Pending ({pendingBookings.length})</TabsTrigger>
+            <TabsTrigger value="completed" className="text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-slate-600 data-[state=active]:to-slate-700 data-[state=active]:text-white">Completed ({completedBookings.length})</TabsTrigger>
           </TabsList>
 
         <TabsContent value="active" className="mt-6">

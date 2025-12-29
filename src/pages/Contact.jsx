@@ -164,26 +164,26 @@ export default function Contact() {
       <PublicNav />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50 relative overflow-hidden">
-        <div className="absolute top-20 right-20 w-72 h-72 bg-violet-200 rounded-full blur-3xl opacity-30" />
-        <div className="absolute bottom-20 left-20 w-64 h-64 bg-indigo-200 rounded-full blur-3xl opacity-30" />
+      <section className="pt-20 sm:pt-24 lg:pt-32 pb-12 sm:pb-16 lg:pb-20 px-4 sm:px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50 relative overflow-hidden">
+        <div className="absolute top-20 right-20 w-48 h-48 sm:w-72 sm:h-72 bg-violet-200 rounded-full blur-3xl opacity-30" />
+        <div className="absolute bottom-20 left-20 w-48 h-48 sm:w-64 sm:h-64 bg-indigo-200 rounded-full blur-3xl opacity-30" />
         <div className="max-w-4xl mx-auto text-center relative">
-          <Badge className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-0 px-4 py-2 mb-6">
+          <Badge className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-0 px-3 sm:px-4 py-1.5 sm:py-2 mb-4 sm:mb-6 text-xs sm:text-sm">
             Let's Connect
           </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 mb-4 sm:mb-6">
             We'd Love to Hear From You
           </h1>
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg lg:text-xl text-slate-600 max-w-2xl mx-auto">
             Whether you're an advertiser, venue owner, or investor - our team is ready to help you succeed.
           </p>
         </div>
       </section>
 
       {/* Contact Cards */}
-      <section className="py-8 px-6 -mt-12 relative z-10">
+      <section className="py-6 sm:py-8 px-4 sm:px-6 -mt-8 sm:-mt-12 relative z-10">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
             <div className="bg-white rounded-2xl p-6 shadow-xl text-center">
               <div className="w-14 h-14 bg-violet-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Megaphone className="w-7 h-7 text-violet-600" />
@@ -219,9 +219,9 @@ export default function Contact() {
       </section>
 
       {/* Contact Form & Info */}
-      <section className="py-20 px-6">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-3 gap-12">
+          <div className="grid lg:grid-cols-3 gap-8 sm:gap-12">
             {/* Contact Info */}
             <div className="space-y-6">
               <div>

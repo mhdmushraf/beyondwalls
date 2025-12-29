@@ -155,19 +155,19 @@ export default function About() {
       <PublicNav />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50 relative overflow-hidden">
-        <div className="absolute top-20 right-20 w-72 h-72 bg-violet-200 rounded-full blur-3xl opacity-30" />
-        <div className="absolute bottom-20 left-20 w-96 h-96 bg-indigo-200 rounded-full blur-3xl opacity-30" />
+      <section className="pt-20 sm:pt-24 lg:pt-32 pb-12 sm:pb-16 lg:pb-20 px-4 sm:px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50 relative overflow-hidden">
+        <div className="absolute top-20 right-20 w-48 h-48 sm:w-72 sm:h-72 bg-violet-200 rounded-full blur-3xl opacity-30" />
+        <div className="absolute bottom-20 left-20 w-64 h-64 sm:w-96 sm:h-96 bg-indigo-200 rounded-full blur-3xl opacity-30" />
         <div className="max-w-5xl mx-auto text-center relative">
-          <Badge className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-0 px-4 py-2 mb-6">
+          <Badge className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-0 px-3 sm:px-4 py-1.5 sm:py-2 mb-4 sm:mb-6 text-xs sm:text-sm">
             🚀 Disrupting a $45B Global Market
           </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold text-slate-900 mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-4 sm:mb-6">
             The Future of
             <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent"> Digital Advertising </span>
             is Here
           </h1>
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8">
+          <p className="text-base sm:text-lg lg:text-xl text-slate-600 max-w-3xl mx-auto mb-6 sm:mb-8">
             BeyondWalls is UAE's first self-serve marketplace for Digital Out-of-Home (DOOH) advertising. 
             We're democratizing access to premium screen advertising while creating passive income streams for venues.
           </p>
