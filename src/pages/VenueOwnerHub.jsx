@@ -124,15 +124,15 @@ export default function VenueOwnerHub() {
     <div className="min-h-screen bg-slate-50">
       <div className="p-4 lg:p-8">
         {/* Header */}
-        <div className="mb-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="mb-4 sm:mb-6">
+          <div className="flex flex-col gap-3 sm:gap-4">
             <div>
-              <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900">
                 Venue Owner Hub
               </h1>
-              <p className="text-slate-600 mt-1">Manage your venues, screens, and earnings</p>
+              <p className="text-slate-600 mt-1 text-sm sm:text-base">Manage your venues, screens, and earnings</p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Link to={createPageUrl("AddVenue")}>
                 <Button variant="outline" size="sm">
                   <Plus className="w-4 h-4 mr-2" />
@@ -150,58 +150,58 @@ export default function VenueOwnerHub() {
         </div>
 
         {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
-                  <Wallet className="w-6 h-6 text-emerald-600" />
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                  <Wallet className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />
                 </div>
-                <div>
-                  <p className="text-sm text-slate-600">Total Earnings</p>
-                  <p className="text-2xl font-bold text-slate-900">AED {totalEarnings.toLocaleString()}</p>
+                <div className="min-w-0">
+                  <p className="text-xs sm:text-sm text-slate-600">Total Earnings</p>
+                  <p className="text-lg sm:text-2xl font-bold text-slate-900 truncate">AED {totalEarnings.toLocaleString()}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-violet-100 flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-violet-600" />
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-violet-100 flex items-center justify-center flex-shrink-0">
+                  <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-violet-600" />
                 </div>
-                <div>
-                  <p className="text-sm text-slate-600">This Month</p>
-                  <p className="text-2xl font-bold text-slate-900">AED {thisMonthEarnings.toLocaleString()}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-                  <Package className="w-6 h-6 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-slate-600">Active Ads</p>
-                  <p className="text-2xl font-bold text-slate-900">{activeAdsCount}</p>
+                <div className="min-w-0">
+                  <p className="text-xs sm:text-sm text-slate-600">This Month</p>
+                  <p className="text-lg sm:text-2xl font-bold text-slate-900 truncate">AED {thisMonthEarnings.toLocaleString()}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
-                  <DollarSign className="w-6 h-6 text-amber-600" />
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+                  <Package className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                 </div>
-                <div>
-                  <p className="text-sm text-slate-600">Est. Monthly</p>
-                  <p className="text-2xl font-bold text-slate-900">AED {totalMonthlyPotential.toLocaleString()}</p>
+                <div className="min-w-0">
+                  <p className="text-xs sm:text-sm text-slate-600">Active Ads</p>
+                  <p className="text-lg sm:text-2xl font-bold text-slate-900">{activeAdsCount}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+                  <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs sm:text-sm text-slate-600">Est. Monthly</p>
+                  <p className="text-lg sm:text-2xl font-bold text-slate-900 truncate">AED {totalMonthlyPotential.toLocaleString()}</p>
                 </div>
               </div>
             </CardContent>
@@ -296,7 +296,7 @@ export default function VenueOwnerHub() {
             </div>
 
             {/* Quick Actions */}
-            <div className="grid md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
               <Card className="hover:shadow-md transition-all cursor-pointer group hover:border-emerald-200" onClick={() => navigate(createPageUrl("MyVenues"))}>
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-3">

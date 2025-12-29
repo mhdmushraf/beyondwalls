@@ -128,33 +128,33 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/20 to-indigo-50/30">
       <div className="p-6 lg:p-8">
         {/* Header with Glassmorphism */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-white/60 backdrop-blur-xl p-6 rounded-2xl border border-white/20 shadow-2xl shadow-violet-500/10">
+        <div className="flex flex-col gap-4 mb-6 sm:mb-8 bg-white/60 backdrop-blur-xl p-4 sm:p-6 rounded-2xl border border-white/20 shadow-2xl shadow-violet-500/10">
           <div>
-            <h1 className="text-3xl lg:text-4xl font-black bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
               Welcome back, {user.full_name?.split(" ")[0]}! ✨
             </h1>
-            <p className="text-slate-600 mt-2 text-lg font-medium">
+            <p className="text-slate-600 mt-1 sm:mt-2 text-sm sm:text-base lg:text-lg font-medium">
               Manage your screens and advertising campaigns
             </p>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2 sm:gap-3">
             {user.is_venue_owner && (
               <Link to={createPageUrl("AddScreen")}>
-                <Button variant="outline" className="border-violet-200 hover:bg-violet-50 hover:border-violet-300 transition-all duration-200 shadow-lg">
-                  <MonitorPlay className="w-4 h-4 mr-2" />
+                <Button variant="outline" size="sm" className="border-violet-200 hover:bg-violet-50 hover:border-violet-300 transition-all duration-200 shadow-lg text-xs sm:text-sm">
+                  <MonitorPlay className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   Add Screen
                 </Button>
               </Link>
             )}
             <Link to={createPageUrl("BookSlot")}>
-              <Button variant="outline" className="border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 transition-all duration-200 shadow-lg">
-                <Plus className="w-4 h-4 mr-2" />
+              <Button variant="outline" size="sm" className="border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 transition-all duration-200 shadow-lg text-xs sm:text-sm">
+                <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 Book Ad
               </Button>
             </Link>
             <Link to={createPageUrl("AICampaignCreator")}>
-              <Button className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-700 hover:via-purple-700 hover:to-indigo-700 shadow-2xl shadow-violet-500/30 transform hover:scale-105 transition-all duration-200 text-lg px-6 py-6">
-                <Sparkles className="w-5 h-5 mr-2" />
+              <Button className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-700 hover:via-purple-700 hover:to-indigo-700 shadow-2xl shadow-violet-500/30 transform hover:scale-105 transition-all duration-200 text-sm sm:text-base lg:text-lg px-4 sm:px-6 py-5 sm:py-6">
+                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                 AI Campaign
               </Button>
             </Link>
@@ -162,35 +162,35 @@ export default function Dashboard() {
         </div>
 
         {/* Wallet Card - Enhanced */}
-        <Card className="mb-8 relative bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-600 text-white border-0 overflow-hidden shadow-2xl shadow-violet-500/30">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
-          <CardContent className="p-8 relative">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <Card className="mb-6 sm:mb-8 relative bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-600 text-white border-0 overflow-hidden shadow-2xl shadow-violet-500/30">
+          <div className="absolute top-0 right-0 w-48 h-48 sm:w-64 sm:h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-32 h-32 sm:w-48 sm:h-48 bg-white/5 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
+          <CardContent className="p-4 sm:p-6 lg:p-8 relative">
+            <div className="flex flex-col gap-4 sm:gap-6">
               <div>
-                <p className="text-white/90 text-sm mb-2 font-semibold tracking-wide">Wallet Balance</p>
-                <p className="text-5xl lg:text-6xl font-black tracking-tight">AED {calculatedBalance.toLocaleString()}</p>
-                <div className="flex gap-8 mt-6">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                <p className="text-white/90 text-xs sm:text-sm mb-1 sm:mb-2 font-semibold tracking-wide">Wallet Balance</p>
+                <p className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black tracking-tight">AED {calculatedBalance.toLocaleString()}</p>
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-8 mt-4 sm:mt-6">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 sm:p-4">
                     <p className="text-white/80 text-xs mb-1 font-medium">Total Earnings</p>
-                    <p className="text-xl font-bold flex items-center gap-2">
-                      <ArrowDownRight className="w-5 h-5 text-emerald-300" />
+                    <p className="text-base sm:text-lg lg:text-xl font-bold flex items-center gap-2">
+                      <ArrowDownRight className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-300" />
                       AED {totalEarnings.toLocaleString()}
                     </p>
                   </div>
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 sm:p-4">
                     <p className="text-white/80 text-xs mb-1 font-medium">Total Spent</p>
-                    <p className="text-xl font-bold flex items-center gap-2">
-                      <ArrowUpRight className="w-5 h-5 text-rose-300" />
+                    <p className="text-base sm:text-lg lg:text-xl font-bold flex items-center gap-2">
+                      <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5 text-rose-300" />
                       AED {totalSpent.toLocaleString()}
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="flex gap-3">
-                <Link to={createPageUrl("Wallet")}>
-                  <Button className="bg-white text-violet-600 hover:bg-white/95 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 font-semibold py-6 px-8 text-lg">
-                    <Wallet className="w-5 h-5 mr-2" />
+              <div className="flex gap-2 sm:gap-3">
+                <Link to={createPageUrl("Wallet")} className="flex-1 sm:flex-none">
+                  <Button className="w-full sm:w-auto bg-white text-violet-600 hover:bg-white/95 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 font-semibold py-5 sm:py-6 px-6 sm:px-8 text-sm sm:text-base lg:text-lg">
+                    <Wallet className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                     Manage Wallet
                   </Button>
                 </Link>
@@ -242,44 +242,44 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions - Innovative Features */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <Link to={createPageUrl("CampaignBundles")}>
-            <div className="group relative p-6 bg-white/80 backdrop-blur-xl rounded-2xl border border-emerald-200 hover:shadow-2xl hover:shadow-emerald-500/20 transition-all duration-300 cursor-pointer">
+            <div className="group relative p-4 sm:p-6 bg-white/80 backdrop-blur-xl rounded-2xl border border-emerald-200 hover:shadow-2xl hover:shadow-emerald-500/20 transition-all duration-300 cursor-pointer">
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
-              <Package className="w-8 h-8 text-emerald-600 mb-3" />
-              <p className="font-bold text-slate-900">Campaign Bundles</p>
+              <Package className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-600 mb-2 sm:mb-3" />
+              <p className="font-bold text-slate-900 text-sm sm:text-base">Campaign Bundles</p>
               <p className="text-xs text-slate-600 mt-1">Save 20-30%</p>
             </div>
           </Link>
           <Link to={createPageUrl("LocalBusinessBooking")}>
-            <div className="group relative p-6 bg-white/80 backdrop-blur-xl rounded-2xl border border-amber-200 hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300 cursor-pointer">
+            <div className="group relative p-4 sm:p-6 bg-white/80 backdrop-blur-xl rounded-2xl border border-amber-200 hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300 cursor-pointer">
               <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 to-orange-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
-              <Building2 className="w-8 h-8 text-amber-600 mb-3" />
-              <p className="font-bold text-slate-900">Local Business</p>
+              <Building2 className="w-6 h-6 sm:w-8 sm:h-8 text-amber-600 mb-2 sm:mb-3" />
+              <p className="font-bold text-slate-900 text-sm sm:text-base">Local Business</p>
               <p className="text-xs text-slate-600 mt-1">50% OFF</p>
             </div>
           </Link>
           <Link to={createPageUrl("BookSlot")}>
-            <div className="group relative p-6 bg-white/80 backdrop-blur-xl rounded-2xl border border-pink-200 hover:shadow-2xl hover:shadow-pink-500/20 transition-all duration-300 cursor-pointer">
+            <div className="group relative p-4 sm:p-6 bg-white/80 backdrop-blur-xl rounded-2xl border border-pink-200 hover:shadow-2xl hover:shadow-pink-500/20 transition-all duration-300 cursor-pointer">
               <div className="absolute inset-0 bg-gradient-to-r from-pink-500/5 to-rose-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
-              <Gamepad2 className="w-8 h-8 text-pink-600 mb-3" />
-              <p className="font-bold text-slate-900">Scan & Win</p>
+              <Gamepad2 className="w-6 h-6 sm:w-8 sm:h-8 text-pink-600 mb-2 sm:mb-3" />
+              <p className="font-bold text-slate-900 text-sm sm:text-base">Scan & Win</p>
               <p className="text-xs text-slate-600 mt-1">3x Engagement</p>
             </div>
           </Link>
           <Link to={createPageUrl("SustainabilityReport")}>
-            <div className="group relative p-6 bg-white/80 backdrop-blur-xl rounded-2xl border border-green-200 hover:shadow-2xl hover:shadow-green-500/20 transition-all duration-300 cursor-pointer">
+            <div className="group relative p-4 sm:p-6 bg-white/80 backdrop-blur-xl rounded-2xl border border-green-200 hover:shadow-2xl hover:shadow-green-500/20 transition-all duration-300 cursor-pointer">
               <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-emerald-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
-              <Leaf className="w-8 h-8 text-green-600 mb-3" />
-              <p className="font-bold text-slate-900">Sustainability</p>
+              <Leaf className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 mb-2 sm:mb-3" />
+              <p className="font-bold text-slate-900 text-sm sm:text-base">Sustainability</p>
               <p className="text-xs text-slate-600 mt-1">Track Impact</p>
             </div>
           </Link>
           <Link to={createPageUrl("AnalyticsDashboard")}>
-            <div className="group relative p-6 bg-white/80 backdrop-blur-xl rounded-2xl border border-violet-200 hover:shadow-2xl hover:shadow-violet-500/20 transition-all duration-300 cursor-pointer">
+            <div className="group relative p-4 sm:p-6 bg-white/80 backdrop-blur-xl rounded-2xl border border-violet-200 hover:shadow-2xl hover:shadow-violet-500/20 transition-all duration-300 cursor-pointer">
               <div className="absolute inset-0 bg-gradient-to-r from-violet-500/5 to-purple-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
-              <TrendingUp className="w-8 h-8 text-violet-600 mb-3" />
-              <p className="font-bold text-slate-900">Analytics</p>
+              <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-violet-600 mb-2 sm:mb-3" />
+              <p className="font-bold text-slate-900 text-sm sm:text-base">Analytics</p>
               <p className="text-xs text-slate-600 mt-1">Performance</p>
             </div>
           </Link>
