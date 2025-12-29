@@ -119,14 +119,14 @@ export default function AdvertiserHub() {
   }
 
   return (
-    <div className="p-6 lg:p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Advertiser Hub</h1>
-          <p className="text-slate-500">Manage campaigns, budgets, and track performance</p>
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900">Advertiser Hub</h1>
+          <p className="text-slate-500 text-sm sm:text-base">Manage campaigns, budgets, and track performance</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-2 sm:gap-3">
           <Link to={createPageUrl("BookSlot")}>
             <Button variant="outline">
               <Plus className="w-4 h-4 mr-2" />
@@ -143,7 +143,7 @@ export default function AdvertiserHub() {
       </div>
 
       {/* Performance Overview */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-8">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2 text-slate-500 mb-1">

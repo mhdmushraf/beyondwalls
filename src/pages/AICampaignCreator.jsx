@@ -480,41 +480,42 @@ Generate the following recommendations:
   };
 
   return (
-    <div className="p-6 lg:p-8 max-w-5xl mx-auto">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-8">
-        <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+      <div className="flex items-start gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="flex-shrink-0">
           <ArrowLeft className="w-5 h-5" />
         </Button>
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">AI Campaign Creator</h1>
-            <Badge className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white">
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900">AI Campaign Creator</h1>
+            <Badge className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white w-fit">
               <Sparkles className="w-3 h-3 mr-1" />
               AI Powered
             </Badge>
           </div>
-          <p className="text-slate-500">Let AI help you create the perfect campaign in minutes</p>
+          <p className="text-slate-500 text-sm sm:text-base">Let AI help you create the perfect campaign in minutes</p>
         </div>
       </div>
 
       {/* Progress */}
-      <div className="mb-8">
-        <div className="flex items-center gap-4 mb-2">
-          <span className="text-sm font-medium text-slate-600">Step {step} of 4</span>
-          <Progress value={(step / 4) * 100} className="flex-1 h-2" />
+      <div className="mb-6 sm:mb-8">
+        <div className="flex items-center gap-3 sm:gap-4 mb-2">
+          <span className="text-xs sm:text-sm font-medium text-slate-600">Step {step} of 4</span>
+          <Progress value={(step / 4) * 100} className="flex-1 h-1.5 sm:h-2" />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-1 sm:gap-2">
           {["Goals & Budget", "Targeting", "AI Recommendations", "Creative & Launch"].map((label, i) => (
             <div
               key={i}
-              className={`flex-1 text-center text-xs py-1 rounded ${
+              className={`flex-1 text-center text-[10px] sm:text-xs py-1 px-1 rounded ${
                 step > i + 1 ? "bg-violet-100 text-violet-700" :
                 step === i + 1 ? "bg-violet-600 text-white" :
                 "bg-slate-100 text-slate-500"
               }`}
             >
-              {label}
+              <span className="hidden sm:inline">{label}</span>
+              <span className="sm:hidden">{i + 1}</span>
             </div>
           ))}
         </div>

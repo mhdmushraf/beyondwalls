@@ -244,15 +244,15 @@ export default function AdminUsers() {
   };
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+      <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">User Management</h1>
-          <p className="text-slate-500 mt-1">View and manage platform users</p>
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900">User Management</h1>
+          <p className="text-slate-500 mt-1 text-sm sm:text-base">View and manage platform users</p>
         </div>
         <Button 
           onClick={() => handleOpenAdminDialog(null)}
-          className="bg-gradient-to-r from-violet-600 to-indigo-600"
+          className="w-full sm:w-auto bg-gradient-to-r from-violet-600 to-indigo-600"
         >
           <UserPlus className="w-4 h-4 mr-2" />
           Create Admin

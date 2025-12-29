@@ -236,17 +236,17 @@ export default function AnalyticsDashboard() {
   }
 
   return (
-    <div className="p-6 lg:p-8 space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 flex items-center gap-3">
-            <BarChart3 className="w-8 h-8 text-violet-600" />
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 flex items-center gap-2 sm:gap-3">
+            <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 text-violet-600" />
             Analytics Dashboard
           </h1>
-          <p className="text-slate-500">Comprehensive campaign performance insights</p>
+          <p className="text-slate-500 text-sm sm:text-base">Comprehensive campaign performance insights</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
           <Select value={dateRange} onValueChange={setDateRange}>
             <SelectTrigger className="w-40">
               <Calendar className="w-4 h-4 mr-2" />
@@ -271,7 +271,7 @@ export default function AnalyticsDashboard() {
       </div>
 
       {/* Key Metrics Grid - DOOH Specific with Explainers */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
         <Card className="bg-gradient-to-br from-violet-500 to-violet-600 text-white border-0">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
@@ -358,7 +358,7 @@ export default function AnalyticsDashboard() {
       </div>
 
       {/* Secondary Metrics - DOOH Specific with Help */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
         <Card>
           <CardContent className="p-4 text-center">
             <MetricExplainer metric="frequency">

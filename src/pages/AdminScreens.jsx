@@ -251,14 +251,14 @@ export default function AdminScreens() {
   const pendingCount = screens.filter(s => s.status === "pending_approval").length;
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Screen Management</h1>
-        <p className="text-slate-500 mt-1">Monitor and manage all screens on the network</p>
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900">Screen Management</h1>
+        <p className="text-slate-500 mt-1 text-sm sm:text-base">Monitor and manage all screens on the network</p>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
         <Card className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
