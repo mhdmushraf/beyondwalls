@@ -79,8 +79,11 @@ export default function MunicipalApproval() {
       }
       const userData = await base44.auth.me();
       
-      // Security: Only municipal inspectors can access
-      if (userData?.user_role !== "municipal_inspector") {
+      // Security: Only municipal inspectors and admins can access
+      const isAdmin = userData?.user_role === "admin" || userData?.role === "admin";
+      const isMunicipalInspector = userData?.user_role === "municipal_inspector";
+      
+      if (!isAdmin && !isMunicipalInspector) {
         window.location.href = createPageUrl("Dashboard");
         return;
       }
