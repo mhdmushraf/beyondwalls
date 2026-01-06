@@ -25,7 +25,8 @@ import {
   BarChart3,
   Zap,
   Package,
-  Leaf
+  Leaf,
+  FileText
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -70,8 +71,14 @@ export default function Layout({ children, currentPageName }) {
   const getNavItems = () => {
     const userRole = user?.user_role;
     const isAdmin = userRole === "admin" || user?.role === "admin";
+    const isMunicipalInspector = userRole === "municipal_inspector";
 
-    if (isAdmin) {
+    if (isMunicipalInspector) {
+      return [
+        { name: "Approval Queue", icon: Shield, page: "MunicipalApproval" },
+        { name: "Reports & Audit", icon: FileText, page: "MunicipalReports" }
+      ];
+    } else if (isAdmin) {
                 const permissions = user?.admin_permissions || ["all"];
                 const hasPermission = (perm) => permissions.includes("all") || permissions.includes(perm);
 
@@ -128,9 +135,10 @@ export default function Layout({ children, currentPageName }) {
       return items;
     }
   };
+// Add import for FileText icon if not present
 
-  // Public pages without sidebar - no auth required
-  const publicPages = [
+// Public pages without sidebar - no auth required
+const publicPages = [
         "Home", "Login", "Register", "CompleteProfile", "ScreenPlayer", 
         "About", "Services", "Contact", "ScreenLocations", "Blog", 
         "HelpCenter", "Terms", "Privacy", "HowItWorks", "PendingApproval", 
