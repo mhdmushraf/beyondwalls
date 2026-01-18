@@ -110,11 +110,11 @@ import VenueAdvertisingUAE from './pages/VenueAdvertisingUAE';
 import VenueContentBuilder from './pages/VenueContentBuilder';
 import VenueDashboard from './pages/VenueDashboard';
 import VenueEarnings from './pages/VenueEarnings';
+import VenueOnboarding from './pages/VenueOnboarding';
 import VenueOwnerAnalytics from './pages/VenueOwnerAnalytics';
 import VenueOwnerBookingManager from './pages/VenueOwnerBookingManager';
 import VenueOwnerHub from './pages/VenueOwnerHub';
 import Wallet from './pages/Wallet';
-import VenueOnboarding from './pages/VenueOnboarding';
 import __Layout from './Layout.jsx';
 
 
@@ -231,11 +231,11 @@ export const PAGES = {
     "VenueContentBuilder": VenueContentBuilder,
     "VenueDashboard": VenueDashboard,
     "VenueEarnings": VenueEarnings,
+    "VenueOnboarding": VenueOnboarding,
     "VenueOwnerAnalytics": VenueOwnerAnalytics,
     "VenueOwnerBookingManager": VenueOwnerBookingManager,
     "VenueOwnerHub": VenueOwnerHub,
     "Wallet": Wallet,
-    "VenueOnboarding": VenueOnboarding,
 }
 
 export const pagesConfig = {

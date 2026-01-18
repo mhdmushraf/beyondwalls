@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { Download, Loader2, RefreshCw, MonitorPlay, Sparkles, FileText, CreditCard, Mail, Phone, Globe, MapPin, FileImage } from "lucide-react";
+import { Download, Loader2, RefreshCw, MonitorPlay, Sparkles, FileText, CreditCard, Mail, Phone, Globe, MapPin, FileImage, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -855,8 +855,8 @@ export default function LogoGenerator() {
                     <div className="mb-3">
                       <h3 className="text-2xl font-bold mb-0 bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
                         BeyondWalls
-                      </h3>
-                      <p className="text-xs text-slate-500 mt-1 font-medium">A Linkzone Global FZ Company</p>
+                        </h3>
+                        <p className="text-xs text-slate-500 mt-1 font-medium">A Linkzone Global FZ-LLC Company</p>
                     </div>
                     
                     {/* Contact Information with improved styling */}
@@ -930,6 +930,55 @@ export default function LogoGenerator() {
                   <li>Click "Save Changes" at the bottom</li>
                 </ol>
               </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Brochure Section */}
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-violet-600" />
+              BeyondWalls Brochure
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {/* Side Selector */}
+              <Tabs defaultValue="front">
+                <TabsList className="grid w-full grid-cols-2 mb-6">
+                  <TabsTrigger value="front">Front Side</TabsTrigger>
+                  <TabsTrigger value="back">Back Side</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="front">
+                  <BrochureFrontPreview />
+                  <div className="flex justify-center mt-6">
+                    <Button 
+                      onClick={() => downloadBrochure('front')}
+                      className="bg-gradient-to-r from-violet-600 to-indigo-600"
+                      size="lg"
+                    >
+                      <Download className="w-5 h-5 mr-2" />
+                      Download Front Side (PNG)
+                    </Button>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="back">
+                  <BrochureBackPreview />
+                  <div className="flex justify-center mt-6">
+                    <Button 
+                      onClick={() => downloadBrochure('back')}
+                      className="bg-gradient-to-r from-violet-600 to-indigo-600"
+                      size="lg"
+                    >
+                      <Download className="w-5 h-5 mr-2" />
+                      Download Back Side (PNG)
+                    </Button>
+                  </div>
+                </TabsContent>
+              </Tabs>
             </div>
           </CardContent>
         </Card>
@@ -1272,10 +1321,15 @@ export default function LogoGenerator() {
       ctx.fillStyle = '#ffffff';
       ctx.fillText('BeyondWalls', 125, 75);
       
-      // Tagline
+      // Tagline  
       ctx.font = '14px system-ui, -apple-system, sans-serif';
       ctx.fillStyle = 'rgba(255,255,255,0.7)';
       ctx.fillText('Digital Out-of-Home Advertising', 125, 98);
+      
+      // Parent company
+      ctx.font = '11px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.fillText('A Linkzone Global FZ-LLC Company', 125, 118);
       
       // Divider line
       const lineGradient = ctx.createLinearGradient(40, 0, 760, 0);
@@ -1414,6 +1468,7 @@ function BusinessCardCreative({ cardData, cardType, onEdit, onDownload }) {
                 <span className="font-bold text-2xl text-white">
                   BeyondWalls
                 </span>
+                <p className="text-xs text-white/50">A Linkzone Global FZ-LLC Company</p>
                 <p className="text-sm text-white/60">Digital Out-of-Home Advertising</p>
               </div>
             </div>
