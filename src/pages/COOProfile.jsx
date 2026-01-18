@@ -50,81 +50,150 @@ export default function COOProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-slate-100">
+    <div className="min-h-screen bg-white relative overflow-hidden">
+      {/* Decorative Blobs - Different from CEO */}
+      <div className="absolute top-0 right-0 w-[550px] h-[550px] bg-gradient-to-bl from-indigo-400 to-indigo-500 rounded-[30%_70%_70%_30%/30%_50%_50%_70%] opacity-90 translate-x-1/3 -translate-y-1/4" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-violet-400 to-violet-500 rounded-[70%_30%_30%_70%/60%_40%_60%_40%] opacity-90 -translate-x-1/3 translate-y-1/4" />
+      <div className="absolute top-1/3 left-20 w-[250px] h-[250px] bg-gradient-to-br from-purple-400 to-purple-500 rounded-[40%_60%_60%_40%/50%_50%_50%_50%] opacity-70" />
+      
       <PublicNav />
       
-      {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40" />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3" />
-        
-        <div className="relative max-w-6xl mx-auto px-4 py-16">
-          <div className="flex flex-col md:flex-row items-center gap-8">
-            {/* Profile Image */}
-            <div className="relative group">
-              <div className="absolute inset-0 bg-white/30 rounded-3xl blur-xl group-hover:blur-2xl transition-all" />
-              <div className="relative w-40 h-40 bg-white rounded-3xl flex items-center justify-center shadow-2xl ring-4 ring-white/50">
-                <MonitorPlay className="w-20 h-20 text-indigo-600" />
-              </div>
-            </div>
-          
-            {/* Name and Info */}
-            <div className="flex-1 text-white">
-              {isEditing ? (
-                <div className="space-y-3 bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20">
-                  <div>
-                    <Label className="text-white/90">Full Name</Label>
-                    <Input
-                      value={editData.name}
-                      onChange={(e) => setEditData({...editData, name: e.target.value})}
-                      className="mt-1 bg-white/20 border-white/30 text-white placeholder:text-white/50"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-white/90">Title</Label>
-                    <Input
-                      value={editData.title}
-                      onChange={(e) => setEditData({...editData, title: e.target.value})}
-                      className="mt-1 bg-white/20 border-white/30 text-white placeholder:text-white/50"
-                    />
+      {/* Main Content */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 py-20">
+        <div className="grid lg:grid-cols-2 gap-16 items-center min-h-[80vh]">
+          {/* Left - Image Section */}
+          <div className="relative flex items-center justify-center">
+            <div className="absolute w-[400px] h-[400px] bg-gradient-to-br from-indigo-600 to-violet-600 rounded-full opacity-20 blur-3xl" />
+            <div className="relative">
+              {/* Profile Card */}
+              <div className="w-[450px] h-[550px] bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100">
+                <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-white p-12">
+                  <div className="text-center">
+                    <div className="w-64 h-64 mx-auto bg-gradient-to-br from-indigo-600 to-violet-600 rounded-full flex items-center justify-center shadow-xl mb-6">
+                      <MonitorPlay className="w-32 h-32 text-white" />
+                    </div>
+                    <div className="w-48 h-48 mx-auto bg-gradient-to-br from-violet-600 to-indigo-600 rounded-full opacity-60 absolute bottom-12 left-1/2 -translate-x-1/2" />
                   </div>
                 </div>
-              ) : (
-                <>
-                  <h1 className="text-5xl md:text-6xl font-bold mb-3 drop-shadow-lg">{profileData.name}</h1>
-                  <div className="inline-block px-5 py-2 bg-white/20 backdrop-blur-md rounded-full border border-white/30 mb-4">
-                    <p className="text-xl font-semibold">{profileData.title}</p>
-                  </div>
-                  <div className="flex items-center gap-3 text-white/90">
-                    <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/30">
-                      <MonitorPlay className="w-6 h-6" />
+              </div>
+              
+              {/* Decorative Elements */}
+              <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-indigo-600 rounded-2xl -z-10" />
+              <div className="absolute -top-8 -left-8 w-24 h-24 bg-violet-600 rounded-full -z-10" />
+            </div>
+          </div>
+          
+          {/* Right - Content Section */}
+          <div className="space-y-8">
+            {isEditing ? (
+              <div className="space-y-4 bg-white p-6 rounded-2xl shadow-lg border border-slate-200">
+                <div>
+                  <Label>Full Name</Label>
+                  <Input
+                    value={editData.name}
+                    onChange={(e) => setEditData({...editData, name: e.target.value})}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label>Title</Label>
+                  <Input
+                    value={editData.title}
+                    onChange={(e) => setEditData({...editData, title: e.target.value})}
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+            ) : (
+              <>
+                <div>
+                  <h1 className="text-5xl lg:text-7xl font-bold text-slate-900 mb-4 leading-tight">
+                    Hello, I'm <span className="text-indigo-600">{profileData.name.split(' ')[0]}</span>
+                  </h1>
+                  <h2 className="text-3xl lg:text-4xl font-light text-slate-700 mb-6">{profileData.title}</h2>
+                  
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center">
+                      <MonitorPlay className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <p className="font-bold text-lg">BeyondWalls</p>
-                      <p className="text-sm text-white/70">A Linkzone Global FZ-LLC Company</p>
+                      <p className="font-bold text-lg text-slate-900">BeyondWalls</p>
+                      <p className="text-sm text-slate-500">A Linkzone Global FZ-LLC Company</p>
                     </div>
                   </div>
-                </>
-              )}
-            </div>
+                  
+                  <p className="text-slate-600 leading-relaxed text-lg mb-6 max-w-xl">
+                    Driving operational excellence and growth at BeyondWalls. Focused on scaling our platform, 
+                    optimizing partnerships, and ensuring seamless experiences for both advertisers and venue owners.
+                  </p>
+                  
+                  <p className="text-slate-600 leading-relaxed text-lg mb-8 max-w-xl">
+                    Committed to building efficient systems and fostering relationships that power the future 
+                    of digital advertising in the region.
+                  </p>
+                </div>
+                
+                {/* CTA Button */}
+                <div>
+                  <Button className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white px-8 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all">
+                    GET IN TOUCH!
+                  </Button>
+                </div>
+                
+                {/* Contact & Social */}
+                <div className="space-y-4">
+                  <p className="text-slate-900 font-medium">{profileData.email}</p>
+                  <div className="flex gap-3">
+                    {isEditing ? (
+                      <div className="space-y-2 w-full">
+                        <Input
+                          placeholder="LinkedIn URL"
+                          value={editData.linkedin}
+                          onChange={(e) => setEditData({...editData, linkedin: e.target.value})}
+                        />
+                        <Input
+                          placeholder="Twitter URL"
+                          value={editData.twitter}
+                          onChange={(e) => setEditData({...editData, twitter: e.target.value})}
+                        />
+                      </div>
+                    ) : (
+                      <>
+                        <a href={profileData.linkedin} target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg">
+                          <Linkedin className="w-5 h-5" />
+                        </a>
+                        <a href={profileData.twitter} target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg">
+                          <Twitter className="w-5 h-5" />
+                        </a>
+                        <a href={profileData.instagram} target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg">
+                          <Instagram className="w-5 h-5" />
+                        </a>
+                        <a href="mailto:hello@beyondwalls.ae" className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg">
+                          <Mail className="w-5 h-5" />
+                        </a>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
             
-            {/* Edit Button */}
+            {/* Edit Controls */}
             {isAdmin && (
-              <div className="flex gap-2">
+              <div className="flex gap-3 pt-4">
                 {isEditing ? (
                   <>
-                    <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700 shadow-lg">
+                    <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700">
                       <Save className="w-4 h-4 mr-2" />
                       Save
                     </Button>
-                    <Button onClick={handleCancel} className="bg-white/20 hover:bg-white/30 text-white border-white/30">
+                    <Button onClick={handleCancel} variant="outline">
                       <X className="w-4 h-4 mr-2" />
                       Cancel
                     </Button>
                   </>
                 ) : (
-                  <Button onClick={() => setIsEditing(true)} className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-md">
+                  <Button onClick={() => setIsEditing(true)} variant="outline">
                     <Edit className="w-4 h-4 mr-2" />
                     Edit Profile
                   </Button>
@@ -134,8 +203,9 @@ export default function COOProfile() {
           </div>
         </div>
       </div>
-
-      <div className="max-w-6xl mx-auto px-4 -mt-12 relative z-10 pb-16">
+      
+      {/* Stats Section */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 pb-20">
 
         <div className="grid md:grid-cols-3 gap-6">
           {/* Left Column - Contact & Social */}
@@ -302,17 +372,17 @@ export default function COOProfile() {
                   BeyondWalls is the UAE's leading digital out-of-home advertising platform, connecting advertisers with premium venue spaces across Dubai, Abu Dhabi, and beyond.
                 </p>
                 <div className="grid grid-cols-3 gap-4">
-                  <div className="text-center p-5 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
-                    <p className="text-4xl font-bold text-indigo-400 mb-1">500+</p>
-                    <p className="text-sm text-white/70">Active Venues</p>
+                  <div className="text-center p-8 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 hover:bg-white/20 transition-all">
+                    <p className="text-5xl font-bold text-indigo-400 mb-2">500+</p>
+                    <p className="text-white/90 font-medium">Active Venues</p>
                   </div>
-                  <div className="text-center p-5 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
-                    <p className="text-4xl font-bold text-violet-400 mb-1">1,200+</p>
-                    <p className="text-sm text-white/70">Screens Live</p>
+                  <div className="text-center p-8 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 hover:bg-white/20 transition-all">
+                    <p className="text-5xl font-bold text-violet-400 mb-2">1,200+</p>
+                    <p className="text-white/90 font-medium">Screens Live</p>
                   </div>
-                  <div className="text-center p-5 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
-                    <p className="text-4xl font-bold text-indigo-400 mb-1">AED 2M+</p>
-                    <p className="text-sm text-white/70">Paid to Venues</p>
+                  <div className="text-center p-8 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 hover:bg-white/20 transition-all">
+                    <p className="text-5xl font-bold text-indigo-400 mb-2">AED 2M+</p>
+                    <p className="text-white/90 font-medium">Paid to Venues</p>
                   </div>
                 </div>
               </CardContent>
