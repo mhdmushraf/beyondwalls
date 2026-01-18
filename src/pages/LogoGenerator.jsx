@@ -2376,31 +2376,47 @@ function BusinessCardCreative({ cardData, cardType, onEdit, onDownload }) {
               </span>
             </div>
             
-            {/* Contact details */}
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div className="flex items-center gap-3 text-white/90">
-                <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-                  <Mail className="w-4 h-4 text-violet-400" />
+            {/* Contact details & QR */}
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1 space-y-3 text-sm">
+                <div className="flex items-center gap-3 text-white/90">
+                  <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                    <Mail className="w-4 h-4 text-violet-400" />
+                  </div>
+                  <span className="text-xs sm:text-sm truncate">{cardData.email}</span>
                 </div>
-                <span className="text-xs sm:text-sm truncate">{cardData.email}</span>
+                <div className="flex items-center gap-3 text-white/90">
+                  <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                    <Phone className="w-4 h-4 text-indigo-400" />
+                  </div>
+                  <span className="text-xs sm:text-sm">{cardData.phone}</span>
+                </div>
+                <div className="flex items-center gap-3 text-white/90">
+                  <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                    <Globe className="w-4 h-4 text-violet-400" />
+                  </div>
+                  <span className="text-xs sm:text-sm">www.beyondwalls.ae</span>
+                </div>
+                <div className="flex items-center gap-3 text-white/90">
+                  <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                    <MapPin className="w-4 h-4 text-indigo-400" />
+                  </div>
+                  <span className="text-xs sm:text-sm">Dubai, UAE</span>
+                </div>
               </div>
-              <div className="flex items-center gap-3 text-white/90">
-                <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-                  <Phone className="w-4 h-4 text-indigo-400" />
+              
+              {/* QR Code */}
+              <div className="flex flex-col items-center">
+                <div className="bg-white rounded-lg p-2 shadow-lg border-2 border-violet-400/30">
+                  <div className="w-20 h-20 bg-slate-200 rounded flex items-center justify-center">
+                    <div className="grid grid-cols-5 gap-0.5 p-1">
+                      {[...Array(25)].map((_, i) => (
+                        <div key={i} className={`w-2 h-2 ${(i + Math.floor(i/5)) % 2 === 0 || i < 5 || i > 19 ? 'bg-slate-900' : 'bg-slate-300'} rounded-sm`} />
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <span className="text-xs sm:text-sm">{cardData.phone}</span>
-              </div>
-              <div className="flex items-center gap-3 text-white/90">
-                <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-                  <Globe className="w-4 h-4 text-violet-400" />
-                </div>
-                <span className="text-xs sm:text-sm">www.beyondwalls.ae</span>
-              </div>
-              <div className="flex items-center gap-3 text-white/90">
-                <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-                  <MapPin className="w-4 h-4 text-indigo-400" />
-                </div>
-                <span className="text-xs sm:text-sm">Dubai, UAE</span>
+                <p className="text-white/40 text-[10px] mt-1">Scan to connect</p>
               </div>
             </div>
           </div>
