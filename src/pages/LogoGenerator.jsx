@@ -1707,6 +1707,10 @@ export default function LogoGenerator() {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     
+    const profileUrl = role === 'ceo' 
+      ? `${window.location.origin}/CEOProfile`
+      : `${window.location.origin}/COOProfile`;
+    
     canvas.width = 800;
     canvas.height = 450;
     
@@ -2026,7 +2030,12 @@ export default function LogoGenerator() {
       ctx.fillText('🌐  www.beyondwalls.ae', 40, 355);
       ctx.fillText('📍  Dubai, United Arab Emirates', 40, 385);
       
-      // QR code area
+      // QR code area - Load actual QR code
+      const qrImg = new Image();
+      qrImg.crossOrigin = 'anonymous';
+      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(profileUrl)}`;
+      
+      // Draw QR background
       const qrGradient = ctx.createLinearGradient(580, 260, 760, 400);
       qrGradient.addColorStop(0, '#8B5CF6');
       qrGradient.addColorStop(1, '#6366F1');
@@ -2041,22 +2050,16 @@ export default function LogoGenerator() {
       ctx.roundRect(593, 263, 154, 134, 10);
       ctx.fill();
       
-      ctx.fillStyle = '#1e1b4b';
-      const qrStartX = 610;
-      const qrStartY = 280;
-      for (let i = 0; i < 6; i++) {
-        for (let j = 0; j < 5; j++) {
-          if ((i + j) % 2 === 0 || Math.random() > 0.5) {
-            ctx.fillRect(qrStartX + i * 18, qrStartY + j * 18, 14, 14);
-          }
-        }
-      }
-      
-      ctx.font = '11px system-ui';
-      ctx.fillStyle = '#64748b';
-      ctx.textAlign = 'center';
-      ctx.fillText('Scan to connect', 670, 388);
-      ctx.textAlign = 'left';
+      // Draw QR code when loaded
+      qrImg.onload = () => {
+        ctx.drawImage(qrImg, 605, 273, 110, 110);
+        
+        ctx.font = '11px system-ui';
+        ctx.fillStyle = '#64748b';
+        ctx.textAlign = 'center';
+        ctx.fillText('Scan to connect', 670, 388);
+        ctx.textAlign = 'left';
+      };
       
       // Bottom bar - brand colors
       const bottomGradient = ctx.createLinearGradient(0, 440, 800, 450);
@@ -2408,13 +2411,11 @@ function BusinessCardCreative({ cardData, cardType, onEdit, onDownload }) {
               {/* QR Code */}
               <div className="flex flex-col items-center">
                 <div className="bg-white rounded-lg p-2 shadow-lg border-2 border-violet-400/30">
-                  <div className="w-20 h-20 bg-slate-200 rounded flex items-center justify-center">
-                    <div className="grid grid-cols-5 gap-0.5 p-1">
-                      {[...Array(25)].map((_, i) => (
-                        <div key={i} className={`w-2 h-2 ${(i + Math.floor(i/5)) % 2 === 0 || i < 5 || i > 19 ? 'bg-slate-900' : 'bg-slate-300'} rounded-sm`} />
-                      ))}
-                    </div>
-                  </div>
+                  <img 
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(window.location.origin + '/CEOProfile')}`}
+                    alt="QR Code"
+                    className="w-20 h-20"
+                  />
                 </div>
                 <p className="text-white/40 text-[10px] mt-1">Scan to connect</p>
               </div>

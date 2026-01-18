@@ -115,6 +115,8 @@ import VenueOwnerAnalytics from './pages/VenueOwnerAnalytics';
 import VenueOwnerBookingManager from './pages/VenueOwnerBookingManager';
 import VenueOwnerHub from './pages/VenueOwnerHub';
 import Wallet from './pages/Wallet';
+import CEOProfile from './pages/CEOProfile';
+import COOProfile from './pages/COOProfile';
 import __Layout from './Layout.jsx';
 
 
@@ -236,6 +238,8 @@ export const PAGES = {
     "VenueOwnerBookingManager": VenueOwnerBookingManager,
     "VenueOwnerHub": VenueOwnerHub,
     "Wallet": Wallet,
+    "CEOProfile": CEOProfile,
+    "COOProfile": COOProfile,
 }
 
 export const pagesConfig = {
