@@ -1870,15 +1870,15 @@ export default function LogoGenerator() {
       ctx.textAlign = 'left';
 
       // in5 Logo (bottom left corner)
-      ctx.font = 'bold 14px system-ui, -apple-system, sans-serif';
-      ctx.fillStyle = 'rgba(255,255,255,0.5)';
-      ctx.fillText('Powered by', 45, 405);
-      ctx.font = 'bold 20px system-ui, -apple-system, sans-serif';
+      ctx.font = '12px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
+      ctx.fillText('Incubated @', 45, 400);
+      ctx.font = 'bold 22px system-ui, -apple-system, sans-serif';
       ctx.fillStyle = '#ffffff';
-      ctx.fillText('in5', 45, 428);
-      ctx.font = '11px system-ui, -apple-system, sans-serif';
-      ctx.fillStyle = 'rgba(255,255,255,0.5)';
-      ctx.fillText('Dubai Internet City', 80, 428);
+      ctx.fillText('in5', 45, 423);
+      ctx.font = '10px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
+      ctx.fillText('Tech Dubai Internet City', 75, 423);
       
       // Corner accents
       ctx.strokeStyle = '#8B5CF6';
@@ -2427,10 +2427,10 @@ function BusinessCardCreative({ cardData, cardType, onEdit, onDownload }) {
               
               {/* in5 Logo */}
               <div className="text-center">
-                <p className="text-white/40 text-[10px] mb-1">Powered by</p>
+                <p className="text-white/50 text-[9px] mb-1">Incubated @</p>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-white font-bold text-lg">in5</span>
-                  <span className="text-white/40 text-[9px]">Dubai Internet City</span>
+                  <span className="text-white font-bold text-xl">in5</span>
+                  <span className="text-white/50 text-[8px]">Tech Dubai Internet City</span>
                 </div>
               </div>
             </div>
