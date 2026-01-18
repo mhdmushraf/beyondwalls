@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
 import { toast } from "sonner";
+import LocationPicker from "@/components/maps/LocationPicker";
 
 export default function VenueOnboarding() {
   const [loading, setLoading] = useState(false);
@@ -84,7 +85,7 @@ export default function VenueOnboarding() {
     setLoading(true);
 
     try {
-      await base44.entities.Lead.create({
+      const leadData = await base44.entities.Lead.create({
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
@@ -96,6 +97,7 @@ export default function VenueOnboarding() {
 City: ${formData.city}
 Area: ${formData.area}
 Address: ${formData.address}
+Location: ${formData.latitude && formData.longitude ? `https://www.google.com/maps?q=${formData.latitude},${formData.longitude}` : "Not provided"}
 Operating Hours: ${formData.operating_hours}
 Daily Customers: ${formData.daily_customers}
 Screen Location: ${formData.screen_location}
@@ -116,36 +118,64 @@ Additional Notes: ${formData.notes}`,
         priority: "high"
       });
 
-      // Send notification email to admin
-      try {
-        await base44.integrations.Core.SendEmail({
-          to: "admin@beyondwalls.com",
-          subject: "🏢 New Venue Onboarding Request",
-          body: `
-            New venue owner has requested to join BeyondWalls!
-            
-            Contact Details:
-            Name: ${formData.name}
-            Email: ${formData.email}
-            Phone: ${formData.phone}
-            
-            Venue Details:
-            Venue Name: ${formData.company_name}
-            Type: ${formData.venue_type}
-            Location: ${formData.address}, ${formData.area}, ${formData.city}
-            Operating Hours: ${formData.operating_hours}
-            Daily Customers: ${formData.daily_customers}
-            Screen Location: ${formData.screen_location}
-            Screen Visibility: ${formData.screen_visibility_percent}%
-            
-            Notes: ${formData.notes}
-            
-            Please follow up with this lead in the CRM system.
-          `
-        });
-      } catch (e) {
-        console.log("Email notification failed:", e);
-      }
+      // Send notification email to BeyondWalls team
+      await base44.integrations.Core.SendEmail({
+        to: "hello@beyondwalls.ae",
+        subject: `🏢 New Venue Onboarding Request - ${formData.company_name}`,
+        body: `
+          <h2>New Venue Onboarding Request</h2>
+          
+          <h3>Contact Information:</h3>
+          <ul>
+            <li><strong>Name:</strong> ${formData.name}</li>
+            <li><strong>Email:</strong> ${formData.email}</li>
+            <li><strong>Phone:</strong> ${formData.phone}</li>
+            <li><strong>Company:</strong> ${formData.company_name}</li>
+          </ul>
+
+          <h3>Venue Details:</h3>
+          <ul>
+            <li><strong>Venue Name:</strong> ${formData.company_name}</li>
+            <li><strong>Type:</strong> ${formData.venue_type}</li>
+            <li><strong>Location:</strong> ${formData.address}, ${formData.area}, ${formData.city}</li>
+            ${formData.latitude && formData.longitude ? `<li><strong>Map:</strong> <a href="https://www.google.com/maps?q=${formData.latitude},${formData.longitude}">View on Google Maps</a></li>` : ''}
+            <li><strong>Operating Hours:</strong> ${formData.operating_hours}</li>
+            <li><strong>Daily Customers:</strong> ${formData.daily_customers}</li>
+          </ul>
+
+          <h3>Screen Information:</h3>
+          <ul>
+            <li><strong>Number of Screens:</strong> ${formData.number_of_screens}</li>
+            <li><strong>Min. Payment Per Screen:</strong> AED ${formData.min_payment_per_screen}/week</li>
+            <li><strong>Screen Location:</strong> ${formData.screen_location}</li>
+            <li><strong>Screen Visibility:</strong> ${formData.screen_visibility_percent}%</li>
+          </ul>
+
+          <h3>Audience Details:</h3>
+          <ul>
+            <li><strong>Peak Hours:</strong> ${formData.peak_hours.join(", ")}</li>
+            <li><strong>Customer Dwell Time:</strong> ${formData.customer_dwell_time} minutes</li>
+            <li><strong>Age Groups:</strong> ${formData.customer_age_groups.join(", ")}</li>
+            <li><strong>Gender Mix:</strong> ${formData.customer_gender_mix}</li>
+            ${formData.special_events ? `<li><strong>Special Events:</strong> ${formData.special_events}</li>` : ''}
+          </ul>
+
+          <h3>Documents & Photos:</h3>
+          <ul>
+            ${formData.trade_license ? `<li><strong>Trade License:</strong> <a href="${formData.trade_license}">View Document</a></li>` : ''}
+            ${formData.venue_front_photo ? `<li><strong>Venue Front Photo:</strong> <a href="${formData.venue_front_photo}">View Photo</a></li>` : ''}
+            ${formData.screen_photos.length > 0 ? `<li><strong>Screen Photos:</strong> ${formData.screen_photos.map((url, i) => `<a href="${url}">Photo ${i+1}</a>`).join(", ")}</li>` : ''}
+            ${formData.high_traffic_photo ? `<li><strong>High Traffic Photo:</strong> <a href="${formData.high_traffic_photo}">View Photo</a></li>` : ''}
+          </ul>
+
+          ${formData.notes ? `<h3>Additional Notes:</h3><p>${formData.notes}</p>` : ''}
+
+          <hr style="margin: 20px 0;">
+          <p><strong>Lead ID:</strong> ${leadData.id}</p>
+          <p><strong>CRM Link:</strong> <a href="https://app.base44.com">View in CRM</a></p>
+          <p style="color: #059669; font-weight: bold;">Please review and follow up with this venue owner as soon as possible!</p>
+        `
+      })
 
       setSubmitted(true);
       toast.success("Request submitted successfully!");
