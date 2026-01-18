@@ -461,273 +461,610 @@ export default function LogoGenerator() {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     
-    // A4 size at 300 DPI: 2480 x 3508 pixels (portrait)
-    canvas.width = 2480;
-    canvas.height = 3508;
+    // Tri-fold brochure: 290mm x 200mm at 300 DPI = 3425 x 2362 pixels (landscape)
+    canvas.width = 3425;
+    canvas.height = 2362;
     
     if (side === 'front') {
-      // === FRONT SIDE ===
-      // Gradient background
-      const bgGradient = ctx.createLinearGradient(0, 0, 2480, 3508);
-      bgGradient.addColorStop(0, '#0f0a1e');
-      bgGradient.addColorStop(0.3, '#1a1035');
-      bgGradient.addColorStop(0.7, '#2d1b69');
-      bgGradient.addColorStop(1, '#1e1b4b');
-      ctx.fillStyle = bgGradient;
-      ctx.fillRect(0, 0, 2480, 3508);
+      // === FRONT SIDE - CREATIVE TRI-FOLD ===
+      const panelWidth = 1141;
       
-      // Decorative circles
-      ctx.globalAlpha = 0.08;
-      const circle1 = ctx.createRadialGradient(1900, 600, 0, 1900, 600, 800);
-      circle1.addColorStop(0, '#8B5CF6');
-      circle1.addColorStop(1, 'transparent');
-      ctx.fillStyle = circle1;
-      ctx.beginPath();
-      ctx.arc(1900, 600, 800, 0, Math.PI * 2);
-      ctx.fill();
+      // PANEL 1 (Left/Cover) - Vibrant Cyan with Creative Elements
+      const panel1Gradient = ctx.createLinearGradient(0, 0, panelWidth, 2362);
+      panel1Gradient.addColorStop(0, '#06b6d4');
+      panel1Gradient.addColorStop(0.5, '#0891b2');
+      panel1Gradient.addColorStop(1, '#0e7490');
+      ctx.fillStyle = panel1Gradient;
+      ctx.fillRect(0, 0, panelWidth, 2362);
       
-      const circle2 = ctx.createRadialGradient(400, 2800, 0, 400, 2800, 700);
-      circle2.addColorStop(0, '#6366F1');
-      circle2.addColorStop(1, 'transparent');
-      ctx.fillStyle = circle2;
-      ctx.beginPath();
-      ctx.arc(400, 2800, 700, 0, Math.PI * 2);
-      ctx.fill();
+      // Modern wave pattern overlay
+      ctx.globalAlpha = 0.15;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 4;
+      for (let i = 0; i < 10; i++) {
+        ctx.beginPath();
+        ctx.moveTo(0, i * 250);
+        for (let x = 0; x < panelWidth; x += 50) {
+          ctx.lineTo(x, i * 250 + Math.sin(x / 80) * 40);
+        }
+        ctx.stroke();
+      }
       ctx.globalAlpha = 1;
       
-      // Logo at top
+      // Large creative logo with shadow
       const logoSize = 280;
-      const logoX = (2480 - logoSize) / 2;
-      const logoY = 300;
-      const logoGradient = ctx.createLinearGradient(logoX, logoY, logoX + logoSize, logoY + logoSize);
-      logoGradient.addColorStop(0, '#8B5CF6');
-      logoGradient.addColorStop(1, '#6366F1');
+      const logoX = (panelWidth - logoSize) / 2;
+      const logoY = 350;
+      
+      // Shadow layers for depth
+      ctx.shadowColor = 'rgba(0,0,0,0.3)';
+      ctx.shadowBlur = 60;
+      ctx.shadowOffsetX = 15;
+      ctx.shadowOffsetY = 15;
+      
+      ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.roundRect(logoX, logoY, logoSize, logoSize, 60);
-      ctx.fillStyle = logoGradient;
-      ctx.fill();
-      ctx.shadowColor = '#8B5CF6';
-      ctx.shadowBlur = 80;
+      ctx.roundRect(logoX, logoY, logoSize, logoSize, 50);
       ctx.fill();
       ctx.shadowBlur = 0;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
       
-      // Monitor icon in logo
+      // Inner gradient logo
+      const innerLogoGrad = ctx.createLinearGradient(logoX + 20, logoY + 20, logoX + 260, logoY + 260);
+      innerLogoGrad.addColorStop(0, '#8B5CF6');
+      innerLogoGrad.addColorStop(0.5, '#7c3aed');
+      innerLogoGrad.addColorStop(1, '#6366F1');
+      ctx.fillStyle = innerLogoGrad;
+      ctx.beginPath();
+      ctx.roundRect(logoX + 20, logoY + 20, 240, 240, 40);
+      ctx.fill();
+      
+      // Monitor icon
       ctx.strokeStyle = 'white';
       ctx.lineWidth = 16;
       ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
       ctx.beginPath();
-      ctx.roundRect(logoX + 60, logoY + 60, 160, 120, 12);
+      ctx.roundRect(logoX + 75, logoY + 75, 130, 95, 12);
       ctx.stroke();
       ctx.beginPath();
-      ctx.moveTo(logoX + 140, logoY + 180);
-      ctx.lineTo(logoX + 140, logoY + 230);
+      ctx.moveTo(logoX + 140, logoY + 170);
+      ctx.lineTo(logoX + 140, logoY + 215);
       ctx.stroke();
       ctx.beginPath();
-      ctx.moveTo(logoX + 100, logoY + 230);
-      ctx.lineTo(logoX + 180, logoY + 230);
+      ctx.moveTo(logoX + 100, logoY + 215);
+      ctx.lineTo(logoX + 180, logoY + 215);
       ctx.stroke();
       
+      // Play triangle
       ctx.fillStyle = 'white';
       ctx.beginPath();
-      ctx.moveTo(logoX + 110, logoY + 95);
-      ctx.lineTo(logoX + 110, logoY + 155);
+      ctx.moveTo(logoX + 115, logoY + 100);
+      ctx.lineTo(logoX + 115, logoY + 150);
       ctx.lineTo(logoX + 170, logoY + 125);
       ctx.closePath();
       ctx.fill();
       
-      // Company name
+      // Company name with modern styling
       ctx.textAlign = 'center';
-      ctx.font = 'bold 140px system-ui, -apple-system, sans-serif';
-      ctx.fillStyle = '#ffffff';
-      ctx.fillText('BeyondWalls', 1240, 740);
+      ctx.font = 'bold 120px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#0f172a';
+      ctx.fillText('BeyondWalls', panelWidth / 2, 750);
       
-      // Parent company
-      ctx.font = '42px system-ui, -apple-system, sans-serif';
-      ctx.fillStyle = 'rgba(255,255,255,0.6)';
-      ctx.fillText('A Linkzone Global FZ-LLC Company', 1240, 810);
-      
-      // Tagline
-      ctx.font = 'bold 68px system-ui, -apple-system, sans-serif';
-      const taglineGradient = ctx.createLinearGradient(0, 900, 2480, 900);
-      taglineGradient.addColorStop(0, '#a78bfa');
-      taglineGradient.addColorStop(1, '#6366F1');
-      ctx.fillStyle = taglineGradient;
-      ctx.fillText('Transform Your Venue', 1240, 1000);
-      ctx.fillText('Into Revenue', 1240, 1100);
-      
-      // Subtitle
-      ctx.font = '48px system-ui, -apple-system, sans-serif';
-      ctx.fillStyle = 'rgba(255,255,255,0.7)';
-      ctx.fillText('Digital Out-of-Home Advertising Platform', 1240, 1220);
-      
-      // Features section
-      const features = [
-        '📺  Turn Your Screens Into Income',
-        '💰  Earn 70% Revenue Share',
-        '🎯  AI-Powered Ad Targeting',
-        '📊  Real-Time Analytics Dashboard',
-        '🌐  UAE\'s Leading DOOH Platform'
-      ];
-      
-      ctx.font = '52px system-ui, -apple-system, sans-serif';
-      ctx.fillStyle = '#ffffff';
-      ctx.textAlign = 'left';
-      let featureY = 1500;
-      features.forEach(feature => {
-        ctx.fillText(feature, 240, featureY);
-        featureY += 120;
-      });
-      
-      // CTA section
-      ctx.textAlign = 'center';
-      ctx.font = 'bold 72px system-ui, -apple-system, sans-serif';
-      ctx.fillStyle = '#ffffff';
-      ctx.fillText('Ready to Get Started?', 1240, 2600);
-      
-      // Contact info
-      ctx.font = '48px system-ui, -apple-system, sans-serif';
-      ctx.fillStyle = 'rgba(255,255,255,0.9)';
-      ctx.fillText('📧 hello@beyondwalls.ae', 1240, 2730);
-      ctx.fillText('📱 +971 55 614 0067', 1240, 2830);
-      ctx.fillText('🌐 www.beyondwalls.ae', 1240, 2930);
-      
-      // Bottom bar
-      const bottomGrad = ctx.createLinearGradient(0, 3460, 2480, 3508);
-      bottomGrad.addColorStop(0, '#8B5CF6');
-      bottomGrad.addColorStop(1, '#6366F1');
-      ctx.fillStyle = bottomGrad;
-      ctx.fillRect(0, 3460, 2480, 48);
-      
-    } else {
-      // === BACK SIDE ===
-      // Clean white background
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, 2480, 3508);
-      
-      // Top accent bar
-      const topGrad = ctx.createLinearGradient(0, 0, 2480, 120);
-      topGrad.addColorStop(0, '#8B5CF6');
-      topGrad.addColorStop(1, '#6366F1');
-      ctx.fillStyle = topGrad;
-      ctx.fillRect(0, 0, 2480, 120);
-      
-      // Small logo
-      const smallLogoSize = 100;
-      ctx.fillStyle = '#ffffff';
+      // Stylish underline
+      const underlineGrad = ctx.createLinearGradient(200, 780, 940, 780);
+      underlineGrad.addColorStop(0, 'transparent');
+      underlineGrad.addColorStop(0.2, '#0f172a');
+      underlineGrad.addColorStop(0.8, '#0f172a');
+      underlineGrad.addColorStop(1, 'transparent');
+      ctx.strokeStyle = underlineGrad;
+      ctx.lineWidth = 6;
       ctx.beginPath();
-      ctx.roundRect(180, 60, smallLogoSize, smallLogoSize, 20);
-      ctx.fill();
-      
-      const miniLogoGrad = ctx.createLinearGradient(180, 60, 280, 160);
-      miniLogoGrad.addColorStop(0, '#8B5CF6');
-      miniLogoGrad.addColorStop(1, '#6366F1');
-      ctx.fillStyle = miniLogoGrad;
-      ctx.beginPath();
-      ctx.roundRect(190, 70, 80, 80, 16);
-      ctx.fill();
-      
-      ctx.strokeStyle = 'white';
-      ctx.lineWidth = 5;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.roundRect(205, 85, 50, 35, 4);
+      ctx.moveTo(200, 780);
+      ctx.lineTo(940, 780);
       ctx.stroke();
       
-      ctx.fillStyle = 'white';
-      ctx.font = 'bold 64px system-ui, -apple-system, sans-serif';
-      ctx.textAlign = 'left';
-      ctx.fillText('BeyondWalls', 320, 130);
+      // Parent company
+      ctx.font = '38px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'rgba(15,23,42,0.7)';
+      ctx.fillText('A Linkzone Global FZ-LLC Company', panelWidth / 2, 850);
       
-      // Main heading
-      ctx.fillStyle = '#1e1b4b';
-      ctx.font = 'bold 96px system-ui, -apple-system, sans-serif';
-      ctx.fillText('How It Works', 240, 400);
-      
-      // Steps
-      const steps = [
-        { num: '1', title: 'Register Your Venue', desc: 'Sign up and list your business location with us' },
-        { num: '2', title: 'Install Screens', desc: 'We help you set up digital displays at your venue' },
-        { num: '3', title: 'Ads Go Live', desc: 'Relevant ads automatically play on your screens' },
-        { num: '4', title: 'Earn Revenue', desc: 'Get 70% of all ad revenue directly to your account' }
+      // Modern value props with cards
+      const valueProps = [
+        { title: 'Digital DOOH', subtitle: 'Advertising Platform' },
+        { title: 'Transform Screens', subtitle: 'Into Revenue Streams' },
       ];
       
-      let stepY = 600;
-      steps.forEach(step => {
-        // Circle number
-        const circleGrad = ctx.createLinearGradient(240, stepY - 50, 340, stepY + 50);
-        circleGrad.addColorStop(0, '#8B5CF6');
-        circleGrad.addColorStop(1, '#6366F1');
-        ctx.fillStyle = circleGrad;
+      ctx.textAlign = 'center';
+      let propY = 1000;
+      valueProps.forEach(prop => {
+        // Card background with gradient
+        const cardGrad = ctx.createLinearGradient(150, propY, 990, propY + 180);
+        cardGrad.addColorStop(0, 'rgba(255,255,255,0.95)');
+        cardGrad.addColorStop(1, 'rgba(255,255,255,0.85)');
+        ctx.fillStyle = cardGrad;
+        ctx.shadowColor = 'rgba(0,0,0,0.2)';
+        ctx.shadowBlur = 30;
+        ctx.shadowOffsetY = 10;
         ctx.beginPath();
-        ctx.arc(290, stepY, 70, 0, Math.PI * 2);
+        ctx.roundRect(150, propY, 840, 180, 25);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+        
+        // Text
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 72px system-ui, -apple-system, sans-serif';
+        ctx.fillText(prop.title, panelWidth / 2, propY + 80);
+        ctx.font = '42px system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText(prop.subtitle, panelWidth / 2, propY + 135);
+        
+        propY += 240;
+      });
+      
+      // CTA Badge at bottom
+      const ctaY = 1750;
+      const ctaGrad = ctx.createLinearGradient(200, ctaY, 940, ctaY + 140);
+      ctaGrad.addColorStop(0, '#0f172a');
+      ctaGrad.addColorStop(1, '#1e293b');
+      ctx.fillStyle = ctaGrad;
+      ctx.shadowColor = 'rgba(0,0,0,0.4)';
+      ctx.shadowBlur = 40;
+      ctx.shadowOffsetY = 15;
+      ctx.beginPath();
+      ctx.roundRect(200, ctaY, 740, 140, 30);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
+      
+      ctx.textAlign = 'center';
+      ctx.font = 'bold 56px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText('Get Started Today', panelWidth / 2, ctaY + 65);
+      ctx.font = '36px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#06b6d4';
+      ctx.fillText('www.beyondwalls.ae', panelWidth / 2, ctaY + 115);
+      
+      // PANEL 2 (Middle) - Modern Dark Design
+      const panel2Gradient = ctx.createLinearGradient(panelWidth, 0, panelWidth * 2, 2362);
+      panel2Gradient.addColorStop(0, '#0f172a');
+      panel2Gradient.addColorStop(0.5, '#1e293b');
+      panel2Gradient.addColorStop(1, '#0f172a');
+      ctx.fillStyle = panel2Gradient;
+      ctx.fillRect(panelWidth, 0, panelWidth, 2362);
+      
+      // Geometric pattern overlay
+      ctx.globalAlpha = 0.08;
+      for (let i = 0; i < 15; i++) {
+        for (let j = 0; j < 10; j++) {
+          const x = panelWidth + i * 80;
+          const y = j * 240;
+          ctx.strokeStyle = '#06b6d4';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x + 60, y + 60);
+          ctx.lineTo(x, y + 60);
+          ctx.closePath();
+          ctx.stroke();
+        }
+      }
+      ctx.globalAlpha = 1;
+      
+      // Content header
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 90px system-ui, -apple-system, sans-serif';
+      ctx.fillText('Why Choose', panelWidth + panelWidth / 2, 250);
+      ctx.fillText('BeyondWalls?', panelWidth + panelWidth / 2, 360);
+      
+      // Decorative line
+      const midLineGrad = ctx.createLinearGradient(panelWidth + 150, 400, panelWidth + 990, 400);
+      midLineGrad.addColorStop(0, 'transparent');
+      midLineGrad.addColorStop(0.5, '#06b6d4');
+      midLineGrad.addColorStop(1, 'transparent');
+      ctx.strokeStyle = midLineGrad;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(panelWidth + 150, 400);
+      ctx.lineTo(panelWidth + 990, 400);
+      ctx.stroke();
+      
+      // Benefits with icons
+      const benefits = [
+        { icon: '💰', title: '70% Revenue Share', desc: 'Keep majority of earnings' },
+        { icon: '🎯', title: 'AI-Powered Targeting', desc: 'Smart ad placements' },
+        { icon: '📊', title: 'Live Analytics', desc: 'Track performance 24/7' },
+        { icon: '🚀', title: 'Zero Upfront Cost', desc: 'Free to get started' },
+        { icon: '🌐', title: "UAE's #1 Platform", desc: '500+ trusted venues' },
+        { icon: '⚡', title: 'Quick Setup', desc: 'Live in 48 hours' }
+      ];
+      
+      let benefitY = 520;
+      ctx.textAlign = 'left';
+      benefits.forEach((benefit, idx) => {
+        // Card background
+        ctx.fillStyle = 'rgba(6,182,212,0.1)';
+        ctx.beginPath();
+        ctx.roundRect(panelWidth + 120, benefitY - 45, 900, 120, 20);
+        ctx.fill();
+        
+        // Icon circle
+        const iconGrad = ctx.createLinearGradient(panelWidth + 150, benefitY - 30, panelWidth + 230, benefitY + 50);
+        iconGrad.addColorStop(0, '#06b6d4');
+        iconGrad.addColorStop(1, '#0891b2');
+        ctx.fillStyle = iconGrad;
+        ctx.beginPath();
+        ctx.arc(panelWidth + 190, benefitY + 10, 50, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.font = '48px system-ui';
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.fillText(benefit.icon, panelWidth + 190, benefitY + 25);
+        
+        // Text
+        ctx.textAlign = 'left';
+        ctx.font = 'bold 48px system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(benefit.title, panelWidth + 270, benefitY);
+        ctx.font = '34px system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText(benefit.desc, panelWidth + 270, benefitY + 48);
+        
+        benefitY += 300;
+      });
+      
+      // PANEL 3 (Right) - Contact Panel
+      const panel3Gradient = ctx.createLinearGradient(panelWidth * 2, 0, panelWidth * 3, 2362);
+      panel3Gradient.addColorStop(0, '#0891b2');
+      panel3Gradient.addColorStop(0.5, '#06b6d4');
+      panel3Gradient.addColorStop(1, '#0891b2');
+      ctx.fillStyle = panel3Gradient;
+      ctx.fillRect(panelWidth * 2, 0, panelWidth, 2362);
+      
+      // Modern circle pattern
+      ctx.globalAlpha = 0.1;
+      for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 6; j++) {
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(panelWidth * 2 + 150 + i * 130, 200 + j * 350, 40, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      ctx.globalAlpha = 1;
+      
+      // Contact header
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 90px system-ui, -apple-system, sans-serif';
+      ctx.fillText('Get in Touch', panelWidth * 2 + panelWidth / 2, 300);
+      
+      // Contact cards
+      const contacts = [
+        { icon: '📧', label: 'Email', value: 'hello@beyondwalls.ae' },
+        { icon: '📱', label: 'Phone', value: '+971 55 614 0067' },
+        { icon: '🌐', label: 'Website', value: 'www.beyondwalls.ae' },
+        { icon: '📍', label: 'Location', value: 'in5 Tech, Dubai Internet City\nDubai, UAE' }
+      ];
+      
+      let contactY = 480;
+      contacts.forEach(contact => {
+        // Card background
+        ctx.fillStyle = 'rgba(255,255,255,0.95)';
+        ctx.shadowColor = 'rgba(0,0,0,0.15)';
+        ctx.shadowBlur = 25;
+        ctx.shadowOffsetY = 10;
+        ctx.beginPath();
+        ctx.roundRect(panelWidth * 2 + 120, contactY, 900, contact.label === 'Location' ? 180 : 140, 25);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+        
+        // Icon
+        ctx.font = '64px system-ui';
+        ctx.fillStyle = '#06b6d4';
+        ctx.textAlign = 'center';
+        ctx.fillText(contact.icon, panelWidth * 2 + 190, contactY + 85);
+        
+        // Label
+        ctx.textAlign = 'left';
+        ctx.font = 'bold 38px system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText(contact.label, panelWidth * 2 + 260, contactY + 60);
+        
+        // Value
+        ctx.font = 'bold 42px system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#0f172a';
+        if (contact.label === 'Location') {
+          const lines = contact.value.split('\n');
+          ctx.fillText(lines[0], panelWidth * 2 + 260, contactY + 105);
+          ctx.fillText(lines[1], panelWidth * 2 + 260, contactY + 150);
+        } else {
+          ctx.fillText(contact.value, panelWidth * 2 + 260, contactY + 105);
+        }
+        
+        contactY += contact.label === 'Location' ? 240 : 200;
+      });
+      
+      // QR Code placeholder with modern styling
+      const qrY = 1750;
+      ctx.fillStyle = '#ffffff';
+      ctx.shadowColor = 'rgba(0,0,0,0.2)';
+      ctx.shadowBlur = 30;
+      ctx.shadowOffsetY = 12;
+      ctx.beginPath();
+      ctx.roundRect(panelWidth * 2 + 320, qrY, 500, 500, 30);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
+      
+      // QR grid pattern
+      ctx.fillStyle = '#0f172a';
+      const qrSize = 40;
+      const qrStartX = panelWidth * 2 + 370;
+      const qrStartY = qrY + 50;
+      for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 10; j++) {
+          if ((i + j) % 2 === 0 || Math.random() > 0.5) {
+            ctx.fillRect(qrStartX + i * qrSize, qrStartY + j * qrSize, qrSize - 3, qrSize - 3);
+          }
+        }
+      }
+      
+      // QR label
+      ctx.textAlign = 'center';
+      ctx.font = 'bold 38px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#0f172a';
+      ctx.fillText('Scan to Learn More', panelWidth * 2 + panelWidth / 2, qrY + 580);
+      
+    } else {
+      // === BACK SIDE - TRI-FOLD ===
+      const panelWidth = 1141;
+      
+      // PANEL 1 (Left) - White with modern styling
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, panelWidth, 2362);
+      
+      // Decorative top bar
+      const topAccent = ctx.createLinearGradient(0, 0, panelWidth, 20);
+      topAccent.addColorStop(0, '#06b6d4');
+      topAccent.addColorStop(0.5, '#0891b2');
+      topAccent.addColorStop(1, '#06b6d4');
+      ctx.fillStyle = topAccent;
+      ctx.fillRect(0, 0, panelWidth, 20);
+      
+      // Header title
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 90px system-ui, -apple-system, sans-serif';
+      ctx.fillText('How It', 120, 180);
+      ctx.fillText('Works', 120, 280);
+      
+      // Decorative accent line
+      const accentLineGrad = ctx.createLinearGradient(120, 320, 400, 320);
+      accentLineGrad.addColorStop(0, '#06b6d4');
+      accentLineGrad.addColorStop(1, 'transparent');
+      ctx.strokeStyle = accentLineGrad;
+      ctx.lineWidth = 8;
+      ctx.beginPath();
+      ctx.moveTo(120, 320);
+      ctx.lineTo(400, 320);
+      ctx.stroke();
+      
+      // Steps with modern cards
+      const steps = [
+        { num: '1', title: 'Register', desc: 'Quick signup' },
+        { num: '2', title: 'Setup', desc: 'Install display' },
+        { num: '3', title: 'Go Live', desc: 'Ads start' },
+        { num: '4', title: 'Earn', desc: 'Get paid' }
+      ];
+      
+      let stepY = 450;
+      steps.forEach((step, idx) => {
+        // Step card
+        ctx.fillStyle = idx % 2 === 0 ? '#f8fafc' : '#ffffff';
+        ctx.shadowColor = 'rgba(0,0,0,0.08)';
+        ctx.shadowBlur = 20;
+        ctx.shadowOffsetY = 5;
+        ctx.beginPath();
+        ctx.roundRect(120, stepY, 900, 180, 20);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+        
+        // Number badge
+        const numGrad = ctx.createLinearGradient(160, stepY + 40, 260, stepY + 140);
+        numGrad.addColorStop(0, '#06b6d4');
+        numGrad.addColorStop(1, '#0891b2');
+        ctx.fillStyle = numGrad;
+        ctx.beginPath();
+        ctx.arc(210, stepY + 90, 55, 0, Math.PI * 2);
         ctx.fill();
         
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 72px system-ui, -apple-system, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(step.num, 290, stepY + 25);
-        
-        // Step content
-        ctx.textAlign = 'left';
-        ctx.fillStyle = '#1e1b4b';
         ctx.font = 'bold 64px system-ui, -apple-system, sans-serif';
-        ctx.fillText(step.title, 420, stepY + 5);
+        ctx.textAlign = 'center';
+        ctx.fillText(step.num, 210, stepY + 110);
         
+        // Title and desc
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 56px system-ui, -apple-system, sans-serif';
+        ctx.fillText(step.title, 300, stepY + 80);
         ctx.fillStyle = '#64748b';
-        ctx.font = '48px system-ui, -apple-system, sans-serif';
-        ctx.fillText(step.desc, 420, stepY + 70);
+        ctx.font = '38px system-ui, -apple-system, sans-serif';
+        ctx.fillText(step.desc, 300, stepY + 130);
         
-        stepY += 340;
+        stepY += 230;
       });
       
-      // Why Choose Us section
-      ctx.fillStyle = '#1e1b4b';
-      ctx.font = 'bold 84px system-ui, -apple-system, sans-serif';
-      ctx.fillText('Why Choose BeyondWalls?', 240, 2160);
+      // CTA section at bottom
+      const ctaCard = ctx.createLinearGradient(120, 1800, 1020, 1950);
+      ctaCard.addColorStop(0, '#0f172a');
+      ctaCard.addColorStop(1, '#1e293b');
+      ctx.fillStyle = ctaCard;
+      ctx.shadowColor = 'rgba(0,0,0,0.3)';
+      ctx.shadowBlur = 35;
+      ctx.shadowOffsetY = 12;
+      ctx.beginPath();
+      ctx.roundRect(120, 1800, 900, 150, 25);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
       
-      const benefits = [
-        '✓ No upfront costs - completely free to join',
-        '✓ Passive income from your existing screens',
-        '✓ Complete control over your ad slots',
-        '✓ Real-time performance analytics',
-        '✓ Premium advertisers across UAE',
-        '✓ 24/7 technical support'
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 58px system-ui, -apple-system, sans-serif';
+      ctx.fillText('Start Earning', panelWidth / 2, 1870);
+      ctx.fillStyle = '#06b6d4';
+      ctx.font = 'bold 44px system-ui, -apple-system, sans-serif';
+      ctx.fillText('Sign Up Now', panelWidth / 2, 1925);
+      
+      // PANEL 2 (Middle) - Stats Panel
+      const panel2BgGrad = ctx.createLinearGradient(panelWidth, 0, panelWidth * 2, 2362);
+      panel2BgGrad.addColorStop(0, '#1e1b4b');
+      panel2BgGrad.addColorStop(0.5, '#4c1d95');
+      panel2BgGrad.addColorStop(1, '#1e1b4b');
+      ctx.fillStyle = panel2BgGrad;
+      ctx.fillRect(panelWidth, 0, panelWidth, 2362);
+      
+      // Top bar accent
+      ctx.fillStyle = '#06b6d4';
+      ctx.fillRect(panelWidth, 0, panelWidth, 20);
+      
+      // Content
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 100px system-ui, -apple-system, sans-serif';
+      ctx.fillText('Start Earning', panelWidth + panelWidth / 2, 300);
+      ctx.fillText('From Your', panelWidth + panelWidth / 2, 430);
+      ctx.fillText('Screens', panelWidth + panelWidth / 2, 560);
+      
+      // Big number highlight
+      ctx.font = 'bold 80px system-ui, -apple-system, sans-serif';
+      const earningHighlight = ctx.createLinearGradient(0, 750, panelWidth * 2, 750);
+      earningHighlight.addColorStop(0, '#06b6d4');
+      earningHighlight.addColorStop(1, '#0891b2');
+      ctx.fillStyle = earningHighlight;
+      ctx.fillText('Up to AED 5,000', panelWidth + panelWidth / 2, 750);
+      ctx.font = '48px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.fillText('per screen / month', panelWidth + panelWidth / 2, 820);
+      
+      // Stats cards
+      const stats = [
+        { value: '500+', label: 'Active Venues' },
+        { value: '1,200+', label: 'Screens Live' },
+        { value: 'AED 2M+', label: 'Paid Out' }
       ];
       
-      ctx.font = '52px system-ui, -apple-system, sans-serif';
-      ctx.fillStyle = '#334155';
-      let benefitY = 2320;
-      benefits.forEach(benefit => {
-        ctx.fillText(benefit, 280, benefitY);
-        benefitY += 100;
+      let statY = 1000;
+      stats.forEach(stat => {
+        // Card
+        ctx.fillStyle = 'rgba(6,182,212,0.15)';
+        ctx.beginPath();
+        ctx.roundRect(panelWidth + 220, statY, 700, 180, 20);
+        ctx.fill();
+        
+        // Stats
+        ctx.font = 'bold 80px system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#06b6d4';
+        ctx.fillText(stat.value, panelWidth + panelWidth / 2, statY + 80);
+        ctx.font = '42px system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = 'rgba(255,255,255,0.7)';
+        ctx.fillText(stat.label, panelWidth + panelWidth / 2, statY + 135);
+        
+        statY += 240;
       });
       
-      // Contact section
-      const contactBg = ctx.createLinearGradient(0, 3000, 2480, 3200);
-      contactBg.addColorStop(0, '#f8f9fa');
-      contactBg.addColorStop(1, '#e9ecef');
-      ctx.fillStyle = contactBg;
-      ctx.fillRect(0, 3000, 2480, 340);
+      // PANEL 3 (Right) - Features
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(panelWidth * 2, 0, panelWidth, 2362);
       
-      ctx.fillStyle = '#1e1b4b';
-      ctx.font = 'bold 72px system-ui, -apple-system, sans-serif';
+      // Top accent
+      ctx.fillStyle = '#06b6d4';
+      ctx.fillRect(panelWidth * 2, 0, panelWidth, 20);
+      
+      // Header
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 90px system-ui, -apple-system, sans-serif';
+      ctx.fillText('Key', panelWidth * 2 + 120, 180);
+      ctx.fillText('Features', panelWidth * 2 + 120, 280);
+      
+      // Accent line
+      const p3AccentLine = ctx.createLinearGradient(panelWidth * 2 + 120, 320, panelWidth * 2 + 500, 320);
+      p3AccentLine.addColorStop(0, '#06b6d4');
+      p3AccentLine.addColorStop(1, 'transparent');
+      ctx.strokeStyle = p3AccentLine;
+      ctx.lineWidth = 8;
+      ctx.beginPath();
+      ctx.moveTo(panelWidth * 2 + 120, 320);
+      ctx.lineTo(panelWidth * 2 + 500, 320);
+      ctx.stroke();
+      
+      // Features list
+      const features = [
+        { icon: '🎯', title: 'Smart Targeting', desc: 'AI matches ads to audience' },
+        { icon: '📊', title: 'Live Dashboard', desc: 'Monitor 24/7' },
+        { icon: '💳', title: 'Easy Payouts', desc: 'Weekly transfers' },
+        { icon: '🛡️', title: 'Safe Content', desc: 'Pre-approved ads' },
+        { icon: '📱', title: 'Mobile Control', desc: 'Manage anywhere' }
+      ];
+      
+      let featureY = 450;
+      features.forEach((feature, idx) => {
+        // Feature card
+        ctx.fillStyle = idx % 2 === 0 ? '#f8fafc' : '#ffffff';
+        ctx.shadowColor = 'rgba(0,0,0,0.06)';
+        ctx.shadowBlur = 18;
+        ctx.shadowOffsetY = 4;
+        ctx.beginPath();
+        ctx.roundRect(panelWidth * 2 + 120, featureY, 900, 180, 20);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+        
+        // Icon background
+        const iconBg = ctx.createLinearGradient(panelWidth * 2 + 160, featureY + 40, panelWidth * 2 + 260, featureY + 140);
+        iconBg.addColorStop(0, '#06b6d4');
+        iconBg.addColorStop(1, '#0891b2');
+        ctx.fillStyle = iconBg;
+        ctx.beginPath();
+        ctx.roundRect(panelWidth * 2 + 160, featureY + 40, 100, 100, 18);
+        ctx.fill();
+        
+        // Icon
+        ctx.font = '60px system-ui';
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.fillText(feature.icon, panelWidth * 2 + 210, featureY + 105);
+        
+        // Text
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 52px system-ui, -apple-system, sans-serif';
+        ctx.fillText(feature.title, panelWidth * 2 + 300, featureY + 80);
+        ctx.fillStyle = '#64748b';
+        ctx.font = '36px system-ui, -apple-system, sans-serif';
+        ctx.fillText(feature.desc, panelWidth * 2 + 300, featureY + 130);
+        
+        featureY += 240;
+      });
+      
+      // Final CTA
       ctx.textAlign = 'center';
-      ctx.fillText('Get In Touch', 1240, 3100);
-      
-      ctx.font = '48px system-ui, -apple-system, sans-serif';
-      ctx.fillStyle = '#475569';
-      ctx.fillText('📧 hello@beyondwalls.ae  |  📱 +971 55 614 0067  |  🌐 www.beyondwalls.ae', 1240, 3200);
-      
-      ctx.font = '36px system-ui, -apple-system, sans-serif';
-      ctx.fillStyle = '#94a3b8';
-      ctx.fillText('in5 Tech - Dubai Internet City, Dubai, UAE', 1240, 3270);
-      
-      // Bottom bar
-      const bottomGrad = ctx.createLinearGradient(0, 3460, 2480, 3508);
-      bottomGrad.addColorStop(0, '#8B5CF6');
-      bottomGrad.addColorStop(1, '#6366F1');
-      ctx.fillStyle = bottomGrad;
-      ctx.fillRect(0, 3460, 2480, 48);
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 70px system-ui, -apple-system, sans-serif';
+      ctx.fillText('Ready to', panelWidth * 2 + panelWidth / 2, 1900);
+      ctx.fillText('Transform?', panelWidth * 2 + panelWidth / 2, 1990);
+      ctx.fillStyle = '#06b6d4';
+      ctx.font = 'bold 48px system-ui, -apple-system, sans-serif';
+      ctx.fillText('www.beyondwalls.ae', panelWidth * 2 + panelWidth / 2, 2070);
     }
     
     canvas.toBlob((blob) => {
