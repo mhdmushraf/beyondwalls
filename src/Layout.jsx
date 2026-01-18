@@ -151,7 +151,8 @@ const publicPages = [
         "DOOHDubaiMall", "CafeAdvertisingDubai", "GymAdvertisingDubai", "MallAdvertisingUAE",
         "HotelAdvertisingDubai", "CoworkingAdvertisingDubai", "DigitalBillboardDubai", "ScreenAdvertisingUAE",
         "DOOHDubaiShoppingFestival", "DOOHUAENationalDay", "DOOHRamadanAdvertising", 
-        "DOOHDubaiSummerSurprises", "DOOHExpoCity", "DOOHEidAdvertising", "VenueOnboarding"
+        "DOOHDubaiSummerSurprises", "DOOHExpoCity", "DOOHEidAdvertising", "VenueOnboarding",
+        "CEOProfile", "COOProfile"
       ];
 
   // Scroll to top when navigating to public pages
