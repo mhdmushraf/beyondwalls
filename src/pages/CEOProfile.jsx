@@ -109,7 +109,7 @@ export default function CEOProfile() {
               <>
                 <div>
                   <h1 className="text-5xl lg:text-7xl font-bold text-slate-900 mb-4 leading-tight">
-                    Hello, I'm <span className="text-violet-600">{profileData.name.split(' ')[0]}</span>
+                    Hello, I'm <span className="text-violet-600">{profileData.name}</span>
                   </h1>
                   <h2 className="text-3xl lg:text-4xl font-light text-slate-700 mb-6">{profileData.title}</h2>
                   
