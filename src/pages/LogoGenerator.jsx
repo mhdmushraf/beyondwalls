@@ -1707,47 +1707,104 @@ export default function LogoGenerator() {
 
 function BrochureFrontPreview() {
   return (
-    <div className="relative rounded-xl overflow-hidden bg-gradient-to-br from-slate-950 via-indigo-950 to-violet-950 p-12 shadow-2xl">
-      {/* Decorative elements */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-violet-600/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-56 h-56 bg-indigo-600/10 rounded-full blur-3xl" />
-      
-      <div className="relative text-center space-y-8">
-        {/* Logo */}
-        <div className="w-32 h-32 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-violet-500/30">
-          <MonitorPlay className="w-16 h-16 text-white" />
-        </div>
-        
-        {/* Title */}
-        <div>
-          <h1 className="text-6xl font-black text-white mb-3">BeyondWalls</h1>
-          <p className="text-white/60 text-lg">A Linkzone Global FZ-LLC Company</p>
-        </div>
-        
-        <h2 className="text-4xl font-bold bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
-          Transform Your Venue<br/>Into Revenue
-        </h2>
-        
-        <p className="text-xl text-white/70">Digital Out-of-Home Advertising Platform</p>
-        
-        {/* Features */}
-        <div className="grid gap-4 text-left max-w-2xl mx-auto mt-12">
-          {['Turn Your Screens Into Income', 'Earn 70% Revenue Share', 'AI-Powered Ad Targeting', 'Real-Time Analytics', 'UAE\'s Leading DOOH Platform'].map((feature, i) => (
-            <div key={i} className="flex items-center gap-3 text-white/90">
-              <div className="w-2 h-2 bg-violet-500 rounded-full" />
-              <span className="text-lg">{feature}</span>
-            </div>
+    <div className="grid grid-cols-3 rounded-xl overflow-hidden shadow-2xl">
+      {/* Panel 1 - Cover - Cyan */}
+      <div className="relative bg-gradient-to-br from-cyan-500 to-cyan-600 p-8 flex flex-col items-center justify-center min-h-[500px]">
+        <div className="absolute inset-0 opacity-10">
+          {[...Array(20)].map((_, i) => (
+            <div key={i} className="absolute w-full h-px bg-white" style={{ top: `${i * 5}%`, transform: 'rotate(45deg)' }} />
           ))}
         </div>
         
-        {/* CTA */}
-        <div className="mt-12 space-y-4">
-          <p className="text-2xl font-bold text-white">Ready to Get Started?</p>
-          <div className="space-y-2 text-white/80">
-            <p>📧 hello@beyondwalls.ae</p>
-            <p>📱 +971 55 614 0067</p>
-            <p>🌐 www.beyondwalls.ae</p>
+        <div className="relative z-10 text-center space-y-6">
+          <div className="w-24 h-24 bg-white rounded-2xl flex items-center justify-center mx-auto shadow-xl">
+            <div className="w-20 h-20 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-xl flex items-center justify-center">
+              <MonitorPlay className="w-10 h-10 text-white" />
+            </div>
           </div>
+          
+          <div>
+            <h1 className="text-4xl font-black text-slate-900">BeyondWalls</h1>
+            <p className="text-slate-700 text-xs mt-1">A Linkzone Global FZ-LLC Company</p>
+          </div>
+          
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold text-white">Transform</h2>
+            <h2 className="text-2xl font-bold text-white">Your Venue</h2>
+            <h2 className="text-2xl font-bold text-white">Into Revenue</h2>
+          </div>
+          
+          <p className="text-sm text-slate-100">Digital Out-of-Home Advertising</p>
+        </div>
+      </div>
+      
+      {/* Panel 2 - Content - Black */}
+      <div className="bg-slate-900 p-8 text-white min-h-[500px]">
+        <h3 className="text-2xl font-bold mb-6">Why Choose Us?</h3>
+        <div className="space-y-4 text-sm">
+          {[
+            { icon: '💰', title: 'Earn 70% Revenue', desc: 'Keep majority of ad revenue' },
+            { icon: '🎯', title: 'AI Targeting', desc: 'Smart ad placement' },
+            { icon: '📊', title: 'Real-Time Analytics', desc: 'Track live performance' },
+            { icon: '🚀', title: 'Zero Cost', desc: 'Free to start' },
+            { icon: '🌐', title: 'Leading Platform', desc: '500+ venues trust us' },
+            { icon: '⚡', title: 'Quick Setup', desc: 'Live in 48 hours' }
+          ].map((item, i) => (
+            <div key={i} className="flex gap-3">
+              <span className="text-xl text-cyan-400">{item.icon}</span>
+              <div>
+                <p className="font-bold text-white">{item.title}</p>
+                <p className="text-slate-400 text-xs">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      {/* Panel 3 - Contact - Cyan */}
+      <div className="relative bg-gradient-to-br from-cyan-600 to-cyan-700 p-8 flex flex-col justify-between min-h-[500px]">
+        <div className="absolute inset-0 opacity-5">
+          {[...Array(15)].map((_, i) => (
+            <div key={i} className="absolute" style={{ 
+              left: `${(i % 5) * 20}%`, 
+              top: `${Math.floor(i / 5) * 33}%`,
+              width: '40px',
+              height: '40px',
+              border: '2px solid white',
+              transform: 'rotate(45deg)'
+            }} />
+          ))}
+        </div>
+        
+        <div className="relative z-10 space-y-6">
+          <h3 className="text-2xl font-bold text-slate-900">Get Started</h3>
+          
+          <div className="space-y-4 text-sm">
+            <div>
+              <p className="text-slate-800 font-semibold mb-1">📧 Email</p>
+              <p className="text-white font-bold">hello@beyondwalls.ae</p>
+            </div>
+            
+            <div>
+              <p className="text-slate-800 font-semibold mb-1">📱 Phone</p>
+              <p className="text-white font-bold">+971 55 614 0067</p>
+            </div>
+            
+            <div>
+              <p className="text-slate-800 font-semibold mb-1">🌐 Website</p>
+              <p className="text-white font-bold">www.beyondwalls.ae</p>
+            </div>
+            
+            <div>
+              <p className="text-slate-800 font-semibold mb-1">📍 Location</p>
+              <p className="text-white text-xs leading-relaxed">in5 Tech<br/>Dubai Internet City<br/>Dubai, UAE</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="relative z-10 bg-white/10 border-2 border-white/30 rounded-lg p-4 text-center backdrop-blur-sm">
+          <p className="text-xs text-white/80 mb-1">Scan QR Code</p>
+          <div className="w-24 h-24 bg-white rounded-lg mx-auto" />
         </div>
       </div>
     </div>
@@ -1756,74 +1813,88 @@ function BrochureFrontPreview() {
 
 function BrochureBackPreview() {
   return (
-    <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
-      {/* Top bar */}
-      <div className="h-16 bg-gradient-to-r from-violet-600 to-indigo-600 flex items-center px-8">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
-            <MonitorPlay className="w-6 h-6 text-violet-600" />
-          </div>
-          <span className="text-2xl font-bold text-white">BeyondWalls</span>
+    <div className="grid grid-cols-3 rounded-xl overflow-hidden shadow-2xl">
+      {/* Panel 1 - How It Works */}
+      <div className="bg-white p-8 min-h-[500px]">
+        <h3 className="text-2xl font-bold text-slate-900 mb-6">How It Works</h3>
+        <div className="space-y-6">
+          {[
+            { num: '1', title: 'Register', desc: 'Quick signup' },
+            { num: '2', title: 'Setup', desc: 'Install displays' },
+            { num: '3', title: 'Go Live', desc: 'Ads start' },
+            { num: '4', title: 'Earn', desc: 'Get paid' }
+          ].map((step) => (
+            <div key={step.num} className="flex items-start gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="text-lg font-bold text-white">{step.num}</span>
+              </div>
+              <div>
+                <h4 className="font-bold text-slate-900">{step.title}</h4>
+                <p className="text-xs text-slate-600">{step.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
       
-      <div className="p-12 space-y-10">
-        {/* How it works */}
-        <div>
-          <h2 className="text-4xl font-bold text-slate-900 mb-8">How It Works</h2>
-          <div className="space-y-6">
-            {[
-              { num: '1', title: 'Register Your Venue', desc: 'Sign up and list your business location' },
-              { num: '2', title: 'Install Screens', desc: 'We help setup digital displays' },
-              { num: '3', title: 'Ads Go Live', desc: 'Relevant ads play automatically' },
-              { num: '4', title: 'Earn Revenue', desc: '70% revenue directly to you' }
-            ].map((step) => (
-              <div key={step.num} className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-xl font-bold text-white">{step.num}</span>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-slate-900">{step.title}</h3>
-                  <p className="text-slate-600">{step.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+      {/* Panel 2 - Stats - Dark gradient */}
+      <div className="bg-gradient-to-br from-indigo-950 to-violet-950 p-8 flex flex-col items-center justify-center text-center min-h-[500px]">
+        <h3 className="text-3xl font-bold text-white mb-8">Start Earning<br/>From Your<br/>Screens</h3>
         
-        {/* Benefits */}
-        <div>
-          <h2 className="text-3xl font-bold text-slate-900 mb-6">Why Choose BeyondWalls?</h2>
-          <div className="grid gap-3 text-slate-700">
-            {[
-              'No upfront costs - free to join',
-              'Passive income from screens',
-              'Control over your ad slots',
-              'Real-time analytics',
-              'Premium UAE advertisers',
-              '24/7 technical support'
-            ].map((benefit, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <span className="text-green-600">✓</span>
-                <span>{benefit}</span>
-              </div>
-            ))}
+        <div className="space-y-6 w-full">
+          <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10">
+            <p className="text-4xl font-black text-cyan-400">Up to</p>
+            <p className="text-3xl font-bold text-white">AED 5,000</p>
+            <p className="text-sm text-white/60">/month per screen</p>
           </div>
-        </div>
-        
-        {/* Contact */}
-        <div className="bg-slate-50 rounded-xl p-6 text-center border border-slate-200">
-          <h3 className="text-2xl font-bold text-slate-900 mb-3">Get In Touch</h3>
-          <div className="space-y-2 text-slate-600">
-            <p>📧 hello@beyondwalls.ae  |  📱 +971 55 614 0067</p>
-            <p>🌐 www.beyondwalls.ae</p>
-            <p className="text-sm">in5 Tech - Dubai Internet City, Dubai, UAE</p>
+          
+          <div className="space-y-3">
+            <div>
+              <p className="text-2xl font-bold text-cyan-400">500+</p>
+              <p className="text-xs text-white/70">Active Venues</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-cyan-400">1,200+</p>
+              <p className="text-xs text-white/70">Screens Live</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-cyan-400">AED 2M+</p>
+              <p className="text-xs text-white/70">Paid to Venues</p>
+            </div>
           </div>
         </div>
       </div>
       
-      {/* Bottom bar */}
-      <div className="h-8 bg-gradient-to-r from-violet-600 to-indigo-600" />
+      {/* Panel 3 - Features */}
+      <div className="bg-white p-8 min-h-[500px]">
+        <div className="h-1 bg-gradient-to-r from-cyan-500 to-cyan-600 mb-6" />
+        
+        <h3 className="text-2xl font-bold text-slate-900 mb-6">Key Features</h3>
+        <div className="space-y-4">
+          {[
+            { icon: '🎯', title: 'Smart Targeting', desc: 'AI-powered audience matching' },
+            { icon: '📊', title: 'Live Dashboard', desc: 'Monitor 24/7' },
+            { icon: '💳', title: 'Easy Payouts', desc: 'Weekly transfers' },
+            { icon: '🛡️', title: 'Safe Content', desc: 'Pre-approved ads' },
+            { icon: '📱', title: 'Mobile Control', desc: 'Manage anywhere' }
+          ].map((item, i) => (
+            <div key={i} className="flex gap-3 items-start">
+              <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <span className="text-lg">{item.icon}</span>
+              </div>
+              <div>
+                <p className="font-bold text-slate-900 text-sm">{item.title}</p>
+                <p className="text-xs text-slate-600">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div className="mt-8 text-center">
+          <p className="text-lg font-bold text-slate-900">Ready to Transform?</p>
+          <p className="text-sm text-cyan-600 font-semibold">www.beyondwalls.ae</p>
+        </div>
+      </div>
     </div>
   );
 }
