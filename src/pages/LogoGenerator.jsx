@@ -1706,10 +1706,10 @@ export default function LogoGenerator() {
   function downloadBusinessCardCreative(role, cardData, side = 'front') {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    
+
     const profileUrl = role === 'ceo' 
-      ? `${window.location.origin}/CEOProfile`
-      : `${window.location.origin}/COOProfile`;
+      ? 'https://www.beyondwalls.ae/CEOProfile'
+      : 'https://www.beyondwalls.ae/COOProfile';
     
     canvas.width = 800;
     canvas.height = 450;
@@ -1838,11 +1838,11 @@ export default function LogoGenerator() {
       ctx.fillText('LinkedIn  •  Instagram  •  Twitter', 400, 415);
       
       
-      // QR Code - right side
+      // QR Code - right side with actual QR
       const qrSize = 140;
       const qrX = 590;
       const qrY = 170;
-      
+
       // QR background with shadow
       ctx.fillStyle = '#ffffff';
       ctx.shadowColor = 'rgba(0,0,0,0.2)';
@@ -1853,26 +1853,32 @@ export default function LogoGenerator() {
       ctx.fill();
       ctx.shadowBlur = 0;
       ctx.shadowOffsetY = 0;
-      
-      // QR pattern
-      ctx.fillStyle = '#1e1b4b';
-      const qrCellSize = 12;
-      const qrPadding = 15;
-      const qrGridSize = 10;
-      for (let i = 0; i < qrGridSize; i++) {
-        for (let j = 0; j < qrGridSize; j++) {
-          if ((i + j) % 2 === 0 || (i === 0 && j < 3) || (i < 3 && j === 0) || (i === qrGridSize - 1 && j > qrGridSize - 4) || (i > qrGridSize - 4 && j === qrGridSize - 1)) {
-            ctx.fillRect(qrX + qrPadding + i * qrCellSize, qrY + qrPadding + j * qrCellSize, qrCellSize - 1, qrCellSize - 1);
-          }
-        }
-      }
-      
+
+      // Load actual QR code
+      const qrImg = new Image();
+      qrImg.crossOrigin = 'anonymous';
+      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(profileUrl)}`;
+      qrImg.onload = () => {
+        ctx.drawImage(qrImg, qrX + 10, qrY + 10, 120, 120);
+      };
+
       // QR label
       ctx.font = '12px system-ui, -apple-system, sans-serif';
       ctx.fillStyle = 'rgba(255,255,255,0.6)';
       ctx.textAlign = 'center';
       ctx.fillText('Scan to Connect', qrX + qrSize / 2, qrY + qrSize + 25);
       ctx.textAlign = 'left';
+
+      // in5 Logo (bottom left corner)
+      ctx.font = 'bold 14px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.fillText('Powered by', 45, 405);
+      ctx.font = 'bold 20px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText('in5', 45, 428);
+      ctx.font = '11px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.fillText('Dubai Internet City', 80, 428);
       
       // Corner accents
       ctx.strokeStyle = '#8B5CF6';
@@ -2061,6 +2067,21 @@ export default function LogoGenerator() {
         ctx.textAlign = 'left';
       };
       
+      // Diagonal creative stripe
+      ctx.save();
+      ctx.translate(0, 0);
+      ctx.rotate(-0.05);
+      const stripeGrad = ctx.createLinearGradient(0, 0, 800, 0);
+      stripeGrad.addColorStop(0, 'transparent');
+      stripeGrad.addColorStop(0.3, '#8B5CF6');
+      stripeGrad.addColorStop(0.7, '#6366F1');
+      stripeGrad.addColorStop(1, 'transparent');
+      ctx.fillStyle = stripeGrad;
+      ctx.globalAlpha = 0.1;
+      ctx.fillRect(-50, 200, 900, 80);
+      ctx.restore();
+      ctx.globalAlpha = 1;
+
       // Bottom bar - brand colors
       const bottomGradient = ctx.createLinearGradient(0, 440, 800, 450);
       bottomGradient.addColorStop(0, '#8B5CF6');

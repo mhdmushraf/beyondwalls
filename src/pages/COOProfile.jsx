@@ -11,6 +11,7 @@ import PublicFooter from "@/components/PublicFooter";
 export default function COOProfile() {
   const [isEditing, setIsEditing] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showContactForm, setShowContactForm] = useState(false);
   const [profileData, setProfileData] = useState({
     name: "Muhammed Shafi",
     title: "Chief Operating Officer",
@@ -135,7 +136,10 @@ export default function COOProfile() {
                 
                 {/* CTA Button */}
                 <div>
-                  <Button className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white px-8 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all">
+                  <Button 
+                    onClick={() => setShowContactForm(true)}
+                    className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white px-8 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all"
+                  >
                     GET IN TOUCH!
                   </Button>
                 </div>
@@ -235,6 +239,49 @@ export default function COOProfile() {
       </div>
       
       <PublicFooter />
+      
+      {/* Contact Form Modal */}
+      {showContactForm && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowContactForm(false)}>
+          <Card className="max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+            <CardContent className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-2xl font-bold text-slate-900">Contact Me</h3>
+                <Button variant="ghost" size="icon" onClick={() => setShowContactForm(false)}>
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <Label>Your Name</Label>
+                  <Input placeholder="Enter your name" className="mt-1" />
+                </div>
+                <div>
+                  <Label>Your Email</Label>
+                  <Input type="email" placeholder="your@email.com" className="mt-1" />
+                </div>
+                <div>
+                  <Label>Message</Label>
+                  <textarea 
+                    rows={4} 
+                    placeholder="How can I help you?"
+                    className="w-full mt-1 px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+                <Button className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700">
+                  Send Message
+                </Button>
+                <div className="text-center pt-4 border-t border-slate-200">
+                  <p className="text-sm text-slate-600 mb-2">Or reach me directly:</p>
+                  <a href={`mailto:${profileData.email}`} className="text-indigo-600 hover:text-violet-600 font-medium">
+                    {profileData.email}
+                  </a>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
