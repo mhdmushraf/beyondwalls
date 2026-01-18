@@ -2045,103 +2045,162 @@ export default function LogoGenerator() {
 function BrochureFrontPreview() {
   return (
     <div className="grid grid-cols-3 rounded-xl overflow-hidden shadow-2xl">
-      {/* Panel 1 - Cover - Cyan */}
-      <div className="relative bg-gradient-to-br from-cyan-500 to-cyan-600 p-8 flex flex-col items-center justify-center min-h-[500px]">
-        <div className="absolute inset-0 opacity-10">
-          {[...Array(20)].map((_, i) => (
-            <div key={i} className="absolute w-full h-px bg-white" style={{ top: `${i * 5}%`, transform: 'rotate(45deg)' }} />
-          ))}
+      {/* Panel 1 - Cover - Bold Creative Design */}
+      <div className="relative bg-gradient-to-br from-cyan-400 via-cyan-500 to-blue-600 p-8 flex flex-col items-center justify-center min-h-[500px] overflow-hidden">
+        {/* Animated background circles */}
+        <div className="absolute -top-20 -right-20 w-60 h-60 bg-white/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-violet-500/30 rounded-full blur-2xl" />
+        <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-indigo-500/20 rounded-full blur-xl" />
+        
+        {/* Creative wave pattern */}
+        <div className="absolute inset-0 opacity-20">
+          <svg className="w-full h-full" viewBox="0 0 400 600">
+            <path d="M 0,100 Q 100,50 200,100 T 400,100 L 400,0 L 0,0 Z" fill="white" opacity="0.3" />
+            <path d="M 0,200 Q 100,150 200,200 T 400,200 L 400,100 L 0,100 Z" fill="white" opacity="0.2" />
+            <path d="M 0,500 Q 100,450 200,500 T 400,500 L 400,600 L 0,600 Z" fill="rgba(0,0,0,0.2)" />
+          </svg>
         </div>
         
         <div className="relative z-10 text-center space-y-6">
-          <div className="w-24 h-24 bg-white rounded-2xl flex items-center justify-center mx-auto shadow-xl">
-            <div className="w-20 h-20 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-xl flex items-center justify-center">
-              <MonitorPlay className="w-10 h-10 text-white" />
+          {/* 3D-style logo */}
+          <div className="relative w-28 h-28 mx-auto">
+            <div className="absolute inset-0 bg-gradient-to-br from-white to-gray-100 rounded-3xl shadow-2xl transform rotate-6" />
+            <div className="absolute inset-2 bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl">
+              <MonitorPlay className="w-14 h-14 text-white drop-shadow-lg" />
             </div>
           </div>
           
-          <div>
-            <h1 className="text-4xl font-black text-slate-900">BeyondWalls</h1>
-            <p className="text-slate-700 text-xs mt-1">A Linkzone Global FZ-LLC Company</p>
+          {/* Modern typography */}
+          <div className="space-y-1">
+            <h1 className="text-5xl font-black text-white tracking-tight drop-shadow-lg">Beyond</h1>
+            <h1 className="text-5xl font-black text-slate-900 tracking-tight">Walls</h1>
+            <div className="h-1 w-20 bg-white/80 mx-auto rounded-full" />
+            <p className="text-slate-800 text-xs font-semibold mt-2 tracking-wide">Linkzone Global FZ-LLC</p>
           </div>
           
-          <div className="space-y-2">
-            <h2 className="text-2xl font-bold text-white">Transform</h2>
-            <h2 className="text-2xl font-bold text-white">Your Venue</h2>
-            <h2 className="text-2xl font-bold text-white">Into Revenue</h2>
-          </div>
-          
-          <p className="text-sm text-slate-100">Digital Out-of-Home Advertising</p>
-        </div>
-      </div>
-      
-      {/* Panel 2 - Content - Black */}
-      <div className="bg-slate-900 p-8 text-white min-h-[500px]">
-        <h3 className="text-2xl font-bold mb-6">Why Choose Us?</h3>
-        <div className="space-y-4 text-sm">
-          {[
-            { icon: '💰', title: 'Earn 70% Revenue', desc: 'Keep majority of ad revenue' },
-            { icon: '🎯', title: 'AI Targeting', desc: 'Smart ad placement' },
-            { icon: '📊', title: 'Real-Time Analytics', desc: 'Track live performance' },
-            { icon: '🚀', title: 'Zero Cost', desc: 'Free to start' },
-            { icon: '🌐', title: 'Leading Platform', desc: '500+ venues trust us' },
-            { icon: '⚡', title: 'Quick Setup', desc: 'Live in 48 hours' }
-          ].map((item, i) => (
-            <div key={i} className="flex gap-3">
-              <span className="text-xl text-cyan-400">{item.icon}</span>
-              <div>
-                <p className="font-bold text-white">{item.title}</p>
-                <p className="text-slate-400 text-xs">{item.desc}</p>
-              </div>
+          {/* Creative tagline */}
+          <div className="space-y-3 bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/30">
+            <h2 className="text-2xl font-bold text-white leading-tight">Transform Screens</h2>
+            <div className="flex items-center justify-center gap-2">
+              <div className="h-px w-8 bg-gradient-to-r from-transparent to-white" />
+              <span className="text-xl font-black text-yellow-300">INTO</span>
+              <div className="h-px w-8 bg-gradient-to-l from-transparent to-white" />
             </div>
-          ))}
+            <h2 className="text-2xl font-bold text-white leading-tight">Revenue Streams</h2>
+          </div>
+          
+          <p className="text-sm text-white/90 font-medium">Digital Out-of-Home Advertising</p>
         </div>
       </div>
       
-      {/* Panel 3 - Contact - Cyan */}
-      <div className="relative bg-gradient-to-br from-cyan-600 to-cyan-700 p-8 flex flex-col justify-between min-h-[500px]">
+      {/* Panel 2 - Benefits - Creative Dark Design */}
+      <div className="relative bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-8 text-white min-h-[500px] overflow-hidden">
+        {/* Abstract geometric background */}
         <div className="absolute inset-0 opacity-5">
-          {[...Array(15)].map((_, i) => (
-            <div key={i} className="absolute" style={{ 
-              left: `${(i % 5) * 20}%`, 
-              top: `${Math.floor(i / 5) * 33}%`,
-              width: '40px',
-              height: '40px',
-              border: '2px solid white',
-              transform: 'rotate(45deg)'
+          <div className="absolute top-0 left-0 w-full h-full">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="absolute" style={{
+                width: '150px',
+                height: '150px',
+                border: '2px solid currentColor',
+                borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
+                top: `${i * 15}%`,
+                left: `${i * 10}%`,
+                transform: `rotate(${i * 30}deg)`
+              }} />
+            ))}
+          </div>
+        </div>
+        
+        <div className="relative z-10">
+          {/* Creative header */}
+          <div className="mb-6 text-center">
+            <div className="inline-block bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text">
+              <h3 className="text-3xl font-black tracking-tight">Why Choose</h3>
+              <h3 className="text-3xl font-black tracking-tight">BeyondWalls?</h3>
+            </div>
+            <div className="h-1 w-16 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto mt-2 rounded-full" />
+          </div>
+          
+          <div className="space-y-3 text-sm">
+            {[
+              { icon: '💰', title: '70% Revenue', desc: 'Majority earnings', color: 'from-green-400 to-emerald-500' },
+              { icon: '🎯', title: 'AI Targeting', desc: 'Smart placement', color: 'from-cyan-400 to-blue-500' },
+              { icon: '📊', title: 'Live Analytics', desc: 'Real-time data', color: 'from-purple-400 to-pink-500' },
+              { icon: '🚀', title: 'Zero Cost', desc: 'Free to start', color: 'from-orange-400 to-red-500' },
+              { icon: '🌐', title: '500+ Venues', desc: 'Trusted network', color: 'from-indigo-400 to-purple-500' },
+              { icon: '⚡', title: '48hr Setup', desc: 'Lightning fast', color: 'from-yellow-400 to-orange-500' }
+            ].map((item, i) => (
+              <div key={i} className="group hover:scale-105 transition-transform">
+                <div className="flex gap-3 items-center bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10 hover:border-cyan-400/50 transition-all">
+                  <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${item.color} flex items-center justify-center shadow-lg`}>
+                    <span className="text-2xl">{item.icon}</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-bold text-white text-sm">{item.title}</p>
+                    <p className="text-slate-400 text-xs">{item.desc}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      
+      {/* Panel 3 - Contact - Modern Creative */}
+      <div className="relative bg-gradient-to-br from-white via-cyan-50 to-blue-50 p-8 flex flex-col justify-between min-h-[500px] overflow-hidden">
+        {/* Creative background elements */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-cyan-200/40 to-blue-300/40 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-purple-200/40 to-pink-200/40 rounded-full blur-2xl" />
+        
+        {/* Dotted pattern */}
+        <div className="absolute inset-0 opacity-30">
+          {[...Array(50)].map((_, i) => (
+            <div key={i} className="absolute w-1.5 h-1.5 bg-cyan-500 rounded-full" style={{
+              left: `${(i % 10) * 10}%`,
+              top: `${Math.floor(i / 10) * 20}%`,
             }} />
           ))}
         </div>
         
         <div className="relative z-10 space-y-6">
-          <h3 className="text-2xl font-bold text-slate-900">Get Started</h3>
+          {/* Creative header */}
+          <div className="text-center">
+            <div className="inline-block px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full mb-2">
+              <h3 className="text-2xl font-black text-white">Let's Connect</h3>
+            </div>
+          </div>
           
-          <div className="space-y-4 text-sm">
-            <div>
-              <p className="text-slate-800 font-semibold mb-1">📧 Email</p>
-              <p className="text-white font-bold">hello@beyondwalls.ae</p>
-            </div>
-            
-            <div>
-              <p className="text-slate-800 font-semibold mb-1">📱 Phone</p>
-              <p className="text-white font-bold">+971 55 614 0067</p>
-            </div>
-            
-            <div>
-              <p className="text-slate-800 font-semibold mb-1">🌐 Website</p>
-              <p className="text-white font-bold">www.beyondwalls.ae</p>
-            </div>
-            
-            <div>
-              <p className="text-slate-800 font-semibold mb-1">📍 Location</p>
-              <p className="text-white text-xs leading-relaxed">in5 Tech<br/>Dubai Internet City<br/>Dubai, UAE</p>
-            </div>
+          <div className="space-y-3">
+            {[
+              { icon: '📧', label: 'Email', value: 'hello@beyondwalls.ae', gradient: 'from-red-400 to-pink-500' },
+              { icon: '📱', label: 'Phone', value: '+971 55 614 0067', gradient: 'from-green-400 to-emerald-500' },
+              { icon: '🌐', label: 'Web', value: 'beyondwalls.ae', gradient: 'from-blue-400 to-cyan-500' },
+              { icon: '📍', label: 'Dubai', value: 'Internet City', gradient: 'from-purple-400 to-indigo-500' }
+            ].map((item, i) => (
+              <div key={i} className="bg-white rounded-xl p-3 shadow-lg hover:shadow-xl transition-shadow border-2 border-cyan-100">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${item.gradient} flex items-center justify-center shadow-md`}>
+                    <span className="text-xl">{item.icon}</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-xs text-slate-500 font-semibold uppercase tracking-wide">{item.label}</p>
+                    <p className="text-sm font-bold text-slate-900">{item.value}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
         
-        <div className="relative z-10 bg-white/10 border-2 border-white/30 rounded-lg p-4 text-center backdrop-blur-sm">
-          <p className="text-xs text-white/80 mb-1">Scan QR Code</p>
-          <div className="w-24 h-24 bg-white rounded-lg mx-auto" />
+        {/* QR Code section */}
+        <div className="relative z-10 bg-gradient-to-br from-slate-900 to-purple-900 rounded-2xl p-4 text-center shadow-2xl">
+          <div className="bg-white rounded-xl p-3 mb-2">
+            <div className="w-24 h-24 mx-auto bg-gradient-to-br from-slate-200 to-slate-300 rounded-lg flex items-center justify-center">
+              <span className="text-4xl">📱</span>
+            </div>
+          </div>
+          <p className="text-xs text-white font-semibold">Scan for Instant Access</p>
         </div>
       </div>
     </div>
@@ -2151,85 +2210,168 @@ function BrochureFrontPreview() {
 function BrochureBackPreview() {
   return (
     <div className="grid grid-cols-3 rounded-xl overflow-hidden shadow-2xl">
-      {/* Panel 1 - How It Works */}
-      <div className="bg-white p-8 min-h-[500px]">
-        <h3 className="text-2xl font-bold text-slate-900 mb-6">How It Works</h3>
-        <div className="space-y-6">
-          {[
-            { num: '1', title: 'Register', desc: 'Quick signup' },
-            { num: '2', title: 'Setup', desc: 'Install displays' },
-            { num: '3', title: 'Go Live', desc: 'Ads start' },
-            { num: '4', title: 'Earn', desc: 'Get paid' }
-          ].map((step) => (
-            <div key={step.num} className="flex items-start gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-full flex items-center justify-center flex-shrink-0">
-                <span className="text-lg font-bold text-white">{step.num}</span>
-              </div>
-              <div>
-                <h4 className="font-bold text-slate-900">{step.title}</h4>
-                <p className="text-xs text-slate-600">{step.desc}</p>
-              </div>
+      {/* Panel 1 - How It Works - Creative Process */}
+      <div className="relative bg-gradient-to-br from-white via-blue-50 to-cyan-50 p-8 min-h-[500px] overflow-hidden">
+        {/* Creative background */}
+        <div className="absolute -top-20 -left-20 w-60 h-60 bg-gradient-to-br from-cyan-200/30 to-blue-300/30 rounded-full blur-3xl" />
+        <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-gradient-to-tl from-purple-200/30 to-pink-200/30 rounded-full blur-2xl" />
+        
+        {/* Diagonal lines pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <svg className="w-full h-full">
+            {[...Array(20)].map((_, i) => (
+              <line key={i} x1="0" y1={i * 30} x2="400" y2={i * 30 + 200} stroke="currentColor" strokeWidth="2" className="text-cyan-500" />
+            ))}
+          </svg>
+        </div>
+        
+        <div className="relative z-10">
+          {/* Modern header */}
+          <div className="mb-8">
+            <div className="inline-block">
+              <h3 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600">4 Simple</h3>
+              <h3 className="text-4xl font-black text-slate-900">Steps</h3>
             </div>
-          ))}
+            <div className="h-1.5 w-24 bg-gradient-to-r from-cyan-500 to-blue-500 mt-2 rounded-full" />
+          </div>
+          
+          <div className="space-y-5">
+            {[
+              { num: '1', title: 'Register', desc: 'Quick 2-min signup', icon: '✍️', color: 'from-blue-400 to-cyan-500' },
+              { num: '2', title: 'Setup', desc: 'We install screens', icon: '📺', color: 'from-purple-400 to-pink-500' },
+              { num: '3', title: 'Go Live', desc: 'Ads auto-play', icon: '🚀', color: 'from-orange-400 to-red-500' },
+              { num: '4', title: 'Earn', desc: 'Weekly payouts', icon: '💰', color: 'from-green-400 to-emerald-500' }
+            ].map((step) => (
+              <div key={step.num} className="group hover:scale-105 transition-transform">
+                <div className="bg-white rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all border-2 border-cyan-100">
+                  <div className="flex items-center gap-4">
+                    {/* Number badge */}
+                    <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-lg flex-shrink-0`}>
+                      <span className="text-2xl font-black text-white">{step.num}</span>
+                    </div>
+                    {/* Content */}
+                    <div className="flex-1">
+                      <h4 className="font-black text-slate-900 text-lg">{step.title}</h4>
+                      <p className="text-xs text-slate-600">{step.desc}</p>
+                    </div>
+                    {/* Icon */}
+                    <span className="text-3xl">{step.icon}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       
-      {/* Panel 2 - Stats - Dark gradient */}
-      <div className="bg-gradient-to-br from-indigo-950 to-violet-950 p-8 flex flex-col items-center justify-center text-center min-h-[500px]">
-        <h3 className="text-3xl font-bold text-white mb-8">Start Earning<br/>From Your<br/>Screens</h3>
+      {/* Panel 2 - Stats - Bold Impact Design */}
+      <div className="relative bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-950 p-8 flex flex-col items-center justify-center text-center min-h-[500px] overflow-hidden">
+        {/* Radial gradient overlays */}
+        <div className="absolute top-0 left-1/2 w-96 h-96 bg-gradient-radial from-cyan-500/20 to-transparent blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-64 h-64 bg-gradient-radial from-purple-500/20 to-transparent blur-2xl" />
         
-        <div className="space-y-6 w-full">
-          <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10">
-            <p className="text-4xl font-black text-cyan-400">Up to</p>
-            <p className="text-3xl font-bold text-white">AED 5,000</p>
-            <p className="text-sm text-white/60">/month per screen</p>
+        {/* Animated rings */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-10">
+          <div className="w-64 h-64 border-4 border-white rounded-full" />
+          <div className="absolute w-80 h-80 border-2 border-white rounded-full" />
+          <div className="absolute w-96 h-96 border border-white rounded-full" />
+        </div>
+        
+        <div className="relative z-10 space-y-6">
+          {/* Attention-grabbing headline */}
+          <div className="space-y-2">
+            <div className="inline-block px-5 py-2 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full">
+              <p className="text-sm font-black text-white tracking-wider">REVENUE POTENTIAL</p>
+            </div>
+            <h3 className="text-4xl font-black text-white leading-tight">Unlock Your</h3>
+            <h3 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Screen's Power</h3>
+          </div>
+          
+          {/* Big number highlight */}
+          <div className="bg-white/5 backdrop-blur-md rounded-3xl p-6 border-2 border-cyan-400/30 shadow-2xl">
+            <p className="text-sm text-cyan-300 font-bold mb-2">EARN UP TO</p>
+            <p className="text-5xl font-black text-white mb-1">AED 5,000</p>
+            <div className="h-1 w-32 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto rounded-full mb-2" />
+            <p className="text-sm text-white/70">per screen monthly</p>
+          </div>
+          
+          {/* Stats grid */}
+          <div className="grid grid-cols-3 gap-3 w-full">
+            {[
+              { value: '500+', label: 'Venues', icon: '🏢' },
+              { value: '1.2K', label: 'Screens', icon: '📺' },
+              { value: '2M+', label: 'AED Paid', icon: '💰' }
+            ].map((stat, i) => (
+              <div key={i} className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20">
+                <p className="text-2xl mb-1">{stat.icon}</p>
+                <p className="text-xl font-black text-cyan-400">{stat.value}</p>
+                <p className="text-xs text-white/60">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      
+      {/* Panel 3 - Features - Modern Card Design */}
+      <div className="relative bg-gradient-to-br from-cyan-50 via-white to-blue-50 p-8 min-h-[500px] overflow-hidden">
+        {/* Background elements */}
+        <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-cyan-200/40 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-blue-200/40 to-transparent rounded-full blur-2xl" />
+        
+        {/* Geometric grid */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="grid grid-cols-8 grid-rows-12 h-full">
+            {[...Array(96)].map((_, i) => (
+              <div key={i} className="border border-cyan-500" />
+            ))}
+          </div>
+        </div>
+        
+        <div className="relative z-10">
+          {/* Creative header */}
+          <div className="mb-6">
+            <div className="inline-block px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full mb-3">
+              <p className="text-xs font-black text-white tracking-widest">PLATFORM FEATURES</p>
+            </div>
+            <h3 className="text-3xl font-black text-slate-900 leading-tight">Everything You</h3>
+            <h3 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600">Need & More</h3>
           </div>
           
           <div className="space-y-3">
-            <div>
-              <p className="text-2xl font-bold text-cyan-400">500+</p>
-              <p className="text-xs text-white/70">Active Venues</p>
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-cyan-400">1,200+</p>
-              <p className="text-xs text-white/70">Screens Live</p>
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-cyan-400">AED 2M+</p>
-              <p className="text-xs text-white/70">Paid to Venues</p>
+            {[
+              { icon: '🎯', title: 'Smart AI Targeting', desc: 'Precision audience match', gradient: 'from-cyan-400 to-blue-500' },
+              { icon: '📊', title: 'Live Dashboard', desc: 'Real-time insights', gradient: 'from-purple-400 to-pink-500' },
+              { icon: '💳', title: 'Auto Payouts', desc: 'Weekly transfers', gradient: 'from-green-400 to-emerald-500' },
+              { icon: '🛡️', title: 'Safe Content', desc: 'Pre-screened ads', gradient: 'from-orange-400 to-red-500' },
+              { icon: '📱', title: 'Mobile First', desc: 'Manage anywhere', gradient: 'from-indigo-400 to-purple-500' }
+            ].map((item, i) => (
+              <div key={i} className="group hover:scale-105 transition-all duration-200">
+                <div className="bg-white rounded-2xl p-4 shadow-md hover:shadow-2xl transition-all border-2 border-cyan-100 hover:border-cyan-300">
+                  <div className="flex items-center gap-3">
+                    {/* Gradient icon */}
+                    <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
+                      <span className="text-2xl">{item.icon}</span>
+                    </div>
+                    {/* Content */}
+                    <div className="flex-1">
+                      <h4 className="font-black text-slate-900 text-base">{item.title}</h4>
+                      <p className="text-xs text-slate-600">{item.desc}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {/* CTA */}
+          <div className="mt-6 text-center bg-gradient-to-r from-slate-900 to-purple-900 rounded-2xl p-5 shadow-xl">
+            <p className="text-xl font-black text-white mb-1">Ready to Start?</p>
+            <div className="flex items-center justify-center gap-2">
+              <span className="text-cyan-400 text-2xl">→</span>
+              <p className="text-lg font-bold text-cyan-400">beyondwalls.ae</p>
+              <span className="text-cyan-400 text-2xl">←</span>
             </div>
           </div>
-        </div>
-      </div>
-      
-      {/* Panel 3 - Features */}
-      <div className="bg-white p-8 min-h-[500px]">
-        <div className="h-1 bg-gradient-to-r from-cyan-500 to-cyan-600 mb-6" />
-        
-        <h3 className="text-2xl font-bold text-slate-900 mb-6">Key Features</h3>
-        <div className="space-y-4">
-          {[
-            { icon: '🎯', title: 'Smart Targeting', desc: 'AI-powered audience matching' },
-            { icon: '📊', title: 'Live Dashboard', desc: 'Monitor 24/7' },
-            { icon: '💳', title: 'Easy Payouts', desc: 'Weekly transfers' },
-            { icon: '🛡️', title: 'Safe Content', desc: 'Pre-approved ads' },
-            { icon: '📱', title: 'Mobile Control', desc: 'Manage anywhere' }
-          ].map((item, i) => (
-            <div key={i} className="flex gap-3 items-start">
-              <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                <span className="text-lg">{item.icon}</span>
-              </div>
-              <div>
-                <p className="font-bold text-slate-900 text-sm">{item.title}</p>
-                <p className="text-xs text-slate-600">{item.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-        
-        <div className="mt-8 text-center">
-          <p className="text-lg font-bold text-slate-900">Ready to Transform?</p>
-          <p className="text-sm text-cyan-600 font-semibold">www.beyondwalls.ae</p>
         </div>
       </div>
     </div>
