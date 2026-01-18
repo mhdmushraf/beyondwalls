@@ -1909,7 +1909,7 @@ export default function LogoGenerator() {
       ctx.stroke();
       
     } else {
-      // === FRONT SIDE DESIGN ===
+      // === FRONT SIDE DESIGN - Matching Screenshot ===
       // Background gradient matching brand colors
       const bgGradient = ctx.createLinearGradient(0, 0, 800, 450);
       bgGradient.addColorStop(0, '#1e1b4b');
@@ -1932,13 +1932,7 @@ export default function LogoGenerator() {
       ctx.fill();
       ctx.globalAlpha = 1;
       
-      // Left accent bar - brand colors
-      const accentGradient = ctx.createLinearGradient(0, 0, 0, 450);
-      accentGradient.addColorStop(0, '#8B5CF6');
-      accentGradient.addColorStop(1, '#6366F1');
-      ctx.fillStyle = accentGradient;
-      ctx.fillRect(0, 0, 10, 450);
-      
+      // Header section - Logo and company info
       // Logo icon background - brand colors
       const logoGradient = ctx.createLinearGradient(40, 35, 110, 105);
       logoGradient.addColorStop(0, '#8B5CF6');
@@ -1984,17 +1978,17 @@ export default function LogoGenerator() {
       // Company name
       ctx.font = 'bold 32px system-ui, -apple-system, sans-serif';
       ctx.fillStyle = '#ffffff';
-      ctx.fillText('BeyondWalls', 125, 75);
-      
-      // Tagline  
-      ctx.font = '14px system-ui, -apple-system, sans-serif';
-      ctx.fillStyle = 'rgba(255,255,255,0.7)';
-      ctx.fillText('Digital Out-of-Home Advertising', 125, 98);
+      ctx.fillText('BeyondWalls', 125, 62);
       
       // Parent company
       ctx.font = '11px system-ui, -apple-system, sans-serif';
       ctx.fillStyle = 'rgba(255,255,255,0.5)';
-      ctx.fillText('A Linkzone Global FZ-LLC Company', 125, 118);
+      ctx.fillText('A Linkzone Global FZ-LLC Company', 125, 82);
+      
+      // Tagline  
+      ctx.font = '14px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.fillText('Digital Out-of-Home Advertising', 125, 100);
       
       // Divider line
       const lineGradient = ctx.createLinearGradient(40, 0, 760, 0);
@@ -2007,41 +2001,44 @@ export default function LogoGenerator() {
       ctx.lineTo(760, 135);
       ctx.stroke();
       
-      // Name with glow
-      ctx.shadowColor = '#8B5CF6';
-      ctx.shadowBlur = 25;
-      ctx.font = 'bold 42px system-ui, -apple-system, sans-serif';
+      // Name
+      ctx.font = 'bold 48px system-ui, -apple-system, sans-serif';
       ctx.fillStyle = '#ffffff';
-      ctx.fillText(cardData.name, 40, 195);
-      ctx.shadowBlur = 0;
+      ctx.fillText(cardData.name, 40, 200);
       
       // Title badge - brand colors
-      const titleGradient = ctx.createLinearGradient(40, 210, 300, 240);
+      const titleGradient = ctx.createLinearGradient(40, 220, 300, 260);
       titleGradient.addColorStop(0, '#8B5CF6');
       titleGradient.addColorStop(1, '#6366F1');
       ctx.fillStyle = titleGradient;
       ctx.beginPath();
-      ctx.roundRect(40, 210, ctx.measureText(cardData.title).width * 0.55 + 30, 32, 16);
+      ctx.roundRect(40, 220, ctx.measureText(cardData.title).width * 0.65 + 30, 38, 19);
       ctx.fill();
       
-      ctx.font = 'bold 16px system-ui, -apple-system, sans-serif';
+      ctx.font = 'bold 17px system-ui, -apple-system, sans-serif';
       ctx.fillStyle = '#ffffff';
-      ctx.fillText(cardData.title, 55, 232);
+      ctx.fillText(cardData.title, 55, 246);
       
-      // Contact details
+      // Contact details in 2-column grid
+      const leftX = 40;
+      const rightX = 420;
+      const startY = 310;
+      const spacing = 42;
+      
       ctx.font = '15px system-ui, -apple-system, sans-serif';
       ctx.fillStyle = 'rgba(255,255,255,0.9)';
-      ctx.fillText('✉️  ' + cardData.email, 40, 295);
-      ctx.fillText('📱  ' + cardData.phone, 40, 325);
-      ctx.fillText('🌐  www.beyondwalls.ae', 40, 355);
-      ctx.fillText('📍  in5 Tech, Dubai Internet City, UAE', 40, 385);
-
-      // Bottom bar - brand colors
-      const bottomGradient = ctx.createLinearGradient(0, 440, 800, 450);
-      bottomGradient.addColorStop(0, '#8B5CF6');
-      bottomGradient.addColorStop(1, '#6366F1');
-      ctx.fillStyle = bottomGradient;
-      ctx.fillRect(0, 440, 800, 10);
+      
+      // Left column
+      // Email
+      ctx.fillText('✉️  ' + cardData.email, leftX, startY);
+      // Website
+      ctx.fillText('🌐  www.beyondwalls.ae', leftX, startY + spacing);
+      
+      // Right column
+      // Phone
+      ctx.fillText('📱  ' + cardData.phone, rightX, startY);
+      // Location
+      ctx.fillText('📍  Dubai, UAE', rightX, startY + spacing);
     }
     
     canvas.toBlob((blob) => {
@@ -2321,15 +2318,12 @@ function BusinessCardCreative({ cardData, cardType, onEdit, onDownload }) {
       </div>
 
       {!showBack ? (
-        /* FRONT SIDE PREVIEW */
+        /* FRONT SIDE PREVIEW - Matching Screenshot */
         <div className="relative rounded-2xl shadow-2xl overflow-hidden max-w-xl mx-auto bg-gradient-to-br from-indigo-950 via-purple-900 to-violet-900">
           {/* Decorative elements */}
           <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
           <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/4 translate-x-1/4" />
-          
-          {/* Left accent - brand colors */}
-          <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-b from-violet-500 to-indigo-600" />
           
           <div className="relative p-6">
             {/* Header with logo */}
@@ -2347,36 +2341,41 @@ function BusinessCardCreative({ cardData, cardType, onEdit, onDownload }) {
             </div>
             
             {/* Person info */}
-            <div className="mb-6">
-              <h3 className="text-3xl font-bold text-white mb-2 drop-shadow-lg">{cardData.name}</h3>
-              <span className="inline-block px-4 py-1.5 bg-gradient-to-r from-violet-500 to-indigo-600 rounded-full text-white text-sm font-semibold shadow-lg">
+            <div className="mb-8">
+              <h3 className="text-4xl font-bold text-white mb-3">{cardData.name}</h3>
+              <span className="inline-block px-5 py-2 bg-gradient-to-r from-violet-500 to-indigo-600 rounded-full text-white text-base font-semibold shadow-lg">
                 {cardData.title}
               </span>
             </div>
             
-            {/* Contact details */}
-            <div className="space-y-3 text-sm">
+            {/* Contact details - 2 column grid */}
+            <div className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm">
               <div className="flex items-center gap-3 text-white/90">
-                <Mail className="w-4 h-4 text-violet-400" />
+                <div className="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center">
+                  <Mail className="w-4 h-4 text-violet-400" />
+                </div>
                 <span className="text-sm">{cardData.email}</span>
               </div>
               <div className="flex items-center gap-3 text-white/90">
-                <Phone className="w-4 h-4 text-indigo-400" />
+                <div className="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center">
+                  <Phone className="w-4 h-4 text-indigo-400" />
+                </div>
                 <span className="text-sm">{cardData.phone}</span>
               </div>
               <div className="flex items-center gap-3 text-white/90">
-                <Globe className="w-4 h-4 text-violet-400" />
+                <div className="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center">
+                  <Globe className="w-4 h-4 text-violet-400" />
+                </div>
                 <span className="text-sm">www.beyondwalls.ae</span>
               </div>
               <div className="flex items-center gap-3 text-white/90">
-                <MapPin className="w-4 h-4 text-indigo-400" />
-                <span className="text-sm">in5 Tech, Dubai Internet City, UAE</span>
+                <div className="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center">
+                  <MapPin className="w-4 h-4 text-indigo-400" />
+                </div>
+                <span className="text-sm">Dubai, UAE</span>
               </div>
             </div>
           </div>
-          
-          {/* Bottom bar - brand colors */}
-          <div className="h-2 bg-gradient-to-r from-violet-500 to-indigo-600" />
         </div>
       ) : (
         /* BACK SIDE PREVIEW */
