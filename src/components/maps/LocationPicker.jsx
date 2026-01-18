@@ -23,33 +23,30 @@ const selectedIcon = new L.Icon({
   shadowSize: [41, 41]
 });
 
-function MapClickHandler({ onLocationSelect }) {
+function MapClickHandler({ onClick }) {
   useMapEvents({
     click: (e) => {
-      onLocationSelect({
-        latitude: e.latlng.lat,
-        longitude: e.latlng.lng
-      });
+      onClick(e.latlng.lat, e.latlng.lng);
     }
   });
   return null;
 }
 
-export default function LocationPicker({ value, onChange, className = "" }) {
+export default function LocationPicker({ onLocationSelect, initialLat, initialLng, className = "" }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [searching, setSearching] = useState(false);
   const [map, setMap] = useState(null);
+  const [selectedPosition, setSelectedPosition] = useState(
+    initialLat && initialLng ? [initialLat, initialLng] : null
+  );
 
-  // UAE center
-  const defaultCenter = [24.4539, 54.3773];
-  const defaultZoom = 7;
+  // Dubai center as default
+  const defaultCenter = [25.2048, 55.2708];
+  const defaultZoom = 11;
 
-  const position = value?.latitude && value?.longitude 
-    ? [value.latitude, value.longitude] 
-    : null;
-
-  const handleLocationSelect = (coords) => {
-    onChange(coords);
+  const handleLocationClick = (lat, lng) => {
+    setSelectedPosition([lat, lng]);
+    onLocationSelect(lat, lng);
   };
 
   const handleSearch = async () => {
@@ -58,19 +55,22 @@ export default function LocationPicker({ value, onChange, className = "" }) {
     setSearching(true);
     try {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery + ", UAE")}&limit=1`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery + ", UAE")}&limit=1`,
+        {
+          headers: {
+            'User-Agent': 'BeyondWalls Venue Onboarding'
+          }
+        }
       );
       const data = await response.json();
       
       if (data && data.length > 0) {
         const { lat, lon } = data[0];
-        const coords = {
-          latitude: parseFloat(lat),
-          longitude: parseFloat(lon)
-        };
-        onChange(coords);
+        const latNum = parseFloat(lat);
+        const lngNum = parseFloat(lon);
+        handleLocationClick(latNum, lngNum);
         if (map) {
-          map.flyTo([coords.latitude, coords.longitude], 15);
+          map.flyTo([latNum, lngNum], 16);
         }
       }
     } catch (error) {
@@ -105,37 +105,38 @@ export default function LocationPicker({ value, onChange, className = "" }) {
       </div>
 
       {/* Map */}
-      <div className="rounded-xl overflow-hidden border border-slate-200" style={{ height: "300px" }}>
+      <div className="rounded-xl overflow-hidden border-2 border-violet-200 shadow-lg" style={{ height: "400px" }}>
         <MapContainer
-          center={position || defaultCenter}
-          zoom={position ? 15 : defaultZoom}
-          style={{ height: "100%", width: "100%" }}
+          center={selectedPosition || defaultCenter}
+          zoom={selectedPosition ? 16 : defaultZoom}
+          style={{ height: "100%", width: "100%", cursor: "crosshair" }}
           scrollWheelZoom={true}
+          zoomControl={true}
           ref={setMap}
         >
           <TileLayer
-            attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <MapClickHandler onLocationSelect={handleLocationSelect} />
-          {position && (
-            <Marker position={position} icon={selectedIcon} />
+          <MapClickHandler onClick={handleLocationClick} />
+          {selectedPosition && (
+            <Marker position={selectedPosition} icon={selectedIcon} />
           )}
         </MapContainer>
       </div>
 
       {/* Instructions */}
-      <p className="text-xs text-slate-500 flex items-center gap-1">
-        <MapPin className="w-3 h-3" />
-        Click on the map to select screen location, or search for an address
+      <p className="text-sm text-slate-600 flex items-center gap-2 bg-violet-50 p-3 rounded-lg border border-violet-200">
+        <MapPin className="w-4 h-4 text-violet-600" />
+        <span><strong>Click anywhere on the map</strong> to pin your venue location, or search for an address above</span>
       </p>
 
       {/* Selected Coordinates */}
-      {position && (
+      {selectedPosition && (
         <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-sm">
-          <p className="font-medium text-green-800">Location Selected</p>
+          <p className="font-medium text-green-800">✓ Location Selected</p>
           <p className="text-green-600">
-            Lat: {value.latitude.toFixed(6)}, Lng: {value.longitude.toFixed(6)}
+            Lat: {selectedPosition[0].toFixed(6)}, Lng: {selectedPosition[1].toFixed(6)}
           </p>
         </div>
       )}
