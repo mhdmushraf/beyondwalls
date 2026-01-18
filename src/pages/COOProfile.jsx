@@ -108,10 +108,10 @@ export default function COOProfile() {
             ) : (
               <>
                 <div>
-                  <h1 className="text-5xl lg:text-7xl font-bold text-slate-900 mb-4 leading-tight">
+                  <h1 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-3 leading-tight">
                     Hello, I'm <span className="text-indigo-600">{profileData.name}</span>
                   </h1>
-                  <h2 className="text-3xl lg:text-4xl font-light text-slate-700 mb-6">{profileData.title}</h2>
+                  <h2 className="text-2xl lg:text-3xl font-medium text-slate-700 mb-6">{profileData.title}</h2>
                   
                   <div className="flex items-center gap-3 mb-8">
                     <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center">
@@ -123,12 +123,12 @@ export default function COOProfile() {
                     </div>
                   </div>
                   
-                  <p className="text-slate-600 leading-relaxed text-lg mb-6 max-w-xl">
+                  <p className="text-slate-600 leading-relaxed text-base mb-4 max-w-xl">
                     Driving operational excellence and growth at BeyondWalls. Focused on scaling our platform, 
                     optimizing partnerships, and ensuring seamless experiences for both advertisers and venue owners.
                   </p>
                   
-                  <p className="text-slate-600 leading-relaxed text-lg mb-8 max-w-xl">
+                  <p className="text-slate-600 leading-relaxed text-base mb-8 max-w-xl">
                     Committed to building efficient systems and fostering relationships that power the future 
                     of digital advertising in the region.
                   </p>
@@ -146,7 +146,7 @@ export default function COOProfile() {
                 
                 {/* Contact & Social */}
                 <div className="space-y-4">
-                  <p className="text-slate-900 font-medium">{profileData.email}</p>
+                  <p className="text-slate-900 font-medium text-base">{profileData.email}</p>
                   <div className="flex gap-3">
                     {isEditing ? (
                       <div className="space-y-2 w-full">
