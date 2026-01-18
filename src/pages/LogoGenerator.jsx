@@ -2034,53 +2034,7 @@ export default function LogoGenerator() {
       ctx.fillText('✉️  ' + cardData.email, 40, 295);
       ctx.fillText('📱  ' + cardData.phone, 40, 325);
       ctx.fillText('🌐  www.beyondwalls.ae', 40, 355);
-      ctx.fillText('📍  Dubai, United Arab Emirates', 40, 385);
-      
-      // QR code area - Load actual QR code
-      const qrImg = new Image();
-      qrImg.crossOrigin = 'anonymous';
-      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(profileUrl)}`;
-      
-      // Draw QR background
-      const qrGradient = ctx.createLinearGradient(580, 260, 760, 400);
-      qrGradient.addColorStop(0, '#8B5CF6');
-      qrGradient.addColorStop(1, '#6366F1');
-      ctx.strokeStyle = qrGradient;
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.roundRect(590, 260, 160, 140, 12);
-      ctx.stroke();
-      
-      ctx.fillStyle = 'rgba(255,255,255,0.95)';
-      ctx.beginPath();
-      ctx.roundRect(593, 263, 154, 134, 10);
-      ctx.fill();
-      
-      // Draw QR code when loaded
-      qrImg.onload = () => {
-        ctx.drawImage(qrImg, 605, 273, 110, 110);
-        
-        ctx.font = '11px system-ui';
-        ctx.fillStyle = '#64748b';
-        ctx.textAlign = 'center';
-        ctx.fillText('Scan to connect', 670, 388);
-        ctx.textAlign = 'left';
-      };
-      
-      // Diagonal creative stripe
-      ctx.save();
-      ctx.translate(0, 0);
-      ctx.rotate(-0.05);
-      const stripeGrad = ctx.createLinearGradient(0, 0, 800, 0);
-      stripeGrad.addColorStop(0, 'transparent');
-      stripeGrad.addColorStop(0.3, '#8B5CF6');
-      stripeGrad.addColorStop(0.7, '#6366F1');
-      stripeGrad.addColorStop(1, 'transparent');
-      ctx.fillStyle = stripeGrad;
-      ctx.globalAlpha = 0.1;
-      ctx.fillRect(-50, 200, 900, 80);
-      ctx.restore();
-      ctx.globalAlpha = 1;
+      ctx.fillText('📍  in5 Tech, Dubai Internet City, UAE', 40, 385);
 
       // Bottom bar - brand colors
       const bottomGradient = ctx.createLinearGradient(0, 440, 800, 450);
@@ -2400,45 +2354,23 @@ function BusinessCardCreative({ cardData, cardType, onEdit, onDownload }) {
               </span>
             </div>
             
-            {/* Contact details & QR */}
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1 space-y-3 text-sm">
-                <div className="flex items-center gap-3 text-white/90">
-                  <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-                    <Mail className="w-4 h-4 text-violet-400" />
-                  </div>
-                  <span className="text-xs sm:text-sm truncate">{cardData.email}</span>
-                </div>
-                <div className="flex items-center gap-3 text-white/90">
-                  <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-                    <Phone className="w-4 h-4 text-indigo-400" />
-                  </div>
-                  <span className="text-xs sm:text-sm">{cardData.phone}</span>
-                </div>
-                <div className="flex items-center gap-3 text-white/90">
-                  <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-                    <Globe className="w-4 h-4 text-violet-400" />
-                  </div>
-                  <span className="text-xs sm:text-sm">www.beyondwalls.ae</span>
-                </div>
-                <div className="flex items-center gap-3 text-white/90">
-                  <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-                    <MapPin className="w-4 h-4 text-indigo-400" />
-                  </div>
-                  <span className="text-xs sm:text-sm">Dubai, UAE</span>
-                </div>
+            {/* Contact details */}
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center gap-3 text-white/90">
+                <Mail className="w-4 h-4 text-violet-400" />
+                <span className="text-sm">{cardData.email}</span>
               </div>
-              
-              {/* QR Code */}
-              <div className="flex flex-col items-center">
-               <div className="bg-white rounded-lg p-2 shadow-lg border-2 border-violet-400/30">
-                 <img 
-                   src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent('https://www.beyondwalls.ae/' + (cardType === 'ceo' ? 'CEOProfile' : 'COOProfile'))}`}
-                   alt="QR Code"
-                   className="w-20 h-20"
-                 />
-               </div>
-               <p className="text-white/40 text-[10px] mt-1">Scan to connect</p>
+              <div className="flex items-center gap-3 text-white/90">
+                <Phone className="w-4 h-4 text-indigo-400" />
+                <span className="text-sm">{cardData.phone}</span>
+              </div>
+              <div className="flex items-center gap-3 text-white/90">
+                <Globe className="w-4 h-4 text-violet-400" />
+                <span className="text-sm">www.beyondwalls.ae</span>
+              </div>
+              <div className="flex items-center gap-3 text-white/90">
+                <MapPin className="w-4 h-4 text-indigo-400" />
+                <span className="text-sm">in5 Tech, Dubai Internet City, UAE</span>
               </div>
             </div>
           </div>
