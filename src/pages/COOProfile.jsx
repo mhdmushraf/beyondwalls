@@ -50,92 +50,102 @@ export default function COOProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-slate-100">
       <PublicNav />
       
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        {/* Header Card */}
-        <Card className="mb-8 overflow-hidden">
-          <div className="h-32 bg-gradient-to-r from-indigo-600 to-violet-600 relative">
-            <div className="absolute inset-0 bg-black/10" />
-          </div>
-          
-          <CardContent className="pt-0 pb-8">
-            <div className="flex flex-col md:flex-row items-start md:items-end gap-6 -mt-16 relative z-10">
-              {/* Profile Image */}
-              <div className="w-32 h-32 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center shadow-2xl border-4 border-white">
-                <MonitorPlay className="w-16 h-16 text-white" />
+      {/* Hero Section */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3" />
+        
+        <div className="relative max-w-6xl mx-auto px-4 py-16">
+          <div className="flex flex-col md:flex-row items-center gap-8">
+            {/* Profile Image */}
+            <div className="relative group">
+              <div className="absolute inset-0 bg-white/30 rounded-3xl blur-xl group-hover:blur-2xl transition-all" />
+              <div className="relative w-40 h-40 bg-white rounded-3xl flex items-center justify-center shadow-2xl ring-4 ring-white/50">
+                <MonitorPlay className="w-20 h-20 text-indigo-600" />
               </div>
-              
-              {/* Name and Title */}
-              <div className="flex-1">
-                {isEditing ? (
-                  <div className="space-y-3 bg-white p-4 rounded-lg">
-                    <div>
-                      <Label>Full Name</Label>
-                      <Input
-                        value={editData.name}
-                        onChange={(e) => setEditData({...editData, name: e.target.value})}
-                        className="mt-1"
-                      />
+            </div>
+          
+            {/* Name and Info */}
+            <div className="flex-1 text-white">
+              {isEditing ? (
+                <div className="space-y-3 bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20">
+                  <div>
+                    <Label className="text-white/90">Full Name</Label>
+                    <Input
+                      value={editData.name}
+                      onChange={(e) => setEditData({...editData, name: e.target.value})}
+                      className="mt-1 bg-white/20 border-white/30 text-white placeholder:text-white/50"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white/90">Title</Label>
+                    <Input
+                      value={editData.title}
+                      onChange={(e) => setEditData({...editData, title: e.target.value})}
+                      className="mt-1 bg-white/20 border-white/30 text-white placeholder:text-white/50"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <h1 className="text-5xl md:text-6xl font-bold mb-3 drop-shadow-lg">{profileData.name}</h1>
+                  <div className="inline-block px-5 py-2 bg-white/20 backdrop-blur-md rounded-full border border-white/30 mb-4">
+                    <p className="text-xl font-semibold">{profileData.title}</p>
+                  </div>
+                  <div className="flex items-center gap-3 text-white/90">
+                    <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/30">
+                      <MonitorPlay className="w-6 h-6" />
                     </div>
                     <div>
-                      <Label>Title</Label>
-                      <Input
-                        value={editData.title}
-                        onChange={(e) => setEditData({...editData, title: e.target.value})}
-                        className="mt-1"
-                      />
+                      <p className="font-bold text-lg">BeyondWalls</p>
+                      <p className="text-sm text-white/70">A Linkzone Global FZ-LLC Company</p>
                     </div>
                   </div>
-                ) : (
-                  <>
-                    <h1 className="text-4xl font-bold text-slate-900 mb-2">{profileData.name}</h1>
-                    <p className="text-xl text-indigo-600 font-semibold mb-2">{profileData.title}</p>
-                    <div className="flex items-center gap-2 text-slate-600">
-                      <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-violet-500 rounded-lg flex items-center justify-center">
-                        <MonitorPlay className="w-5 h-5 text-white" />
-                      </div>
-                      <span className="font-bold text-lg">BeyondWalls</span>
-                      <span className="text-slate-400">•</span>
-                      <span className="text-sm">A Linkzone Global FZ-LLC Company</span>
-                    </div>
-                  </>
-                )}
-              </div>
-              
-              {/* Edit Button */}
-              {isAdmin && (
-                <div className="flex gap-2">
-                  {isEditing ? (
-                    <>
-                      <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700">
-                        <Save className="w-4 h-4 mr-2" />
-                        Save
-                      </Button>
-                      <Button onClick={handleCancel} variant="outline">
-                        <X className="w-4 h-4 mr-2" />
-                        Cancel
-                      </Button>
-                    </>
-                  ) : (
-                    <Button onClick={() => setIsEditing(true)} variant="outline">
-                      <Edit className="w-4 h-4 mr-2" />
-                      Edit Profile
-                    </Button>
-                  )}
-                </div>
+                </>
               )}
             </div>
-          </CardContent>
-        </Card>
+            
+            {/* Edit Button */}
+            {isAdmin && (
+              <div className="flex gap-2">
+                {isEditing ? (
+                  <>
+                    <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700 shadow-lg">
+                      <Save className="w-4 h-4 mr-2" />
+                      Save
+                    </Button>
+                    <Button onClick={handleCancel} className="bg-white/20 hover:bg-white/30 text-white border-white/30">
+                      <X className="w-4 h-4 mr-2" />
+                      Cancel
+                    </Button>
+                  </>
+                ) : (
+                  <Button onClick={() => setIsEditing(true)} className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-md">
+                    <Edit className="w-4 h-4 mr-2" />
+                    Edit Profile
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {/* Left Column - Contact Info */}
+      <div className="max-w-6xl mx-auto px-4 -mt-12 relative z-10 pb-16">
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {/* Left Column - Contact & Social */}
           <div className="md:col-span-1 space-y-6">
-            <Card>
+            <Card className="border-0 shadow-xl">
               <CardContent className="p-6">
-                <h2 className="font-bold text-lg text-slate-900 mb-4">Contact Information</h2>
+                <div className="flex items-center gap-2 mb-6">
+                  <div className="h-8 w-1 bg-gradient-to-b from-indigo-600 to-violet-600 rounded-full" />
+                  <h2 className="font-bold text-xl text-slate-900">Get in Touch</h2>
+                </div>
                 
                 {isEditing ? (
                   <div className="space-y-4">
@@ -203,9 +213,12 @@ export default function COOProfile() {
             </Card>
 
             {/* Social Links */}
-            <Card>
+            <Card className="border-0 shadow-xl bg-gradient-to-br from-indigo-50 to-violet-50">
               <CardContent className="p-6">
-                <h2 className="font-bold text-lg text-slate-900 mb-4">Connect</h2>
+                <div className="flex items-center gap-2 mb-6">
+                  <div className="h-8 w-1 bg-gradient-to-b from-indigo-600 to-violet-600 rounded-full" />
+                  <h2 className="font-bold text-xl text-slate-900">Connect</h2>
+                </div>
                 
                 {isEditing ? (
                   <div className="space-y-3">
@@ -252,10 +265,13 @@ export default function COOProfile() {
           </div>
 
           {/* Right Column - About */}
-          <div className="md:col-span-2">
-            <Card>
-              <CardContent className="p-6">
-                <h2 className="font-bold text-lg text-slate-900 mb-4">About</h2>
+          <div className="md:col-span-2 space-y-6">
+            <Card className="border-0 shadow-xl">
+              <CardContent className="p-8">
+                <div className="flex items-center gap-2 mb-6">
+                  <div className="h-8 w-1 bg-gradient-to-b from-indigo-600 to-violet-600 rounded-full" />
+                  <h2 className="font-bold text-2xl text-slate-900">About</h2>
+                </div>
                 
                 {isEditing ? (
                   <div>
@@ -274,24 +290,29 @@ export default function COOProfile() {
             </Card>
 
             {/* Company Info */}
-            <Card className="mt-6">
-              <CardContent className="p-6">
-                <h2 className="font-bold text-lg text-slate-900 mb-4">About BeyondWalls</h2>
-                <p className="text-slate-700 leading-relaxed mb-4">
+            <Card className="border-0 shadow-xl bg-gradient-to-br from-slate-900 via-indigo-950 to-violet-950 text-white overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl" />
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-violet-500/20 rounded-full blur-3xl" />
+              <CardContent className="p-8 relative">
+                <div className="flex items-center gap-2 mb-6">
+                  <div className="h-8 w-1 bg-gradient-to-b from-indigo-400 to-violet-400 rounded-full" />
+                  <h2 className="font-bold text-2xl">About BeyondWalls</h2>
+                </div>
+                <p className="text-white/80 leading-relaxed mb-6">
                   BeyondWalls is the UAE's leading digital out-of-home advertising platform, connecting advertisers with premium venue spaces across Dubai, Abu Dhabi, and beyond.
                 </p>
-                <div className="grid grid-cols-3 gap-4 mt-6">
-                  <div className="text-center p-4 bg-indigo-50 rounded-lg">
-                    <p className="text-3xl font-bold text-indigo-600">500+</p>
-                    <p className="text-sm text-slate-600 mt-1">Active Venues</p>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="text-center p-5 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
+                    <p className="text-4xl font-bold text-indigo-400 mb-1">500+</p>
+                    <p className="text-sm text-white/70">Active Venues</p>
                   </div>
-                  <div className="text-center p-4 bg-violet-50 rounded-lg">
-                    <p className="text-3xl font-bold text-violet-600">1,200+</p>
-                    <p className="text-sm text-slate-600 mt-1">Screens Live</p>
+                  <div className="text-center p-5 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
+                    <p className="text-4xl font-bold text-violet-400 mb-1">1,200+</p>
+                    <p className="text-sm text-white/70">Screens Live</p>
                   </div>
-                  <div className="text-center p-4 bg-indigo-50 rounded-lg">
-                    <p className="text-3xl font-bold text-indigo-600">AED 2M+</p>
-                    <p className="text-sm text-slate-600 mt-1">Paid to Venues</p>
+                  <div className="text-center p-5 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
+                    <p className="text-4xl font-bold text-indigo-400 mb-1">AED 2M+</p>
+                    <p className="text-sm text-white/70">Paid to Venues</p>
                   </div>
                 </div>
               </CardContent>
