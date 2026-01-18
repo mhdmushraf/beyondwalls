@@ -20,8 +20,19 @@ export default function VenueOnboarding() {
     company_name: "",
     venue_type: "",
     city: "",
+    area: "",
     address: "",
-    daily_footfall: "",
+    operating_hours: "",
+    daily_customers: "",
+    screen_location: "",
+    screen_visibility_percent: "",
+    peak_hours: [],
+    customer_dwell_time: "",
+    customer_age_groups: [],
+    customer_gender_mix: "",
+    special_events: "",
+    trade_license: null,
+    venue_images: [],
     notes: ""
   });
 
@@ -29,6 +40,34 @@ export default function VenueOnboarding() {
     "restaurant", "cafe", "mall", "gym", "coworking", 
     "hotel", "hospital", "salon", "other"
   ];
+
+  const screenLocations = [
+    "counter", "waiting_area", "entrance", "tables", 
+    "equipment_area", "walkway", "other"
+  ];
+
+  const peakHourOptions = [
+    "6AM-9AM", "9AM-12PM", "12PM-3PM", "3PM-6PM", 
+    "6PM-9PM", "9PM-12AM"
+  ];
+
+  const ageGroupOptions = [
+    "18-24", "25-34", "35-44", "45-54", "55+"
+  ];
+
+  const handleFileUpload = async (file, fieldName) => {
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      if (fieldName === "trade_license") {
+        setFormData({...formData, trade_license: file_url});
+      } else if (fieldName === "venue_images") {
+        setFormData({...formData, venue_images: [...formData.venue_images, file_url]});
+      }
+    } catch (error) {
+      console.error("File upload failed:", error);
+      toast.error("Failed to upload file");
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,7 +82,23 @@ export default function VenueOnboarding() {
         lead_type: "venue_owner",
         source: "website",
         status: "new",
-        notes: `Venue Type: ${formData.venue_type}\nCity: ${formData.city}\nAddress: ${formData.address}\nDaily Footfall: ${formData.daily_footfall}\n\nAdditional Notes: ${formData.notes}`,
+        notes: `Venue Type: ${formData.venue_type}
+City: ${formData.city}
+Area: ${formData.area}
+Address: ${formData.address}
+Operating Hours: ${formData.operating_hours}
+Daily Customers: ${formData.daily_customers}
+Screen Location: ${formData.screen_location}
+Screen Visibility: ${formData.screen_visibility_percent}%
+Peak Hours: ${formData.peak_hours.join(", ")}
+Customer Dwell Time: ${formData.customer_dwell_time} minutes
+Age Groups: ${formData.customer_age_groups.join(", ")}
+Gender Mix: ${formData.customer_gender_mix}
+Special Events: ${formData.special_events}
+Trade License: ${formData.trade_license || "Not provided"}
+Venue Images: ${formData.venue_images.join(", ") || "Not provided"}
+
+Additional Notes: ${formData.notes}`,
         priority: "high"
       });
 
@@ -63,8 +118,11 @@ export default function VenueOnboarding() {
             Venue Details:
             Venue Name: ${formData.company_name}
             Type: ${formData.venue_type}
-            Location: ${formData.address}, ${formData.city}
-            Daily Footfall: ${formData.daily_footfall}
+            Location: ${formData.address}, ${formData.area}, ${formData.city}
+            Operating Hours: ${formData.operating_hours}
+            Daily Customers: ${formData.daily_customers}
+            Screen Location: ${formData.screen_location}
+            Screen Visibility: ${formData.screen_visibility_percent}%
             
             Notes: ${formData.notes}
             
@@ -232,7 +290,7 @@ export default function VenueOnboarding() {
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">Venue Type *</label>
-                      <Select value={formData.venue_type} onValueChange={(value) => setFormData({...formData, venue_type: value})}>
+                      <Select value={formData.venue_type} onValueChange={(value) => setFormData({...formData, venue_type: value})} required>
                         <SelectTrigger>
                           <SelectValue placeholder="Select type" />
                         </SelectTrigger>
@@ -255,23 +313,192 @@ export default function VenueOnboarding() {
                       />
                     </div>
                   </div>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">Area/District *</label>
+                      <Input
+                        required
+                        value={formData.area}
+                        onChange={(e) => setFormData({...formData, area: e.target.value})}
+                        placeholder="e.g., Dubai Marina, Business Bay"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">Operating Hours *</label>
+                      <Input
+                        required
+                        value={formData.operating_hours}
+                        onChange={(e) => setFormData({...formData, operating_hours: e.target.value})}
+                        placeholder="e.g., 8AM-11PM"
+                      />
+                    </div>
+                  </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Address *</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Full Address *</label>
                     <Input
                       required
                       value={formData.address}
                       onChange={(e) => setFormData({...formData, address: e.target.value})}
-                      placeholder="Street address, area"
+                      placeholder="Street address, building number"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Daily Footfall (Estimated) *</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Daily Customer Count (Estimated) *</label>
                     <Input
                       required
-                      value={formData.daily_footfall}
-                      onChange={(e) => setFormData({...formData, daily_footfall: e.target.value})}
-                      placeholder="e.g., 200-500 customers/day"
+                      type="number"
+                      value={formData.daily_customers}
+                      onChange={(e) => setFormData({...formData, daily_customers: e.target.value})}
+                      placeholder="e.g., 300"
                     />
+                  </div>
+                </div>
+
+                {/* Screen & Audience Information */}
+                <div className="space-y-4 pt-6 border-t border-slate-100">
+                  <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+                    <Users className="w-5 h-5 text-violet-600" />
+                    Screen & Audience Details
+                  </h3>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">Preferred Screen Location *</label>
+                      <Select value={formData.screen_location} onValueChange={(value) => setFormData({...formData, screen_location: value})} required>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select location" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {screenLocations.map(loc => (
+                            <SelectItem key={loc} value={loc}>
+                              {loc.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">Screen Visibility (%) *</label>
+                      <Input
+                        required
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={formData.screen_visibility_percent}
+                        onChange={(e) => setFormData({...formData, screen_visibility_percent: e.target.value})}
+                        placeholder="e.g., 80"
+                      />
+                      <p className="text-xs text-slate-500 mt-1">% of customers who can see the screen</p>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Peak Hours (Select all that apply) *</label>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {peakHourOptions.map(hour => (
+                        <label key={hour} className="flex items-center gap-2 p-2 border rounded-lg cursor-pointer hover:bg-slate-50">
+                          <input
+                            type="checkbox"
+                            checked={formData.peak_hours.includes(hour)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setFormData({...formData, peak_hours: [...formData.peak_hours, hour]});
+                              } else {
+                                setFormData({...formData, peak_hours: formData.peak_hours.filter(h => h !== hour)});
+                              }
+                            }}
+                            className="rounded"
+                          />
+                          <span className="text-sm">{hour}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">Avg. Customer Dwell Time (minutes) *</label>
+                      <Input
+                        required
+                        type="number"
+                        value={formData.customer_dwell_time}
+                        onChange={(e) => setFormData({...formData, customer_dwell_time: e.target.value})}
+                        placeholder="e.g., 30"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">Customer Gender Mix *</label>
+                      <Select value={formData.customer_gender_mix} onValueChange={(value) => setFormData({...formData, customer_gender_mix: value})} required>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select mix" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="mostly_male">Mostly Male</SelectItem>
+                          <SelectItem value="mostly_female">Mostly Female</SelectItem>
+                          <SelectItem value="mixed">Mixed</SelectItem>
+                          <SelectItem value="unknown">Unknown</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Customer Age Groups (Select all that apply) *</label>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {ageGroupOptions.map(age => (
+                        <label key={age} className="flex items-center gap-2 p-2 border rounded-lg cursor-pointer hover:bg-slate-50">
+                          <input
+                            type="checkbox"
+                            checked={formData.customer_age_groups.includes(age)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setFormData({...formData, customer_age_groups: [...formData.customer_age_groups, age]});
+                              } else {
+                                setFormData({...formData, customer_age_groups: formData.customer_age_groups.filter(a => a !== age)});
+                              }
+                            }}
+                            className="rounded"
+                          />
+                          <span className="text-sm">{age}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Special Events / Busy Days</label>
+                    <Input
+                      value={formData.special_events}
+                      onChange={(e) => setFormData({...formData, special_events: e.target.value})}
+                      placeholder="e.g., Weekends, Friday brunch, Happy hours"
+                    />
+                  </div>
+                </div>
+
+                {/* Documents & Images */}
+                <div className="space-y-4 pt-6 border-t border-slate-100">
+                  <h3 className="font-semibold text-slate-900">Documents & Photos</h3>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Trade License (Optional)</label>
+                    <input
+                      type="file"
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], "trade_license")}
+                      className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+                    />
+                    {formData.trade_license && (
+                      <p className="text-xs text-green-600 mt-1">✓ Trade license uploaded</p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Venue Photos (Optional)</label>
+                    <input
+                      type="file"
+                      accept=".jpg,.jpeg,.png"
+                      multiple
+                      onChange={(e) => {
+                        Array.from(e.target.files).forEach(file => handleFileUpload(file, "venue_images"));
+                      }}
+                      className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+                    />
+                    {formData.venue_images.length > 0 && (
+                      <p className="text-xs text-green-600 mt-1">✓ {formData.venue_images.length} image(s) uploaded</p>
+                    )}
                   </div>
                 </div>
 
