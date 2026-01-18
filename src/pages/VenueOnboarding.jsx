@@ -31,8 +31,12 @@ export default function VenueOnboarding() {
     customer_age_groups: [],
     customer_gender_mix: "",
     special_events: "",
+    number_of_screens: "",
+    min_payment_per_screen: "",
     trade_license: null,
-    venue_images: [],
+    venue_front_photo: null,
+    screen_photos: [],
+    high_traffic_photo: null,
     notes: ""
   });
 
@@ -60,8 +64,12 @@ export default function VenueOnboarding() {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
       if (fieldName === "trade_license") {
         setFormData({...formData, trade_license: file_url});
-      } else if (fieldName === "venue_images") {
-        setFormData({...formData, venue_images: [...formData.venue_images, file_url]});
+      } else if (fieldName === "venue_front_photo") {
+        setFormData({...formData, venue_front_photo: file_url});
+      } else if (fieldName === "high_traffic_photo") {
+        setFormData({...formData, high_traffic_photo: file_url});
+      } else if (fieldName === "screen_photos") {
+        setFormData({...formData, screen_photos: [...formData.screen_photos, file_url]});
       }
     } catch (error) {
       console.error("File upload failed:", error);
@@ -95,8 +103,12 @@ Customer Dwell Time: ${formData.customer_dwell_time} minutes
 Age Groups: ${formData.customer_age_groups.join(", ")}
 Gender Mix: ${formData.customer_gender_mix}
 Special Events: ${formData.special_events}
+Number of Screens: ${formData.number_of_screens}
+Minimum Payment Per Screen: AED ${formData.min_payment_per_screen}/week
 Trade License: ${formData.trade_license || "Not provided"}
-Venue Images: ${formData.venue_images.join(", ") || "Not provided"}
+Venue Front Photo: ${formData.venue_front_photo || "Not provided"}
+Screen Photos: ${formData.screen_photos.join(", ") || "Not provided"}
+High Traffic Photo: ${formData.high_traffic_photo || "Not provided"}
 
 Additional Notes: ${formData.notes}`,
         priority: "high"
@@ -468,11 +480,37 @@ Additional Notes: ${formData.notes}`,
                       placeholder="e.g., Weekends, Friday brunch, Happy hours"
                     />
                   </div>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">Number of Screens *</label>
+                      <Input
+                        required
+                        type="number"
+                        min="1"
+                        value={formData.number_of_screens}
+                        onChange={(e) => setFormData({...formData, number_of_screens: e.target.value})}
+                        placeholder="e.g., 2"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">Min. Payment Per Screen (AED/week) *</label>
+                      <Input
+                        required
+                        type="number"
+                        min="0"
+                        value={formData.min_payment_per_screen}
+                        onChange={(e) => setFormData({...formData, min_payment_per_screen: e.target.value})}
+                        placeholder="e.g., 500"
+                      />
+                      <p className="text-xs text-slate-500 mt-1">Your expected minimum earnings per screen per week</p>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Documents & Images */}
                 <div className="space-y-4 pt-6 border-t border-slate-100">
-                  <h3 className="font-semibold text-slate-900">Documents & Photos</h3>
+                  <h3 className="font-semibold text-slate-900">Documents & Photos *</h3>
+                  <p className="text-sm text-slate-600">Please upload clear photos to help us assess your venue</p>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">Trade License (Optional)</label>
                     <input
@@ -486,19 +524,46 @@ Additional Notes: ${formData.notes}`,
                     )}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Venue Photos (Optional)</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Venue Front Photo *</label>
+                    <input
+                      type="file"
+                      accept=".jpg,.jpeg,.png"
+                      onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], "venue_front_photo")}
+                      className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+                    />
+                    {formData.venue_front_photo && (
+                      <p className="text-xs text-green-600 mt-1">✓ Venue front photo uploaded</p>
+                    )}
+                    <p className="text-xs text-slate-500 mt-1">Clear photo of your venue entrance/exterior</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Screen Photos *</label>
                     <input
                       type="file"
                       accept=".jpg,.jpeg,.png"
                       multiple
                       onChange={(e) => {
-                        Array.from(e.target.files).forEach(file => handleFileUpload(file, "venue_images"));
+                        Array.from(e.target.files).forEach(file => handleFileUpload(file, "screen_photos"));
                       }}
                       className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
                     />
-                    {formData.venue_images.length > 0 && (
-                      <p className="text-xs text-green-600 mt-1">✓ {formData.venue_images.length} image(s) uploaded</p>
+                    {formData.screen_photos.length > 0 && (
+                      <p className="text-xs text-green-600 mt-1">✓ {formData.screen_photos.length} screen photo(s) uploaded</p>
                     )}
+                    <p className="text-xs text-slate-500 mt-1">Photos of existing screens or proposed screen locations</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">High Traffic Photo *</label>
+                    <input
+                      type="file"
+                      accept=".jpg,.jpeg,.png"
+                      onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], "high_traffic_photo")}
+                      className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+                    />
+                    {formData.high_traffic_photo && (
+                      <p className="text-xs text-green-600 mt-1">✓ High traffic photo uploaded</p>
+                    )}
+                    <p className="text-xs text-slate-500 mt-1">Photo showing your venue during peak hours with customers</p>
                   </div>
                 </div>
 
