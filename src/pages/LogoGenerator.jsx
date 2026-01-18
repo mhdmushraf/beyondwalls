@@ -1833,6 +1833,41 @@ export default function LogoGenerator() {
       ctx.font = '14px system-ui';
       ctx.fillText('LinkedIn  •  Instagram  •  Twitter', 400, 415);
       
+      
+      // QR Code - right side
+      const qrSize = 140;
+      const qrX = 590;
+      const qrY = 170;
+      
+      // QR background with shadow
+      ctx.fillStyle = '#ffffff';
+      ctx.shadowColor = 'rgba(0,0,0,0.2)';
+      ctx.shadowBlur = 20;
+      ctx.shadowOffsetY = 5;
+      ctx.beginPath();
+      ctx.roundRect(qrX, qrY, qrSize, qrSize, 12);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
+      
+      // QR pattern
+      ctx.fillStyle = '#1e1b4b';
+      const qrCellSize = 12;
+      const qrPadding = 15;
+      const qrGridSize = 10;
+      for (let i = 0; i < qrGridSize; i++) {
+        for (let j = 0; j < qrGridSize; j++) {
+          if ((i + j) % 2 === 0 || (i === 0 && j < 3) || (i < 3 && j === 0) || (i === qrGridSize - 1 && j > qrGridSize - 4) || (i > qrGridSize - 4 && j === qrGridSize - 1)) {
+            ctx.fillRect(qrX + qrPadding + i * qrCellSize, qrY + qrPadding + j * qrCellSize, qrCellSize - 1, qrCellSize - 1);
+          }
+        }
+      }
+      
+      // QR label
+      ctx.font = '12px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
+      ctx.textAlign = 'center';
+      ctx.fillText('Scan to Connect', qrX + qrSize / 2, qrY + qrSize + 25);
       ctx.textAlign = 'left';
       
       // Corner accents
