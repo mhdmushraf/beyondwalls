@@ -22,6 +22,8 @@ export default function VenueOnboarding() {
     city: "",
     area: "",
     address: "",
+    latitude: null,
+    longitude: null,
     operating_hours: "",
     daily_customers: "",
     screen_location: "",
@@ -353,6 +355,24 @@ Additional Notes: ${formData.notes}`,
                       onChange={(e) => setFormData({...formData, address: e.target.value})}
                       placeholder="Street address, building number"
                     />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Pin Venue Location on Map *
+                    </label>
+                    <p className="text-xs text-slate-500 mb-2">Click on the map to mark your exact venue location</p>
+                    <LocationPicker
+                      onLocationSelect={(lat, lng) => {
+                        setFormData({...formData, latitude: lat, longitude: lng});
+                      }}
+                      initialLat={formData.latitude || 25.2048}
+                      initialLng={formData.longitude || 55.2708}
+                    />
+                    {formData.latitude && formData.longitude && (
+                      <p className="text-xs text-green-600 mt-2">
+                        ✓ Location marked: {formData.latitude.toFixed(6)}, {formData.longitude.toFixed(6)}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">Daily Customer Count (Estimated) *</label>
