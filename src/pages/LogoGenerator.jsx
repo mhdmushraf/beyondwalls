@@ -2393,24 +2393,35 @@ function BusinessCardCreative({ cardData, cardType, onEdit, onDownload }) {
           <div className="absolute bottom-4 left-4 w-8 h-8 border-l-2 border-b-2 border-violet-500/50" />
           <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-violet-500/50" />
           
-          <div className="relative p-8 flex flex-col items-center justify-center min-h-[280px]">
-            {/* Large centered logo */}
-            <div className="w-24 h-24 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-violet-500/30 mb-6">
-              <MonitorPlay className="w-12 h-12 text-white" />
+          <div className="relative p-8 flex items-center justify-between min-h-[280px]">
+            {/* Left side - Logo and info */}
+            <div className="flex-1">
+              <div className="w-20 h-20 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-violet-500/30 mb-4">
+                <MonitorPlay className="w-10 h-10 text-white" />
+              </div>
+              
+              <h2 className="text-3xl font-bold text-white mb-1">BeyondWalls</h2>
+              <p className="text-white/50 text-sm mb-4">Digital Out-of-Home Advertising</p>
+              
+              <div className="h-px bg-white/20 w-3/4 mb-3" />
+              
+              <p className="text-violet-400 font-medium text-sm">www.beyondwalls.ae</p>
+              <p className="text-white/40 text-xs mt-2">LinkedIn • Instagram • Twitter</p>
             </div>
             
-            {/* Company name */}
-            <h2 className="text-4xl font-bold text-white mb-2">BeyondWalls</h2>
-            <p className="text-white/50 mb-6">Digital Out-of-Home Advertising</p>
-            
-            {/* Decorative line */}
-            <div className="w-32 h-0.5 bg-gradient-to-r from-transparent via-violet-500 to-transparent mb-6" />
-            
-            {/* Website */}
-            <p className="text-violet-400 font-medium">www.beyondwalls.ae</p>
-            
-            {/* Social links */}
-            <p className="text-white/40 text-sm mt-4">LinkedIn • Instagram • Twitter</p>
+            {/* Right side - QR Code */}
+            <div className="flex flex-col items-center">
+              <div className="bg-white rounded-xl p-3 shadow-lg">
+                <div className="w-28 h-28 bg-slate-200 rounded-lg flex items-center justify-center">
+                  <div className="grid grid-cols-6 gap-1 p-2">
+                    {[...Array(36)].map((_, i) => (
+                      <div key={i} className={`w-2 h-2 ${(i + Math.floor(i/6)) % 2 === 0 || i < 6 || i > 29 ? 'bg-slate-900' : 'bg-slate-300'} rounded-sm`} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <p className="text-white/50 text-xs mt-2">Scan to Connect</p>
+            </div>
           </div>
         </div>
       )}
