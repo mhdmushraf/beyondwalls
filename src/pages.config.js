@@ -81,6 +81,8 @@ import LocalBusinessMarketplace from './pages/LocalBusinessMarketplace';
 import LogoGenerator from './pages/LogoGenerator';
 import MallAdvertisingUAE from './pages/MallAdvertisingUAE';
 import ManageOwnerSlots from './pages/ManageOwnerSlots';
+import MunicipalApproval from './pages/MunicipalApproval';
+import MunicipalReports from './pages/MunicipalReports';
 import MyBookings from './pages/MyBookings';
 import MyCampaigns from './pages/MyCampaigns';
 import MyScreens from './pages/MyScreens';
@@ -112,8 +114,7 @@ import VenueOwnerAnalytics from './pages/VenueOwnerAnalytics';
 import VenueOwnerBookingManager from './pages/VenueOwnerBookingManager';
 import VenueOwnerHub from './pages/VenueOwnerHub';
 import Wallet from './pages/Wallet';
-import MunicipalApproval from './pages/MunicipalApproval';
-import MunicipalReports from './pages/MunicipalReports';
+import VenueOnboarding from './pages/VenueOnboarding';
 import __Layout from './Layout.jsx';
 
 
@@ -201,6 +202,8 @@ export const PAGES = {
     "LogoGenerator": LogoGenerator,
     "MallAdvertisingUAE": MallAdvertisingUAE,
     "ManageOwnerSlots": ManageOwnerSlots,
+    "MunicipalApproval": MunicipalApproval,
+    "MunicipalReports": MunicipalReports,
     "MyBookings": MyBookings,
     "MyCampaigns": MyCampaigns,
     "MyScreens": MyScreens,
@@ -232,8 +235,7 @@ export const PAGES = {
     "VenueOwnerBookingManager": VenueOwnerBookingManager,
     "VenueOwnerHub": VenueOwnerHub,
     "Wallet": Wallet,
-    "MunicipalApproval": MunicipalApproval,
-    "MunicipalReports": MunicipalReports,
+    "VenueOnboarding": VenueOnboarding,
 }
 
 export const pagesConfig = {
