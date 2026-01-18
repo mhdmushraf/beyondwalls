@@ -457,6 +457,289 @@ export default function LogoGenerator() {
     }, 'image/png');
   };
 
+  const downloadBrochure = (side) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // A4 size at 300 DPI: 2480 x 3508 pixels (portrait)
+    canvas.width = 2480;
+    canvas.height = 3508;
+    
+    if (side === 'front') {
+      // === FRONT SIDE ===
+      // Gradient background
+      const bgGradient = ctx.createLinearGradient(0, 0, 2480, 3508);
+      bgGradient.addColorStop(0, '#0f0a1e');
+      bgGradient.addColorStop(0.3, '#1a1035');
+      bgGradient.addColorStop(0.7, '#2d1b69');
+      bgGradient.addColorStop(1, '#1e1b4b');
+      ctx.fillStyle = bgGradient;
+      ctx.fillRect(0, 0, 2480, 3508);
+      
+      // Decorative circles
+      ctx.globalAlpha = 0.08;
+      const circle1 = ctx.createRadialGradient(1900, 600, 0, 1900, 600, 800);
+      circle1.addColorStop(0, '#8B5CF6');
+      circle1.addColorStop(1, 'transparent');
+      ctx.fillStyle = circle1;
+      ctx.beginPath();
+      ctx.arc(1900, 600, 800, 0, Math.PI * 2);
+      ctx.fill();
+      
+      const circle2 = ctx.createRadialGradient(400, 2800, 0, 400, 2800, 700);
+      circle2.addColorStop(0, '#6366F1');
+      circle2.addColorStop(1, 'transparent');
+      ctx.fillStyle = circle2;
+      ctx.beginPath();
+      ctx.arc(400, 2800, 700, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      
+      // Logo at top
+      const logoSize = 280;
+      const logoX = (2480 - logoSize) / 2;
+      const logoY = 300;
+      const logoGradient = ctx.createLinearGradient(logoX, logoY, logoX + logoSize, logoY + logoSize);
+      logoGradient.addColorStop(0, '#8B5CF6');
+      logoGradient.addColorStop(1, '#6366F1');
+      ctx.beginPath();
+      ctx.roundRect(logoX, logoY, logoSize, logoSize, 60);
+      ctx.fillStyle = logoGradient;
+      ctx.fill();
+      ctx.shadowColor = '#8B5CF6';
+      ctx.shadowBlur = 80;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      
+      // Monitor icon in logo
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 16;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.roundRect(logoX + 60, logoY + 60, 160, 120, 12);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(logoX + 140, logoY + 180);
+      ctx.lineTo(logoX + 140, logoY + 230);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(logoX + 100, logoY + 230);
+      ctx.lineTo(logoX + 180, logoY + 230);
+      ctx.stroke();
+      
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.moveTo(logoX + 110, logoY + 95);
+      ctx.lineTo(logoX + 110, logoY + 155);
+      ctx.lineTo(logoX + 170, logoY + 125);
+      ctx.closePath();
+      ctx.fill();
+      
+      // Company name
+      ctx.textAlign = 'center';
+      ctx.font = 'bold 140px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText('BeyondWalls', 1240, 740);
+      
+      // Parent company
+      ctx.font = '42px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
+      ctx.fillText('A Linkzone Global FZ-LLC Company', 1240, 810);
+      
+      // Tagline
+      ctx.font = 'bold 68px system-ui, -apple-system, sans-serif';
+      const taglineGradient = ctx.createLinearGradient(0, 900, 2480, 900);
+      taglineGradient.addColorStop(0, '#a78bfa');
+      taglineGradient.addColorStop(1, '#6366F1');
+      ctx.fillStyle = taglineGradient;
+      ctx.fillText('Transform Your Venue', 1240, 1000);
+      ctx.fillText('Into Revenue', 1240, 1100);
+      
+      // Subtitle
+      ctx.font = '48px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.fillText('Digital Out-of-Home Advertising Platform', 1240, 1220);
+      
+      // Features section
+      const features = [
+        '📺  Turn Your Screens Into Income',
+        '💰  Earn 70% Revenue Share',
+        '🎯  AI-Powered Ad Targeting',
+        '📊  Real-Time Analytics Dashboard',
+        '🌐  UAE\'s Leading DOOH Platform'
+      ];
+      
+      ctx.font = '52px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'left';
+      let featureY = 1500;
+      features.forEach(feature => {
+        ctx.fillText(feature, 240, featureY);
+        featureY += 120;
+      });
+      
+      // CTA section
+      ctx.textAlign = 'center';
+      ctx.font = 'bold 72px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText('Ready to Get Started?', 1240, 2600);
+      
+      // Contact info
+      ctx.font = '48px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.fillText('📧 hello@beyondwalls.ae', 1240, 2730);
+      ctx.fillText('📱 +971 55 614 0067', 1240, 2830);
+      ctx.fillText('🌐 www.beyondwalls.ae', 1240, 2930);
+      
+      // Bottom bar
+      const bottomGrad = ctx.createLinearGradient(0, 3460, 2480, 3508);
+      bottomGrad.addColorStop(0, '#8B5CF6');
+      bottomGrad.addColorStop(1, '#6366F1');
+      ctx.fillStyle = bottomGrad;
+      ctx.fillRect(0, 3460, 2480, 48);
+      
+    } else {
+      // === BACK SIDE ===
+      // Clean white background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 2480, 3508);
+      
+      // Top accent bar
+      const topGrad = ctx.createLinearGradient(0, 0, 2480, 120);
+      topGrad.addColorStop(0, '#8B5CF6');
+      topGrad.addColorStop(1, '#6366F1');
+      ctx.fillStyle = topGrad;
+      ctx.fillRect(0, 0, 2480, 120);
+      
+      // Small logo
+      const smallLogoSize = 100;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.roundRect(180, 60, smallLogoSize, smallLogoSize, 20);
+      ctx.fill();
+      
+      const miniLogoGrad = ctx.createLinearGradient(180, 60, 280, 160);
+      miniLogoGrad.addColorStop(0, '#8B5CF6');
+      miniLogoGrad.addColorStop(1, '#6366F1');
+      ctx.fillStyle = miniLogoGrad;
+      ctx.beginPath();
+      ctx.roundRect(190, 70, 80, 80, 16);
+      ctx.fill();
+      
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.roundRect(205, 85, 50, 35, 4);
+      ctx.stroke();
+      
+      ctx.fillStyle = 'white';
+      ctx.font = 'bold 64px system-ui, -apple-system, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('BeyondWalls', 320, 130);
+      
+      // Main heading
+      ctx.fillStyle = '#1e1b4b';
+      ctx.font = 'bold 96px system-ui, -apple-system, sans-serif';
+      ctx.fillText('How It Works', 240, 400);
+      
+      // Steps
+      const steps = [
+        { num: '1', title: 'Register Your Venue', desc: 'Sign up and list your business location with us' },
+        { num: '2', title: 'Install Screens', desc: 'We help you set up digital displays at your venue' },
+        { num: '3', title: 'Ads Go Live', desc: 'Relevant ads automatically play on your screens' },
+        { num: '4', title: 'Earn Revenue', desc: 'Get 70% of all ad revenue directly to your account' }
+      ];
+      
+      let stepY = 600;
+      steps.forEach(step => {
+        // Circle number
+        const circleGrad = ctx.createLinearGradient(240, stepY - 50, 340, stepY + 50);
+        circleGrad.addColorStop(0, '#8B5CF6');
+        circleGrad.addColorStop(1, '#6366F1');
+        ctx.fillStyle = circleGrad;
+        ctx.beginPath();
+        ctx.arc(290, stepY, 70, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 72px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(step.num, 290, stepY + 25);
+        
+        // Step content
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#1e1b4b';
+        ctx.font = 'bold 64px system-ui, -apple-system, sans-serif';
+        ctx.fillText(step.title, 420, stepY + 5);
+        
+        ctx.fillStyle = '#64748b';
+        ctx.font = '48px system-ui, -apple-system, sans-serif';
+        ctx.fillText(step.desc, 420, stepY + 70);
+        
+        stepY += 340;
+      });
+      
+      // Why Choose Us section
+      ctx.fillStyle = '#1e1b4b';
+      ctx.font = 'bold 84px system-ui, -apple-system, sans-serif';
+      ctx.fillText('Why Choose BeyondWalls?', 240, 2160);
+      
+      const benefits = [
+        '✓ No upfront costs - completely free to join',
+        '✓ Passive income from your existing screens',
+        '✓ Complete control over your ad slots',
+        '✓ Real-time performance analytics',
+        '✓ Premium advertisers across UAE',
+        '✓ 24/7 technical support'
+      ];
+      
+      ctx.font = '52px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#334155';
+      let benefitY = 2320;
+      benefits.forEach(benefit => {
+        ctx.fillText(benefit, 280, benefitY);
+        benefitY += 100;
+      });
+      
+      // Contact section
+      const contactBg = ctx.createLinearGradient(0, 3000, 2480, 3200);
+      contactBg.addColorStop(0, '#f8f9fa');
+      contactBg.addColorStop(1, '#e9ecef');
+      ctx.fillStyle = contactBg;
+      ctx.fillRect(0, 3000, 2480, 340);
+      
+      ctx.fillStyle = '#1e1b4b';
+      ctx.font = 'bold 72px system-ui, -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Get In Touch', 1240, 3100);
+      
+      ctx.font = '48px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#475569';
+      ctx.fillText('📧 hello@beyondwalls.ae  |  📱 +971 55 614 0067  |  🌐 www.beyondwalls.ae', 1240, 3200);
+      
+      ctx.font = '36px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillText('in5 Tech - Dubai Internet City, Dubai, UAE', 1240, 3270);
+      
+      // Bottom bar
+      const bottomGrad = ctx.createLinearGradient(0, 3460, 2480, 3508);
+      bottomGrad.addColorStop(0, '#8B5CF6');
+      bottomGrad.addColorStop(1, '#6366F1');
+      ctx.fillStyle = bottomGrad;
+      ctx.fillRect(0, 3460, 2480, 48);
+    }
+    
+    canvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `beyondwalls-brochure-${side}.png`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }, 'image/png');
+  };
+
   const downloadAsPDF = (type) => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -1420,6 +1703,129 @@ export default function LogoGenerator() {
       URL.revokeObjectURL(url);
     }, 'image/png');
   }
+}
+
+function BrochureFrontPreview() {
+  return (
+    <div className="relative rounded-xl overflow-hidden bg-gradient-to-br from-slate-950 via-indigo-950 to-violet-950 p-12 shadow-2xl">
+      {/* Decorative elements */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-violet-600/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-56 h-56 bg-indigo-600/10 rounded-full blur-3xl" />
+      
+      <div className="relative text-center space-y-8">
+        {/* Logo */}
+        <div className="w-32 h-32 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-violet-500/30">
+          <MonitorPlay className="w-16 h-16 text-white" />
+        </div>
+        
+        {/* Title */}
+        <div>
+          <h1 className="text-6xl font-black text-white mb-3">BeyondWalls</h1>
+          <p className="text-white/60 text-lg">A Linkzone Global FZ-LLC Company</p>
+        </div>
+        
+        <h2 className="text-4xl font-bold bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
+          Transform Your Venue<br/>Into Revenue
+        </h2>
+        
+        <p className="text-xl text-white/70">Digital Out-of-Home Advertising Platform</p>
+        
+        {/* Features */}
+        <div className="grid gap-4 text-left max-w-2xl mx-auto mt-12">
+          {['Turn Your Screens Into Income', 'Earn 70% Revenue Share', 'AI-Powered Ad Targeting', 'Real-Time Analytics', 'UAE\'s Leading DOOH Platform'].map((feature, i) => (
+            <div key={i} className="flex items-center gap-3 text-white/90">
+              <div className="w-2 h-2 bg-violet-500 rounded-full" />
+              <span className="text-lg">{feature}</span>
+            </div>
+          ))}
+        </div>
+        
+        {/* CTA */}
+        <div className="mt-12 space-y-4">
+          <p className="text-2xl font-bold text-white">Ready to Get Started?</p>
+          <div className="space-y-2 text-white/80">
+            <p>📧 hello@beyondwalls.ae</p>
+            <p>📱 +971 55 614 0067</p>
+            <p>🌐 www.beyondwalls.ae</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BrochureBackPreview() {
+  return (
+    <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
+      {/* Top bar */}
+      <div className="h-16 bg-gradient-to-r from-violet-600 to-indigo-600 flex items-center px-8">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
+            <MonitorPlay className="w-6 h-6 text-violet-600" />
+          </div>
+          <span className="text-2xl font-bold text-white">BeyondWalls</span>
+        </div>
+      </div>
+      
+      <div className="p-12 space-y-10">
+        {/* How it works */}
+        <div>
+          <h2 className="text-4xl font-bold text-slate-900 mb-8">How It Works</h2>
+          <div className="space-y-6">
+            {[
+              { num: '1', title: 'Register Your Venue', desc: 'Sign up and list your business location' },
+              { num: '2', title: 'Install Screens', desc: 'We help setup digital displays' },
+              { num: '3', title: 'Ads Go Live', desc: 'Relevant ads play automatically' },
+              { num: '4', title: 'Earn Revenue', desc: '70% revenue directly to you' }
+            ].map((step) => (
+              <div key={step.num} className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="text-xl font-bold text-white">{step.num}</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-slate-900">{step.title}</h3>
+                  <p className="text-slate-600">{step.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        {/* Benefits */}
+        <div>
+          <h2 className="text-3xl font-bold text-slate-900 mb-6">Why Choose BeyondWalls?</h2>
+          <div className="grid gap-3 text-slate-700">
+            {[
+              'No upfront costs - free to join',
+              'Passive income from screens',
+              'Control over your ad slots',
+              'Real-time analytics',
+              'Premium UAE advertisers',
+              '24/7 technical support'
+            ].map((benefit, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <span className="text-green-600">✓</span>
+                <span>{benefit}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        {/* Contact */}
+        <div className="bg-slate-50 rounded-xl p-6 text-center border border-slate-200">
+          <h3 className="text-2xl font-bold text-slate-900 mb-3">Get In Touch</h3>
+          <div className="space-y-2 text-slate-600">
+            <p>📧 hello@beyondwalls.ae  |  📱 +971 55 614 0067</p>
+            <p>🌐 www.beyondwalls.ae</p>
+            <p className="text-sm">in5 Tech - Dubai Internet City, Dubai, UAE</p>
+          </div>
+        </div>
+      </div>
+      
+      {/* Bottom bar */}
+      <div className="h-8 bg-gradient-to-r from-violet-600 to-indigo-600" />
+    </div>
+  );
 }
 
 function BusinessCardCreative({ cardData, cardType, onEdit, onDownload }) {
