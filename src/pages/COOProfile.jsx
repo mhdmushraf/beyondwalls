@@ -124,13 +124,15 @@ export default function COOProfile() {
                   </div>
                   
                   <p className="text-slate-600 leading-relaxed text-base mb-4 max-w-xl">
-                    Driving operational excellence and growth at BeyondWalls. Focused on scaling our platform, 
-                    optimizing partnerships, and ensuring seamless experiences for both advertisers and venue owners.
+                    Driving operational excellence and growth at BeyondWalls. With 3+ years launching products in UAE hypermarkets like Carrefour and Lulu, achieving 300% YOY growth for F&B startups, I bring proven sales expertise and deep market understanding to our platform.
+                  </p>
+                  
+                  <p className="text-slate-600 leading-relaxed text-base mb-4 max-w-xl">
+                    As a graduate of Gulf Indian High School Dubai with a BSc in Marketing from the University of the West Scotland, I've established 50+ retail partnerships in just 12 months, demonstrating strong relationship-building capabilities across the GCC market.
                   </p>
                   
                   <p className="text-slate-600 leading-relaxed text-base mb-8 max-w-xl">
-                    Committed to building efficient systems and fostering relationships that power the future 
-                    of digital advertising in the region.
+                    My on-ground experience activating DOOH campaigns for SMEs, combined with Arabic/English fluency, enables effective GCC market penetration and ensures seamless partnerships that power the future of digital advertising in the region.
                   </p>
                 </div>
                 
