@@ -124,11 +124,15 @@ export default function CEOProfile() {
                   </div>
                   
                   <p className="text-slate-600 leading-relaxed text-base mb-4 max-w-xl">
-                    Leading the digital transformation of out-of-home advertising across the UAE. Connecting brands with premium venues and creating innovative advertising solutions.
+                    Leading the digital transformation of out-of-home advertising across the UAE. With over 5 years of operational leadership at Abdulla Wholesale (FMCG) in Dubai, managing $15M+ brand budgets across MENA, I bring deep expertise in retail monetization strategies and UAE market dynamics.
+                  </p>
+                  
+                  <p className="text-slate-600 leading-relaxed text-base mb-4 max-w-xl">
+                    As a UAE Chartered Accountant (IFAC Accredited) with a BSc in Business & Finance (First Class Honors) from the University of the West Scotland, I combine financial acumen with technology-driven innovation to create sustainable advertising solutions.
                   </p>
                   
                   <p className="text-slate-600 leading-relaxed text-base mb-8 max-w-xl">
-                    Passionate about leveraging technology to democratize advertising and empower venue owners to monetize their spaces.
+                    My unique dual qualifications in aviation (currently in pilot training) and finance enable data-driven scaling and strategic decision-making, helping BeyondWalls connect brands with premium venues while empowering venue owners to maximize their earning potential.
                   </p>
                 </div>
                 
