@@ -791,7 +791,7 @@ export default function LogoGenerator() {
         contactY += contact.label === 'Location' ? 240 : 200;
       });
       
-      // QR Code placeholder with modern styling
+      // QR Code with actual scannable code
       const qrY = 1750;
       ctx.fillStyle = '#ffffff';
       ctx.shadowColor = 'rgba(0,0,0,0.2)';
@@ -802,25 +802,20 @@ export default function LogoGenerator() {
       ctx.fill();
       ctx.shadowBlur = 0;
       ctx.shadowOffsetY = 0;
-      
-      // QR grid pattern
-      ctx.fillStyle = '#0f172a';
-      const qrSize = 40;
-      const qrStartX = panelWidth * 2 + 370;
-      const qrStartY = qrY + 50;
-      for (let i = 0; i < 10; i++) {
-        for (let j = 0; j < 10; j++) {
-          if ((i + j) % 2 === 0 || Math.random() > 0.5) {
-            ctx.fillRect(qrStartX + i * qrSize, qrStartY + j * qrSize, qrSize - 3, qrSize - 3);
-          }
-        }
-      }
-      
+
+      // Create actual QR code image
+      const qrImg = new Image();
+      qrImg.crossOrigin = 'anonymous';
+      qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https://www.beyondwalls.ae/Onboarding';
+      qrImg.onload = () => {
+        ctx.drawImage(qrImg, panelWidth * 2 + 370, qrY + 50, 400, 400);
+      };
+
       // QR label
       ctx.textAlign = 'center';
       ctx.font = 'bold 38px system-ui, -apple-system, sans-serif';
       ctx.fillStyle = '#0f172a';
-      ctx.fillText('Scan to Learn More', panelWidth * 2 + panelWidth / 2, qrY + 580);
+      ctx.fillText('Scan to Get Started', panelWidth * 2 + panelWidth / 2, qrY + 580);
       
     } else {
       // === BACK SIDE - TRI-FOLD ===
@@ -2824,7 +2819,7 @@ function BrochureFrontPreview() {
         {/* QR Code */}
         <div className="relative z-10 bg-white/95 rounded-xl p-4 text-center shadow-lg">
           <img 
-            src="https://api.qrserver.com/v1/create-qr-code/?size=96x96&data=https://beyondwalls.ae/Onboarding"
+            src="https://api.qrserver.com/v1/create-qr-code/?size=96x96&data=https://www.beyondwalls.ae/Onboarding"
             alt="QR Code"
             className="w-24 h-24 rounded-lg mx-auto mb-2"
           />
