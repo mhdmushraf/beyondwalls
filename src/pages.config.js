@@ -43,7 +43,6 @@ import BookSlot from './pages/BookSlot';
 import BookingPending from './pages/BookingPending';
 import BundleDetails from './pages/BundleDetails';
 import CEOProfile from './pages/CEOProfile';
-import COOProfile from './pages/COOProfile';
 import CafeAdvertisingDubai from './pages/CafeAdvertisingDubai';
 import CampaignBundles from './pages/CampaignBundles';
 import CampaignManager from './pages/CampaignManager';
@@ -167,7 +166,6 @@ export const PAGES = {
     "BookingPending": BookingPending,
     "BundleDetails": BundleDetails,
     "CEOProfile": CEOProfile,
-    "COOProfile": COOProfile,
     "CafeAdvertisingDubai": CafeAdvertisingDubai,
     "CampaignBundles": CampaignBundles,
     "CampaignManager": CampaignManager,
