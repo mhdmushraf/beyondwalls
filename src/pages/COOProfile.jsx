@@ -68,13 +68,12 @@ export default function COOProfile() {
             <div className="relative w-full max-w-[450px]">
               {/* Profile Card */}
               <div className="w-full aspect-[9/11] bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100">
-                <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-white p-6 sm:p-12">
-                  <div className="text-center w-full">
-                    <div className="w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 mx-auto bg-gradient-to-br from-indigo-600 to-violet-600 rounded-full flex items-center justify-center shadow-xl mb-4 sm:mb-6">
-                      <MonitorPlay className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 text-white" />
-                    </div>
-                    <div className="w-24 h-24 sm:w-36 sm:h-36 md:w-48 md:h-48 mx-auto bg-gradient-to-br from-violet-600 to-indigo-600 rounded-full opacity-60 absolute bottom-6 sm:bottom-12 left-1/2 -translate-x-1/2" />
-                  </div>
+                <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-white p-0">
+                  <img 
+                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6925a3bad1f286c6fe7d00ba/cfe8be8c5_Screenshot2026-01-19at91844PM.png"
+                    alt="Shiban Salih - COO"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
               
