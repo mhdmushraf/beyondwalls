@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MonitorPlay, Megaphone, Building2, ArrowRight, CheckCircle } from "lucide-react";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
+import SEOHead from "@/components/SEOHead";
 
 export default function Onboarding() {
   const [selectedType, setSelectedType] = useState(null);
@@ -24,8 +25,15 @@ export default function Onboarding() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      <PublicNav />
+    <>
+      <SEOHead 
+        title="Get Started - BeyondWalls"
+        description="Join BeyondWalls as an advertiser or venue owner. Transform your advertising strategy or turn your screens into revenue streams."
+        canonical="https://www.beyondwalls.ae/Onboarding"
+      />
+      
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+        <PublicNav />
       
       <div className="pt-24 pb-16 px-4">
         <div className="max-w-5xl mx-auto">
@@ -160,7 +168,8 @@ export default function Onboarding() {
         </div>
       </div>
 
-      <PublicFooter />
-    </div>
+        <PublicFooter />
+      </div>
+    </>
   );
 }
