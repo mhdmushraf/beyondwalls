@@ -2165,10 +2165,10 @@ export default function LogoGenerator() {
       ctx.shadowBlur = 0;
       ctx.shadowOffsetY = 0;
 
-      // Load actual QR code
+      // Load actual QR code - Updated to use beyondwalls.ae instead of www.beyondwalls.ae
       const qrImg = new Image();
       qrImg.crossOrigin = 'anonymous';
-      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(profileUrl)}`;
+      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(profileUrl.replace('www.', ''))}`;
       qrImg.onload = () => {
         ctx.drawImage(qrImg, qrX + 10, qrY + 10, 120, 120);
       };
@@ -2740,38 +2740,40 @@ function BrochureFrontPreview() {
           <div className="space-y-3 text-sm">
             <p className="text-xs font-semibold text-violet-400 mb-2">FOR ADVERTISERS</p>
             {[
-              { icon: Target, title: 'AI-Powered Targeting', desc: 'Reach the right audience' },
+              { icon: Clock, title: 'Ads Live in 30 Min', desc: 'Fastest deployment' },
+              { icon: Target, title: 'AI-Powered Targeting', desc: 'Reach right audience' },
               { icon: BarChart3, title: 'Real-Time Analytics', desc: 'Track ROI instantly' },
               { icon: Globe, title: '500+ Prime Locations', desc: 'Across Dubai & UAE' }
             ].map((item, i) => {
               const IconComponent = item.icon;
               return (
-              <div key={i} className="flex gap-3 items-center bg-white/5 backdrop-blur-sm rounded-lg p-3 border border-white/10">
-                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-                  <IconComponent className="w-5 h-5 text-white" />
+              <div key={i} className="flex gap-3 items-center bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10">
+                <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">
+                  <IconComponent className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-bold text-white">{item.title}</p>
-                  <p className="text-white/60 text-xs">{item.desc}</p>
+                  <p className="font-bold text-white text-xs">{item.title}</p>
+                  <p className="text-white/60 text-[10px]">{item.desc}</p>
                 </div>
               </div>
               );
             })}
-            <p className="text-xs font-semibold text-indigo-400 mb-2 mt-4">FOR VENUE OWNERS</p>
+            <p className="text-xs font-semibold text-indigo-400 mb-2 mt-3">FOR VENUE OWNERS</p>
             {[
               { icon: DollarSign, title: 'Earn 70% Revenue', desc: 'Keep majority of earnings' },
               { icon: Zap, title: 'Zero Upfront Cost', desc: 'Free to get started' },
-              { icon: Clock, title: 'Quick Setup', desc: 'Live in 48 hours' }
+              { icon: Clock, title: 'Quick Setup', desc: 'Live in 48 hours' },
+              { icon: BarChart3, title: 'Live Dashboard', desc: 'Monitor 24/7' }
             ].map((item, i) => {
               const IconComponent = item.icon;
               return (
-              <div key={i} className="flex gap-3 items-center bg-white/5 backdrop-blur-sm rounded-lg p-3 border border-white/10">
-                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-                  <IconComponent className="w-5 h-5 text-white" />
+              <div key={i} className="flex gap-3 items-center bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10">
+                <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">
+                  <IconComponent className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-bold text-white">{item.title}</p>
-                  <p className="text-white/60 text-xs">{item.desc}</p>
+                  <p className="font-bold text-white text-xs">{item.title}</p>
+                  <p className="text-white/60 text-[10px]">{item.desc}</p>
                 </div>
               </div>
               );
@@ -2822,7 +2824,7 @@ function BrochureFrontPreview() {
         {/* QR Code */}
         <div className="relative z-10 bg-white/95 rounded-xl p-4 text-center shadow-lg">
           <img 
-            src={`https://api.qrserver.com/v1/create-qr-code/?size=96x96&data=${encodeURIComponent('https://www.beyondwalls.ae/Onboarding')}`}
+            src="https://api.qrserver.com/v1/create-qr-code/?size=96x96&data=https://beyondwalls.ae/Onboarding"
             alt="QR Code"
             className="w-24 h-24 rounded-lg mx-auto mb-2"
           />
@@ -2850,18 +2852,35 @@ function BrochureBackPreview() {
         </div>
         
         <div className="space-y-4">
+          <p className="text-xs font-semibold text-violet-600 mb-2">FOR ADVERTISERS</p>
           {[
-            { num: '1', title: 'Register Your Venue', desc: 'Quick signup process' },
-            { num: '2', title: 'Install Screens', desc: 'We help with setup' },
-            { num: '3', title: 'Ads Go Live', desc: 'Content plays automatically' },
-            { num: '4', title: 'Earn Revenue', desc: '70% directly to you' }
+            { num: '1', title: 'Upload Your Ad', desc: 'Image or video' },
+            { num: '2', title: 'Select Locations', desc: 'Choose target venues' },
+            { num: '3', title: 'Launch in 30 Min', desc: 'Instant approval' }
           ].map((step) => (
-            <div key={step.num} className="flex items-start gap-3 bg-slate-50 rounded-lg p-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
-                <span className="text-base font-bold text-white">{step.num}</span>
+            <div key={step.num} className="flex items-start gap-3 bg-violet-50 rounded-lg p-2.5">
+              <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                <span className="text-sm font-bold text-white">{step.num}</span>
               </div>
               <div>
-                <h4 className="font-bold text-slate-900">{step.title}</h4>
+                <h4 className="font-bold text-slate-900 text-sm">{step.title}</h4>
+                <p className="text-xs text-slate-600">{step.desc}</p>
+              </div>
+            </div>
+          ))}
+          
+          <p className="text-xs font-semibold text-indigo-600 mb-2 mt-4">FOR VENUE OWNERS</p>
+          {[
+            { num: '1', title: 'Register Venue', desc: 'Quick signup' },
+            { num: '2', title: 'Install Screens', desc: 'Free setup' },
+            { num: '3', title: 'Earn Revenue', desc: '70% to you' }
+          ].map((step) => (
+            <div key={step.num} className="flex items-start gap-3 bg-indigo-50 rounded-lg p-2.5">
+              <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                <span className="text-sm font-bold text-white">{step.num}</span>
+              </div>
+              <div>
+                <h4 className="font-bold text-slate-900 text-sm">{step.title}</h4>
                 <p className="text-xs text-slate-600">{step.desc}</p>
               </div>
             </div>
