@@ -152,7 +152,7 @@ const publicPages = [
         "HotelAdvertisingDubai", "CoworkingAdvertisingDubai", "DigitalBillboardDubai", "ScreenAdvertisingUAE",
         "DOOHDubaiShoppingFestival", "DOOHUAENationalDay", "DOOHRamadanAdvertising", 
         "DOOHDubaiSummerSurprises", "DOOHExpoCity", "DOOHEidAdvertising", "VenueOnboarding",
-        "CEOProfile", "COOProfile"
+        "CEOProfile", "COOProfile", "Onboarding"
       ];
 
   // Scroll to top when navigating to public pages
