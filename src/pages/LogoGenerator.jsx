@@ -605,6 +605,72 @@ export default function LogoGenerator() {
         propY += 240;
       });
       
+      // Contact information with professional icons
+      const contactY = 1450;
+      const contactItems = [
+        { type: 'mail', text: 'hello@beyondwalls.ae' },
+        { type: 'phone', text: '+971 55 614 0067' },
+        { type: 'globe', text: 'www.beyondwalls.ae' }
+      ];
+      
+      contactItems.forEach((item, idx) => {
+        const itemY = contactY + (idx * 100);
+        
+        // Icon background circle
+        const iconGrad = ctx.createLinearGradient(150, itemY, 240, itemY + 90);
+        iconGrad.addColorStop(0, '#06b6d4');
+        iconGrad.addColorStop(1, '#0891b2');
+        ctx.fillStyle = iconGrad;
+        ctx.beginPath();
+        ctx.arc(195, itemY + 45, 40, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Draw icon
+        ctx.strokeStyle = 'white';
+        ctx.fillStyle = 'white';
+        ctx.lineWidth = 6;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        
+        if (item.type === 'mail') {
+          // Envelope
+          ctx.beginPath();
+          ctx.roundRect(170, itemY + 28, 50, 34, 4);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(170, itemY + 28);
+          ctx.lineTo(195, itemY + 48);
+          ctx.lineTo(220, itemY + 28);
+          ctx.stroke();
+        } else if (item.type === 'phone') {
+          // Phone
+          ctx.beginPath();
+          ctx.roundRect(177, itemY + 25, 36, 42, 6);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(195, itemY + 58, 3, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (item.type === 'globe') {
+          // Globe
+          ctx.beginPath();
+          ctx.arc(195, itemY + 45, 22, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.ellipse(195, itemY + 45, 9, 22, 0, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(173, itemY + 45);
+          ctx.lineTo(217, itemY + 45);
+          ctx.stroke();
+        }
+        
+        // Text
+        ctx.textAlign = 'left';
+        ctx.font = 'bold 42px system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#0f172a';
+        ctx.fillText(item.text, 270, itemY + 55);
+      });
+      
       // CTA Badge at bottom
       const ctaY = 1750;
       const ctaGrad = ctx.createLinearGradient(200, ctaY, 940, ctaY + 140);
