@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { MonitorPlay, Twitter, Instagram, Youtube, Facebook, Linkedin, Mail, Phone, Globe2 } from "lucide-react";
+import { MonitorPlay, Twitter, Instagram, Youtube, Facebook, Linkedin } from "lucide-react";
 import NewsletterSignup from "./NewsletterSignup";
 
 const SOCIAL_LINKS = [
@@ -47,19 +47,10 @@ export default function PublicFooter() {
           </div>
           <div>
             <h4 className="font-semibold text-white mb-4">Contact</h4>
-            <div className="space-y-3 text-sm text-slate-400">
-              <a href="mailto:hello@beyondwalls.ae" className="flex items-center gap-2 hover:text-white transition-colors">
-                <Mail className="w-4 h-4 text-violet-400" />
-                hello@beyondwalls.ae
-              </a>
-              <a href="tel:+971556140067" className="flex items-center gap-2 hover:text-white transition-colors">
-                <Phone className="w-4 h-4 text-violet-400" />
-                +971 55 614 0067
-              </a>
-              <a href="https://www.beyondwalls.ae" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-white transition-colors">
-                <Globe2 className="w-4 h-4 text-violet-400" />
-                www.beyondwalls.ae
-              </a>
+            <div className="space-y-2 text-sm text-slate-400">
+              <a href="mailto:hello@beyondwalls.ae" className="block hover:text-white">hello@beyondwalls.ae</a>
+              <a href="tel:+971556140067" className="block hover:text-white">+971 55 614 0067</a>
+              <p>Dubai, UAE</p>
             </div>
             <div className="flex gap-3 mt-4">
               {SOCIAL_LINKS.map((social) => (
