@@ -2757,7 +2757,7 @@ function BrochureFrontPreview() {
                   <p className="text-white/60 text-xs">{item.desc}</p>
                 </div>
               </div>
-            );
+              );
             })}
           </div>
         </div>
@@ -2797,7 +2797,7 @@ function BrochureFrontPreview() {
                   <p className="text-sm font-bold text-white whitespace-pre-line">{item.value}</p>
                 </div>
               </div>
-            );
+              );
             })}
           </div>
         </div>
