@@ -3004,7 +3004,7 @@ function BusinessCardCreative({ cardData, cardType, onEdit, onDownload, onDownlo
         </div>
       ) : (
         /* BACK SIDE PREVIEW */
-        <div className="relative rounded-2xl shadow-2xl overflow-hidden max-w-xl mx-auto bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 min-h-[280px]">
+        <div className="relative rounded-2xl shadow-2xl overflow-hidden max-w-xl mx-auto bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900" style={{ aspectRatio: '800/450' }}>
           {/* Geometric pattern overlay */}
           <div className="absolute inset-0 opacity-5">
             {[...Array(12)].map((_, i) => (
