@@ -92,6 +92,7 @@ import MyVenues from './pages/MyVenues';
 import NotFound from './pages/NotFound';
 import NotificationCenter from './pages/NotificationCenter';
 import NotificationPreferences from './pages/NotificationPreferences';
+import Onboarding from './pages/Onboarding';
 import PendingApproval from './pages/PendingApproval';
 import Privacy from './pages/Privacy';
 import ProgrammaticBidding from './pages/ProgrammaticBidding';
@@ -114,10 +115,9 @@ import VenueDashboard from './pages/VenueDashboard';
 import VenueEarnings from './pages/VenueEarnings';
 import VenueOnboarding from './pages/VenueOnboarding';
 import VenueOwnerAnalytics from './pages/VenueOwnerAnalytics';
+import VenueOwnerHub from './pages/VenueOwnerHub';
 import VenueOwnerBookingManager from './pages/VenueOwnerBookingManager';
 import Wallet from './pages/Wallet';
-import VenueOwnerHub from './pages/VenueOwnerHub';
-import Onboarding from './pages/Onboarding';
 import __Layout from './Layout.jsx';
 
 
@@ -216,6 +216,7 @@ export const PAGES = {
     "NotFound": NotFound,
     "NotificationCenter": NotificationCenter,
     "NotificationPreferences": NotificationPreferences,
+    "Onboarding": Onboarding,
     "PendingApproval": PendingApproval,
     "Privacy": Privacy,
     "ProgrammaticBidding": ProgrammaticBidding,
@@ -238,10 +239,9 @@ export const PAGES = {
     "VenueEarnings": VenueEarnings,
     "VenueOnboarding": VenueOnboarding,
     "VenueOwnerAnalytics": VenueOwnerAnalytics,
+    "VenueOwnerHub": VenueOwnerHub,
     "VenueOwnerBookingManager": VenueOwnerBookingManager,
     "Wallet": Wallet,
-    "VenueOwnerHub": VenueOwnerHub,
-    "Onboarding": Onboarding,
 }
 
 export const pagesConfig = {
