@@ -2054,7 +2054,7 @@ export default function LogoGenerator() {
     }, 'image/png');
   }
 
-  const downloadBusinessCardPDF = (role, cardData) => {
+  function downloadBusinessCardPDF(role, cardData) {
     const pdf = new jsPDF({
       orientation: 'landscape',
       unit: 'mm',
@@ -2088,9 +2088,9 @@ export default function LogoGenerator() {
 
     // Download PDF
     pdf.save(`beyondwalls-${role}-card.pdf`);
-  };
+  }
 
-  const drawBusinessCardFront = (ctx, cardData) => {
+  function drawBusinessCardFront(ctx, cardData) {
     const bgGradient = ctx.createLinearGradient(0, 0, 800, 450);
     bgGradient.addColorStop(0, '#1e1b4b');
     bgGradient.addColorStop(0.5, '#312e81');
@@ -2201,7 +2201,7 @@ export default function LogoGenerator() {
     ctx.fillText('📍  Dubai, UAE', rightX, startY + spacing);
   }
 
-  const drawBusinessCardBack = (ctx, cardData, role) => {
+  function drawBusinessCardBack(ctx, cardData, role) {
     const profileUrl = role === 'ceo' 
       ? 'https://www.beyondwalls.ae/CEOProfile'
       : 'https://www.beyondwalls.ae/COOProfile';
