@@ -63,12 +63,12 @@ export default function CEOProfile() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           {/* Left - Image Section */}
-          <div className="relative flex items-center justify-center order-2 lg:order-1">
+          <div className="relative flex items-center justify-center order-1 lg:order-1">
             <div className="absolute w-[250px] h-[250px] sm:w-[400px] sm:h-[400px] bg-gradient-to-br from-violet-600 to-indigo-600 rounded-full opacity-20 blur-3xl" />
-            <div className="relative w-full max-w-[450px]">
+            <div className="relative w-full max-w-[280px] sm:max-w-[350px] lg:max-w-[450px] mx-auto">
               {/* Profile Card */}
-              <div className="w-full aspect-[9/11] bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100">
-                <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-white p-0">
+              <div className="w-full aspect-square lg:aspect-[9/11] bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100">
+                <div className="h-full flex items-center justify-center bg-white p-0">
                   <img 
                     src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6925a3bad1f286c6fe7d00ba/2deed815a_Screenshot2026-01-19at91915PM.png"
                     alt="Muhammed Musharaf - CEO"
@@ -78,13 +78,13 @@ export default function CEOProfile() {
               </div>
               
               {/* Decorative Elements */}
-              <div className="hidden sm:block absolute -bottom-8 -left-8 w-24 h-24 md:w-32 md:h-32 bg-violet-600 rounded-2xl -z-10" />
-              <div className="hidden sm:block absolute -top-8 -right-8 w-20 h-20 md:w-24 md:h-24 bg-indigo-600 rounded-full -z-10" />
+              <div className="hidden lg:block absolute -bottom-8 -left-8 w-24 h-24 md:w-32 md:h-32 bg-violet-600 rounded-2xl -z-10" />
+              <div className="hidden lg:block absolute -top-8 -right-8 w-20 h-20 md:w-24 md:h-24 bg-indigo-600 rounded-full -z-10" />
             </div>
           </div>
           
           {/* Right - Content Section */}
-          <div className="space-y-6 sm:space-y-8 order-1 lg:order-2">
+          <div className="space-y-6 sm:space-y-8 order-2 lg:order-2">
             {isEditing ? (
               <div className="space-y-4 bg-white p-4 sm:p-6 rounded-2xl shadow-lg border border-slate-200">
                 <div>
