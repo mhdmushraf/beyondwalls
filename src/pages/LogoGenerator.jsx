@@ -1625,6 +1625,7 @@ export default function LogoGenerator() {
                   cardType="ceo"
                   onEdit={() => setEditingCard("ceo")}
                   onDownload={(side) => downloadBusinessCardCreative("ceo", ceoCard, side)}
+                  onDownloadPDF={() => downloadBusinessCardPDF("ceo", ceoCard)}
                 />
               </TabsContent>
 
@@ -1634,6 +1635,7 @@ export default function LogoGenerator() {
                   cardType="coo"
                   onEdit={() => setEditingCard("coo")}
                   onDownload={(side) => downloadBusinessCardCreative("coo", cooCard, side)}
+                  onDownloadPDF={() => downloadBusinessCardPDF("coo", cooCard)}
                 />
               </TabsContent>
             </Tabs>
@@ -2052,7 +2054,7 @@ export default function LogoGenerator() {
     }, 'image/png');
   }
 
-  function downloadBusinessCardPDF(role, cardData) {
+  const downloadBusinessCardPDF = (role, cardData) => {
     const pdf = new jsPDF({
       orientation: 'landscape',
       unit: 'mm',
@@ -2086,9 +2088,9 @@ export default function LogoGenerator() {
 
     // Download PDF
     pdf.save(`beyondwalls-${role}-card.pdf`);
-  }
+  };
 
-  function drawBusinessCardFront(ctx, cardData) {
+  const drawBusinessCardFront = (ctx, cardData) => {
     const bgGradient = ctx.createLinearGradient(0, 0, 800, 450);
     bgGradient.addColorStop(0, '#1e1b4b');
     bgGradient.addColorStop(0.5, '#312e81');
@@ -2199,7 +2201,7 @@ export default function LogoGenerator() {
     ctx.fillText('📍  Dubai, UAE', rightX, startY + spacing);
   }
 
-  function drawBusinessCardBack(ctx, cardData, role) {
+  const drawBusinessCardBack = (ctx, cardData, role) => {
     const profileUrl = role === 'ceo' 
       ? 'https://www.beyondwalls.ae/CEOProfile'
       : 'https://www.beyondwalls.ae/COOProfile';
@@ -2607,7 +2609,7 @@ function BrochureBackPreview() {
   );
 }
 
-function BusinessCardCreative({ cardData, cardType, onEdit, onDownload }) {
+function BusinessCardCreative({ cardData, cardType, onEdit, onDownload, onDownloadPDF }) {
   const [showBack, setShowBack] = useState(false);
   
   return (
@@ -2766,7 +2768,7 @@ function BusinessCardCreative({ cardData, cardType, onEdit, onDownload }) {
           <Download className="w-4 h-4 mr-2" />
           Download Back
         </Button>
-        <Button onClick={() => downloadBusinessCardPDF(cardType, cardData)} variant="outline" className="border-orange-300 text-orange-600 hover:bg-orange-50">
+        <Button onClick={onDownloadPDF} variant="outline" className="border-orange-300 text-orange-600 hover:bg-orange-50">
           <FileText className="w-4 h-4 mr-2" />
           Download PDF
         </Button>
