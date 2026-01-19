@@ -2762,9 +2762,24 @@ function BrochureFrontPreview() {
           
           {/* Contact preview */}
           <div className="space-y-2 text-sm text-white/80">
-            <p>📧 hello@beyondwalls.ae</p>
-            <p>📱 +971 55 614 0067</p>
-            <p>🌐 www.beyondwalls.ae</p>
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 bg-white/10 rounded flex items-center justify-center">
+                <Mail className="w-3 h-3 text-white" />
+              </div>
+              <span>hello@beyondwalls.ae</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 bg-white/10 rounded flex items-center justify-center">
+                <Phone className="w-3 h-3 text-white" />
+              </div>
+              <span>+971 55 614 0067</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 bg-white/10 rounded flex items-center justify-center">
+                <Globe className="w-3 h-3 text-white" />
+              </div>
+              <span>www.beyondwalls.ae</span>
+            </div>
           </div>
         </div>
         
