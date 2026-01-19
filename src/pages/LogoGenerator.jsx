@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import jsPDF from "jspdf";
 
 export default function LogoGenerator() {
   const [generating, setGenerating] = useState(false);
@@ -2050,6 +2051,320 @@ export default function LogoGenerator() {
       URL.revokeObjectURL(url);
     }, 'image/png');
   }
+
+  function downloadBusinessCardPDF(role, cardData) {
+    const pdf = new jsPDF({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: [85.6, 53.98] // Standard business card size
+    });
+
+    // Create canvas for front side
+    const frontCanvas = document.createElement('canvas');
+    const frontCtx = frontCanvas.getContext('2d');
+    frontCanvas.width = 800;
+    frontCanvas.height = 450;
+    
+    // Draw front side (reusing existing logic)
+    drawBusinessCardFront(frontCtx, cardData);
+    const frontImage = frontCanvas.toDataURL('image/png');
+    pdf.addImage(frontImage, 'PNG', 0, 0, 85.6, 53.98);
+
+    // Add new page for back side
+    pdf.addPage();
+    
+    // Create canvas for back side
+    const backCanvas = document.createElement('canvas');
+    const backCtx = backCanvas.getContext('2d');
+    backCanvas.width = 800;
+    backCanvas.height = 450;
+    
+    // Draw back side (reusing existing logic)
+    drawBusinessCardBack(backCtx, cardData, role);
+    const backImage = backCanvas.toDataURL('image/png');
+    pdf.addImage(backImage, 'PNG', 0, 0, 85.6, 53.98);
+
+    // Download PDF
+    pdf.save(`beyondwalls-${role}-card.pdf`);
+  }
+
+  function drawBusinessCardFront(ctx, cardData) {
+    const bgGradient = ctx.createLinearGradient(0, 0, 800, 450);
+    bgGradient.addColorStop(0, '#1e1b4b');
+    bgGradient.addColorStop(0.5, '#312e81');
+    bgGradient.addColorStop(1, '#4c1d95');
+    ctx.fillStyle = bgGradient;
+    ctx.fillRect(0, 0, 800, 450);
+    
+    ctx.globalAlpha = 0.1;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(700, 80, 150, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(100, 400, 120, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(750, 400, 100, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    
+    const logoGradient = ctx.createLinearGradient(40, 35, 110, 105);
+    logoGradient.addColorStop(0, '#8B5CF6');
+    logoGradient.addColorStop(1, '#6366F1');
+    ctx.beginPath();
+    ctx.roundRect(40, 35, 70, 70, 16);
+    ctx.fillStyle = logoGradient;
+    ctx.fill();
+    
+    ctx.shadowColor = '#8B5CF6';
+    ctx.shadowBlur = 20;
+    ctx.beginPath();
+    ctx.roundRect(40, 35, 70, 70, 16);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 4;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.roundRect(55, 50, 40, 30, 4);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(75, 80);
+    ctx.lineTo(75, 92);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(60, 92);
+    ctx.lineTo(90, 92);
+    ctx.stroke();
+    
+    ctx.fillStyle = 'white';
+    ctx.beginPath();
+    ctx.moveTo(68, 58);
+    ctx.lineTo(68, 72);
+    ctx.lineTo(82, 65);
+    ctx.closePath();
+    ctx.fill();
+    
+    ctx.font = 'bold 32px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('BeyondWalls', 125, 62);
+    
+    ctx.font = '11px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.fillText('A Linkzone Global FZ-LLC Company', 125, 82);
+    
+    ctx.font = '14px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.fillText('Digital Out-of-Home Advertising', 125, 100);
+    
+    const lineGradient = ctx.createLinearGradient(40, 0, 760, 0);
+    lineGradient.addColorStop(0, '#8B5CF6');
+    lineGradient.addColorStop(1, '#6366F1');
+    ctx.strokeStyle = lineGradient;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(40, 135);
+    ctx.lineTo(760, 135);
+    ctx.stroke();
+    
+    ctx.font = 'bold 48px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(cardData.name, 40, 200);
+    
+    const titleGradient = ctx.createLinearGradient(40, 220, 300, 260);
+    titleGradient.addColorStop(0, '#8B5CF6');
+    titleGradient.addColorStop(1, '#6366F1');
+    ctx.fillStyle = titleGradient;
+    ctx.beginPath();
+    ctx.roundRect(40, 220, ctx.measureText(cardData.title).width * 0.65 + 30, 38, 19);
+    ctx.fill();
+    
+    ctx.font = 'bold 17px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(cardData.title, 55, 246);
+    
+    const leftX = 40;
+    const rightX = 420;
+    const startY = 310;
+    const spacing = 42;
+    
+    ctx.font = '15px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    
+    ctx.fillText('✉️  ' + cardData.email, leftX, startY);
+    ctx.fillText('🌐  www.beyondwalls.ae', leftX, startY + spacing);
+    ctx.fillText('📱  ' + cardData.phone, rightX, startY);
+    ctx.fillText('📍  Dubai, UAE', rightX, startY + spacing);
+  }
+
+  function drawBusinessCardBack(ctx, cardData, role) {
+    const profileUrl = role === 'ceo' 
+      ? 'https://www.beyondwalls.ae/CEOProfile'
+      : 'https://www.beyondwalls.ae/COOProfile';
+
+    const bgGradient = ctx.createLinearGradient(0, 0, 800, 450);
+    bgGradient.addColorStop(0, '#0f0a1e');
+    bgGradient.addColorStop(0.5, '#1a1035');
+    bgGradient.addColorStop(1, '#0f172a');
+    ctx.fillStyle = bgGradient;
+    ctx.fillRect(0, 0, 800, 450);
+    
+    ctx.globalAlpha = 0.03;
+    for (let i = 0; i < 20; i++) {
+      for (let j = 0; j < 12; j++) {
+        ctx.strokeStyle = '#8B5CF6';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(i * 45, j * 45);
+        ctx.lineTo(i * 45 + 30, j * 45 + 30);
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
+    
+    ctx.globalAlpha = 0.08;
+    const circleGrad1 = ctx.createRadialGradient(650, 100, 0, 650, 100, 200);
+    circleGrad1.addColorStop(0, '#8B5CF6');
+    circleGrad1.addColorStop(1, 'transparent');
+    ctx.fillStyle = circleGrad1;
+    ctx.beginPath();
+    ctx.arc(650, 100, 200, 0, Math.PI * 2);
+    ctx.fill();
+    
+    const circleGrad2 = ctx.createRadialGradient(150, 380, 0, 150, 380, 180);
+    circleGrad2.addColorStop(0, '#6366F1');
+    circleGrad2.addColorStop(1, 'transparent');
+    ctx.fillStyle = circleGrad2;
+    ctx.beginPath();
+    ctx.arc(150, 380, 180, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    
+    const logoSize = 120;
+    const logoX = (800 - logoSize) / 2;
+    const logoY = 100;
+    
+    const logoGradient = ctx.createLinearGradient(logoX, logoY, logoX + logoSize, logoY + logoSize);
+    logoGradient.addColorStop(0, '#8B5CF6');
+    logoGradient.addColorStop(1, '#6366F1');
+    ctx.beginPath();
+    ctx.roundRect(logoX, logoY, logoSize, logoSize, 28);
+    ctx.fillStyle = logoGradient;
+    ctx.fill();
+    
+    ctx.shadowColor = '#8B5CF6';
+    ctx.shadowBlur = 40;
+    ctx.beginPath();
+    ctx.roundRect(logoX, logoY, logoSize, logoSize, 28);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 6;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.roundRect(logoX + 25, logoY + 25, 70, 50, 6);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(logoX + 60, logoY + 75);
+    ctx.lineTo(logoX + 60, logoY + 95);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(logoX + 40, logoY + 95);
+    ctx.lineTo(logoX + 80, logoY + 95);
+    ctx.stroke();
+    
+    ctx.fillStyle = 'white';
+    ctx.beginPath();
+    ctx.moveTo(logoX + 48, logoY + 40);
+    ctx.lineTo(logoX + 48, logoY + 65);
+    ctx.lineTo(logoX + 75, logoY + 52);
+    ctx.closePath();
+    ctx.fill();
+    
+    ctx.font = 'bold 48px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.fillText('BeyondWalls', 400, 280);
+    
+    ctx.font = '18px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.fillText('Digital Out-of-Home Advertising', 400, 315);
+    
+    const lineGrad = ctx.createLinearGradient(200, 0, 600, 0);
+    lineGrad.addColorStop(0, 'transparent');
+    lineGrad.addColorStop(0.2, '#8B5CF6');
+    lineGrad.addColorStop(0.8, '#6366F1');
+    lineGrad.addColorStop(1, 'transparent');
+    ctx.strokeStyle = lineGrad;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(200, 340);
+    ctx.lineTo(600, 340);
+    ctx.stroke();
+    
+    ctx.font = '16px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = '#a78bfa';
+    ctx.fillText('www.beyondwalls.ae', 400, 380);
+    
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = '14px system-ui';
+    ctx.fillText('LinkedIn  •  Instagram  •  Twitter', 400, 415);
+    
+    const qrSize = 140;
+    const qrX = 590;
+    const qrY = 170;
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = 'rgba(0,0,0,0.2)';
+    ctx.shadowBlur = 20;
+    ctx.shadowOffsetY = 5;
+    ctx.beginPath();
+    ctx.roundRect(qrX, qrY, qrSize, qrSize, 12);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
+    
+    ctx.font = '12px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.textAlign = 'center';
+    ctx.fillText('Scan to Connect', qrX + qrSize / 2, qrY + qrSize + 25);
+    ctx.textAlign = 'left';
+    
+    ctx.font = '12px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.fillText('Incubated @', 45, 400);
+    ctx.font = 'bold 22px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('in5', 45, 423);
+    ctx.font = '10px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.fillText('Tech Dubai Internet City', 75, 423);
+    
+    ctx.strokeStyle = '#8B5CF6';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(20, 50);
+    ctx.lineTo(20, 20);
+    ctx.lineTo(50, 20);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(750, 20);
+    ctx.lineTo(780, 20);
+    ctx.lineTo(780, 50);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(20, 400);
+    ctx.lineTo(20, 430);
+    ctx.lineTo(50, 430);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(750, 430);
+    ctx.lineTo(780, 430);
+    ctx.lineTo(780, 400);
+    ctx.stroke();
+  }
 }
 
 function BrochureFrontPreview() {
@@ -2450,6 +2765,10 @@ function BusinessCardCreative({ cardData, cardType, onEdit, onDownload }) {
         <Button onClick={() => onDownload('back')} variant="outline" className="border-violet-300">
           <Download className="w-4 h-4 mr-2" />
           Download Back
+        </Button>
+        <Button onClick={() => downloadBusinessCardPDF(cardType, cardData)} variant="outline" className="border-orange-300 text-orange-600 hover:bg-orange-50">
+          <FileText className="w-4 h-4 mr-2" />
+          Download PDF
         </Button>
       </div>
     </div>
