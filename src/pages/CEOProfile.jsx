@@ -53,41 +53,41 @@ export default function CEOProfile() {
   return (
     <div className="min-h-screen bg-white relative overflow-hidden">
       {/* Decorative Blobs */}
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-gradient-to-br from-violet-400 to-violet-500 rounded-[40%_60%_70%_30%/40%_50%_60%_50%] opacity-90 -translate-x-1/3 -translate-y-1/4" />
-      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-gradient-to-tl from-indigo-400 to-indigo-500 rounded-[60%_40%_30%_70%/60%_30%_70%_40%] opacity-90 translate-x-1/3 translate-y-1/4" />
-      <div className="absolute top-1/2 right-20 w-[300px] h-[300px] bg-gradient-to-br from-purple-400 to-purple-500 rounded-[50%_50%_50%_50%/60%_40%_60%_40%] opacity-70" />
+      <div className="absolute top-0 left-0 w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-gradient-to-br from-violet-400 to-violet-500 rounded-[40%_60%_70%_30%/40%_50%_60%_50%] opacity-90 -translate-x-1/3 -translate-y-1/4" />
+      <div className="absolute bottom-0 right-0 w-[350px] h-[350px] md:w-[600px] md:h-[600px] bg-gradient-to-tl from-indigo-400 to-indigo-500 rounded-[60%_40%_30%_70%/60%_30%_70%_40%] opacity-90 translate-x-1/3 translate-y-1/4" />
+      <div className="absolute top-1/2 right-4 md:right-20 w-[150px] h-[150px] md:w-[300px] md:h-[300px] bg-gradient-to-br from-purple-400 to-purple-500 rounded-[50%_50%_50%_50%/60%_40%_60%_40%] opacity-70" />
       
       <PublicNav />
       
       {/* Main Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 py-20">
-        <div className="grid lg:grid-cols-2 gap-16 items-center min-h-[80vh]">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           {/* Left - Image Section */}
-          <div className="relative flex items-center justify-center">
-            <div className="absolute w-[400px] h-[400px] bg-gradient-to-br from-violet-600 to-indigo-600 rounded-full opacity-20 blur-3xl" />
-            <div className="relative">
+          <div className="relative flex items-center justify-center order-2 lg:order-1">
+            <div className="absolute w-[250px] h-[250px] sm:w-[400px] sm:h-[400px] bg-gradient-to-br from-violet-600 to-indigo-600 rounded-full opacity-20 blur-3xl" />
+            <div className="relative w-full max-w-[450px]">
               {/* Profile Card */}
-              <div className="w-[450px] h-[550px] bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100">
-                <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-white p-12">
-                  <div className="text-center">
-                    <div className="w-64 h-64 mx-auto bg-gradient-to-br from-violet-600 to-indigo-600 rounded-full flex items-center justify-center shadow-xl mb-6">
-                      <MonitorPlay className="w-32 h-32 text-white" />
+              <div className="w-full aspect-[9/11] bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100">
+                <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-white p-6 sm:p-12">
+                  <div className="text-center w-full">
+                    <div className="w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 mx-auto bg-gradient-to-br from-violet-600 to-indigo-600 rounded-full flex items-center justify-center shadow-xl mb-4 sm:mb-6">
+                      <MonitorPlay className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 text-white" />
                     </div>
-                    <div className="w-48 h-48 mx-auto bg-gradient-to-br from-indigo-600 to-violet-600 rounded-full opacity-60 absolute bottom-12 left-1/2 -translate-x-1/2" />
+                    <div className="w-24 h-24 sm:w-36 sm:h-36 md:w-48 md:h-48 mx-auto bg-gradient-to-br from-indigo-600 to-violet-600 rounded-full opacity-60 absolute bottom-6 sm:bottom-12 left-1/2 -translate-x-1/2" />
                   </div>
                 </div>
               </div>
               
               {/* Decorative Elements */}
-              <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-violet-600 rounded-2xl -z-10" />
-              <div className="absolute -top-8 -right-8 w-24 h-24 bg-indigo-600 rounded-full -z-10" />
+              <div className="hidden sm:block absolute -bottom-8 -left-8 w-24 h-24 md:w-32 md:h-32 bg-violet-600 rounded-2xl -z-10" />
+              <div className="hidden sm:block absolute -top-8 -right-8 w-20 h-20 md:w-24 md:h-24 bg-indigo-600 rounded-full -z-10" />
             </div>
           </div>
           
           {/* Right - Content Section */}
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8 order-1 lg:order-2">
             {isEditing ? (
-              <div className="space-y-4 bg-white p-6 rounded-2xl shadow-lg border border-slate-200">
+              <div className="space-y-4 bg-white p-4 sm:p-6 rounded-2xl shadow-lg border border-slate-200">
                 <div>
                   <Label>Full Name</Label>
                   <Input
@@ -108,30 +108,30 @@ export default function CEOProfile() {
             ) : (
               <>
                 <div>
-                  <h1 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-3 leading-tight">
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 mb-2 sm:mb-3 leading-tight">
                     Hello, I'm <span className="text-violet-600">{profileData.name}</span>
                   </h1>
-                  <h2 className="text-2xl lg:text-3xl font-medium text-slate-700 mb-6">{profileData.title}</h2>
+                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-medium text-slate-700 mb-4 sm:mb-6">{profileData.title}</h2>
                   
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center">
-                      <MonitorPlay className="w-6 h-6 text-white" />
+                  <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <MonitorPlay className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
                     <div>
-                      <p className="font-bold text-lg text-slate-900">BeyondWalls</p>
-                      <p className="text-sm text-slate-500">A Linkzone Global FZ-LLC Company</p>
+                      <p className="font-bold text-base sm:text-lg text-slate-900">BeyondWalls</p>
+                      <p className="text-xs sm:text-sm text-slate-500">A Linkzone Global FZ-LLC Company</p>
                     </div>
                   </div>
                   
-                  <p className="text-slate-600 leading-relaxed text-base mb-4 max-w-xl">
+                  <p className="text-slate-600 leading-relaxed text-sm sm:text-base mb-3 sm:mb-4">
                     Leading the digital transformation of out-of-home advertising across the UAE. With over 5 years of operational leadership at Abdulla Wholesale (FMCG) in Dubai, managing $15M+ brand budgets across MENA, I bring deep expertise in retail monetization strategies and UAE market dynamics.
                   </p>
                   
-                  <p className="text-slate-600 leading-relaxed text-base mb-4 max-w-xl">
+                  <p className="text-slate-600 leading-relaxed text-sm sm:text-base mb-3 sm:mb-4">
                     As a UAE Chartered Accountant (IFAC Accredited) with a BSc in Business & Finance (First Class Honors) from the University of the West Scotland, I combine financial acumen with technology-driven innovation to create sustainable advertising solutions.
                   </p>
                   
-                  <p className="text-slate-600 leading-relaxed text-base mb-8 max-w-xl">
+                  <p className="text-slate-600 leading-relaxed text-sm sm:text-base mb-6 sm:mb-8">
                     My unique dual qualifications in aviation (currently in pilot training) and finance enable data-driven scaling and strategic decision-making, helping BeyondWalls connect brands with premium venues while empowering venue owners to maximize their earning potential.
                   </p>
                 </div>
@@ -140,16 +140,16 @@ export default function CEOProfile() {
                 <div>
                   <Button 
                     onClick={() => setShowContactForm(true)}
-                    className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white px-8 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all"
+                    className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg rounded-full shadow-lg hover:shadow-xl transition-all w-full sm:w-auto"
                   >
                     GET IN TOUCH!
                   </Button>
                 </div>
                 
                 {/* Contact & Social */}
-                <div className="space-y-4">
-                  <p className="text-slate-900 font-medium text-base">{profileData.email}</p>
-                  <div className="flex gap-3">
+                <div className="space-y-3 sm:space-y-4">
+                  <p className="text-slate-900 font-medium text-sm sm:text-base break-all">{profileData.email}</p>
+                  <div className="flex gap-2 sm:gap-3 flex-wrap">
                     {isEditing ? (
                       <div className="space-y-2 w-full">
                         <Input
@@ -165,17 +165,17 @@ export default function CEOProfile() {
                       </div>
                     ) : (
                       <>
-                        <a href={profileData.linkedin} target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg">
-                          <Linkedin className="w-5 h-5" />
+                        <a href={profileData.linkedin} target="_blank" rel="noopener noreferrer" className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg">
+                          <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" />
                         </a>
-                        <a href={profileData.twitter} target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg">
-                          <Twitter className="w-5 h-5" />
+                        <a href={profileData.twitter} target="_blank" rel="noopener noreferrer" className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg">
+                          <Twitter className="w-4 h-4 sm:w-5 sm:h-5" />
                         </a>
-                        <a href={profileData.instagram} target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg">
-                          <Instagram className="w-5 h-5" />
+                        <a href={profileData.instagram} target="_blank" rel="noopener noreferrer" className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg">
+                          <Instagram className="w-4 h-4 sm:w-5 sm:h-5" />
                         </a>
-                        <a href="mailto:hello@beyondwalls.ae" className="w-12 h-12 rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg">
-                          <Mail className="w-5 h-5" />
+                        <a href="mailto:hello@beyondwalls.ae" className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg">
+                          <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
                         </a>
                       </>
                     )}
@@ -211,29 +211,29 @@ export default function CEOProfile() {
       </div>
       
       {/* Stats Section */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 pb-20">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20">
         <Card className="border-0 shadow-2xl bg-gradient-to-br from-slate-900 via-indigo-950 to-violet-950 text-white overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-violet-500/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl" />
-          <CardContent className="p-12 relative">
-            <div className="text-center mb-10">
-              <h2 className="font-bold text-4xl mb-4">About BeyondWalls</h2>
-              <p className="text-white/80 text-lg max-w-3xl mx-auto leading-relaxed">
+          <div className="absolute top-0 right-0 w-48 h-48 sm:w-96 sm:h-96 bg-violet-500/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-32 h-32 sm:w-64 sm:h-64 bg-indigo-500/20 rounded-full blur-3xl" />
+          <CardContent className="p-6 sm:p-8 lg:p-12 relative">
+            <div className="text-center mb-6 sm:mb-10">
+              <h2 className="font-bold text-2xl sm:text-3xl lg:text-4xl mb-3 sm:mb-4">About BeyondWalls</h2>
+              <p className="text-white/80 text-sm sm:text-base lg:text-lg max-w-3xl mx-auto leading-relaxed">
                 The UAE's leading digital out-of-home advertising platform, connecting advertisers with premium venue spaces across Dubai, Abu Dhabi, and beyond.
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              <div className="text-center p-8 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 hover:bg-white/20 transition-all">
-                <p className="text-5xl font-bold text-violet-400 mb-2">500+</p>
-                <p className="text-white/90 font-medium">Active Venues</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto">
+              <div className="text-center p-6 sm:p-8 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 hover:bg-white/20 transition-all">
+                <p className="text-3xl sm:text-4xl lg:text-5xl font-bold text-violet-400 mb-1 sm:mb-2">500+</p>
+                <p className="text-white/90 font-medium text-sm sm:text-base">Active Venues</p>
               </div>
-              <div className="text-center p-8 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 hover:bg-white/20 transition-all">
-                <p className="text-5xl font-bold text-indigo-400 mb-2">1,200+</p>
-                <p className="text-white/90 font-medium">Screens Live</p>
+              <div className="text-center p-6 sm:p-8 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 hover:bg-white/20 transition-all">
+                <p className="text-3xl sm:text-4xl lg:text-5xl font-bold text-indigo-400 mb-1 sm:mb-2">1,200+</p>
+                <p className="text-white/90 font-medium text-sm sm:text-base">Screens Live</p>
               </div>
-              <div className="text-center p-8 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 hover:bg-white/20 transition-all">
-                <p className="text-5xl font-bold text-violet-400 mb-2">AED 2M+</p>
-                <p className="text-white/90 font-medium">Paid to Venues</p>
+              <div className="text-center p-6 sm:p-8 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 hover:bg-white/20 transition-all">
+                <p className="text-3xl sm:text-4xl lg:text-5xl font-bold text-violet-400 mb-1 sm:mb-2">AED 2M+</p>
+                <p className="text-white/90 font-medium text-sm sm:text-base">Paid to Venues</p>
               </div>
             </div>
           </CardContent>
