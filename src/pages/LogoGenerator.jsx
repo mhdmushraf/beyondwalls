@@ -2732,18 +2732,35 @@ function BrochureFrontPreview() {
         <div className="relative z-10">
           {/* Header */}
           <div className="mb-6">
-            <h3 className="text-3xl font-bold text-white mb-2">Why Choose</h3>
-            <h3 className="text-3xl font-bold text-white">BeyondWalls?</h3>
+            <h3 className="text-3xl font-bold text-white mb-2">Perfect for</h3>
+            <h3 className="text-3xl font-bold text-white">Everyone</h3>
             <div className="h-px bg-white/20 w-3/4 mt-4" />
           </div>
           
           <div className="space-y-3 text-sm">
+            <p className="text-xs font-semibold text-violet-400 mb-2">FOR ADVERTISERS</p>
             {[
-              { icon: DollarSign, title: 'Earn 70% Revenue', desc: 'Keep majority of ad revenue' },
-              { icon: Target, title: 'AI-Powered Targeting', desc: 'Smart ad placement' },
-              { icon: BarChart3, title: 'Real-Time Analytics', desc: 'Track performance live' },
+              { icon: Target, title: 'AI-Powered Targeting', desc: 'Reach the right audience' },
+              { icon: BarChart3, title: 'Real-Time Analytics', desc: 'Track ROI instantly' },
+              { icon: Globe, title: '500+ Prime Locations', desc: 'Across Dubai & UAE' }
+            ].map((item, i) => {
+              const IconComponent = item.icon;
+              return (
+              <div key={i} className="flex gap-3 items-center bg-white/5 backdrop-blur-sm rounded-lg p-3 border border-white/10">
+                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                  <IconComponent className="w-5 h-5 text-white" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-bold text-white">{item.title}</p>
+                  <p className="text-white/60 text-xs">{item.desc}</p>
+                </div>
+              </div>
+              );
+            })}
+            <p className="text-xs font-semibold text-indigo-400 mb-2 mt-4">FOR VENUE OWNERS</p>
+            {[
+              { icon: DollarSign, title: 'Earn 70% Revenue', desc: 'Keep majority of earnings' },
               { icon: Zap, title: 'Zero Upfront Cost', desc: 'Free to get started' },
-              { icon: Globe, title: 'Leading Platform', desc: '500+ trusted venues' },
               { icon: Clock, title: 'Quick Setup', desc: 'Live in 48 hours' }
             ].map((item, i) => {
               const IconComponent = item.icon;
