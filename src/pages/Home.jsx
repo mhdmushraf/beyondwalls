@@ -23,7 +23,10 @@ import {
   Wallet,
   PieChart,
   Award,
-  Rocket
+  Rocket,
+  Mail,
+  Phone,
+  Globe2
 } from "lucide-react";
 import InvestorInquiryModal from "@/components/InvestorInquiryModal";
 import PersonalizedHero from "@/components/personalization/PersonalizedHero";
