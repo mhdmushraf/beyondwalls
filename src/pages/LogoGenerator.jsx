@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { Download, Loader2, RefreshCw, MonitorPlay, Sparkles, FileText, CreditCard, Mail, Phone, Globe, MapPin, FileImage, BookOpen } from "lucide-react";
+import { Download, Loader2, RefreshCw, MonitorPlay, Sparkles, FileText, CreditCard, Mail, Phone, Globe, MapPin, FileImage, BookOpen, DollarSign, Target, BarChart3, Zap, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -2739,16 +2739,18 @@ function BrochureFrontPreview() {
           
           <div className="space-y-3 text-sm">
             {[
-              { icon: '💰', title: 'Earn 70% Revenue', desc: 'Keep majority of ad revenue' },
-              { icon: '🎯', title: 'AI-Powered Targeting', desc: 'Smart ad placement' },
-              { icon: '📊', title: 'Real-Time Analytics', desc: 'Track performance live' },
-              { icon: '🚀', title: 'Zero Upfront Cost', desc: 'Free to get started' },
-              { icon: '🌐', title: 'Leading Platform', desc: '500+ trusted venues' },
-              { icon: '⚡', title: 'Quick Setup', desc: 'Live in 48 hours' }
-            ].map((item, i) => (
+              { icon: DollarSign, title: 'Earn 70% Revenue', desc: 'Keep majority of ad revenue' },
+              { icon: Target, title: 'AI-Powered Targeting', desc: 'Smart ad placement' },
+              { icon: BarChart3, title: 'Real-Time Analytics', desc: 'Track performance live' },
+              { icon: Zap, title: 'Zero Upfront Cost', desc: 'Free to get started' },
+              { icon: Globe, title: 'Leading Platform', desc: '500+ trusted venues' },
+              { icon: Clock, title: 'Quick Setup', desc: 'Live in 48 hours' }
+            ].map((item, i) => {
+              const IconComponent = item.icon;
+              return (
               <div key={i} className="flex gap-3 items-center bg-white/5 backdrop-blur-sm rounded-lg p-3 border border-white/10">
                 <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-                  <span className="text-xl">{item.icon}</span>
+                  <IconComponent className="w-5 h-5 text-white" />
                 </div>
                 <div className="flex-1">
                   <p className="font-bold text-white">{item.title}</p>
@@ -2778,30 +2780,35 @@ function BrochureFrontPreview() {
           
           <div className="space-y-3 text-sm">
             {[
-              { icon: '📧', label: 'Email', value: 'hello@beyondwalls.ae' },
-              { icon: '📱', label: 'Phone', value: '+971 55 614 0067' },
-              { icon: '🌐', label: 'Website', value: 'www.beyondwalls.ae' },
-              { icon: '📍', label: 'Location', value: 'in5 Tech\nDubai Internet City, UAE' }
-            ].map((item, i) => (
+              { icon: Mail, label: 'Email', value: 'hello@beyondwalls.ae' },
+              { icon: Phone, label: 'Phone', value: '+971 55 614 0067' },
+              { icon: Globe, label: 'Website', value: 'www.beyondwalls.ae' },
+              { icon: MapPin, label: 'Location', value: 'in5 Tech\nDubai Internet City, UAE' }
+            ].map((item, i) => {
+              const IconComponent = item.icon;
+              return (
               <div key={i} className="flex items-start gap-3 text-white/90">
                 <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <span className="text-lg">{item.icon}</span>
+                  <IconComponent className="w-4 h-4 text-white" />
                 </div>
                 <div>
                   <p className="text-xs text-white/60 font-semibold mb-1">{item.label}</p>
                   <p className="text-sm font-bold text-white whitespace-pre-line">{item.value}</p>
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
         </div>
         
         {/* QR Code */}
         <div className="relative z-10 bg-white/95 rounded-xl p-4 text-center shadow-lg">
-          <div className="w-24 h-24 bg-slate-200 rounded-lg mx-auto mb-2 flex items-center justify-center">
-            <span className="text-3xl">📱</span>
-          </div>
-          <p className="text-xs text-slate-700 font-semibold">Scan to Connect</p>
+          <img 
+            src={`https://api.qrserver.com/v1/create-qr-code/?size=96x96&data=${encodeURIComponent('https://www.beyondwalls.ae/Onboarding')}`}
+            alt="QR Code"
+            className="w-24 h-24 rounded-lg mx-auto mb-2"
+          />
+          <p className="text-xs text-slate-700 font-semibold">Scan to Get Started</p>
         </div>
         
         {/* Bottom accent */}
@@ -2833,7 +2840,7 @@ function BrochureBackPreview() {
           ].map((step) => (
             <div key={step.num} className="flex items-start gap-3 bg-slate-50 rounded-lg p-3">
               <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
-                <span className="text-lg font-bold text-white">{step.num}</span>
+                <span className="text-base font-bold text-white">{step.num}</span>
               </div>
               <div>
                 <h4 className="font-bold text-slate-900">{step.title}</h4>
@@ -2890,22 +2897,25 @@ function BrochureBackPreview() {
         
         <div className="space-y-3">
           {[
-            { icon: '🎯', title: 'Smart Targeting', desc: 'AI-powered matching' },
-            { icon: '📊', title: 'Live Dashboard', desc: 'Real-time analytics' },
-            { icon: '💳', title: 'Easy Payouts', desc: 'Weekly transfers' },
-            { icon: '🛡️', title: 'Safe Content', desc: 'Pre-approved ads' },
-            { icon: '📱', title: 'Mobile Control', desc: 'Manage anywhere' }
-          ].map((item, i) => (
+            { icon: Target, title: 'Smart Targeting', desc: 'AI-powered matching' },
+            { icon: BarChart3, title: 'Live Dashboard', desc: 'Real-time analytics' },
+            { icon: CreditCard, title: 'Easy Payouts', desc: 'Weekly transfers' },
+            { icon: Sparkles, title: 'Safe Content', desc: 'Pre-approved ads' },
+            { icon: Phone, title: 'Mobile Control', desc: 'Manage anywhere' }
+          ].map((item, i) => {
+            const IconComponent = item.icon;
+            return (
             <div key={i} className="flex gap-3 items-center bg-slate-50 rounded-lg p-3">
               <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
-                <span className="text-lg">{item.icon}</span>
+                <IconComponent className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1">
                 <p className="font-bold text-slate-900 text-sm">{item.title}</p>
                 <p className="text-xs text-slate-600">{item.desc}</p>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
         
         <div className="mt-6 text-center bg-gradient-to-r from-slate-900 to-purple-900 rounded-xl p-4">
