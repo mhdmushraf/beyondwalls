@@ -744,12 +744,12 @@ export default function LogoGenerator() {
       ctx.font = 'bold 90px system-ui, -apple-system, sans-serif';
       ctx.fillText('Get in Touch', panelWidth * 2 + panelWidth / 2, 300);
       
-      // Contact cards
+      // Contact cards with icon codes
       const contacts = [
-        { icon: '📧', label: 'Email', value: 'hello@beyondwalls.ae' },
-        { icon: '📱', label: 'Phone', value: '+971 55 614 0067' },
-        { icon: '🌐', label: 'Website', value: 'www.beyondwalls.ae' },
-        { icon: '📍', label: 'Location', value: 'in5 Tech, Dubai Internet City\nDubai, UAE' }
+        { icon: 'mail', label: 'Email', value: 'hello@beyondwalls.ae' },
+        { icon: 'phone', label: 'Phone', value: '+971 55 614 0067' },
+        { icon: 'globe', label: 'Website', value: 'www.beyondwalls.ae' },
+        { icon: 'map-pin', label: 'Location', value: 'in5 Tech, Dubai Internet City\nDubai, UAE' }
       ];
       
       let contactY = 480;
@@ -765,11 +765,65 @@ export default function LogoGenerator() {
         ctx.shadowBlur = 0;
         ctx.shadowOffsetY = 0;
         
-        // Icon
-        ctx.font = '64px system-ui';
-        ctx.fillStyle = '#06b6d4';
-        ctx.textAlign = 'center';
-        ctx.fillText(contact.icon, panelWidth * 2 + 190, contactY + 85);
+        // Icon circle background
+        const iconGrad = ctx.createLinearGradient(panelWidth * 2 + 160, contactY + 50, panelWidth * 2 + 220, contactY + 110);
+        iconGrad.addColorStop(0, '#06b6d4');
+        iconGrad.addColorStop(1, '#0891b2');
+        ctx.fillStyle = iconGrad;
+        ctx.beginPath();
+        ctx.arc(panelWidth * 2 + 190, contactY + 80, 35, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Icon - draw simplified icon using canvas
+        ctx.strokeStyle = 'white';
+        ctx.fillStyle = 'white';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        
+        if (contact.icon === 'mail') {
+          // Envelope
+          ctx.beginPath();
+          ctx.roundRect(panelWidth * 2 + 170, contactY + 68, 40, 26, 3);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(panelWidth * 2 + 170, contactY + 68);
+          ctx.lineTo(panelWidth * 2 + 190, contactY + 83);
+          ctx.lineTo(panelWidth * 2 + 210, contactY + 68);
+          ctx.stroke();
+        } else if (contact.icon === 'phone') {
+          // Phone
+          ctx.beginPath();
+          ctx.roundRect(panelWidth * 2 + 175, contactY + 65, 30, 32, 4);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(panelWidth * 2 + 190, contactY + 91, 2, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (contact.icon === 'globe') {
+          // Globe
+          ctx.beginPath();
+          ctx.arc(panelWidth * 2 + 190, contactY + 80, 18, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.ellipse(panelWidth * 2 + 190, contactY + 80, 7, 18, 0, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(panelWidth * 2 + 172, contactY + 80);
+          ctx.lineTo(panelWidth * 2 + 208, contactY + 80);
+          ctx.stroke();
+        } else if (contact.icon === 'map-pin') {
+          // Map pin
+          ctx.beginPath();
+          ctx.moveTo(panelWidth * 2 + 190, contactY + 95);
+          ctx.lineTo(panelWidth * 2 + 190, contactY + 85);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(panelWidth * 2 + 190, contactY + 75, 10, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(panelWidth * 2 + 190, contactY + 75, 4, 0, Math.PI * 2);
+          ctx.fill();
+        }
         
         // Label
         ctx.textAlign = 'left';
