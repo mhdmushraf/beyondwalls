@@ -2757,7 +2757,8 @@ function BrochureFrontPreview() {
                   <p className="text-white/60 text-xs">{item.desc}</p>
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
         </div>
         
