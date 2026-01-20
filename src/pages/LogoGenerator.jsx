@@ -2042,23 +2042,23 @@ export default function LogoGenerator() {
 
     const frontCanvas = document.createElement('canvas');
     const frontCtx = frontCanvas.getContext('2d');
-    frontCanvas.width = 800;
-    frontCanvas.height = 450;
+    frontCanvas.width = 1122;
+    frontCanvas.height = 709;
     
     drawBusinessCardFront(frontCtx, cardData);
     const frontImage = frontCanvas.toDataURL('image/png');
-    pdf.addImage(frontImage, 'PNG', 0, 0, 85.6, 53.98);
+    pdf.addImage(frontImage, 'PNG', 0, 0, 95, 60);
 
     pdf.addPage();
     
     const backCanvas = document.createElement('canvas');
     const backCtx = backCanvas.getContext('2d');
-    backCanvas.width = 800;
-    backCanvas.height = 450;
+    backCanvas.width = 1122;
+    backCanvas.height = 709;
     
     drawBusinessCardBack(backCtx, cardData, role);
     const backImage = backCanvas.toDataURL('image/png');
-    pdf.addImage(backImage, 'PNG', 0, 0, 85.6, 53.98);
+    pdf.addImage(backImage, 'PNG', 0, 0, 95, 60);
 
     pdf.save(`beyondwalls-${role}-card.pdf`);
   }
@@ -2077,12 +2077,12 @@ export default function LogoGenerator() {
     if (side === 'back') {
       // === BACK SIDE DESIGN ===
       // Dark elegant background
-      const bgGradient = ctx.createLinearGradient(0, 0, 800, 450);
+      const bgGradient = ctx.createLinearGradient(0, 0, 1122, 709);
       bgGradient.addColorStop(0, '#0f0a1e');
       bgGradient.addColorStop(0.5, '#1a1035');
       bgGradient.addColorStop(1, '#0f172a');
       ctx.fillStyle = bgGradient;
-      ctx.fillRect(0, 0, 800, 450);
+      ctx.fillRect(0, 0, 1122, 709);
       
       // Geometric pattern overlay
       ctx.globalAlpha = 0.03;
@@ -2271,12 +2271,12 @@ export default function LogoGenerator() {
     } else {
       // === FRONT SIDE DESIGN - Matching Screenshot ===
       // Background gradient matching brand colors
-      const bgGradient = ctx.createLinearGradient(0, 0, 800, 450);
+      const bgGradient = ctx.createLinearGradient(0, 0, 1122, 709);
       bgGradient.addColorStop(0, '#1e1b4b');
       bgGradient.addColorStop(0.5, '#312e81');
       bgGradient.addColorStop(1, '#4c1d95');
       ctx.fillStyle = bgGradient;
-      ctx.fillRect(0, 0, 800, 450);
+      ctx.fillRect(0, 0, 1122, 709);
       
       // Decorative circles
       ctx.globalAlpha = 0.1;
@@ -2415,19 +2415,19 @@ export default function LogoGenerator() {
     const pdf = new jsPDF({
       orientation: 'landscape',
       unit: 'mm',
-      format: [85.6, 53.98] // Standard business card size
+      format: [95, 60]
     });
 
     // Create canvas for front side
     const frontCanvas = document.createElement('canvas');
     const frontCtx = frontCanvas.getContext('2d');
-    frontCanvas.width = 800;
-    frontCanvas.height = 450;
+    frontCanvas.width = 1122;
+    frontCanvas.height = 709;
     
     // Draw front side (reusing existing logic)
     drawBusinessCardFront(frontCtx, cardData);
     const frontImage = frontCanvas.toDataURL('image/png');
-    pdf.addImage(frontImage, 'PNG', 0, 0, 85.6, 53.98);
+    pdf.addImage(frontImage, 'PNG', 0, 0, 95, 60);
 
     // Add new page for back side
     pdf.addPage();
@@ -2435,13 +2435,13 @@ export default function LogoGenerator() {
     // Create canvas for back side
     const backCanvas = document.createElement('canvas');
     const backCtx = backCanvas.getContext('2d');
-    backCanvas.width = 800;
-    backCanvas.height = 450;
+    backCanvas.width = 1122;
+    backCanvas.height = 709;
     
     // Draw back side (reusing existing logic)
     drawBusinessCardBack(backCtx, cardData, role);
     const backImage = backCanvas.toDataURL('image/png');
-    pdf.addImage(backImage, 'PNG', 0, 0, 85.6, 53.98);
+    pdf.addImage(backImage, 'PNG', 0, 0, 95, 60);
 
     // Download PDF
     pdf.save(`beyondwalls-${role}-card.pdf`);
@@ -3100,7 +3100,7 @@ function BusinessCardCreative({ cardData, cardType, onEdit, onDownload, onDownlo
         </div>
       ) : (
         /* BACK SIDE PREVIEW */
-        <div className="relative rounded-2xl shadow-2xl overflow-hidden max-w-xl mx-auto bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900" style={{ aspectRatio: '800/450' }}>
+        <div className="relative rounded-2xl shadow-2xl overflow-hidden max-w-xl mx-auto bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900" style={{ aspectRatio: '1122/709' }}>
           {/* Geometric pattern overlay */}
           <div className="absolute inset-0 opacity-5">
             {[...Array(12)].map((_, i) => (
