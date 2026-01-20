@@ -1675,6 +1675,7 @@ export default function LogoGenerator() {
                   onEdit={() => setEditingCard("ceo")}
                   onDownload={(side) => downloadBusinessCardCreative("ceo", ceoCard, side)}
                   onDownloadPDF={() => downloadBusinessCardPDF("ceo", ceoCard)}
+                  onDownloadPhotoshop={() => downloadForPhotoshop("ceo", ceoCard)}
                 />
               </TabsContent>
 
@@ -1685,6 +1686,7 @@ export default function LogoGenerator() {
                   onEdit={() => setEditingCard("coo")}
                   onDownload={(side) => downloadBusinessCardCreative("coo", cooCard, side)}
                   onDownloadPDF={() => downloadBusinessCardPDF("coo", cooCard)}
+                  onDownloadPhotoshop={() => downloadForPhotoshop("coo", cooCard)}
                 />
               </TabsContent>
             </Tabs>
@@ -2061,6 +2063,177 @@ export default function LogoGenerator() {
     pdf.addImage(backImage, 'PNG', 0, 0, 95, 60);
 
     pdf.save(`beyondwalls-${role}-card.pdf`);
+  }
+
+  function downloadForPhotoshop(role, cardData) {
+    // Download individual layers for Photoshop editing
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 1122;
+    canvas.height = 709;
+
+    // Layer 1: Background gradient
+    ctx.fillStyle = 'transparent';
+    ctx.fillRect(0, 0, 1122, 709);
+    const bgGradient = ctx.createLinearGradient(0, 0, 1122, 709);
+    bgGradient.addColorStop(0, '#1e1b4b');
+    bgGradient.addColorStop(0.5, '#312e81');
+    bgGradient.addColorStop(1, '#4c1d95');
+    ctx.fillStyle = bgGradient;
+    ctx.fillRect(0, 0, 1122, 709);
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${role}-card-background.png`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }, 'image/png');
+
+    // Layer 2: Logo icon only
+    setTimeout(() => {
+      ctx.clearRect(0, 0, 1122, 709);
+      const logoGradient = ctx.createLinearGradient(56, 55, 154, 165);
+      logoGradient.addColorStop(0, '#8B5CF6');
+      logoGradient.addColorStop(1, '#6366F1');
+      ctx.fillStyle = logoGradient;
+      ctx.beginPath();
+      ctx.roundRect(56, 55, 98, 110, 22);
+      ctx.fill();
+      
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 6;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.roundRect(77, 79, 56, 47, 6);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(105, 126);
+      ctx.lineTo(105, 145);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(84, 145);
+      ctx.lineTo(126, 145);
+      ctx.stroke();
+      
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.moveTo(95, 91);
+      ctx.lineTo(95, 113);
+      ctx.lineTo(115, 102);
+      ctx.closePath();
+      ctx.fill();
+
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${role}-card-logo-icon.png`;
+        link.click();
+        URL.revokeObjectURL(url);
+      }, 'image/png');
+    }, 100);
+
+    // Layer 3: Text elements
+    setTimeout(() => {
+      ctx.clearRect(0, 0, 1122, 709);
+      
+      ctx.font = 'bold 45px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText('BeyondWalls', 175, 98);
+      
+      ctx.font = '15px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.fillText('A Linkzone Global FZ-LLC Company', 175, 129);
+      
+      ctx.font = '20px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.fillText('Digital Out-of-Home Advertising', 175, 158);
+      
+      ctx.font = 'bold 68px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(cardData.name, 56, 315);
+      
+      const titleGradient = ctx.createLinearGradient(56, 345, 420, 405);
+      titleGradient.addColorStop(0, '#8B5CF6');
+      titleGradient.addColorStop(1, '#6366F1');
+      ctx.fillStyle = titleGradient;
+      ctx.beginPath();
+      ctx.roundRect(56, 345, ctx.measureText(cardData.title).width * 0.65 + 42, 54, 27);
+      ctx.fill();
+      
+      ctx.font = 'bold 24px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(cardData.title, 77, 383);
+      
+      ctx.font = '21px system-ui, -apple-system, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.fillText('✉️  ' + cardData.email, 56, 490);
+      ctx.fillText('🌐  www.beyondwalls.ae', 56, 550);
+      ctx.fillText('📱  ' + cardData.phone, 590, 490);
+      ctx.fillText('📍  Dubai, UAE', 590, 550);
+
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${role}-card-text-elements.png`;
+        link.click();
+        URL.revokeObjectURL(url);
+      }, 'image/png');
+    }, 200);
+
+    // Layer 4: Decorative elements (lines, corners)
+    setTimeout(() => {
+      ctx.clearRect(0, 0, 1122, 709);
+      
+      const lineGradient = ctx.createLinearGradient(56, 0, 1065, 0);
+      lineGradient.addColorStop(0, '#8B5CF6');
+      lineGradient.addColorStop(1, '#6366F1');
+      ctx.strokeStyle = lineGradient;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(56, 215);
+      ctx.lineTo(1065, 215);
+      ctx.stroke();
+      
+      ctx.strokeStyle = '#8B5CF6';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(28, 70);
+      ctx.lineTo(28, 28);
+      ctx.lineTo(70, 28);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(1052, 28);
+      ctx.lineTo(1094, 28);
+      ctx.lineTo(1094, 70);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(28, 639);
+      ctx.lineTo(28, 681);
+      ctx.lineTo(70, 681);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(1052, 681);
+      ctx.lineTo(1094, 681);
+      ctx.lineTo(1094, 639);
+      ctx.stroke();
+
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${role}-card-decorative-elements.png`;
+        link.click();
+        URL.revokeObjectURL(url);
+      }, 'image/png');
+    }, 300);
+
+    // Show confirmation
+    setTimeout(() => {
+      alert('Downloaded 4 layers for Photoshop:\n1. Background gradient\n2. Logo icon\n3. Text elements\n4. Decorative lines/corners');
+    }, 400);
   }
 
   function downloadBusinessCardCreative(role, cardData, side = 'front') {
@@ -3014,7 +3187,7 @@ function BrochureBackPreview() {
   );
 }
 
-function BusinessCardCreative({ cardData, cardType, onEdit, onDownload, onDownloadPDF }) {
+function BusinessCardCreative({ cardData, cardType, onEdit, onDownload, onDownloadPDF, onDownloadPhotoshop }) {
   const [showBack, setShowBack] = useState(false);
   
   return (
@@ -3176,6 +3349,10 @@ function BusinessCardCreative({ cardData, cardType, onEdit, onDownload, onDownlo
         <Button onClick={onDownloadPDF} variant="outline" className="border-orange-300 text-orange-600 hover:bg-orange-50">
           <FileText className="w-4 h-4 mr-2" />
           Download PDF
+        </Button>
+        <Button onClick={onDownloadPhotoshop} variant="outline" className="border-blue-300 text-blue-600 hover:bg-blue-50">
+          <FileImage className="w-4 h-4 mr-2" />
+          Photoshop Layers
         </Button>
       </div>
     </div>
