@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, Phone, Globe, MapPin, Linkedin, Instagram, Twitter, Edit, Save, X, MonitorPlay } from "lucide-react";
+import { Mail, Linkedin, Instagram, Twitter, Edit, Save, X, MonitorPlay } from "lucide-react";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
+import SEOHead from "@/components/SEOHead";
 
 export default function COOProfile() {
   const [isEditing, setIsEditing] = useState(false);
@@ -51,13 +52,20 @@ export default function COOProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-white relative overflow-hidden">
-      {/* Decorative Blobs */}
-      <div className="absolute top-0 left-0 w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-gradient-to-br from-violet-400 to-violet-500 rounded-[40%_60%_70%_30%/40%_50%_60%_50%] opacity-90 -translate-x-1/3 -translate-y-1/4" />
-      <div className="absolute bottom-0 right-0 w-[350px] h-[350px] md:w-[600px] md:h-[600px] bg-gradient-to-tl from-indigo-400 to-indigo-500 rounded-[60%_40%_30%_70%/60%_30%_70%_40%] opacity-90 translate-x-1/3 translate-y-1/4" />
-      <div className="absolute top-1/2 right-4 md:right-20 w-[150px] h-[150px] md:w-[300px] md:h-[300px] bg-gradient-to-br from-purple-400 to-purple-500 rounded-[50%_50%_50%_50%/60%_40%_60%_40%] opacity-70" />
-      
-      <PublicNav />
+    <>
+      <SEOHead 
+        title="Muhammed Shafi - Chief Operating Officer | BeyondWalls"
+        description="Meet Muhammed Shafi, COO of BeyondWalls. Leading operational excellence and technological infrastructure for UAE's premier digital out-of-home advertising platform."
+        keywords="Muhammed Shafi, COO BeyondWalls, Dubai advertising, DOOH operations, digital advertising UAE"
+        canonical="https://www.beyondwalls.ae/COOProfile"
+      />
+      <div className="min-h-screen bg-white relative overflow-hidden">
+        {/* Decorative Blobs */}
+        <div className="absolute top-0 left-0 w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-gradient-to-br from-violet-400 to-violet-500 rounded-[40%_60%_70%_30%/40%_50%_60%_50%] opacity-90 -translate-x-1/3 -translate-y-1/4" />
+        <div className="absolute bottom-0 right-0 w-[350px] h-[350px] md:w-[600px] md:h-[600px] bg-gradient-to-tl from-indigo-400 to-indigo-500 rounded-[60%_40%_30%_70%/60%_30%_70%_40%] opacity-90 translate-x-1/3 translate-y-1/4" />
+        <div className="absolute top-1/2 right-4 md:right-20 w-[150px] h-[150px] md:w-[300px] md:h-[300px] bg-gradient-to-br from-purple-400 to-purple-500 rounded-[50%_50%_50%_50%/60%_40%_60%_40%] opacity-70" />
+        
+        <PublicNav />
       
       {/* Main Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
@@ -283,6 +291,7 @@ export default function COOProfile() {
           </Card>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
