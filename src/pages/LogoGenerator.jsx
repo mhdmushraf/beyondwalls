@@ -461,22 +461,22 @@ export default function LogoGenerator() {
   const downloadBrochure = (side) => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    
-    // Tri-fold brochure: 290mm x 200mm at 300 DPI = 3425 x 2362 pixels (landscape)
-    canvas.width = 3425;
-    canvas.height = 2362;
+
+    // A4 Landscape: 297mm x 210mm at 300 DPI = 3508 x 2480 pixels
+    canvas.width = 3508;
+    canvas.height = 2480;
     
     if (side === 'front') {
       // === FRONT SIDE - CREATIVE TRI-FOLD ===
-      const panelWidth = 1141;
+      const panelWidth = 1169;
       
       // PANEL 1 (Left/Cover) - Vibrant Cyan with Creative Elements
-      const panel1Gradient = ctx.createLinearGradient(0, 0, panelWidth, 2362);
+      const panel1Gradient = ctx.createLinearGradient(0, 0, panelWidth, 2480);
       panel1Gradient.addColorStop(0, '#06b6d4');
       panel1Gradient.addColorStop(0.5, '#0891b2');
       panel1Gradient.addColorStop(1, '#0e7490');
       ctx.fillStyle = panel1Gradient;
-      ctx.fillRect(0, 0, panelWidth, 2362);
+      ctx.fillRect(0, 0, panelWidth, 2480);
       
       // Modern wave pattern overlay
       ctx.globalAlpha = 0.15;
@@ -629,12 +629,12 @@ export default function LogoGenerator() {
       ctx.fillText('www.beyondwalls.ae', panelWidth / 2, ctaY + 115);
       
       // PANEL 2 (Middle) - Modern Dark Design
-      const panel2Gradient = ctx.createLinearGradient(panelWidth, 0, panelWidth * 2, 2362);
+      const panel2Gradient = ctx.createLinearGradient(panelWidth, 0, panelWidth * 2, 2480);
       panel2Gradient.addColorStop(0, '#0f172a');
       panel2Gradient.addColorStop(0.5, '#1e293b');
       panel2Gradient.addColorStop(1, '#0f172a');
       ctx.fillStyle = panel2Gradient;
-      ctx.fillRect(panelWidth, 0, panelWidth, 2362);
+      ctx.fillRect(panelWidth, 0, panelWidth, 2480);
       
       // Geometric pattern overlay
       ctx.globalAlpha = 0.08;
@@ -719,12 +719,12 @@ export default function LogoGenerator() {
       });
       
       // PANEL 3 (Right) - Contact Panel
-      const panel3Gradient = ctx.createLinearGradient(panelWidth * 2, 0, panelWidth * 3, 2362);
+      const panel3Gradient = ctx.createLinearGradient(panelWidth * 2, 0, panelWidth * 3, 2480);
       panel3Gradient.addColorStop(0, '#0891b2');
       panel3Gradient.addColorStop(0.5, '#06b6d4');
       panel3Gradient.addColorStop(1, '#0891b2');
       ctx.fillStyle = panel3Gradient;
-      ctx.fillRect(panelWidth * 2, 0, panelWidth, 2362);
+      ctx.fillRect(panelWidth * 2, 0, panelWidth, 2480);
       
       // Modern circle pattern
       ctx.globalAlpha = 0.1;
@@ -873,11 +873,11 @@ export default function LogoGenerator() {
       
     } else {
       // === BACK SIDE - TRI-FOLD ===
-      const panelWidth = 1141;
+      const panelWidth = 1169;
       
       // PANEL 1 (Left) - White with modern styling
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, panelWidth, 2362);
+      ctx.fillRect(0, 0, panelWidth, 2480);
       
       // Decorative top bar
       const topAccent = ctx.createLinearGradient(0, 0, panelWidth, 20);
@@ -975,12 +975,12 @@ export default function LogoGenerator() {
       ctx.fillText('Sign Up Now', panelWidth / 2, 1925);
       
       // PANEL 2 (Middle) - Stats Panel
-      const panel2BgGrad = ctx.createLinearGradient(panelWidth, 0, panelWidth * 2, 2362);
+      const panel2BgGrad = ctx.createLinearGradient(panelWidth, 0, panelWidth * 2, 2480);
       panel2BgGrad.addColorStop(0, '#1e1b4b');
       panel2BgGrad.addColorStop(0.5, '#4c1d95');
       panel2BgGrad.addColorStop(1, '#1e1b4b');
       ctx.fillStyle = panel2BgGrad;
-      ctx.fillRect(panelWidth, 0, panelWidth, 2362);
+      ctx.fillRect(panelWidth, 0, panelWidth, 2480);
       
       // Top bar accent
       ctx.fillStyle = '#06b6d4';
@@ -1033,7 +1033,7 @@ export default function LogoGenerator() {
       
       // PANEL 3 (Right) - Features
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(panelWidth * 2, 0, panelWidth, 2362);
+      ctx.fillRect(panelWidth * 2, 0, panelWidth, 2480);
       
       // Top accent
       ctx.fillStyle = '#06b6d4';
