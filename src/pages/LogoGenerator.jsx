@@ -2037,7 +2037,7 @@ export default function LogoGenerator() {
     const pdf = new jsPDF({
       orientation: 'landscape',
       unit: 'mm',
-      format: [85.6, 53.98]
+      format: [95, 60]
     });
 
     const frontCanvas = document.createElement('canvas');
@@ -2070,9 +2070,9 @@ export default function LogoGenerator() {
     const profileUrl = role === 'ceo' 
       ? 'https://www.beyondwalls.ae/CEOProfile'
       : 'https://www.beyondwalls.ae/COOProfile';
-    
-    canvas.width = 800;
-    canvas.height = 450;
+
+    canvas.width = 1122;
+    canvas.height = 709;
     
     if (side === 'back') {
       // === BACK SIDE DESIGN ===
