@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Mail, Phone, Globe, MapPin, Linkedin, Instagram, Twitter, Edit, Save, X, MonitorPlay } from "lucide-react";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
+import BusinessCardGenerator from "@/components/BusinessCardGenerator";
 
 export default function CEOProfile() {
   const [isEditing, setIsEditing] = useState(false);
@@ -135,14 +136,15 @@ export default function CEOProfile() {
                   </p>
                 </div>
                 
-                {/* CTA Button */}
-                <div>
+                {/* CTA Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3">
                   <Button 
                     onClick={() => setShowContactForm(true)}
                     className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg rounded-full shadow-lg hover:shadow-xl transition-all w-full sm:w-auto"
                   >
                     GET IN TOUCH!
                   </Button>
+                  <BusinessCardGenerator profile={profileData} role="Chief Executive Officer" />
                 </div>
                 
                 {/* Contact & Social */}
