@@ -2071,6 +2071,7 @@ export default function LogoGenerator() {
       ? 'https://www.beyondwalls.ae/CEOProfile'
       : 'https://www.beyondwalls.ae/COOProfile';
 
+    // 95mm x 60mm at 300 DPI = 1122 x 709 pixels
     canvas.width = 1122;
     canvas.height = 709;
     
@@ -2270,7 +2271,7 @@ export default function LogoGenerator() {
       
     } else {
       // === FRONT SIDE DESIGN - Matching Screenshot ===
-      // Background gradient matching brand colors
+      // Background gradient matching brand colors  
       const bgGradient = ctx.createLinearGradient(0, 0, 1122, 709);
       bgGradient.addColorStop(0, '#1e1b4b');
       bgGradient.addColorStop(0.5, '#312e81');
@@ -2278,114 +2279,114 @@ export default function LogoGenerator() {
       ctx.fillStyle = bgGradient;
       ctx.fillRect(0, 0, 1122, 709);
       
-      // Decorative circles
+      // Decorative circles (scaled)
       ctx.globalAlpha = 0.1;
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.arc(700, 80, 150, 0, Math.PI * 2);
+      ctx.arc(982, 126, 210, 0, Math.PI * 2);
       ctx.fill();
       ctx.beginPath();
-      ctx.arc(100, 400, 120, 0, Math.PI * 2);
+      ctx.arc(140, 630, 168, 0, Math.PI * 2);
       ctx.fill();
       ctx.beginPath();
-      ctx.arc(750, 400, 100, 0, Math.PI * 2);
+      ctx.arc(1052, 630, 140, 0, Math.PI * 2);
       ctx.fill();
       ctx.globalAlpha = 1;
       
-      // Header section - Logo and company info
+      // Header section - Logo and company info (scaled)
       // Logo icon background - brand colors
-      const logoGradient = ctx.createLinearGradient(40, 35, 110, 105);
+      const logoGradient = ctx.createLinearGradient(56, 55, 154, 165);
       logoGradient.addColorStop(0, '#8B5CF6');
       logoGradient.addColorStop(1, '#6366F1');
       ctx.beginPath();
-      ctx.roundRect(40, 35, 70, 70, 16);
+      ctx.roundRect(56, 55, 98, 110, 22);
       ctx.fillStyle = logoGradient;
       ctx.fill();
       
       // Glow effect
       ctx.shadowColor = '#8B5CF6';
-      ctx.shadowBlur = 20;
+      ctx.shadowBlur = 28;
       ctx.beginPath();
-      ctx.roundRect(40, 35, 70, 70, 16);
+      ctx.roundRect(56, 55, 98, 110, 22);
       ctx.fill();
       ctx.shadowBlur = 0;
       
       // Monitor icon in logo
       ctx.strokeStyle = 'white';
-      ctx.lineWidth = 4;
+      ctx.lineWidth = 6;
       ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.roundRect(55, 50, 40, 30, 4);
+      ctx.roundRect(77, 79, 56, 47, 6);
       ctx.stroke();
       ctx.beginPath();
-      ctx.moveTo(75, 80);
-      ctx.lineTo(75, 92);
+      ctx.moveTo(105, 126);
+      ctx.lineTo(105, 145);
       ctx.stroke();
       ctx.beginPath();
-      ctx.moveTo(60, 92);
-      ctx.lineTo(90, 92);
+      ctx.moveTo(84, 145);
+      ctx.lineTo(126, 145);
       ctx.stroke();
       
       // Play icon
       ctx.fillStyle = 'white';
       ctx.beginPath();
-      ctx.moveTo(68, 58);
-      ctx.lineTo(68, 72);
-      ctx.lineTo(82, 65);
+      ctx.moveTo(95, 91);
+      ctx.lineTo(95, 113);
+      ctx.lineTo(115, 102);
       ctx.closePath();
       ctx.fill();
       
       // Company name
-      ctx.font = 'bold 32px system-ui, -apple-system, sans-serif';
+      ctx.font = 'bold 45px system-ui, -apple-system, sans-serif';
       ctx.fillStyle = '#ffffff';
-      ctx.fillText('BeyondWalls', 125, 62);
+      ctx.fillText('BeyondWalls', 175, 98);
       
       // Parent company
-      ctx.font = '11px system-ui, -apple-system, sans-serif';
+      ctx.font = '15px system-ui, -apple-system, sans-serif';
       ctx.fillStyle = 'rgba(255,255,255,0.5)';
-      ctx.fillText('A Linkzone Global FZ-LLC Company', 125, 82);
+      ctx.fillText('A Linkzone Global FZ-LLC Company', 175, 129);
       
       // Tagline  
-      ctx.font = '14px system-ui, -apple-system, sans-serif';
+      ctx.font = '20px system-ui, -apple-system, sans-serif';
       ctx.fillStyle = 'rgba(255,255,255,0.7)';
-      ctx.fillText('Digital Out-of-Home Advertising', 125, 100);
+      ctx.fillText('Digital Out-of-Home Advertising', 175, 158);
       
       // Divider line
-      const lineGradient = ctx.createLinearGradient(40, 0, 760, 0);
+      const lineGradient = ctx.createLinearGradient(56, 0, 1065, 0);
       lineGradient.addColorStop(0, '#8B5CF6');
       lineGradient.addColorStop(1, '#6366F1');
       ctx.strokeStyle = lineGradient;
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.moveTo(40, 135);
-      ctx.lineTo(760, 135);
+      ctx.moveTo(56, 215);
+      ctx.lineTo(1065, 215);
       ctx.stroke();
       
       // Name
-      ctx.font = 'bold 48px system-ui, -apple-system, sans-serif';
+      ctx.font = 'bold 68px system-ui, -apple-system, sans-serif';
       ctx.fillStyle = '#ffffff';
-      ctx.fillText(cardData.name, 40, 200);
+      ctx.fillText(cardData.name, 56, 315);
       
       // Title badge - brand colors
-      const titleGradient = ctx.createLinearGradient(40, 220, 300, 260);
+      const titleGradient = ctx.createLinearGradient(56, 345, 420, 405);
       titleGradient.addColorStop(0, '#8B5CF6');
       titleGradient.addColorStop(1, '#6366F1');
       ctx.fillStyle = titleGradient;
       ctx.beginPath();
-      ctx.roundRect(40, 220, ctx.measureText(cardData.title).width * 0.65 + 30, 38, 19);
+      ctx.roundRect(56, 345, ctx.measureText(cardData.title).width * 0.65 + 42, 54, 27);
       ctx.fill();
       
-      ctx.font = 'bold 17px system-ui, -apple-system, sans-serif';
+      ctx.font = 'bold 24px system-ui, -apple-system, sans-serif';
       ctx.fillStyle = '#ffffff';
-      ctx.fillText(cardData.title, 55, 246);
+      ctx.fillText(cardData.title, 77, 383);
       
       // Contact details in 2-column grid
-      const leftX = 40;
-      const rightX = 420;
-      const startY = 310;
-      const spacing = 42;
+      const leftX = 56;
+      const rightX = 590;
+      const startY = 490;
+      const spacing = 60;
       
-      ctx.font = '15px system-ui, -apple-system, sans-serif';
+      ctx.font = '21px system-ui, -apple-system, sans-serif';
       ctx.fillStyle = 'rgba(255,255,255,0.9)';
       
       // Left column
