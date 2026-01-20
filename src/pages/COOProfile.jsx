@@ -70,7 +70,7 @@ export default function COOProfile() {
               <div className="w-full aspect-square lg:aspect-[9/11] bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100">
                 <div className="h-full flex items-center justify-center bg-white p-0">
                   <img 
-                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6925a3bad1f286c6fe7d00ba/1ee9ea0ae_Screenshot2026-01-19at91848PM.png"
+                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6925a3bad1f286c6fe7d00ba/872702327_Screenshot2026-01-19at91844PM.png"
                     alt="Muhammed Shafi - COO"
                     className="w-full h-full object-cover"
                   />
