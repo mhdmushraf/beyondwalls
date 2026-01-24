@@ -288,7 +288,7 @@ export default function AdvancedScreenSearch({
           </div>
           <div className="flex items-center justify-between mt-2 sm:mt-3 pt-2 sm:pt-3 border-t">
             <div className="flex items-center gap-2">
-              <p className="text-base sm:text-lg font-bold text-violet-600">AED {screen.slot_price}<span className="text-xs sm:text-sm font-normal text-slate-500">/wk</span></p>
+              <p className="text-base sm:text-lg font-bold text-violet-600">AED {screen.slot_price}<span className="text-xs sm:text-sm font-normal text-slate-500">/mo</span></p>
               {screen.performance_score > 0 && (
                 <PerformanceBadge score={screen.performance_score} badge={screen.performance_badge} size="sm" />
               )}
@@ -444,7 +444,7 @@ export default function AdvancedScreenSearch({
 
                 {/* Price Range */}
                 <div className="space-y-4">
-                  <Label>Price Range (AED/week)</Label>
+                  <Label>Price Range (AED/month)</Label>
                   <div className="px-2">
                     <Slider
                       value={[filters.min_price, filters.max_price]}
@@ -600,10 +600,10 @@ export default function AdvancedScreenSearch({
                     >
                       <Popup>
                         <div className="p-2 min-w-[200px]">
-                          <h3 className="font-semibold">{screen.name}</h3>
-                          <p className="text-sm text-slate-500">{venue.name}</p>
-                          <div className="flex items-center justify-between mt-2">
-                            <span className="font-bold text-violet-600">AED {screen.slot_price}/week</span>
+                        <h3 className="font-semibold">{screen.name}</h3>
+                        <p className="text-sm text-slate-500">{venue.name}</p>
+                        <div className="flex items-center justify-between mt-2">
+                          <span className="font-bold text-violet-600">AED {screen.slot_price}/month</span>
                             <Badge variant={availability === 0 ? "destructive" : "secondary"}>
                               {availability} slots
                             </Badge>
