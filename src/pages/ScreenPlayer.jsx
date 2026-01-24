@@ -159,7 +159,7 @@ export default function ScreenPlayer() {
     setConnecting(false);
   };
 
-  // Fetch ad slot bookings
+  // Fetch ad slot bookings - refetch every 30 seconds for real-time updates
   const { data: bookings = [], refetch: refetchBookings } = useQuery({
     queryKey: ["player-bookings", screen?.id],
     queryFn: async () => {
@@ -171,10 +171,10 @@ export default function ScreenPlayer() {
       return allBookings.filter(b => b.start_date <= today && b.end_date >= today);
     },
     enabled: authenticated && !!screen?.id,
-    refetchInterval: 60000
+    refetchInterval: 30000 // Check for new ads every 30 seconds
   });
 
-  // Fetch campaigns
+  // Fetch campaigns - refetch every 30 seconds for real-time updates
   const { data: campaigns = [], refetch: refetchCampaigns } = useQuery({
     queryKey: ["player-campaigns", screen?.id],
     queryFn: async () => {
@@ -182,7 +182,7 @@ export default function ScreenPlayer() {
       return allCampaigns.filter(c => c.screen_ids?.includes(screen?.id));
     },
     enabled: authenticated && !!screen?.id,
-    refetchInterval: 60000
+    refetchInterval: 30000 // Check for new campaigns every 30 seconds
   });
 
   // Fetch platform settings
@@ -247,24 +247,64 @@ export default function ScreenPlayer() {
     ...campaigns.map(c => ({ id: c.id, name: c.name, creative_url: c.creative_url, creative_type: c.creative_type, type: "campaign" }))
   ].filter(ad => ad.creative_url);
 
-  // Build playlist
+  // Build playlist: Slot1 -> Owner1 -> Slot2 -> Owner2 -> Slot3 -> Owner3 -> Slot4 -> Default -> Slot5 -> loop
   const buildPlaylist = () => {
-    const adCount = advertiserAds.length;
-    const ownerCount = ownerSlots.length;
-    if (adCount === 0 && ownerCount === 0) return [];
-    if (adCount === 0) return [...ownerSlots];
-    if (ownerCount === 0) return [...advertiserAds];
-
     const playlist = [];
-    let adIndex = 0, ownerIndex = 0;
-    if (adIndex < adCount) playlist.push(advertiserAds[adIndex++]);
-    if (ownerIndex < ownerCount) playlist.push(ownerSlots[ownerIndex++]);
-    if (adIndex < adCount) playlist.push(advertiserAds[adIndex++]);
-    if (ownerIndex < ownerCount) playlist.push(ownerSlots[ownerIndex++]);
-    if (adIndex < adCount) playlist.push(advertiserAds[adIndex++]);
-    if (ownerIndex < ownerCount) playlist.push(ownerSlots[ownerIndex++]);
-    if (adIndex < adCount) playlist.push(advertiserAds[adIndex++]);
-    if (adIndex < adCount) playlist.push(advertiserAds[adIndex++]);
+    const sortedAds = [...advertiserAds].sort((a, b) => {
+      // Sort by slot number if available
+      const aBooking = bookings.find(bk => bk.id === a.id);
+      const bBooking = bookings.find(bk => bk.id === b.id);
+      const aSlot = aBooking?.slot_number || 999;
+      const bSlot = bBooking?.slot_number || 999;
+      return aSlot - bSlot;
+    });
+
+    // Get default ad
+    let defaultAd = null;
+    if (defaultContentUrl) {
+      defaultAd = { 
+        id: "default-beyondwalls", 
+        name: "BeyondWalls", 
+        creative_url: defaultContentUrl, 
+        creative_type: defaultContentType || "image", 
+        type: "default" 
+      };
+    }
+
+    // Build rotation: Ad1, Owner1, Ad2, Owner2, Ad3, Owner3, Ad4, Default, Ad5
+    let adIdx = 0;
+    let ownerIdx = 0;
+
+    // Slot 1 + Owner 1
+    if (adIdx < sortedAds.length) playlist.push(sortedAds[adIdx++]);
+    if (ownerIdx < ownerSlots.length) playlist.push(ownerSlots[ownerIdx++]);
+
+    // Slot 2 + Owner 2
+    if (adIdx < sortedAds.length) playlist.push(sortedAds[adIdx++]);
+    if (ownerIdx < ownerSlots.length) playlist.push(ownerSlots[ownerIdx++]);
+
+    // Slot 3 + Owner 3
+    if (adIdx < sortedAds.length) playlist.push(sortedAds[adIdx++]);
+    if (ownerIdx < ownerSlots.length) playlist.push(ownerSlots[ownerIdx++]);
+
+    // Slot 4 + BeyondWalls default ad
+    if (adIdx < sortedAds.length) playlist.push(sortedAds[adIdx++]);
+    if (defaultAd) playlist.push(defaultAd);
+
+    // Slot 5
+    if (adIdx < sortedAds.length) playlist.push(sortedAds[adIdx++]);
+
+    // Add any remaining ads
+    while (adIdx < sortedAds.length) {
+      playlist.push(sortedAds[adIdx++]);
+    }
+
+    // Fallback: if playlist is empty, show default ad or owner slots
+    if (playlist.length === 0) {
+      if (defaultAd) return [defaultAd];
+      if (ownerSlots.length > 0) return [...ownerSlots];
+    }
+
     return playlist;
   };
 
