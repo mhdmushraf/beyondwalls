@@ -90,6 +90,22 @@ export default function Wallet() {
 
   useEffect(() => {
     loadUser();
+    
+    // Check for Stripe success/cancel in URL
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('success') === 'true') {
+      toast.success('Payment successful! Your wallet has been credited.');
+      // Refresh data after successful payment
+      setTimeout(() => {
+        loadUser();
+        refetch();
+      }, 1500);
+      // Clean up URL
+      window.history.replaceState({}, '', window.location.pathname);
+    } else if (params.get('canceled') === 'true') {
+      toast.error('Payment canceled');
+      window.history.replaceState({}, '', window.location.pathname);
+    }
   }, []);
 
   const loadUser = async () => {
