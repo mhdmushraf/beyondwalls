@@ -369,10 +369,10 @@ www.beyondwalls.ae
 
   // User registration notification - send to admins and welcome email to user
   async newUserRegistration(user) {
-    // Send notification to admin
+    // Send notification to admin at hello@beyondwalls.ae
     try {
       await base44.integrations.Core.SendEmail({
-        to: "info@beyondwalls.ae",
+        to: "hello@beyondwalls.ae",
         subject: `🆕 New User Registration: ${user.full_name} | BeyondWalls`,
         body: `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
