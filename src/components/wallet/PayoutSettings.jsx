@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import {
   Building2,
@@ -7,8 +7,7 @@ import {
   Loader2,
   AlertCircle,
   CreditCard,
-  Info,
-  ExternalLink
+  Info
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,7 +25,6 @@ import { toast } from "sonner";
 
 export default function PayoutSettings({ user, onUpdate }) {
   const [loading, setLoading] = useState(false);
-  const [connectingStripe, setConnectingStripe] = useState(false);
   const [settings, setSettings] = useState({
     payout_frequency: user?.payout_frequency || "monthly",
     auto_payout: user?.auto_payout || false,
@@ -36,31 +34,6 @@ export default function PayoutSettings({ user, onUpdate }) {
     iban: user?.iban || "",
     swift_code: user?.swift_code || ""
   });
-
-  useEffect(() => {
-    // Check for Stripe setup completion
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('setup') === 'complete') {
-      toast.success('Stripe account connected successfully!');
-      if (onUpdate) onUpdate();
-      window.history.replaceState({}, '', window.location.pathname);
-    }
-  }, []);
-
-  const handleConnectStripe = async () => {
-    setConnectingStripe(true);
-    try {
-      const response = await base44.functions.invoke('connectStripeAccount');
-      if (response.data.url) {
-        // Redirect to Stripe onboarding
-        window.location.href = response.data.url;
-      }
-    } catch (error) {
-      toast.error("Failed to connect Stripe account");
-    } finally {
-      setConnectingStripe(false);
-    }
-  };
 
   const handleSave = async () => {
     if (settings.auto_payout && (!settings.bank_name || !settings.iban)) {
@@ -90,63 +63,6 @@ export default function PayoutSettings({ user, onUpdate }) {
 
   return (
     <div className="space-y-6">
-      {/* Stripe Connect */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <CreditCard className="w-5 h-5 text-violet-600" />
-            Stripe Connect
-          </CardTitle>
-          <CardDescription>
-            Connect your Stripe account for instant payouts
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {user?.stripe_account_id ? (
-            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                <span className="font-medium text-emerald-700">Stripe Account Connected</span>
-              </div>
-              <p className="text-sm text-emerald-600">
-                Account ID: {user.stripe_account_id}
-              </p>
-              <p className="text-xs text-slate-600 mt-2">
-                You can now withdraw funds instantly to your bank account.
-              </p>
-            </div>
-          ) : (
-            <div>
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg mb-4">
-                <div className="flex items-start gap-2">
-                  <Info className="w-5 h-5 text-blue-600 mt-0.5" />
-                  <div className="text-sm text-blue-700">
-                    <p className="font-medium mb-1">Why Connect Stripe?</p>
-                    <ul className="list-disc list-inside space-y-1 text-xs">
-                      <li>Instant withdrawals to your bank account</li>
-                      <li>Secure and encrypted transactions</li>
-                      <li>No waiting for admin approval</li>
-                      <li>Track all payouts in one place</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <Button
-                onClick={handleConnectStripe}
-                disabled={connectingStripe}
-                className="w-full bg-indigo-600 hover:bg-indigo-700"
-              >
-                {connectingStripe ? (
-                  <><Loader2 className="w-4 h-4 animate-spin mr-2" />Connecting...</>
-                ) : (
-                  <><ExternalLink className="w-4 h-4 mr-2" />Connect Stripe Account</>
-                )}
-              </Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
       {/* Payout Frequency */}
       <Card>
         <CardHeader>

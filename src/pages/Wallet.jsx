@@ -86,22 +86,6 @@ export default function Wallet() {
     enabled: !!user?.email && screens.length > 0
   });
 
-  // Calculate eligible balance (only from completed bookings)
-  const calculateEligibleBalance = () => {
-    if (!isVenueOwner || bookings.length === 0) return 0;
-    
-    const today = new Date();
-    const completedBookings = bookings.filter(b => {
-      const endDate = new Date(b.end_date);
-      return b.status === "completed" || (b.status === "active" && endDate < today);
-    });
-
-    return completedBookings.reduce((sum, b) => sum + (b.venue_share || 0), 0);
-  };
-
-  const eligibleBalance = isVenueOwner ? calculateEligibleBalance() : 0;
-  const lockedBalance = isVenueOwner ? (totalEarnings - eligibleBalance) : 0;
-
   const isVenueOwner = user?.is_venue_owner || screens.length > 0;
 
   useEffect(() => {
@@ -243,38 +227,37 @@ export default function Wallet() {
       toast.error("Minimum withdrawal is AED 100");
       return;
     }
-    if (withdrawAmount > eligibleBalance) {
-      toast.error(`Insufficient eligible balance. You have AED ${eligibleBalance.toLocaleString()} available.`);
+    if (withdrawAmount > calculatedBalance) {
+      toast.error("Insufficient balance");
       return;
     }
 
     setLoading(true);
     try {
-      // Call Stripe payout function
-      const response = await base44.functions.invoke('createStripePayout', {
-        amount: withdrawAmount
+      await base44.entities.WalletRequest.create({
+        user_id: user.email,
+        user_name: user.full_name,
+        request_type: "withdrawal",
+        amount: withdrawAmount,
+        request_date: new Date().toISOString(),
+        status: "pending"
       });
 
-      if (response.data.requiresSetup) {
-        // User needs to connect Stripe account first
-        toast.error(response.data.error);
-        setShowWithdraw(false);
-        setShowPayoutSettings(true);
-        return;
-      }
+      await base44.entities.AdminNotification.create({
+        type: "withdrawal_request",
+        title: "New Withdrawal Request",
+        message: `${user.full_name || user.email} requested withdrawal of AED ${withdrawAmount}`,
+        reference_id: user.email,
+        reference_type: "WalletRequest"
+      });
 
-      if (response.data.success) {
-        refetch();
-        refetchRequests();
-        loadUser();
-        toast.success(`Withdrawal of AED ${withdrawAmount} processed! Funds will arrive in 2-3 business days.`);
-        setShowWithdraw(false);
-        setAmount("");
-      } else {
-        toast.error(response.data.error || "Withdrawal failed");
-      }
+      refetch();
+      refetchRequests();
+      toast.success("Withdrawal request submitted! Admin will process your request.");
+      setShowWithdraw(false);
+      setAmount("");
     } catch (error) {
-      toast.error(error.message || "Failed to process withdrawal");
+      toast.error("Failed to submit request");
     } finally {
       setLoading(false);
     }
@@ -315,27 +298,8 @@ export default function Wallet() {
         <CardContent className="p-4 sm:p-6 lg:p-8">
           <div className="flex flex-col gap-4 sm:gap-6">
             <div>
-              <p className="text-white/70 mb-1 text-sm">Total Balance</p>
+              <p className="text-white/70 mb-1 text-sm">Available Balance</p>
               <p className="text-3xl sm:text-4xl lg:text-5xl font-bold">AED {calculatedBalance.toLocaleString()}</p>
-              
-              {isVenueOwner && (
-                <div className="mt-4 p-3 bg-white/10 rounded-lg border border-white/20">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-white/90 text-sm font-medium">Eligible for Withdrawal</p>
-                    <p className="text-xl font-bold text-emerald-300">AED {eligibleBalance.toLocaleString()}</p>
-                  </div>
-                  {lockedBalance > 0 && (
-                    <div className="flex items-center justify-between">
-                      <p className="text-white/70 text-xs">Locked (Active Bookings)</p>
-                      <p className="text-sm text-amber-300">AED {lockedBalance.toLocaleString()}</p>
-                    </div>
-                  )}
-                  <p className="text-white/60 text-xs mt-2">
-                    You can only withdraw earnings from completed ad campaigns
-                  </p>
-                </div>
-              )}
-              
               <div className="flex flex-wrap gap-4 sm:gap-8 mt-4 sm:mt-6">
                 <div>
                   <p className="text-white/70 text-xs sm:text-sm">Total Earnings</p>
@@ -359,12 +323,11 @@ export default function Wallet() {
                 <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
                 <span className="text-sm sm:text-base">Add Funds</span>
               </Button>
-              {eligibleBalance > 0 && (
+              {totalEarnings > 0 && (
                 <Button 
                   variant="outline"
                   className="flex-1 sm:flex-none border-white/30 text-white hover:bg-white/10"
                   onClick={() => setShowWithdraw(true)}
-                  disabled={eligibleBalance < 100}
                 >
                   <Download className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
                   <span className="text-sm sm:text-base">Withdraw</span>
@@ -607,61 +570,41 @@ export default function Wallet() {
             <DialogTitle>Withdrawal Request</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
-              <p className="text-sm text-emerald-700">
-                <strong>Instant Withdrawal via Stripe:</strong> Funds will be transferred directly to your connected bank account within 2-3 business days.
+            <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+              <p className="text-sm text-amber-700">
+                <strong>Note:</strong> Your withdrawal request will be reviewed by admin. Funds will be transferred to your registered bank account within 3-5 business days after approval.
               </p>
-            </div>
-
-            {!user?.stripe_account_id && (
-              <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                <p className="text-sm text-amber-700">
-                  <strong>Setup Required:</strong> Please connect your Stripe account in Payout Settings before withdrawing.
-                </p>
-              </div>
-            )}
-
-            <div className="p-4 bg-slate-50 rounded-lg space-y-2">
-              <div className="flex justify-between">
-                <span className="text-slate-600">Total Balance:</span>
-                <span className="font-semibold">AED {calculatedBalance.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-emerald-600">Eligible Balance:</span>
-                <span className="font-bold text-emerald-600">AED {eligibleBalance.toLocaleString()}</span>
-              </div>
-              {lockedBalance > 0 && (
-                <div className="flex justify-between text-sm">
-                  <span className="text-amber-600">Locked (Active Ads):</span>
-                  <span className="text-amber-600">AED {lockedBalance.toLocaleString()}</span>
-                </div>
-              )}
             </div>
 
             <div>
-              <label className="text-sm font-medium text-slate-700 mb-2 block">Withdrawal Amount (AED)</label>
-              <Input
-                type="number"
-                placeholder="Enter amount"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="text-lg"
-                max={eligibleBalance}
-              />
-              <p className="text-sm text-slate-500 mt-1">
-                Minimum: AED 100 • Maximum: AED {eligibleBalance.toLocaleString()}
-              </p>
+              <label className="text-sm font-medium text-slate-700">Request Date</label>
+              <Input value={format(new Date(), "PPP")} disabled className="mt-1 bg-slate-50" />
             </div>
+
+            <p className="text-slate-600">
+              Available for withdrawal: <span className="font-bold text-emerald-600">
+                AED {calculatedBalance.toLocaleString()}
+              </span>
+            </p>
+            <Input
+              type="number"
+              placeholder="Enter amount"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className="text-lg"
+            />
+            <p className="text-sm text-slate-500">
+              Minimum withdrawal: AED 100
+            </p>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowWithdraw(false)}>Cancel</Button>
             <Button 
               onClick={handleWithdraw}
-              disabled={loading || !amount || parseFloat(amount) > eligibleBalance || parseFloat(amount) < 100}
-              className="bg-gradient-to-r from-emerald-600 to-green-600"
+              disabled={loading || !amount || parseFloat(amount) > calculatedBalance}
+              variant="destructive"
             >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Download className="w-4 h-4 mr-2" />}
-              {loading ? "Processing..." : "Withdraw via Stripe"}
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : `Submit Request`}
             </Button>
           </DialogFooter>
         </DialogContent>
