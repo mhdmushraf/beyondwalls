@@ -292,6 +292,93 @@ ${this.footer()}
     return this.baseTemplate(content, `${campaignName} is now live!`);
   },
 
+  // Email Verification Template
+  emailVerification(userName, verificationLink) {
+    const content = `
+${this.header()}
+<tr>
+  <td style="padding: 50px 40px; text-align: center;">
+    <div style="background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%); width: 100px; height: 100px; border-radius: 24px; margin: 0 auto 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 20px 40px rgba(124, 58, 237, 0.25);">
+      <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+    </div>
+    
+    <h2 style="color: #0f172a; font-size: 32px; font-weight: 700; margin: 0 0 16px; letter-spacing: -0.5px;">
+      Welcome to BeyondWalls! 🎉
+    </h2>
+    
+    <p style="color: #64748b; font-size: 17px; line-height: 1.6; margin: 0 0 40px; max-width: 480px; margin-left: auto; margin-right: auto;">
+      Hi <strong style="color: #0f172a;">${userName}</strong>, you're just one click away from revolutionizing your advertising experience.
+    </p>
+
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 32px;">
+      <tr>
+        <td align="center">
+          <a href="${verificationLink}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%); color: white; text-decoration: none; padding: 18px 48px; border-radius: 12px; font-weight: 600; font-size: 17px; box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3); transition: all 0.3s;">
+            ✓ Verify Your Email
+          </a>
+        </td>
+      </tr>
+    </table>
+
+    <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 16px; padding: 24px; margin: 32px 0; text-align: left;">
+      <p style="color: #0c4a6e; font-size: 15px; font-weight: 600; margin: 0 0 16px;">
+        🚀 What's next after verification?
+      </p>
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr>
+          <td style="padding: 8px 0; color: #0369a1; font-size: 14px;">
+            ✨ Launch digital advertising campaigns across UAE
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; color: #0369a1; font-size: 14px;">
+            📊 Access real-time analytics and insights
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; color: #0369a1; font-size: 14px;">
+            💰 Manage your wallet and bookings effortlessly
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; color: #0369a1; font-size: 14px;">
+            🎯 Reach highly targeted audiences in premium venues
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div style="margin-top: 40px; padding: 24px; background: #fef3c7; border-radius: 12px; border-left: 4px solid #f59e0b;">
+      <p style="color: #78350f; font-size: 14px; margin: 0; text-align: left;">
+        <strong style="display: block; margin-bottom: 8px;">⏰ Time-Sensitive</strong>
+        This verification link will expire in <strong>24 hours</strong> for your security. Please verify your email as soon as possible.
+      </p>
+    </div>
+
+    <div style="margin-top: 32px; padding-top: 32px; border-top: 2px solid #e2e8f0;">
+      <p style="color: #94a3b8; font-size: 13px; margin: 0 0 12px; text-align: center;">
+        If the button doesn't work, copy and paste this link into your browser:
+      </p>
+      <p style="margin: 0;">
+        <a href="${verificationLink}" style="color: #7c3aed; font-size: 12px; word-break: break-all; text-decoration: none;">${verificationLink}</a>
+      </p>
+    </div>
+
+    <div style="margin-top: 32px; padding: 20px; background: #f8fafc; border-radius: 12px;">
+      <p style="color: #64748b; font-size: 13px; margin: 0; text-align: center;">
+        Didn't create an account? You can safely ignore this email.
+      </p>
+    </div>
+  </td>
+</tr>
+${this.footer()}
+    `;
+    return this.baseTemplate(content, `Verify your email to get started with BeyondWalls`);
+  },
+
   // Admin notification for new user
   adminNewUser(userName, userEmail, userPhone, accountType, userRole, companyName = null) {
     const content = `
