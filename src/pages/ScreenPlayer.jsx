@@ -159,7 +159,7 @@ export default function ScreenPlayer() {
     setConnecting(false);
   };
 
-  // Fetch ad slot bookings - refetch every 30 seconds for real-time updates
+  // Fetch ad slot bookings - refetch every 10 seconds for real-time updates
   const { data: bookings = [], refetch: refetchBookings } = useQuery({
     queryKey: ["player-bookings", screen?.id],
     queryFn: async () => {
@@ -171,10 +171,11 @@ export default function ScreenPlayer() {
       return allBookings.filter(b => b.start_date <= today && b.end_date >= today);
     },
     enabled: authenticated && !!screen?.id,
-    refetchInterval: 30000 // Check for new ads every 30 seconds
+    refetchInterval: 10000, // Check for new ads every 10 seconds
+    staleTime: 0 // Always consider data stale to force refresh
   });
 
-  // Fetch campaigns - refetch every 30 seconds for real-time updates
+  // Fetch campaigns - refetch every 10 seconds for real-time updates
   const { data: campaigns = [], refetch: refetchCampaigns } = useQuery({
     queryKey: ["player-campaigns", screen?.id],
     queryFn: async () => {
@@ -182,7 +183,8 @@ export default function ScreenPlayer() {
       return allCampaigns.filter(c => c.screen_ids?.includes(screen?.id));
     },
     enabled: authenticated && !!screen?.id,
-    refetchInterval: 30000 // Check for new campaigns every 30 seconds
+    refetchInterval: 10000, // Check for new campaigns every 10 seconds
+    staleTime: 0 // Always consider data stale to force refresh
   });
 
   // Fetch platform settings
