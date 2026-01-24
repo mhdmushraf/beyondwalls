@@ -95,11 +95,16 @@ export default function Wallet() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('success') === 'true') {
       toast.success('Payment successful! Your wallet has been credited.');
-      // Refresh data after successful payment
+      // Refresh data multiple times to ensure backend processing is complete
       setTimeout(() => {
         loadUser();
         refetch();
-      }, 1500);
+        refetchRequests();
+      }, 1000);
+      setTimeout(() => {
+        loadUser();
+        refetch();
+      }, 3000);
       // Clean up URL
       window.history.replaceState({}, '', window.location.pathname);
     } else if (params.get('canceled') === 'true') {
@@ -169,8 +174,8 @@ export default function Wallet() {
     .filter(t => t.type === "refund" && t.status === "completed")
     .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
 
-  // Use user's wallet_balance as source of truth, fallback to calculation
-  const calculatedBalance = user?.wallet_balance ?? (totalTopUps + totalEarnings + totalRefunds - totalSpent - totalWithdrawals);
+  // Always calculate from transactions for accuracy
+  const calculatedBalance = totalTopUps + totalEarnings + totalRefunds - totalSpent - totalWithdrawals;
 
   const handleTopUp = async () => {
     const topUpAmount = parseFloat(amount);
