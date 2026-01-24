@@ -13,6 +13,8 @@ export default function LogoGenerator() {
   const [generating, setGenerating] = useState(false);
   const [logoUrl, setLogoUrl] = useState("");
   const [iconUrl, setIconUrl] = useState("");
+  const [advertiserBgUrl, setAdvertiserBgUrl] = useState("");
+  const [venueBgUrl, setVenueBgUrl] = useState("");
   const [prompt, setPrompt] = useState("A modern minimalist logo for 'BeyondWalls' - a digital out-of-home advertising platform. The design should feature a stylized screen/monitor icon with a gradient from violet (#8B5CF6) to indigo (#6366F1). Clean, tech-forward aesthetic, suitable for a SaaS company. White or transparent background, professional and sleek.");
   const [iconPrompt, setIconPrompt] = useState("A minimalist app icon for 'BeyondWalls' - a single stylized monitor/screen symbol with violet to indigo gradient (#8B5CF6 to #6366F1). Simple geometric shape, no text, suitable as a favicon or app icon. Clean white or transparent background.");
   
@@ -53,6 +55,26 @@ export default function LogoGenerator() {
       setIconUrl(result.url);
     } catch (error) {
       console.error("Failed to generate icon:", error);
+    }
+    setGenerating(false);
+  };
+
+  const generateScreenBackgrounds = async () => {
+    setGenerating(true);
+    try {
+      // Generate advertiser background
+      const advertiserResult = await base44.integrations.Core.GenerateImage({
+        prompt: "Professional digital advertising screen background for BeyondWalls DOOH platform. Modern gradient design with purple (#8B5CF6) to indigo (#6366F1) colors. Main headline in large bold text: 'Launch Your Ad Campaign in 30 Minutes' with subtext 'Affordable Digital Advertising Across UAE Premium Venues'. Include BeyondWalls logo (TV/monitor icon in gradient box) in top corner. At the bottom footer, add small text 'in5 Tech Dubai Internet City Incubated' and 'A Linkzone Global Company'. Clean, professional design suitable for digital screens. Horizontal landscape format 1920x1080. Modern tech aesthetic with gradients and geometric shapes. High contrast, readable from distance."
+      });
+      setAdvertiserBgUrl(advertiserResult.url);
+
+      // Generate venue owner background
+      const venueResult = await base44.integrations.Core.GenerateImage({
+        prompt: "Professional digital advertising screen background for BeyondWalls venue partners. Modern gradient design with emerald green (#10b981) to teal (#14b8a6) colors. Main headline in large bold text: 'Turn Your Idle Screens Into Revenue' with subtext 'High-Traffic Venue? Earn 70% From Every Ad Booking'. Include BeyondWalls logo (TV/monitor icon in gradient box) in top corner with money/wallet icons. At the bottom footer, add small text 'in5 Tech Dubai Internet City Incubated' and 'A Linkzone Global Company'. Professional, clean design suitable for digital screens. Horizontal landscape format 1920x1080. Modern tech aesthetic with gradients showing money/revenue concept. High contrast, readable from distance."
+      });
+      setVenueBgUrl(venueResult.url);
+    } catch (error) {
+      console.error("Failed to generate backgrounds:", error);
     }
     setGenerating(false);
   };
@@ -1649,6 +1671,99 @@ export default function LogoGenerator() {
                   </div>
                 </TabsContent>
               </Tabs>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Screen Background Images Section */}
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MonitorPlay className="w-5 h-5 text-violet-600" />
+              Screen Background Images
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              <p className="text-sm text-slate-600">
+                Generate promotional backgrounds to run on idle screens, advertising BeyondWalls platform to potential advertisers and venue owners.
+              </p>
+
+              <Button 
+                onClick={generateScreenBackgrounds} 
+                disabled={generating}
+                className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700"
+                size="lg"
+              >
+                {generating ? (
+                  <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Generating Both Images...</>
+                ) : (
+                  <><Sparkles className="w-5 h-5 mr-2" /> Generate Screen Backgrounds</>
+                )}
+              </Button>
+
+              {/* Advertiser Background Preview */}
+              {advertiserBgUrl && (
+                <div className="space-y-3">
+                  <h3 className="font-semibold text-slate-900">For Advertisers</h3>
+                  <div className="bg-slate-100 rounded-xl p-4 border-2 border-violet-200">
+                    <img src={advertiserBgUrl} alt="Advertiser Background" className="w-full rounded-lg shadow-lg" />
+                  </div>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => downloadImage(advertiserBgUrl, 'beyondwalls-advertiser-screen-bg.png')}
+                    >
+                      <Download className="w-4 h-4 mr-2" /> Download (1920x1080)
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      onClick={generateScreenBackgrounds} 
+                      disabled={generating}
+                    >
+                      <RefreshCw className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Venue Owner Background Preview */}
+              {venueBgUrl && (
+                <div className="space-y-3">
+                  <h3 className="font-semibold text-slate-900">For Venue Owners</h3>
+                  <div className="bg-slate-100 rounded-xl p-4 border-2 border-emerald-200">
+                    <img src={venueBgUrl} alt="Venue Owner Background" className="w-full rounded-lg shadow-lg" />
+                  </div>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => downloadImage(venueBgUrl, 'beyondwalls-venue-owner-screen-bg.png')}
+                    >
+                      <Download className="w-4 h-4 mr-2" /> Download (1920x1080)
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      onClick={generateScreenBackgrounds} 
+                      disabled={generating}
+                    >
+                      <RefreshCw className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                <h4 className="font-semibold text-blue-900 mb-2">Usage:</h4>
+                <ul className="text-sm text-blue-800 space-y-1 list-disc list-inside">
+                  <li>Use these backgrounds on idle screens to promote BeyondWalls</li>
+                  <li>Advertiser version: Attracts potential advertisers with 30-minute campaign launch message</li>
+                  <li>Venue version: Attracts venue owners with 70% revenue share message</li>
+                  <li>Both include BeyondWalls branding, in5 Tech incubation, and Linkzone Global affiliation</li>
+                  <li>Optimized for 1920x1080 digital screens (landscape orientation)</li>
+                </ul>
+              </div>
             </div>
           </CardContent>
         </Card>
