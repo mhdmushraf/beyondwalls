@@ -390,7 +390,8 @@ www.beyondwalls.ae
       console.error("Failed to send new user registration email to admin", e);
     }
 
-    // Send welcome email to user
+    // Note: Email verification is handled by Base44's authentication system
+    // Send welcome email to user after they verify their email
     try {
       const welcomeEmail = EmailTemplates.welcome(
         user.full_name || "Valued User",
