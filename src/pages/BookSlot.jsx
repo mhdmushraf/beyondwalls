@@ -101,7 +101,7 @@ export default function BookSlot() {
     queryFn: () => base44.entities.Venue.filter({ status: "approved" })
   });
 
-  const { data: existingBookings = [] } = useQuery({
+  const { data: existingBookings = [], isLoading: bookingsLoading } = useQuery({
     queryKey: ["screen-bookings", selectedScreen?.id],
     queryFn: async () => {
       if (!selectedScreen?.id) return [];
@@ -116,7 +116,9 @@ export default function BookSlot() {
       });
       return [...active, ...pending];
     },
-    enabled: !!selectedScreen
+    enabled: !!selectedScreen,
+    staleTime: 0, // Always fetch fresh data
+    refetchOnMount: true
   });
 
   const { data: allBookings = [] } = useQuery({
@@ -177,10 +179,11 @@ export default function BookSlot() {
   };
 
   const getAvailableSlots = () => {
-    if (!selectedScreen) return [];
-    // Get all bookings for this specific screen (both active and pending)
-    const screenBookings = existingBookings.filter(b => b.screen_id === selectedScreen.id);
-    const bookedSlots = screenBookings.map(b => b.slot_number);
+    if (!selectedScreen || bookingsLoading) return [];
+    // existingBookings already filtered by screen_id in query, no need to filter again
+    const bookedSlots = existingBookings
+      .filter(b => b.slot_number) // Ensure slot_number exists
+      .map(b => b.slot_number);
     return [1, 2, 3, 4, 5].filter(slot => !bookedSlots.includes(slot));
   };
 
@@ -840,9 +843,16 @@ Please review and approve/reject this campaign in the admin dashboard.
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>Select Available Slot</span>
-                <Badge variant="outline" className="font-normal">
-                  {getAvailableSlots().length} of 5 available
-                </Badge>
+                {bookingsLoading ? (
+                  <Badge variant="outline" className="font-normal">
+                    <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                    Checking...
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="font-normal">
+                    {getAvailableSlots().length} of 5 available
+                  </Badge>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -852,33 +862,44 @@ Please review and approve/reject this campaign in the admin dashboard.
                   <p className="text-sm text-rose-700">{availabilityError}</p>
                 </div>
               )}
-              <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3">
-                {[1, 2, 3, 4, 5].map((slot) => {
-                  const isBooked = !getAvailableSlots().includes(slot);
-                  return (
-                    <button
-                      key={slot}
-                      disabled={isBooked}
-                      onClick={() => {
-                        setSelectedSlot(slot);
-                        setAvailabilityError(null);
-                      }}
-                      className={`p-3 sm:p-4 rounded-xl border-2 transition-all ${
-                        isBooked 
-                          ? "bg-slate-100 border-slate-200 cursor-not-allowed opacity-50"
-                          : selectedSlot === slot
-                            ? "bg-violet-50 border-violet-600"
-                            : "bg-white border-slate-200 hover:border-violet-300"
-                      }`}
-                    >
-                      <p className="font-bold text-sm sm:text-lg">Slot {slot}</p>
-                      <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1">
-                        {isBooked ? "Booked" : "Available"}
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
+              {bookingsLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="w-8 h-8 text-violet-600 animate-spin" />
+                  <span className="ml-3 text-slate-500">Loading slot availability...</span>
+                </div>
+              ) : (
+                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3">
+                  {[1, 2, 3, 4, 5].map((slot) => {
+                    const isBooked = !getAvailableSlots().includes(slot);
+                    // Check if this slot has a booking
+                    const booking = existingBookings.find(b => b.slot_number === slot);
+                    const bookingStatus = booking ? (booking.status === "pending" ? "Under Review" : "Booked") : "Available";
+                    
+                    return (
+                      <button
+                        key={slot}
+                        disabled={isBooked}
+                        onClick={() => {
+                          setSelectedSlot(slot);
+                          setAvailabilityError(null);
+                        }}
+                        className={`p-3 sm:p-4 rounded-xl border-2 transition-all ${
+                          isBooked 
+                            ? "bg-slate-100 border-slate-200 cursor-not-allowed opacity-50"
+                            : selectedSlot === slot
+                              ? "bg-violet-50 border-violet-600"
+                              : "bg-white border-slate-200 hover:border-violet-300"
+                        }`}
+                      >
+                        <p className="font-bold text-sm sm:text-lg">Slot {slot}</p>
+                        <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1">
+                          {bookingStatus}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
               {getAvailableSlots().length === 0 && (
                 <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg text-center">
                   <AlertCircle className="w-6 h-6 text-amber-600 mx-auto mb-2" />
