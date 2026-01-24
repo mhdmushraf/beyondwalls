@@ -346,6 +346,7 @@ BeyondWalls Team
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Review Request</DialogTitle>
+            <DialogDescription>Review and approve or reject wallet requests</DialogDescription>
           </DialogHeader>
           
           {selectedRequest && (
