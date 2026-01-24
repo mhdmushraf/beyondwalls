@@ -40,13 +40,27 @@ Deno.serve(async (req) => {
         type: metadata.type
       });
 
-      // Create transaction record
+      // Get user first to calculate balance_after
+      const users = await base44.asServiceRole.users.list();
+      const user = users.find(u => u.email === metadata.user_id);
+      
+      if (!user) {
+        console.error('❌ User not found:', metadata.user_id);
+        return Response.json({ error: 'User not found' }, { status: 400 });
+      }
+
+      const currentBalance = user.wallet_balance || 0;
+      const topUpAmount = parseFloat(metadata.amount);
+      const newBalance = currentBalance + topUpAmount;
+
+      // Create transaction record with correct balance_after
       const transaction = await base44.asServiceRole.entities.Transaction.create({
         user_id: metadata.user_id,
         type: 'top_up',
-        amount: parseFloat(metadata.amount),
+        amount: topUpAmount,
+        balance_after: newBalance,
         reference_id: session.id,
-        description: `Wallet top-up via Stripe`,
+        description: `Wallet top-up via Stripe (${session.payment_method_types?.[0] || 'card'})`,
         status: 'completed',
         payment_method: session.payment_method_types?.[0] || 'card'
       });
