@@ -143,7 +143,7 @@ Content-Type: text/html; charset=utf-8
       </div>
       
       <p style="text-align: center; margin-top: 30px;">
-        <a href="${req.headers.get('origin')}/Wallet" style="background: #7c3aed; color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; display: inline-block;">View Wallet</a>
+        <a href="https://beyondwalls.base44.com/Wallet" style="background: #7c3aed; color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; display: inline-block;">View Wallet</a>
       </p>
       
       <div class="footer">
