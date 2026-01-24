@@ -190,6 +190,67 @@ export default function AdminUsers() {
     setShowWalletDialog(true);
   };
 
+  const handleDeleteUser = async (user) => {
+    if (!confirm(`Are you sure you want to delete ${user.full_name}? This will permanently delete all their data including venues, screens, bookings, and transactions.`)) {
+      return;
+    }
+
+    try {
+      toast.loading("Deleting user and all associated data...");
+      
+      // Delete all user's venues
+      const venues = await base44.entities.Venue.filter({ owner_id: user.email });
+      for (const venue of venues) {
+        await base44.entities.Venue.delete(venue.id);
+      }
+      
+      // Delete all user's screens
+      const screens = await base44.entities.Screen.filter({ owner_id: user.email });
+      for (const screen of screens) {
+        await base44.entities.Screen.delete(screen.id);
+      }
+      
+      // Delete all user's bookings
+      const bookings = await base44.entities.AdSlotBooking.filter({ advertiser_id: user.email });
+      for (const booking of bookings) {
+        await base44.entities.AdSlotBooking.delete(booking.id);
+      }
+      
+      // Delete all user's transactions
+      const transactions = await base44.entities.Transaction.filter({ user_id: user.email });
+      for (const transaction of transactions) {
+        await base44.entities.Transaction.delete(transaction.id);
+      }
+      
+      // Delete all user's wallet requests
+      const requests = await base44.entities.WalletRequest.filter({ user_id: user.email });
+      for (const request of requests) {
+        await base44.entities.WalletRequest.delete(request.id);
+      }
+      
+      // Delete all user's campaigns
+      const campaigns = await base44.entities.Campaign.filter({ advertiser_id: user.email });
+      for (const campaign of campaigns) {
+        await base44.entities.Campaign.delete(campaign.id);
+      }
+      
+      // Delete all user's notifications
+      const notifications = await base44.entities.UserNotification.filter({ user_id: user.email });
+      for (const notification of notifications) {
+        await base44.entities.UserNotification.delete(notification.id);
+      }
+      
+      // Finally, delete the user
+      await base44.entities.User.delete(user.id);
+      
+      toast.success(`Successfully deleted ${user.full_name} and all associated data`);
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+    } catch (error) {
+      console.error("Delete user error:", error);
+      toast.error("Failed to delete user");
+    }
+  };
+
   const handleWalletSubmit = async () => {
     const amount = parseFloat(walletAmount);
     if (!amount || amount <= 0) {
@@ -418,31 +479,41 @@ export default function AdminUsers() {
                         </Badge>
                       </td>
                       <td className="p-4">
-                                                <div className="flex items-center gap-2">
-                                                  <p className="font-medium text-slate-900">
-                                                    AED {user.wallet_balance?.toLocaleString() || 0}
-                                                  </p>
-                                                  <Button 
-                                                    variant="outline" 
-                                                    size="sm"
-                                                    onClick={() => handleAddWallet(user)}
-                                                    className="h-7 px-2"
-                                                  >
-                                                    <Plus className="w-3 h-3 mr-1" />
-                                                    Add
-                                                  </Button>
-                                                  {(user.user_role === "admin" || user.role === "admin") && (
-                                                    <Button 
-                                                      variant="outline" 
-                                                      size="sm"
-                                                      onClick={() => handleOpenAdminDialog(user)}
-                                                      className="h-7 px-2"
-                                                    >
-                                                      <Settings className="w-3 h-3" />
-                                                    </Button>
-                                                  )}
-                                                </div>
-                                              </td>
+                                               <div className="flex items-center gap-2">
+                                                 <p className="font-medium text-slate-900">
+                                                   AED {user.wallet_balance?.toLocaleString() || 0}
+                                                 </p>
+                                                 <Button 
+                                                   variant="outline" 
+                                                   size="sm"
+                                                   onClick={() => handleAddWallet(user)}
+                                                   className="h-7 px-2"
+                                                 >
+                                                   <Plus className="w-3 h-3 mr-1" />
+                                                   Add
+                                                 </Button>
+                                                 {(user.user_role === "admin" || user.role === "admin") && (
+                                                   <Button 
+                                                     variant="outline" 
+                                                     size="sm"
+                                                     onClick={() => handleOpenAdminDialog(user)}
+                                                     className="h-7 px-2"
+                                                   >
+                                                     <Settings className="w-3 h-3" />
+                                                   </Button>
+                                                 )}
+                                                 {(user.user_role !== "admin" && user.role !== "admin") && (
+                                                   <Button 
+                                                     variant="outline" 
+                                                     size="sm"
+                                                     onClick={() => handleDeleteUser(user)}
+                                                     className="h-7 px-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                   >
+                                                     <XCircle className="w-3 h-3" />
+                                                   </Button>
+                                                 )}
+                                               </div>
+                                             </td>
                                             </tr>
                   ))
                 )}

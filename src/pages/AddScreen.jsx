@@ -141,6 +141,48 @@ export default function AddScreen() {
         status: "unread"
       });
 
+      // Send email notification to admin
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: "hello@beyondwalls.ae",
+          subject: "📺 New Screen Awaiting Approval | BeyondWalls",
+          body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS ADMIN
+   New Screen Submission
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+A new screen has been submitted and is awaiting approval.
+
+📋 SCREEN DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+📺 Screen: ${formData.name}
+📍 Venue: ${selectedVenue?.name || "N/A"}
+📐 Size: ${formData.size} (${formData.orientation})
+💰 Rate: AED ${formData.hourly_rate}/week
+🖥️ Device: ${formData.device_type}
+
+👤 OWNER DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+Name: ${user.full_name || "N/A"}
+Email: ${user.email}
+
+⚡ ACTION REQUIRED
+━━━━━━━━━━━━━━━━━━━━━━━━━
+Please review and approve this screen in the admin panel.
+
+View in Admin Panel: https://beyondwalls.ae/AdminScreens
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BeyondWalls Admin Panel
+www.beyondwalls.ae
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          `.trim()
+        });
+      } catch (emailErr) {
+        console.log("Admin email failed but screen was created");
+      }
+
       // Send confirmation email to user
       const selectedVenue = venues.find(v => v.id === formData.venue_id);
       try {

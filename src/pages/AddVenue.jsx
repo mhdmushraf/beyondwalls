@@ -189,6 +189,48 @@ www.beyondwalls.ae
         status: "unread"
       });
 
+      // Send email notification to admin
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: "hello@beyondwalls.ae",
+          subject: "🏢 New Venue Awaiting Approval | BeyondWalls",
+          body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS ADMIN
+   New Venue Submission
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+A new venue has been submitted and is awaiting approval.
+
+📋 VENUE DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+🏢 Venue: ${formData.name}
+📍 Location: ${formData.city}, ${formData.area || ""}
+🏷️ Type: ${formData.type}
+📍 Address: ${formData.address}
+
+👤 OWNER DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+Name: ${user.full_name || "N/A"}
+Email: ${user.email}
+Phone: ${formData.contact_phone || "N/A"}
+
+⚡ ACTION REQUIRED
+━━━━━━━━━━━━━━━━━━━━━━━━━
+Please review and approve this venue in the admin panel.
+
+View in Admin Panel: https://beyondwalls.ae/AdminVenues
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BeyondWalls Admin Panel
+www.beyondwalls.ae
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          `.trim()
+        });
+      } catch (emailErr) {
+        console.log("Admin email failed but venue was created");
+      }
+
       toast.success("Venue submitted for approval!");
       navigate(createPageUrl("MyVenues"));
     } catch (error) {
