@@ -68,24 +68,16 @@ Deno.serve(async (req) => {
       console.log('✅ Transaction created:', transaction.id);
 
       // Update user wallet balance using the users API
-      try {
-        const users = await base44.asServiceRole.users.list();
-        const user = users.find(u => u.email === metadata.user_id);
-        
-        if (user) {
-          const newBalance = (user.wallet_balance || 0) + parseFloat(metadata.amount);
-          
-          await base44.asServiceRole.users.update(user.id, {
-            wallet_balance: newBalance
-          });
+      await base44.asServiceRole.users.update(user.id, {
+        wallet_balance: newBalance
+      });
 
-          console.log('✅ Wallet updated:', { user: metadata.user_id, newBalance });
-        } else {
-          console.error('❌ User not found:', metadata.user_id);
-        }
-      } catch (userError) {
-        console.error('❌ Failed to update wallet:', userError);
-      }
+      console.log('✅ Wallet updated:', { 
+        user: metadata.user_id, 
+        previousBalance: currentBalance,
+        topUpAmount: topUpAmount,
+        newBalance: newBalance 
+      });
     }
 
     return Response.json({ received: true });
