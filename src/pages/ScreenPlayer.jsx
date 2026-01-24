@@ -803,7 +803,7 @@ export default function ScreenPlayer() {
         {allAds.length === 0 ? (
           defaultContentUrl ? (
             defaultContentType === "video" ? (
-              <video src={defaultContentUrl} className="w-full h-full object-contain" autoPlay loop muted={isMuted} playsInline onError={handleMediaError} />
+              <video src={defaultContentUrl} className="w-full h-full object-contain" autoPlay loop muted playsInline onError={handleMediaError} />
             ) : (
               <img src={defaultContentUrl} alt="Default Content" className="w-full h-full object-contain" onError={handleMediaError} />
             )
@@ -821,7 +821,18 @@ export default function ScreenPlayer() {
           )
         ) : currentAd?.creative_url ? (
           currentAd.creative_type === "video" ? (
-            <video ref={videoRef} key={currentAd.id} src={currentAd.creative_url} className="w-full h-full object-contain" autoPlay={!isPaused} muted={isMuted} playsInline onEnded={handleVideoEnded} onTimeUpdate={handleVideoProgress} onError={handleMediaError} onLoadedMetadata={(e) => { if (e.target.duration > AD_DURATION / 1000) { setTimeout(() => { if (videoRef.current) goToNextAd(); }, AD_DURATION); } }} />
+            <video 
+              ref={videoRef} 
+              key={currentAd.id} 
+              src={currentAd.creative_url} 
+              className="w-full h-full object-contain" 
+              autoPlay 
+              muted={isMuted} 
+              playsInline 
+              onEnded={handleVideoEnded} 
+              onTimeUpdate={handleVideoProgress} 
+              onError={handleMediaError}
+            />
           ) : (
             <img key={currentAd.id} src={currentAd.creative_url} alt={currentAd.name} className="w-full h-full object-contain" onError={handleMediaError} />
           )
