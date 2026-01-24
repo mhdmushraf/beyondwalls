@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import {
   Users,
@@ -16,19 +16,25 @@ import {
   CheckCircle2,
   XCircle,
   Activity,
-  Loader2
+  Loader2,
+  AlertTriangle,
+  Trash2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import StatsCard from "@/components/dashboard/StatsCard";
 import AdminOnboarding from "@/components/admin/AdminOnboarding";
 import SystemHealthMonitor from "@/components/admin/SystemHealthMonitor";
+import { toast } from "sonner";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [authChecked, setAuthChecked] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState({ type: null, confirmation: "", isDeleting: false });
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     loadUser();
@@ -105,6 +111,49 @@ export default function AdminDashboard() {
   const totalRevenue = transactions
     .filter(t => t.type === "ad_spend")
     .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+  const handleDeleteAll = async (type) => {
+    if (deleteConfirmation.confirmation !== "DELETE ALL") {
+      toast.error("Please type 'DELETE ALL' to confirm");
+      return;
+    }
+
+    setDeleteConfirmation(prev => ({ ...prev, isDeleting: true }));
+    
+    try {
+      let deleteCount = 0;
+      
+      if (type === "venues") {
+        for (const venue of venues) {
+          await base44.entities.Venue.delete(venue.id);
+          deleteCount++;
+        }
+        queryClient.invalidateQueries({ queryKey: ["all-venues"] });
+        toast.success(`Successfully deleted ${deleteCount} venues`);
+      } else if (type === "screens") {
+        for (const screen of screens) {
+          await base44.entities.Screen.delete(screen.id);
+          deleteCount++;
+        }
+        queryClient.invalidateQueries({ queryKey: ["all-screens"] });
+        toast.success(`Successfully deleted ${deleteCount} screens`);
+      } else if (type === "users") {
+        // Filter out admin users to prevent self-deletion
+        const nonAdminUsers = users.filter(u => u.user_role !== "admin" && u.role !== "admin");
+        for (const userToDelete of nonAdminUsers) {
+          await base44.entities.User.delete(userToDelete.id);
+          deleteCount++;
+        }
+        queryClient.invalidateQueries({ queryKey: ["all-users"] });
+        toast.success(`Successfully deleted ${deleteCount} non-admin users`);
+      }
+      
+      setDeleteConfirmation({ type: null, confirmation: "", isDeleting: false });
+    } catch (error) {
+      toast.error("Failed to delete: " + error.message);
+      setDeleteConfirmation(prev => ({ ...prev, isDeleting: false }));
+    }
+  };
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
@@ -290,6 +339,162 @@ export default function AdminDashboard() {
         {/* System Health Monitor */}
         <SystemHealthMonitor />
       </div>
+
+      {/* Danger Zone */}
+      <Card className="mt-8 border-red-200 bg-red-50">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center">
+              <AlertTriangle className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <CardTitle className="text-red-900">Danger Zone</CardTitle>
+              <p className="text-sm text-red-700 mt-1">Bulk delete operations - USE WITH EXTREME CAUTION</p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {/* Delete All Venues */}
+            <div className="p-4 bg-white rounded-xl border border-red-200">
+              <div className="flex items-center gap-2 mb-3">
+                <Building2 className="w-5 h-5 text-red-600" />
+                <h3 className="font-semibold text-slate-900">Delete All Venues</h3>
+              </div>
+              <p className="text-sm text-slate-600 mb-3">Remove all {venues.length} venues from the platform</p>
+              {deleteConfirmation.type === "venues" ? (
+                <div className="space-y-2">
+                  <Input
+                    placeholder="Type 'DELETE ALL' to confirm"
+                    value={deleteConfirmation.confirmation}
+                    onChange={(e) => setDeleteConfirmation({ ...deleteConfirmation, confirmation: e.target.value })}
+                    className="border-red-300"
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => handleDeleteAll("venues")}
+                      disabled={deleteConfirmation.isDeleting}
+                      className="bg-red-600 hover:bg-red-700 flex-1"
+                      size="sm"
+                    >
+                      {deleteConfirmation.isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                    </Button>
+                    <Button
+                      onClick={() => setDeleteConfirmation({ type: null, confirmation: "", isDeleting: false })}
+                      variant="outline"
+                      size="sm"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <Button
+                  onClick={() => setDeleteConfirmation({ type: "venues", confirmation: "", isDeleting: false })}
+                  variant="destructive"
+                  size="sm"
+                  className="w-full"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete All Venues
+                </Button>
+              )}
+            </div>
+
+            {/* Delete All Screens */}
+            <div className="p-4 bg-white rounded-xl border border-red-200">
+              <div className="flex items-center gap-2 mb-3">
+                <MonitorPlay className="w-5 h-5 text-red-600" />
+                <h3 className="font-semibold text-slate-900">Delete All Screens</h3>
+              </div>
+              <p className="text-sm text-slate-600 mb-3">Remove all {screens.length} screens from the platform</p>
+              {deleteConfirmation.type === "screens" ? (
+                <div className="space-y-2">
+                  <Input
+                    placeholder="Type 'DELETE ALL' to confirm"
+                    value={deleteConfirmation.confirmation}
+                    onChange={(e) => setDeleteConfirmation({ ...deleteConfirmation, confirmation: e.target.value })}
+                    className="border-red-300"
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => handleDeleteAll("screens")}
+                      disabled={deleteConfirmation.isDeleting}
+                      className="bg-red-600 hover:bg-red-700 flex-1"
+                      size="sm"
+                    >
+                      {deleteConfirmation.isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                    </Button>
+                    <Button
+                      onClick={() => setDeleteConfirmation({ type: null, confirmation: "", isDeleting: false })}
+                      variant="outline"
+                      size="sm"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <Button
+                  onClick={() => setDeleteConfirmation({ type: "screens", confirmation: "", isDeleting: false })}
+                  variant="destructive"
+                  size="sm"
+                  className="w-full"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete All Screens
+                </Button>
+              )}
+            </div>
+
+            {/* Delete All Users */}
+            <div className="p-4 bg-white rounded-xl border border-red-200">
+              <div className="flex items-center gap-2 mb-3">
+                <Users className="w-5 h-5 text-red-600" />
+                <h3 className="font-semibold text-slate-900">Delete All Users</h3>
+              </div>
+              <p className="text-sm text-slate-600 mb-3">Remove all non-admin users ({users.filter(u => u.user_role !== "admin" && u.role !== "admin").length} users)</p>
+              {deleteConfirmation.type === "users" ? (
+                <div className="space-y-2">
+                  <Input
+                    placeholder="Type 'DELETE ALL' to confirm"
+                    value={deleteConfirmation.confirmation}
+                    onChange={(e) => setDeleteConfirmation({ ...deleteConfirmation, confirmation: e.target.value })}
+                    className="border-red-300"
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => handleDeleteAll("users")}
+                      disabled={deleteConfirmation.isDeleting}
+                      className="bg-red-600 hover:bg-red-700 flex-1"
+                      size="sm"
+                    >
+                      {deleteConfirmation.isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                    </Button>
+                    <Button
+                      onClick={() => setDeleteConfirmation({ type: null, confirmation: "", isDeleting: false })}
+                      variant="outline"
+                      size="sm"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <Button
+                  onClick={() => setDeleteConfirmation({ type: "users", confirmation: "", isDeleting: false })}
+                  variant="destructive"
+                  size="sm"
+                  className="w-full"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete All Users
+                </Button>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

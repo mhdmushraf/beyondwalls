@@ -43,6 +43,7 @@ import BookSlot from './pages/BookSlot';
 import BookingPending from './pages/BookingPending';
 import BundleDetails from './pages/BundleDetails';
 import CEOProfile from './pages/CEOProfile';
+import COOProfile from './pages/COOProfile';
 import CafeAdvertisingDubai from './pages/CafeAdvertisingDubai';
 import CampaignBundles from './pages/CampaignBundles';
 import CampaignManager from './pages/CampaignManager';
@@ -114,10 +115,9 @@ import VenueDashboard from './pages/VenueDashboard';
 import VenueEarnings from './pages/VenueEarnings';
 import VenueOnboarding from './pages/VenueOnboarding';
 import VenueOwnerAnalytics from './pages/VenueOwnerAnalytics';
+import VenueOwnerHub from './pages/VenueOwnerHub';
 import VenueOwnerBookingManager from './pages/VenueOwnerBookingManager';
 import Wallet from './pages/Wallet';
-import VenueOwnerHub from './pages/VenueOwnerHub';
-import COOProfile from './pages/COOProfile';
 import __Layout from './Layout.jsx';
 
 
@@ -167,6 +167,7 @@ export const PAGES = {
     "BookingPending": BookingPending,
     "BundleDetails": BundleDetails,
     "CEOProfile": CEOProfile,
+    "COOProfile": COOProfile,
     "CafeAdvertisingDubai": CafeAdvertisingDubai,
     "CampaignBundles": CampaignBundles,
     "CampaignManager": CampaignManager,
@@ -238,10 +239,9 @@ export const PAGES = {
     "VenueEarnings": VenueEarnings,
     "VenueOnboarding": VenueOnboarding,
     "VenueOwnerAnalytics": VenueOwnerAnalytics,
+    "VenueOwnerHub": VenueOwnerHub,
     "VenueOwnerBookingManager": VenueOwnerBookingManager,
     "Wallet": Wallet,
-    "VenueOwnerHub": VenueOwnerHub,
-    "COOProfile": COOProfile,
 }
 
 export const pagesConfig = {
