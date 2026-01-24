@@ -54,7 +54,7 @@ export default function AddScreen() {
     orientation: "landscape",
     resolution: "FHD",
     location_in_venue: "",
-    hourly_rate: "",
+    monthly_rate: "",
     device_type: ""
   });
 
@@ -119,8 +119,8 @@ export default function AddScreen() {
         ...ownerSlots,
         device_id: deviceId,
         owner_id: user.email,
-        slot_price: parseFloat(formData.hourly_rate) || 0,
-        hourly_rate: parseFloat(formData.hourly_rate) || 0,
+        slot_price: parseFloat(formData.monthly_rate) || 0,
+        monthly_rate: parseFloat(formData.monthly_rate) || 0,
         player_pin: pin,
         status: "pending_approval",
         avg_daily_views: 0,
@@ -159,7 +159,7 @@ A new screen has been submitted and is awaiting approval.
 📺 Screen: ${formData.name}
 📍 Venue: ${selectedVenue?.name || "N/A"}
 📐 Size: ${formData.size} (${formData.orientation})
-💰 Rate: AED ${formData.hourly_rate}/week
+💰 Rate: AED ${formData.monthly_rate}/month
 🖥️ Device: ${formData.device_type}
 
 👤 OWNER DETAILS
@@ -358,12 +358,12 @@ www.beyondwalls.ae
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Hourly Rate (AED) *</Label>
+                <Label>Monthly Rate (AED) *</Label>
                 <Input
                   type="number"
-                  placeholder="e.g., 100"
-                  value={formData.hourly_rate}
-                  onChange={(e) => setFormData({ ...formData, hourly_rate: e.target.value })}
+                  placeholder="e.g., 3000"
+                  value={formData.monthly_rate}
+                  onChange={(e) => setFormData({ ...formData, monthly_rate: e.target.value })}
                   required
                 />
               </div>
@@ -436,7 +436,7 @@ www.beyondwalls.ae
           </Button>
           <Button 
             type="submit"
-            disabled={loading || !formData.venue_id || !formData.name || !formData.size || !formData.hourly_rate || !formData.device_type || !ownerSlots.owner_slot_1_url || !ownerSlots.owner_slot_2_url || !ownerSlots.owner_slot_3_url}
+            disabled={loading || !formData.venue_id || !formData.name || !formData.size || !formData.monthly_rate || !formData.device_type || !ownerSlots.owner_slot_1_url || !ownerSlots.owner_slot_2_url || !ownerSlots.owner_slot_3_url}
             className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700"
           >
             {loading ? (
