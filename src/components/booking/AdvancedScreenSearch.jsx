@@ -100,8 +100,10 @@ export default function AdvancedScreenSearch({
   const resolutions = ["HD", "FHD", "4K"];
 
   const getScreenAvailability = (screenId) => {
-    const bookings = allBookings.filter(b => b.screen_id === screenId);
-    return 5 - bookings.length;
+    // Count only bookings for this specific screen
+    const screenBookings = allBookings.filter(b => b.screen_id === screenId && (b.status === "active" || b.status === "pending"));
+    const bookedSlots = [...new Set(screenBookings.map(b => b.slot_number))].filter(Boolean);
+    return 5 - bookedSlots.length;
   };
 
   const filteredScreens = useMemo(() => {

@@ -178,7 +178,9 @@ export default function BookSlot() {
 
   const getAvailableSlots = () => {
     if (!selectedScreen) return [];
-    const bookedSlots = existingBookings.map(b => b.slot_number);
+    // Get all bookings for this specific screen (both active and pending)
+    const screenBookings = existingBookings.filter(b => b.screen_id === selectedScreen.id);
+    const bookedSlots = screenBookings.map(b => b.slot_number);
     return [1, 2, 3, 4, 5].filter(slot => !bookedSlots.includes(slot));
   };
 
