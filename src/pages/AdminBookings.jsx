@@ -271,7 +271,8 @@ export default function AdminBookings() {
         }
         
         toast.success("Campaign approved! Earnings distributed to venue owners.");
-        queryClient.invalidateQueries({ queryKey: ["all-campaigns-admin"] });
+        await queryClient.invalidateQueries({ queryKey: ["all-campaigns-admin"] });
+        await queryClient.invalidateQueries({ queryKey: ["all-bookings"] });
         setSelectedBooking(null);
         setProcessing(false);
         return;
@@ -450,12 +451,15 @@ www.beyondwalls.ae
       }
 
       toast.success("Booking approved successfully");
-      queryClient.invalidateQueries({ queryKey: ["all-bookings"] });
+      await queryClient.invalidateQueries({ queryKey: ["all-bookings"] });
+      await queryClient.invalidateQueries({ queryKey: ["all-campaigns-admin"] });
       setSelectedBooking(null);
     } catch (error) {
-      toast.error("Failed to approve booking");
+      console.error("Approval error:", error);
+      toast.error("Failed to approve booking: " + (error.message || "Unknown error"));
+    } finally {
+      setProcessing(false);
     }
-    setProcessing(false);
   };
 
   const handleReject = async (booking) => {
@@ -484,7 +488,8 @@ www.beyondwalls.ae
         }
         
         toast.success("Campaign rejected");
-        queryClient.invalidateQueries({ queryKey: ["all-campaigns-admin"] });
+        await queryClient.invalidateQueries({ queryKey: ["all-campaigns-admin"] });
+        await queryClient.invalidateQueries({ queryKey: ["all-bookings"] });
         setSelectedBooking(null);
         setRejectionReason("");
         setProcessing(false);
@@ -565,13 +570,16 @@ www.beyondwalls.ae
       }
 
       toast.success("Booking rejected and refund processed");
-      queryClient.invalidateQueries({ queryKey: ["all-bookings"] });
+      await queryClient.invalidateQueries({ queryKey: ["all-bookings"] });
+      await queryClient.invalidateQueries({ queryKey: ["all-campaigns-admin"] });
       setSelectedBooking(null);
       setRejectionReason("");
     } catch (error) {
-      toast.error("Failed to reject booking");
+      console.error("Rejection error:", error);
+      toast.error("Failed to reject booking: " + (error.message || "Unknown error"));
+    } finally {
+      setProcessing(false);
     }
-    setProcessing(false);
   };
 
   const getScreenSlots = (screenId) => {
