@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import StripeTopUp from "./StripeTopUp";
 
 const QUICK_AMOUNTS = [100, 250, 500, 1000, 2500, 5000];
 
@@ -224,29 +225,7 @@ export default function TopUpModal({ open, onOpenChange, user, onSuccess }) {
           </TabsContent>
 
           <TabsContent value="card" className="space-y-4 mt-4">
-            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="flex items-start gap-2">
-                <Info className="w-5 h-5 text-blue-600 mt-0.5" />
-                <div>
-                  <p className="text-sm font-medium text-blue-800">Card Payments Coming Soon</p>
-                  <p className="text-xs text-blue-600 mt-1">
-                    We're integrating secure card payment gateways. Please use bank transfer for now.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-4 gap-3 opacity-50">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa" className="h-8 object-contain" />
-              <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-8 object-contain" />
-              <img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg" alt="Apple Pay" className="h-8 object-contain" />
-              <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="Google Pay" className="h-8 object-contain" />
-            </div>
-
-            <Button disabled className="w-full">
-              <CreditCard className="w-4 h-4 mr-2" />
-              Pay with Card (Coming Soon)
-            </Button>
+            <StripeTopUp onSuccess={onSuccess} />
           </TabsContent>
 
           <TabsContent value="mobile" className="space-y-4 mt-4">
