@@ -59,24 +59,224 @@ export default function LogoGenerator() {
     setGenerating(false);
   };
 
-  const generateScreenBackgrounds = async () => {
-    setGenerating(true);
-    try {
-      // Generate advertiser background
-      const advertiserResult = await base44.integrations.Core.GenerateImage({
-        prompt: "Professional digital screen background matching BeyondWalls brochure style. Dark elegant gradient background from deep indigo (#1e1b4b) through purple (#312e81) to violet (#4c1d95). Top left corner: BeyondWalls logo - white 'BeyondWalls' text next to a rounded square icon with violet-to-indigo gradient (#8B5CF6 to #6366F1) containing a white TV/monitor symbol with play button. Large white bold headline center: 'Launch Your Ad in 30 Minutes'. White subtext: 'Affordable Advertising Across UAE Premium Venues'. Decorative white circles/orbs with 10% opacity in corners for depth. Bottom section: Small white text 'Incubated @ in5 Tech Dubai Internet City' and 'A Linkzone Global Company'. Clean, professional, high contrast. 1920x1080 landscape. Modern corporate aesthetic matching business card design."
-      });
-      setAdvertiserBgUrl(advertiserResult.url);
+  const downloadAdvertiserBackground = () => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 1920;
+    canvas.height = 1080;
+    
+    // Background gradient matching brochure style
+    const bgGradient = ctx.createLinearGradient(0, 0, 1920, 1080);
+    bgGradient.addColorStop(0, '#1e1b4b');
+    bgGradient.addColorStop(0.5, '#312e81');
+    bgGradient.addColorStop(1, '#4c1d95');
+    ctx.fillStyle = bgGradient;
+    ctx.fillRect(0, 0, 1920, 1080);
+    
+    // Decorative circles
+    ctx.globalAlpha = 0.1;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(1650, 200, 400, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(300, 950, 350, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(1750, 950, 280, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    
+    // BeyondWalls Logo (top left)
+    const logoSize = 120;
+    const logoX = 80;
+    const logoY = 80;
+    
+    const logoGradient = ctx.createLinearGradient(logoX, logoY, logoX + logoSize, logoY + logoSize);
+    logoGradient.addColorStop(0, '#8B5CF6');
+    logoGradient.addColorStop(1, '#6366F1');
+    ctx.beginPath();
+    ctx.roundRect(logoX, logoY, logoSize, logoSize, 28);
+    ctx.fillStyle = logoGradient;
+    ctx.fill();
+    
+    ctx.shadowColor = '#8B5CF6';
+    ctx.shadowBlur = 30;
+    ctx.beginPath();
+    ctx.roundRect(logoX, logoY, logoSize, logoSize, 28);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    
+    // Monitor icon in logo
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 8;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.roundRect(logoX + 25, logoY + 25, 70, 50, 6);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(logoX + 60, logoY + 75);
+    ctx.lineTo(logoX + 60, logoY + 95);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(logoX + 40, logoY + 95);
+    ctx.lineTo(logoX + 80, logoY + 95);
+    ctx.stroke();
+    
+    // Play icon
+    ctx.fillStyle = 'white';
+    ctx.beginPath();
+    ctx.moveTo(logoX + 48, logoY + 40);
+    ctx.lineTo(logoX + 48, logoY + 65);
+    ctx.lineTo(logoX + 75, logoY + 52);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Company name
+    ctx.font = 'bold 72px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('BeyondWalls', logoX + 140, logoY + 80);
+    
+    // Main headline (center)
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 120px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('Launch Your Ad', 960, 450);
+    ctx.fillText('in 30 Minutes', 960, 590);
+    
+    // Subtext
+    ctx.font = '48px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.fillText('Affordable Advertising Across UAE Premium Venues', 960, 700);
+    
+    // Bottom text
+    ctx.textAlign = 'center';
+    ctx.font = '28px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.fillText('Incubated @ in5 Tech Dubai Internet City', 960, 980);
+    ctx.font = 'bold 32px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.fillText('A Linkzone Global Company', 960, 1030);
+    
+    canvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'beyondwalls-advertiser-screen.png';
+      link.click();
+      URL.revokeObjectURL(url);
+    }, 'image/png');
+  };
 
-      // Generate venue owner background
-      const venueResult = await base44.integrations.Core.GenerateImage({
-        prompt: "Professional digital screen background matching BeyondWalls brochure style. Dark elegant gradient background from deep indigo (#1e1b4b) through purple (#312e81) to violet (#4c1d95). Top left corner: BeyondWalls logo - white 'BeyondWalls' text next to a rounded square icon with violet-to-indigo gradient (#8B5CF6 to #6366F1) containing a white TV/monitor symbol with play button. Large white bold headline center: 'Turn Idle Screens Into Revenue'. White subtext: 'High-Traffic Venue? Earn 70% From Every Ad'. Decorative white circles/orbs with 10% opacity in corners for depth. Bottom section: Small white text 'Incubated @ in5 Tech Dubai Internet City' and 'A Linkzone Global Company'. Clean, professional, high contrast. 1920x1080 landscape. Modern corporate aesthetic matching business card design."
-      });
-      setVenueBgUrl(venueResult.url);
-    } catch (error) {
-      console.error("Failed to generate backgrounds:", error);
-    }
-    setGenerating(false);
+  const downloadVenueBackground = () => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 1920;
+    canvas.height = 1080;
+    
+    // Background gradient matching brochure style
+    const bgGradient = ctx.createLinearGradient(0, 0, 1920, 1080);
+    bgGradient.addColorStop(0, '#1e1b4b');
+    bgGradient.addColorStop(0.5, '#312e81');
+    bgGradient.addColorStop(1, '#4c1d95');
+    ctx.fillStyle = bgGradient;
+    ctx.fillRect(0, 0, 1920, 1080);
+    
+    // Decorative circles
+    ctx.globalAlpha = 0.1;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(1650, 200, 400, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(300, 950, 350, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(1750, 950, 280, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    
+    // BeyondWalls Logo (top left)
+    const logoSize = 120;
+    const logoX = 80;
+    const logoY = 80;
+    
+    const logoGradient = ctx.createLinearGradient(logoX, logoY, logoX + logoSize, logoY + logoSize);
+    logoGradient.addColorStop(0, '#8B5CF6');
+    logoGradient.addColorStop(1, '#6366F1');
+    ctx.beginPath();
+    ctx.roundRect(logoX, logoY, logoSize, logoSize, 28);
+    ctx.fillStyle = logoGradient;
+    ctx.fill();
+    
+    ctx.shadowColor = '#8B5CF6';
+    ctx.shadowBlur = 30;
+    ctx.beginPath();
+    ctx.roundRect(logoX, logoY, logoSize, logoSize, 28);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    
+    // Monitor icon in logo
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 8;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.roundRect(logoX + 25, logoY + 25, 70, 50, 6);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(logoX + 60, logoY + 75);
+    ctx.lineTo(logoX + 60, logoY + 95);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(logoX + 40, logoY + 95);
+    ctx.lineTo(logoX + 80, logoY + 95);
+    ctx.stroke();
+    
+    // Play icon
+    ctx.fillStyle = 'white';
+    ctx.beginPath();
+    ctx.moveTo(logoX + 48, logoY + 40);
+    ctx.lineTo(logoX + 48, logoY + 65);
+    ctx.lineTo(logoX + 75, logoY + 52);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Company name
+    ctx.font = 'bold 72px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('BeyondWalls', logoX + 140, logoY + 80);
+    
+    // Main headline (center)
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 110px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('Turn Idle Screens', 960, 450);
+    ctx.fillText('Into Revenue', 960, 590);
+    
+    // Subtext
+    ctx.font = '48px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.fillText('High-Traffic Venue? Earn 70% From Every Ad', 960, 700);
+    
+    // Bottom text
+    ctx.textAlign = 'center';
+    ctx.font = '28px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.fillText('Incubated @ in5 Tech Dubai Internet City', 960, 980);
+    ctx.font = 'bold 32px system-ui, -apple-system, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.fillText('A Linkzone Global Company', 960, 1030);
+    
+    canvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'beyondwalls-venue-owner-screen.png';
+      link.click();
+      URL.revokeObjectURL(url);
+    }, 'image/png');
   };
 
   const downloadImage = (url, filename) => {
@@ -1686,73 +1886,80 @@ export default function LogoGenerator() {
           <CardContent>
             <div className="space-y-6">
               <p className="text-sm text-slate-600">
-                Generate promotional backgrounds to run on idle screens, advertising BeyondWalls platform to potential advertisers and venue owners.
+                Download promotional backgrounds to run on idle screens, advertising BeyondWalls platform to potential advertisers and venue owners.
               </p>
 
-              <Button 
-                onClick={generateScreenBackgrounds} 
-                disabled={generating}
-                className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700"
-                size="lg"
-              >
-                {generating ? (
-                  <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Generating Both Images...</>
-                ) : (
-                  <><Sparkles className="w-5 h-5 mr-2" /> Generate Screen Backgrounds</>
-                )}
-              </Button>
-
               {/* Advertiser Background Preview */}
-              {advertiserBgUrl && (
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-slate-900">For Advertisers</h3>
-                  <div className="bg-slate-100 rounded-xl p-4 border-2 border-violet-200">
-                    <img src={advertiserBgUrl} alt="Advertiser Background" className="w-full rounded-lg shadow-lg" />
+              <div className="space-y-3">
+                <h3 className="font-semibold text-slate-900">For Advertisers</h3>
+                <div className="bg-gradient-to-br from-indigo-950 via-purple-900 to-violet-900 rounded-xl p-8 border-2 border-violet-200 aspect-video flex items-center justify-center relative overflow-hidden">
+                  {/* Decorative circles */}
+                  <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+                  <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
+                  
+                  {/* Logo */}
+                  <div className="absolute top-4 left-4 flex items-center gap-3">
+                    <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                      <MonitorPlay className="w-6 h-6 text-white" />
+                    </div>
+                    <span className="font-bold text-2xl text-white">BeyondWalls</span>
                   </div>
-                  <div className="flex gap-2">
-                    <Button 
-                      variant="outline" 
-                      className="flex-1"
-                      onClick={() => downloadImage(advertiserBgUrl, 'beyondwalls-advertiser-screen-bg.png')}
-                    >
-                      <Download className="w-4 h-4 mr-2" /> Download (1920x1080)
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      onClick={generateScreenBackgrounds} 
-                      disabled={generating}
-                    >
-                      <RefreshCw className="w-4 h-4" />
-                    </Button>
+                  
+                  {/* Main content */}
+                  <div className="text-center space-y-4 relative z-10">
+                    <h2 className="text-6xl font-bold text-white leading-tight">Launch Your Ad<br/>in 30 Minutes</h2>
+                    <p className="text-2xl text-white/80">Affordable Advertising Across UAE Premium Venues</p>
+                  </div>
+                  
+                  {/* Bottom text */}
+                  <div className="absolute bottom-4 left-0 right-0 text-center space-y-1">
+                    <p className="text-sm text-white/60">Incubated @ in5 Tech Dubai Internet City</p>
+                    <p className="text-base font-semibold text-white/70">A Linkzone Global Company</p>
                   </div>
                 </div>
-              )}
+                <Button 
+                  onClick={downloadAdvertiserBackground}
+                  className="w-full bg-gradient-to-r from-violet-600 to-indigo-600"
+                >
+                  <Download className="w-4 h-4 mr-2" /> Download Advertiser Screen (1920x1080)
+                </Button>
+              </div>
 
               {/* Venue Owner Background Preview */}
-              {venueBgUrl && (
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-slate-900">For Venue Owners</h3>
-                  <div className="bg-slate-100 rounded-xl p-4 border-2 border-emerald-200">
-                    <img src={venueBgUrl} alt="Venue Owner Background" className="w-full rounded-lg shadow-lg" />
+              <div className="space-y-3">
+                <h3 className="font-semibold text-slate-900">For Venue Owners</h3>
+                <div className="bg-gradient-to-br from-indigo-950 via-purple-900 to-violet-900 rounded-xl p-8 border-2 border-emerald-200 aspect-video flex items-center justify-center relative overflow-hidden">
+                  {/* Decorative circles */}
+                  <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+                  <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
+                  
+                  {/* Logo */}
+                  <div className="absolute top-4 left-4 flex items-center gap-3">
+                    <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                      <MonitorPlay className="w-6 h-6 text-white" />
+                    </div>
+                    <span className="font-bold text-2xl text-white">BeyondWalls</span>
                   </div>
-                  <div className="flex gap-2">
-                    <Button 
-                      variant="outline" 
-                      className="flex-1"
-                      onClick={() => downloadImage(venueBgUrl, 'beyondwalls-venue-owner-screen-bg.png')}
-                    >
-                      <Download className="w-4 h-4 mr-2" /> Download (1920x1080)
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      onClick={generateScreenBackgrounds} 
-                      disabled={generating}
-                    >
-                      <RefreshCw className="w-4 h-4" />
-                    </Button>
+                  
+                  {/* Main content */}
+                  <div className="text-center space-y-4 relative z-10">
+                    <h2 className="text-6xl font-bold text-white leading-tight">Turn Idle Screens<br/>Into Revenue</h2>
+                    <p className="text-2xl text-white/80">High-Traffic Venue? Earn 70% From Every Ad</p>
+                  </div>
+                  
+                  {/* Bottom text */}
+                  <div className="absolute bottom-4 left-0 right-0 text-center space-y-1">
+                    <p className="text-sm text-white/60">Incubated @ in5 Tech Dubai Internet City</p>
+                    <p className="text-base font-semibold text-white/70">A Linkzone Global Company</p>
                   </div>
                 </div>
-              )}
+                <Button 
+                  onClick={downloadVenueBackground}
+                  className="w-full bg-gradient-to-r from-violet-600 to-indigo-600"
+                >
+                  <Download className="w-4 h-4 mr-2" /> Download Venue Owner Screen (1920x1080)
+                </Button>
+              </div>
 
               <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
                 <h4 className="font-semibold text-blue-900 mb-2">Usage:</h4>
