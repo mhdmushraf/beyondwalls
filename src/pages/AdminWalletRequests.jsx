@@ -28,7 +28,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { NotificationService } from "@/components/notifications/NotificationService";
@@ -95,11 +94,6 @@ export default function AdminWalletRequests() {
         const currentBalance = targetUser?.wallet_balance || 0;
         const newBalance = currentBalance + selectedRequest.amount;
 
-        // Update user wallet balance
-        await base44.entities.User.update(selectedRequest.user_id, {
-          wallet_balance: newBalance
-        });
-
         // Create transaction record
         await base44.entities.Transaction.create({
           user_id: selectedRequest.user_id,
@@ -119,37 +113,41 @@ export default function AdminWalletRequests() {
           processed_at: new Date().toISOString()
         });
 
+        // Send top-up approval notification (in-app + email)
+        if (targetUser) {
+          await NotificationService.topUpApproved(targetUser, selectedRequest.amount);
+        }
+
         toast.success("Top-up approved successfully!");
       } else {
-        // Withdrawal - Create transaction record
-        const currentBalance = targetUser?.wallet_balance || 0;
-        const newBalance = Math.max(0, currentBalance - selectedRequest.amount);
+        // Withdrawal - Process via Stripe
+        if (!targetUser?.stripe_account_id) {
+          toast.error("User has not connected Stripe account");
+          setProcessing(false);
+          return;
+        }
 
-        // Update user wallet balance
-        await base44.entities.User.update(selectedRequest.user_id, {
-          wallet_balance: newBalance
-        });
-
-        // Create transaction record
-        await base44.entities.Transaction.create({
-          user_id: selectedRequest.user_id,
-          type: "withdrawal",
+        // Call Stripe payout function
+        const response = await base44.functions.invoke('createStripePayout', {
           amount: selectedRequest.amount,
-          balance_after: newBalance,
-          description: "Withdrawal (Admin approved)",
-          status: "completed",
-          payment_method: "bank_transfer"
+          user_id: selectedRequest.user_id
         });
 
-        // Update the request status
-        await base44.entities.WalletRequest.update(selectedRequest.id, {
-          status: "approved",
-          admin_notes: adminNotes || "Withdrawal approved",
-          processed_by: user.email,
-          processed_at: new Date().toISOString()
-        });
+        if (response.data.success) {
+          // Update the request status
+          await base44.entities.WalletRequest.update(selectedRequest.id, {
+            status: "approved",
+            admin_notes: adminNotes || `Processed via Stripe: ${response.data.transfer_id}`,
+            processed_by: user.email,
+            processed_at: new Date().toISOString()
+          });
 
-        toast.success("Withdrawal approved successfully!");
+          toast.success(`Withdrawal processed via Stripe! Transfer ID: ${response.data.transfer_id}`);
+        } else {
+          toast.error(response.data.error || "Stripe payout failed");
+          setProcessing(false);
+          return;
+        }
       }
 
       refetch();
@@ -158,7 +156,6 @@ export default function AdminWalletRequests() {
       setSelectedRequest(null);
       setAdminNotes("");
     } catch (error) {
-      console.error("Approval error:", error);
       toast.error(error.message || "Failed to process request");
     } finally {
       setProcessing(false);
@@ -348,7 +345,6 @@ BeyondWalls Team
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Review Request</DialogTitle>
-            <DialogDescription>Review and approve or reject wallet requests</DialogDescription>
           </DialogHeader>
           
           {selectedRequest && (
