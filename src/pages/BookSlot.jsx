@@ -574,7 +574,7 @@ www.beyondwalls.ae
       // Send notification email to admin
       try {
         await base44.integrations.Core.SendEmail({
-          to: "info@beyondwalls.ae",
+          to: "hello@beyondwalls.ae",
           subject: `🔔 New Campaign Pending Approval: ${formData.campaign_name}`,
           body: `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

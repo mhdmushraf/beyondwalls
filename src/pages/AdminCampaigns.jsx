@@ -75,6 +75,49 @@ export default function AdminCampaigns() {
       id: campaign.id,
       data: { status: "approved" }
     });
+    
+    // Send approval email
+    try {
+      const advertiser = users.find(u => u.email === campaign.advertiser_id);
+      await base44.integrations.Core.SendEmail({
+        to: campaign.advertiser_id,
+        subject: `✅ Campaign Approved & Live: ${campaign.name} | BeyondWalls`,
+        body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Digital Out-of-Home Advertising
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dear ${advertiser?.full_name || "Valued Advertiser"},
+
+🎉 Great news! Your campaign has been approved and is now LIVE!
+
+📋 CAMPAIGN DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 Campaign: ${campaign.name}
+📺 Screens: ${getScreenNames(campaign.screen_ids)}
+📅 Duration: ${campaign.start_date} to ${campaign.end_date}
+💰 Investment: AED ${campaign.total_cost?.toLocaleString() || 0}
+
+✨ YOUR AD IS NOW SHOWING
+━━━━━━━━━━━━━━━━━━━━━━━━━
+Your campaign is now live and reaching your target audience across ${campaign.screen_ids?.length || 0} screen${campaign.screen_ids?.length > 1 ? 's' : ''}.
+
+📊 Track performance in your dashboard:
+www.beyondwalls.ae/MyBookings
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Need help? Contact us at hello@beyondwalls.ae
+Phone: +971 55 614 0067
+
+BeyondWalls - Advertise Beyond Boundaries
+www.beyondwalls.ae
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        `.trim()
+      });
+    } catch (error) {
+      console.log("Approval email failed:", error);
+    }
   };
 
   const handleReject = async () => {
@@ -83,6 +126,46 @@ export default function AdminCampaigns() {
       id: selectedCampaign.id,
       data: { status: "rejected", rejection_reason: rejectionReason }
     });
+    
+    // Send rejection email
+    try {
+      const advertiser = users.find(u => u.email === selectedCampaign.advertiser_id);
+      await base44.integrations.Core.SendEmail({
+        to: selectedCampaign.advertiser_id,
+        subject: `❌ Campaign Not Approved: ${selectedCampaign.name} | BeyondWalls`,
+        body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Digital Out-of-Home Advertising
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dear ${advertiser?.full_name || "Valued Advertiser"},
+
+We regret to inform you that your campaign "${selectedCampaign.name}" was not approved.
+
+❌ REJECTION REASON
+━━━━━━━━━━━━━━━━━━━━━━━━━
+${rejectionReason}
+
+📞 NEXT STEPS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+If you have questions or would like to resubmit your campaign with modifications, please contact us:
+
+Email: hello@beyondwalls.ae
+Phone: +971 55 614 0067
+
+We're here to help you create successful campaigns!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BeyondWalls - Advertise Beyond Boundaries
+www.beyondwalls.ae
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        `.trim()
+      });
+    } catch (error) {
+      console.log("Rejection email failed:", error);
+    }
+    
     setShowRejectDialog(false);
     setRejectionReason("");
     setSelectedCampaign(null);

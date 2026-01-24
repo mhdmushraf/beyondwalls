@@ -382,6 +382,50 @@ BeyondWalls - Advertise Beyond Boundaries
       const advertiserData = await base44.entities.User.filter({ email: booking.advertiser_id });
       if (advertiserData.length > 0) {
         await NotificationService.campaignApproved(booking, advertiserData[0], screen, venue);
+        
+        // Also send direct email
+        try {
+          await base44.integrations.Core.SendEmail({
+            to: booking.advertiser_id,
+            subject: `✅ Campaign Approved & Live: ${booking.campaign_name} | BeyondWalls`,
+            body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Digital Out-of-Home Advertising
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dear ${advertiserData[0].full_name || "Valued Advertiser"},
+
+🎉 Great news! Your campaign has been approved and is now LIVE!
+
+📋 CAMPAIGN DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 Campaign: ${booking.campaign_name}
+📺 Screen: ${screen?.name || "N/A"}
+📍 Venue: ${venue?.name || "N/A"} - ${venue?.city || "N/A"}
+🎰 Slot: #${booking.slot_number}
+📅 Duration: ${booking.start_date} to ${booking.end_date}
+💰 Investment: AED ${totalCost.toLocaleString()}
+
+✨ YOUR AD IS NOW SHOWING
+━━━━━━━━━━━━━━━━━━━━━━━━━
+Your campaign is now live and reaching your target audience. Track your campaign performance in real-time from your dashboard.
+
+📊 Monitor your campaign at:
+www.beyondwalls.ae/MyBookings
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Need help? Contact us at hello@beyondwalls.ae
+Phone: +971 55 614 0067
+
+BeyondWalls - Advertise Beyond Boundaries
+www.beyondwalls.ae
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            `.trim()
+          });
+        } catch (emailErr) {
+          console.log("Approval email failed:", emailErr);
+        }
       }
 
       // Send new booking notification to venue owner
@@ -476,6 +520,48 @@ BeyondWalls - Advertise Beyond Boundaries
       const advertiserData = await base44.entities.User.filter({ email: booking.advertiser_id });
       if (advertiserData.length > 0) {
         await NotificationService.campaignRejected(booking, advertiserData[0], rejectionReason);
+        
+        // Also send direct email
+        try {
+          await base44.integrations.Core.SendEmail({
+            to: booking.advertiser_id,
+            subject: `❌ Campaign Not Approved: ${booking.campaign_name} | BeyondWalls`,
+            body: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        BEYONDWALLS
+   Digital Out-of-Home Advertising
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dear ${advertiserData[0].full_name || "Valued Advertiser"},
+
+We regret to inform you that your campaign "${booking.campaign_name}" was not approved for the following reason:
+
+❌ REJECTION REASON
+━━━━━━━━━━━━━━━━━━━━━━━━━
+${rejectionReason}
+
+💰 REFUND PROCESSED
+━━━━━━━━━━━━━━━━━━━━━━━━━
+The full amount of AED ${booking.total_cost?.toLocaleString()} has been refunded to your wallet.
+
+📞 NEXT STEPS
+━━━━━━━━━━━━━━━━━━━━━━━━━
+If you have questions or would like to resubmit your campaign with modifications, please contact us:
+
+Email: hello@beyondwalls.ae
+Phone: +971 55 614 0067
+
+We're here to help you create successful campaigns!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BeyondWalls - Advertise Beyond Boundaries
+www.beyondwalls.ae
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            `.trim()
+          });
+        } catch (emailErr) {
+          console.log("Rejection email failed:", emailErr);
+        }
       }
 
       toast.success("Booking rejected and refund processed");
