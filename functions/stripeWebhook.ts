@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
       });
 
       // Get user first to calculate balance_after
-      const users = await base44.asServiceRole.users.list();
+      const users = await base44.asServiceRole.entities.User.list();
       const user = users.find(u => u.email === metadata.user_id);
       
       if (!user) {
@@ -52,6 +52,12 @@ Deno.serve(async (req) => {
       const currentBalance = user.wallet_balance || 0;
       const topUpAmount = parseFloat(metadata.amount);
       const newBalance = currentBalance + topUpAmount;
+
+      console.log('💵 Balance calculation:', { 
+        currentBalance, 
+        topUpAmount, 
+        newBalance 
+      });
 
       // Create transaction record with correct balance_after
       const transaction = await base44.asServiceRole.entities.Transaction.create({
@@ -65,15 +71,16 @@ Deno.serve(async (req) => {
         payment_method: session.payment_method_types?.[0] || 'card'
       });
 
-      console.log('✅ Transaction created:', transaction.id);
+      console.log('✅ Transaction created:', transaction.id, 'balance_after:', newBalance);
 
-      // Update user wallet balance using the users API
-      await base44.asServiceRole.users.update(user.id, {
+      // Update user wallet balance
+      await base44.asServiceRole.entities.User.update(user.id, {
         wallet_balance: newBalance
       });
 
-      console.log('✅ Wallet updated:', { 
-        user: metadata.user_id, 
+      console.log('✅ User wallet updated:', { 
+        userId: user.id,
+        email: metadata.user_id, 
         previousBalance: currentBalance,
         topUpAmount: topUpAmount,
         newBalance: newBalance 
