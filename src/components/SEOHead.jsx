@@ -165,14 +165,11 @@ export default function SEOHead({
     if (noIndex) setMetaTag("robots", "noindex, nofollow");
     else setMetaTag("robots", "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1");
 
-    // Open Graph tags (Facebook, LinkedIn, WhatsApp)
+    // Open Graph tags
     setMetaTag("og:title", title, true);
-    setMetaTag("og:description", description || title, true);
+    setMetaTag("og:description", description, true);
     setMetaTag("og:url", finalCanonical, true);
     setMetaTag("og:image", finalOgImage, true);
-    setMetaTag("og:image:width", "1200", true);
-    setMetaTag("og:image:height", "630", true);
-    setMetaTag("og:image:alt", title, true);
     setMetaTag("og:type", article ? "article" : "website", true);
     setMetaTag("og:site_name", "BeyondWalls", true);
     setMetaTag("og:locale", "en_AE", true);
@@ -182,14 +179,8 @@ export default function SEOHead({
     setMetaTag("twitter:site", "@BeyondWallsae");
     setMetaTag("twitter:creator", "@BeyondWallsae");
     setMetaTag("twitter:title", title);
-    setMetaTag("twitter:description", description || title);
+    setMetaTag("twitter:description", description);
     setMetaTag("twitter:image", finalOgImage);
-    setMetaTag("twitter:image:alt", title);
-    
-    // Additional social media tags
-    setMetaTag("fb:app_id", "BeyondWallsUAE", true);
-    setMetaTag("twitter:domain", "beyondwalls.ae");
-    setMetaTag("twitter:url", finalCanonical);
 
     // Article specific tags
     if (article) {
