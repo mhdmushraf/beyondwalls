@@ -248,41 +248,33 @@ export default function Wallet() {
       return;
     }
 
-    // Check if user has Stripe connected
-    if (!user?.stripe_account_id) {
-      toast.error("Please connect your Stripe account first in Payout Settings");
-      setShowWithdraw(false);
-      setShowPayoutSettings(true);
-      return;
-    }
-
     setLoading(true);
     try {
-      // Create withdrawal request for admin approval
-      await base44.entities.WalletRequest.create({
-        user_id: user.email,
-        user_name: user.full_name,
-        request_type: "withdrawal",
-        amount: withdrawAmount,
-        request_date: new Date().toISOString(),
-        status: "pending"
+      // Call Stripe payout function
+      const response = await base44.functions.invoke('createStripePayout', {
+        amount: withdrawAmount
       });
 
-      await base44.entities.AdminNotification.create({
-        type: "withdrawal_request",
-        title: "New Withdrawal Request",
-        message: `${user.full_name || user.email} requested withdrawal of AED ${withdrawAmount}`,
-        reference_id: user.email,
-        reference_type: "WalletRequest"
-      });
+      if (response.data.requiresSetup) {
+        // User needs to connect Stripe account first
+        toast.error(response.data.error);
+        setShowWithdraw(false);
+        setShowPayoutSettings(true);
+        return;
+      }
 
-      refetch();
-      refetchRequests();
-      toast.success("Withdrawal request submitted! Admin will review and process via Stripe.");
-      setShowWithdraw(false);
-      setAmount("");
+      if (response.data.success) {
+        refetch();
+        refetchRequests();
+        loadUser();
+        toast.success(`Withdrawal of AED ${withdrawAmount} processed! Funds will arrive in 2-3 business days.`);
+        setShowWithdraw(false);
+        setAmount("");
+      } else {
+        toast.error(response.data.error || "Withdrawal failed");
+      }
     } catch (error) {
-      toast.error("Failed to submit request");
+      toast.error(error.message || "Failed to process withdrawal");
     } finally {
       setLoading(false);
     }
@@ -615,9 +607,9 @@ export default function Wallet() {
             <DialogTitle>Withdrawal Request</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-700">
-                <strong>Withdrawal Process:</strong> Submit your request for admin review. Once approved, funds will be transferred via Stripe to your connected bank account within 2-3 business days.
+            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+              <p className="text-sm text-emerald-700">
+                <strong>Instant Withdrawal via Stripe:</strong> Funds will be transferred directly to your connected bank account within 2-3 business days.
               </p>
             </div>
 
@@ -666,10 +658,10 @@ export default function Wallet() {
             <Button 
               onClick={handleWithdraw}
               disabled={loading || !amount || parseFloat(amount) > eligibleBalance || parseFloat(amount) < 100}
-              className="bg-gradient-to-r from-violet-600 to-indigo-600"
+              className="bg-gradient-to-r from-emerald-600 to-green-600"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Download className="w-4 h-4 mr-2" />}
-              {loading ? "Submitting..." : "Submit Request"}
+              {loading ? "Processing..." : "Withdraw via Stripe"}
             </Button>
           </DialogFooter>
         </DialogContent>
