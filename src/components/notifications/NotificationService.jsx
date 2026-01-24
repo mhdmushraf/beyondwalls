@@ -1,4 +1,5 @@
 import { base44 } from "@/api/base44Client";
+import { EmailTemplates } from "./EmailTemplates";
 
 // Notification Service - handles creating notifications and sending emails
 export const NotificationService = {
@@ -371,35 +372,19 @@ www.beyondwalls.ae
   async newUserRegistration(user) {
     // Send notification to admin at hello@beyondwalls.ae
     try {
+      const adminEmail = EmailTemplates.adminNewUser(
+        user.full_name || "N/A",
+        user.email,
+        user.phone,
+        user.account_type || "individual",
+        user.user_role || "advertiser",
+        user.company_name
+      );
+      
       await base44.integrations.Core.SendEmail({
         to: "hello@beyondwalls.ae",
         subject: `🆕 New User Registration: ${user.full_name} | BeyondWalls`,
-        body: `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        BEYONDWALLS ADMIN
-   New User Registration Alert
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-A new user has registered and is awaiting approval.
-
-👤 USER DETAILS
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Name: ${user.full_name || "N/A"}
-Email: ${user.email}
-Phone: ${user.phone || "N/A"}
-Account Type: ${user.account_type || "Individual"}
-User Role: ${user.user_role || "Advertiser"}
-${user.company_name ? `Company: ${user.company_name}` : ''}
-
-📅 Registration Date: ${new Date().toLocaleDateString()}
-
-⚠️ ACTION REQUIRED: Please review and approve/reject this user from the Admin Dashboard.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Log in to admin panel to review
-www.beyondwalls.ae
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        `.trim()
+        body: adminEmail
       });
     } catch (e) {
       console.error("Failed to send new user registration email to admin", e);
@@ -407,55 +392,15 @@ www.beyondwalls.ae
 
     // Send welcome email to user
     try {
+      const welcomeEmail = EmailTemplates.welcome(
+        user.full_name || "Valued User",
+        user.user_role || "advertiser"
+      );
+      
       await base44.integrations.Core.SendEmail({
         to: user.email,
         subject: `🎉 Welcome to BeyondWalls!`,
-        body: `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        BEYONDWALLS
-   Welcome to the Future of Advertising!
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Dear ${user.full_name || "Valued User"},
-
-Welcome to BeyondWalls! We're thrilled to have you join UAE's #1 Digital Out-of-Home advertising platform.
-
-🎯 WHAT'S NEXT?
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Your account is currently under review. Our team will verify your information and approve your account within 24-48 hours.
-
-You'll receive an email notification once your account is approved.
-
-💡 WHILE YOU WAIT
-━━━━━━━━━━━━━━━━━━━━━━━━━
-${user.user_role === "advertiser" ? `
-• Explore our 500+ premium screens across UAE
-• Plan your first campaign
-• Check out our advertising tips and best practices
-` : `
-• Learn about our 70% revenue share model
-• Prepare your venue documentation
-• Explore venue owner success stories
-`}
-
-🌟 WHY BEYONDWALLS?
-━━━━━━━━━━━━━━━━━━━━━━━━━
-✓ Self-serve platform - Launch in 30 minutes
-✓ No long-term contracts
-✓ Real-time analytics & reporting
-✓ AI-powered campaign optimization
-✓ 24/7 customer support
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Questions? We're here to help!
-Email: info@beyondwalls.ae
-Phone: +971 55 614 0067
-WhatsApp: +971 55 614 0067
-
-BeyondWalls - Advertise Beyond Boundaries
-www.beyondwalls.ae
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        `.trim()
+        body: welcomeEmail
       });
     } catch (e) {
       console.error("Failed to send welcome email to user", e);
