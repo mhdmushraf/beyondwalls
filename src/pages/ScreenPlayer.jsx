@@ -191,7 +191,8 @@ export default function ScreenPlayer() {
   const { data: platformSettings = [] } = useQuery({
     queryKey: ["platform-settings"],
     queryFn: () => base44.entities.PlatformSettings.list(),
-    enabled: authenticated
+    enabled: authenticated,
+    staleTime: 60000 // Cache for 1 minute
   });
 
   // Check for remote commands (skip/replay from admin)
@@ -228,7 +229,7 @@ export default function ScreenPlayer() {
 
   }, [screenData]);
 
-  const defaultContentUrl = platformSettings.find(s => s.setting_key === "default_screen_content_url")?.setting_value || "";
+  const defaultContentUrl = platformSettings.find(s => s.setting_key === "default_screen_content_url")?.setting_value || "https://images.unsplash.com/photo-1557683316-973673baf926?w=1920";
   const defaultContentType = platformSettings.find(s => s.setting_key === "default_screen_content_type")?.setting_value || "image";
 
   // Build owner slots
@@ -261,17 +262,14 @@ export default function ScreenPlayer() {
       return aSlot - bSlot;
     });
 
-    // Get default ad
-    let defaultAd = null;
-    if (defaultContentUrl) {
-      defaultAd = { 
-        id: "default-beyondwalls", 
-        name: "BeyondWalls", 
-        creative_url: defaultContentUrl, 
-        creative_type: defaultContentType || "image", 
-        type: "default" 
-      };
-    }
+    // Get default BeyondWalls ad - always include it
+    const defaultAd = { 
+      id: "default-beyondwalls", 
+      name: "BeyondWalls Default", 
+      creative_url: defaultContentUrl, 
+      creative_type: defaultContentType || "image", 
+      type: "default" 
+    };
 
     // Build rotation: Ad1, Owner1, Ad2, Owner2, Ad3, Owner3, Ad4, Default, Ad5
     let adIdx = 0;
@@ -289,9 +287,9 @@ export default function ScreenPlayer() {
     if (adIdx < sortedAds.length) playlist.push(sortedAds[adIdx++]);
     if (ownerIdx < ownerSlots.length) playlist.push(ownerSlots[ownerIdx++]);
 
-    // Slot 4 + BeyondWalls default ad
+    // Slot 4 + BeyondWalls default ad (always include)
     if (adIdx < sortedAds.length) playlist.push(sortedAds[adIdx++]);
-    if (defaultAd) playlist.push(defaultAd);
+    playlist.push(defaultAd); // Always show BeyondWalls default
 
     // Slot 5
     if (adIdx < sortedAds.length) playlist.push(sortedAds[adIdx++]);
@@ -301,10 +299,10 @@ export default function ScreenPlayer() {
       playlist.push(sortedAds[adIdx++]);
     }
 
-    // Fallback: if playlist is empty, show default ad or owner slots
+    // Fallback: if playlist is empty, show default ad and/or owner slots
     if (playlist.length === 0) {
-      if (defaultAd) return [defaultAd];
-      if (ownerSlots.length > 0) return [...ownerSlots];
+      if (ownerSlots.length > 0) return [...ownerSlots, defaultAd];
+      return [defaultAd]; // Always show at least BeyondWalls default
     }
 
     return playlist;
@@ -525,9 +523,11 @@ export default function ScreenPlayer() {
         setLastHeartbeat(new Date());
       } catch (e) {
         console.error("Heartbeat failed:", e);
-        setConnectionStatus("reconnecting");
-        // Retry after 5 seconds
-        setTimeout(sendHeartbeat, 5000);
+        // Only show reconnecting if we haven't had a successful heartbeat in 30 seconds
+        const timeSinceLastSuccess = lastHeartbeat ? Date.now() - lastHeartbeat.getTime() : 0;
+        if (timeSinceLastSuccess > 30000) {
+          setConnectionStatus("reconnecting");
+        }
       }
     };
 
@@ -686,8 +686,8 @@ export default function ScreenPlayer() {
   // Player Screen
   return (
     <div ref={containerRef} className="min-h-screen bg-black relative overflow-hidden">
-      {/* Connection Status Indicator */}
-      {connectionStatus !== "connected" && (
+      {/* Connection Status Indicator - only show if truly offline or reconnecting after failed heartbeat */}
+      {(connectionStatus === "offline" || (connectionStatus === "reconnecting" && Date.now() - (lastHeartbeat?.getTime() || 0) > 30000)) && (
         <div className={`absolute top-4 left-1/2 -translate-x-1/2 z-[100] px-4 py-2 rounded-full flex items-center gap-2 ${connectionStatus === "offline" ? "bg-red-500" : "bg-amber-500"}`}>
           {connectionStatus === "offline" ? <WifiOff className="w-4 h-4 text-white" /> : <RefreshCw className="w-4 h-4 text-white animate-spin" />}
           <span className="text-white text-sm font-medium">{connectionStatus === "offline" ? "No Internet Connection" : "Reconnecting..."}</span>
