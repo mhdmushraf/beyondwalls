@@ -787,14 +787,18 @@ www.beyondwalls.ae
                   <p className="text-slate-500">Advertiser</p>
                   <p className="font-medium">{selectedBooking.advertiser_id}</p>
                 </div>
-                <div>
-                  <p className="text-slate-500">Screen</p>
-                  <p className="font-medium">{getScreenInfo(selectedBooking.screen_id).screen?.name}</p>
-                </div>
-                <div>
-                  <p className="text-slate-500">Slot</p>
-                  <p className="font-medium">#{selectedBooking.slot_number}</p>
-                </div>
+                {selectedBooking.source !== "campaign" && (
+                  <>
+                    <div>
+                      <p className="text-slate-500">Screen</p>
+                      <p className="font-medium">{getScreenInfo(selectedBooking.screen_id).screen?.name}</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-500">Slot</p>
+                      <p className="font-medium">#{selectedBooking.slot_number}</p>
+                    </div>
+                  </>
+                )}
                 <div>
                   <p className="text-slate-500">Duration</p>
                   <p className="font-medium">{selectedBooking.start_date} - {selectedBooking.end_date}</p>

@@ -103,16 +103,30 @@ export default function BookSlot() {
 
   const { data: existingBookings = [] } = useQuery({
     queryKey: ["screen-bookings", selectedScreen?.id],
-    queryFn: () => base44.entities.AdSlotBooking.filter({ 
-      screen_id: selectedScreen?.id, 
-      status: "active" 
-    }),
+    queryFn: async () => {
+      if (!selectedScreen?.id) return [];
+      // Get both active AND pending bookings to block those slots
+      const active = await base44.entities.AdSlotBooking.filter({ 
+        screen_id: selectedScreen.id, 
+        status: "active" 
+      });
+      const pending = await base44.entities.AdSlotBooking.filter({ 
+        screen_id: selectedScreen.id, 
+        status: "pending" 
+      });
+      return [...active, ...pending];
+    },
     enabled: !!selectedScreen
   });
 
   const { data: allBookings = [] } = useQuery({
     queryKey: ["all-bookings"],
-    queryFn: () => base44.entities.AdSlotBooking.filter({ status: "active" })
+    queryFn: async () => {
+      // Get both active AND pending to show accurate availability
+      const active = await base44.entities.AdSlotBooking.filter({ status: "active" });
+      const pending = await base44.entities.AdSlotBooking.filter({ status: "pending" });
+      return [...active, ...pending];
+    }
   });
 
   const { data: pricingRules = [] } = useQuery({
