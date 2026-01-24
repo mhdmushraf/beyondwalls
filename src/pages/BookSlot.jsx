@@ -90,7 +90,10 @@ export default function BookSlot() {
   // All hooks must be called before any conditional returns
   const { data: screens = [] } = useQuery({
     queryKey: ["available-screens"],
-    queryFn: () => base44.entities.Screen.filter({ status: "online" })
+    queryFn: async () => {
+      const allScreens = await base44.entities.Screen.filter({ status: "online" });
+      return allScreens.filter(s => s.is_public !== false);
+    }
   });
 
   const { data: venues = [] } = useQuery({
@@ -225,7 +228,9 @@ export default function BookSlot() {
 
     const totalMultiplier = demandMultiplier * timeMultiplier * dayMultiplier * seasonMultiplier * venueMultiplier * customMultiplier;
     const dynamicPrice = Math.round(basePrice * totalMultiplier);
-    const totalCost = dynamicPrice * formData.weeks;
+    // Monthly pricing: calculate based on months not weeks
+    const months = Math.ceil(formData.weeks / 4);
+    const totalCost = dynamicPrice * months;
 
     return { dynamicPrice, totalCost, multiplier: totalMultiplier, basePrice };
   }, [selectedScreen, formData.start_date, formData.weeks, allBookings, venues, pricingRules]);
@@ -384,7 +389,7 @@ The ads will be displayed on digital screens in ${venue?.type || "public"} venue
           startDate: format(formData.start_date, "yyyy-MM-dd"),
           endDate: format(endDate, "yyyy-MM-dd"),
           weeks: formData.weeks,
-          totalCost: price * formData.weeks,
+          totalCost: price * Math.ceil(formData.weeks / 4),
           headline: formData.headline,
           description: formData.description
         };
@@ -802,13 +807,13 @@ Please review and approve/reject this campaign in the admin dashboard.
                     const venue = venues.find(v => v.id === s.venue_id);
                     return (
                       <Badge key={s.id} variant="outline" className="bg-white">
-                        {s.name} • AED {s.slot_price}/wk
+                        {s.name} • AED {s.slot_price}/mo
                       </Badge>
                     );
                   })}
                 </div>
                 <p className="text-sm text-violet-600 mt-2">
-                  Total: AED {selectedScreens.reduce((sum, s) => sum + (s.slot_price || 100), 0) * formData.weeks}/campaign
+                  Total: AED {selectedScreens.reduce((sum, s) => sum + (s.slot_price || 100), 0) * Math.ceil(formData.weeks / 4)}/campaign
                 </p>
               </CardContent>
             </Card>
@@ -1155,7 +1160,7 @@ Please review and approve/reject this campaign in the admin dashboard.
                   <div>
                     <p className="text-lg font-bold">Total Cost</p>
                     <p className="text-sm text-slate-500">
-                      AED {dynamicPrice || 0}/week × {formData.weeks} weeks
+                      AED {dynamicPrice || 0}/month × {Math.ceil(formData.weeks / 4)} month{Math.ceil(formData.weeks / 4) > 1 ? "s" : ""}
                       {calculateDynamicPrice.multiplier !== 1 && (
                         <span className={calculateDynamicPrice.multiplier > 1 ? "text-rose-500 ml-1" : "text-emerald-500 ml-1"}>
                           ({calculateDynamicPrice.multiplier > 1 ? "+" : ""}{((calculateDynamicPrice.multiplier - 1) * 100).toFixed(0)}% dynamic pricing)
