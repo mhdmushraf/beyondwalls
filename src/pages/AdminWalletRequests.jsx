@@ -86,14 +86,6 @@ export default function AdminWalletRequests() {
     setProcessing(true);
 
     try {
-      // Update the request status
-      await base44.entities.WalletRequest.update(selectedRequest.id, {
-        status: "approved",
-        admin_notes: adminNotes,
-        processed_by: user.email,
-        processed_at: new Date().toISOString()
-      });
-
       // Get user data
       const targetUser = users.find(u => u.email === selectedRequest.user_id);
       
@@ -113,39 +105,58 @@ export default function AdminWalletRequests() {
           payment_method: "bank_transfer"
         });
 
+        // Update the request status
+        await base44.entities.WalletRequest.update(selectedRequest.id, {
+          status: "approved",
+          admin_notes: adminNotes,
+          processed_by: user.email,
+          processed_at: new Date().toISOString()
+        });
+
         // Send top-up approval notification (in-app + email)
         if (targetUser) {
           await NotificationService.topUpApproved(targetUser, selectedRequest.amount);
         }
-      } else {
-        // Withdrawal - deduct from wallet
-        const currentBalance = targetUser?.wallet_balance || 0;
-        const newBalance = currentBalance - selectedRequest.amount;
 
-        // Create transaction record
-        await base44.entities.Transaction.create({
-          user_id: selectedRequest.user_id,
-          type: "withdrawal",
+        toast.success("Top-up approved successfully!");
+      } else {
+        // Withdrawal - Process via Stripe
+        if (!targetUser?.stripe_account_id) {
+          toast.error("User has not connected Stripe account");
+          setProcessing(false);
+          return;
+        }
+
+        // Call Stripe payout function
+        const response = await base44.functions.invoke('createStripePayout', {
           amount: selectedRequest.amount,
-          balance_after: newBalance,
-          description: "Withdrawal to bank (Admin approved)",
-          status: "completed"
+          user_id: selectedRequest.user_id
         });
 
-        // Send payout completed notification (in-app + email)
-        if (targetUser) {
-          await NotificationService.payoutCompleted(targetUser, selectedRequest.amount, selectedRequest.id);
+        if (response.data.success) {
+          // Update the request status
+          await base44.entities.WalletRequest.update(selectedRequest.id, {
+            status: "approved",
+            admin_notes: adminNotes || `Processed via Stripe: ${response.data.transfer_id}`,
+            processed_by: user.email,
+            processed_at: new Date().toISOString()
+          });
+
+          toast.success(`Withdrawal processed via Stripe! Transfer ID: ${response.data.transfer_id}`);
+        } else {
+          toast.error(response.data.error || "Stripe payout failed");
+          setProcessing(false);
+          return;
         }
       }
 
-      toast.success(`Request approved successfully!`);
       refetch();
       queryClient.invalidateQueries({ queryKey: ["all-users"] });
       setShowDialog(false);
       setSelectedRequest(null);
       setAdminNotes("");
     } catch (error) {
-      toast.error("Failed to process request");
+      toast.error(error.message || "Failed to process request");
     } finally {
       setProcessing(false);
     }

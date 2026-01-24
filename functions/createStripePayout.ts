@@ -6,13 +6,27 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY"));
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
+    const adminUser = await base44.auth.me();
 
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    // Check if caller is admin
+    const isAdmin = adminUser?.user_role === "admin" || adminUser?.role === "admin";
+    if (!isAdmin) {
+      return Response.json({ error: 'Unauthorized - Admin only' }, { status: 401 });
     }
 
-    const { amount } = await req.json();
+    const { amount, user_id } = await req.json();
+
+    if (!user_id) {
+      return Response.json({ error: 'user_id is required' }, { status: 400 });
+    }
+
+    // Get target user data using service role
+    const allUsers = await base44.asServiceRole.entities.User.list();
+    const user = allUsers.find(u => u.email === user_id);
+
+    if (!user) {
+      return Response.json({ error: 'User not found' }, { status: 404 });
+    }
 
     // Validate amount
     if (!amount || amount < 100) {
@@ -48,11 +62,10 @@ Deno.serve(async (req) => {
       }
     });
 
-    // Create transaction record
+    // Create transaction record using service role
     const newBalance = (user.wallet_balance || 0) - amount;
-    const newEligibleBalance = (user.eligible_balance || 0) - amount;
 
-    await base44.entities.Transaction.create({
+    await base44.asServiceRole.entities.Transaction.create({
       user_id: user.email,
       type: "withdrawal",
       amount: -amount,
@@ -60,13 +73,7 @@ Deno.serve(async (req) => {
       description: `Stripe payout - ${transfer.id}`,
       status: "completed",
       reference_id: transfer.id,
-      payment_method: "bank_transfer"
-    });
-
-    // Update user balances
-    await base44.auth.updateMe({
-      wallet_balance: newBalance,
-      eligible_balance: newEligibleBalance
+      payment_method: "stripe"
     });
 
     // Send confirmation email
@@ -94,8 +101,7 @@ Deno.serve(async (req) => {
       success: true,
       transfer_id: transfer.id,
       amount,
-      new_balance: newBalance,
-      new_eligible_balance: newEligibleBalance
+      new_balance: newBalance
     });
 
   } catch (error) {
