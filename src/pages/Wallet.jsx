@@ -174,8 +174,8 @@ export default function Wallet() {
     .filter(t => t.type === "refund" && t.status === "completed")
     .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
 
-  // Always calculate from transactions for accuracy
-  const calculatedBalance = totalTopUps + totalEarnings + totalRefunds - totalSpent - totalWithdrawals;
+  // Use user's wallet_balance as source of truth, fallback to calculation
+  const calculatedBalance = user?.wallet_balance ?? (totalTopUps + totalEarnings + totalRefunds - totalSpent - totalWithdrawals);
 
   const handleTopUp = async () => {
     const topUpAmount = parseFloat(amount);
