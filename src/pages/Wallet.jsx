@@ -86,8 +86,6 @@ export default function Wallet() {
     enabled: !!user?.email && screens.length > 0
   });
 
-  const isVenueOwner = user?.is_venue_owner || screens.length > 0;
-
   // Calculate eligible balance (only from completed bookings)
   const calculateEligibleBalance = () => {
     if (!isVenueOwner || bookings.length === 0) return 0;
@@ -103,6 +101,8 @@ export default function Wallet() {
 
   const eligibleBalance = isVenueOwner ? calculateEligibleBalance() : 0;
   const lockedBalance = isVenueOwner ? (totalEarnings - eligibleBalance) : 0;
+
+  const isVenueOwner = user?.is_venue_owner || screens.length > 0;
 
   useEffect(() => {
     loadUser();
