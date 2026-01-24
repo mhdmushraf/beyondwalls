@@ -32,7 +32,7 @@ import { toast } from "sonner";
 export default function AdminCampaigns() {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("pending_approval");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const [showRejectDialog, setShowRejectDialog] = useState(false);
@@ -174,7 +174,15 @@ www.beyondwalls.ae
   const filteredCampaigns = campaigns.filter(campaign => {
     const matchesSearch = campaign.name?.toLowerCase().includes(search.toLowerCase()) ||
                          campaign.advertiser_id?.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus = statusFilter === "all" || campaign.status === statusFilter;
+    // Handle both "pending" and "pending_approval" statuses
+    let matchesStatus = false;
+    if (statusFilter === "all") {
+      matchesStatus = true;
+    } else if (statusFilter === "pending_approval") {
+      matchesStatus = campaign.status === "pending_approval" || campaign.status === "pending";
+    } else {
+      matchesStatus = campaign.status === statusFilter;
+    }
     return matchesSearch && matchesStatus;
   });
 
@@ -290,7 +298,7 @@ www.beyondwalls.ae
                           <Button variant="ghost" size="icon" onClick={() => setSelectedCampaign(campaign)}>
                             <Eye className="w-4 h-4" />
                           </Button>
-                          {campaign.status === "pending_approval" && (
+                          {(campaign.status === "pending_approval" || campaign.status === "pending") && (
                             <>
                               <Button 
                                 variant="ghost" 
@@ -380,7 +388,7 @@ www.beyondwalls.ae
                   )}
                 </div>
               )}
-              {selectedCampaign.status === "pending_approval" && (
+              {(selectedCampaign.status === "pending_approval" || selectedCampaign.status === "pending") && (
                 <DialogFooter>
                   <Button 
                     variant="outline"
