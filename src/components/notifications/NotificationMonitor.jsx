@@ -33,7 +33,7 @@ export default function NotificationMonitor({ user }) {
     queryKey: ["notification-preferences", user?.email],
     queryFn: async () => {
       const prefs = await base44.entities.NotificationPreference.filter({ user_id: user?.email });
-      return prefs[0];
+      return prefs[0] || null;
     },
     enabled: !!user?.email
   });
