@@ -165,8 +165,6 @@ export default function Wallet() {
     }
   };
 
-  const pendingRequests = walletRequests.filter(r => r.status === "pending");
-
   // Calculate all values from transactions for accuracy
   // Handle both positive and negative amounts in transactions
   const totalTopUps = transactions
@@ -192,6 +190,8 @@ export default function Wallet() {
 
   // Use user's wallet_balance as source of truth, fallback to calculation
   const calculatedBalance = user?.wallet_balance ?? (totalTopUps + totalEarnings + totalRefunds - totalSpent - totalWithdrawals);
+
+  const pendingRequests = walletRequests.filter(r => r.status === "pending");
 
   const handleTopUp = async () => {
     const topUpAmount = parseFloat(amount);
