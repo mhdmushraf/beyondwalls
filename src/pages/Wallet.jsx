@@ -86,6 +86,31 @@ export default function Wallet() {
     enabled: !!user?.email && screens.length > 0
   });
 
+  // Calculate all values from transactions first
+  const totalTopUps = transactions
+    .filter(t => t.type === "top_up" && t.status === "completed")
+    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
+
+  const totalEarnings = transactions
+    .filter(t => t.type === "earning" && t.status === "completed")
+    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
+  
+  const totalSpent = transactions
+    .filter(t => t.type === "ad_spend" && t.status === "completed")
+    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
+
+  const totalWithdrawals = transactions
+    .filter(t => t.type === "withdrawal" && t.status === "completed")
+    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
+
+  const totalRefunds = transactions
+    .filter(t => t.type === "refund" && t.status === "completed")
+    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
+
+  const calculatedBalance = user?.wallet_balance ?? (totalTopUps + totalEarnings + totalRefunds - totalSpent - totalWithdrawals);
+  
+  const isVenueOwner = user?.is_venue_owner || screens.length > 0;
+
   // Calculate eligible balance (only from completed bookings)
   const calculateEligibleBalance = () => {
     if (!isVenueOwner || bookings.length === 0) return 0;
@@ -102,7 +127,7 @@ export default function Wallet() {
   const eligibleBalance = isVenueOwner ? calculateEligibleBalance() : 0;
   const lockedBalance = isVenueOwner ? (totalEarnings - eligibleBalance) : 0;
 
-  const isVenueOwner = user?.is_venue_owner || screens.length > 0;
+  const pendingRequests = walletRequests.filter(r => r.status === "pending");
 
   useEffect(() => {
     loadUser();
