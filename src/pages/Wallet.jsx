@@ -190,34 +190,6 @@ export default function Wallet() {
     }
   };
 
-  // Calculate all values from transactions for accuracy
-  // Handle both positive and negative amounts in transactions
-  const totalTopUps = transactions
-    .filter(t => t.type === "top_up" && t.status === "completed")
-    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
-
-  const totalEarnings = transactions
-    .filter(t => t.type === "earning" && t.status === "completed")
-    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
-  
-  // Ad spend can be stored as negative, so take absolute value
-  const totalSpent = transactions
-    .filter(t => t.type === "ad_spend" && t.status === "completed")
-    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
-
-  const totalWithdrawals = transactions
-    .filter(t => t.type === "withdrawal" && t.status === "completed")
-    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
-
-  const totalRefunds = transactions
-    .filter(t => t.type === "refund" && t.status === "completed")
-    .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
-
-  // Use user's wallet_balance as source of truth, fallback to calculation
-  const calculatedBalance = user?.wallet_balance ?? (totalTopUps + totalEarnings + totalRefunds - totalSpent - totalWithdrawals);
-
-  const pendingRequests = walletRequests.filter(r => r.status === "pending");
-
   const handleTopUp = async () => {
     const topUpAmount = parseFloat(amount);
     if (!topUpAmount || topUpAmount < 50) {
