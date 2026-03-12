@@ -390,39 +390,39 @@ export default function Settings() {
          </TabsContent>
 
         <TabsContent value="notifications" className="space-y-6">
-          <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-xl font-bold">
-                <Bell className="w-5 h-5 text-violet-600" />
-                Notification Preferences
-              </CardTitle>
-              <CardDescription>Choose what notifications you receive</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-                <div>
-                  <p className="font-medium">Campaign Updates</p>
-                  <p className="text-sm text-slate-500">Status changes and approvals</p>
-                </div>
-                <Switch defaultChecked />
-              </div>
-              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-                <div>
-                  <p className="font-medium">Wallet Alerts</p>
-                  <p className="text-sm text-slate-500">Low balance and transaction alerts</p>
-                </div>
-                <Switch defaultChecked />
-              </div>
-              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-                <div>
-                  <p className="font-medium">Marketing Emails</p>
-                  <p className="text-sm text-slate-500">News and promotional offers</p>
-                </div>
-                <Switch />
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+           <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl">
+             <CardHeader>
+               <CardTitle className="flex items-center gap-2 text-xl font-bold">
+                 <Bell className="w-5 h-5 text-violet-600" />
+                 Notification Preferences
+               </CardTitle>
+               <CardDescription>Choose what notifications you receive</CardDescription>
+             </CardHeader>
+             <CardContent className="space-y-4">
+               <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                 <div>
+                   <p className="font-medium select-none">Campaign Updates</p>
+                   <p className="text-sm text-slate-500">Status changes and approvals</p>
+                 </div>
+                 <Switch defaultChecked />
+               </div>
+               <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                 <div>
+                   <p className="font-medium select-none">Wallet Alerts</p>
+                   <p className="text-sm text-slate-500">Low balance and transaction alerts</p>
+                 </div>
+                 <Switch defaultChecked />
+               </div>
+               <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                 <div>
+                   <p className="font-medium select-none">Marketing Emails</p>
+                   <p className="text-sm text-slate-500">News and promotional offers</p>
+                 </div>
+                 <Switch />
+               </div>
+             </CardContent>
+           </Card>
+         </TabsContent>
         </Tabs>
       </div>
     </div>
