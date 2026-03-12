@@ -1,4 +1,5 @@
 import './App.css'
+import React, { useEffect } from 'react'
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -88,7 +89,7 @@ const AuthenticatedApp = () => {
 
 function App() {
   // Detect and apply system dark mode
-  React.useEffect(() => {
+  useEffect(() => {
     const applyDarkMode = () => {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       if (prefersDark) {
