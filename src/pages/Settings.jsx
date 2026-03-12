@@ -24,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import AccountDeletionDialog from "@/components/account/AccountDeletionDialog";
 
 export default function Settings() {
   const [user, setUser] = useState(null);
