@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
-import { useMediaQuery } from '@/lib/useMediaQuery';
+import { useMediaQuery } from '@/components/hooks/useMediaQuery';
 
 export default function MobileDrawerSelect({
   value,
