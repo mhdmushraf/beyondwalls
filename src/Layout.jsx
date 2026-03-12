@@ -261,10 +261,19 @@ const publicPages = [
       <NotificationMonitor user={user} />
       
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-slate-200 z-50 px-4 flex items-center justify-between">
-        <button onClick={() => setSidebarOpen(true)} className="p-2 -ml-2">
-          <Menu className="w-6 h-6 text-slate-700" />
-        </button>
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-slate-200 z-50 px-4 flex items-center justify-between safe-area-inset-top">
+        {!isRootRoute ? (
+          <button 
+            onClick={() => navigate(-1)}
+            className="select-none p-2 -ml-2 hover:bg-slate-100 rounded-lg"
+          >
+            <ArrowLeft className="w-6 h-6 text-slate-700" />
+          </button>
+        ) : (
+          <button onClick={() => setSidebarOpen(true)} className="select-none p-2 -ml-2">
+            <Menu className="w-6 h-6 text-slate-700" />
+          </button>
+        )}
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-lg flex items-center justify-center">
             <MonitorPlay className="w-4 h-4 text-white" />
