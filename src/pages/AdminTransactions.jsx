@@ -161,8 +161,8 @@ export default function AdminTransactions() {
         </Tabs>
       </div>
 
-      {/* Transactions Table */}
-      <Card>
+      {/* Transactions Table - Desktop */}
+      <Card className="hidden md:block">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -249,6 +249,70 @@ export default function AdminTransactions() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Transactions Cards - Mobile */}
+      <div className="block md:hidden space-y-4">
+        {isLoading ? (
+          <Card><CardContent className="p-8 text-center text-slate-500">Loading...</CardContent></Card>
+        ) : filteredTransactions.length === 0 ? (
+          <Card><CardContent className="p-8 text-center text-slate-500">No transactions found</CardContent></Card>
+        ) : (
+          filteredTransactions.map((tx) => (
+            <Card key={tx.id}>
+              <CardContent className="p-4">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                        tx.type === "top_up" || tx.type === "earning" || tx.type === "refund"
+                          ? "bg-emerald-100 text-emerald-600"
+                          : "bg-violet-100 text-violet-600"
+                      }`}>
+                        {getIcon(tx.type)}
+                      </div>
+                      <div>
+                        <p className="font-medium text-slate-900 capitalize">{tx.type?.replace("_", " ")}</p>
+                        <p className="text-xs text-slate-500">{tx.description || "—"}</p>
+                      </div>
+                    </div>
+                    <Badge className={
+                      tx.status === "completed" 
+                        ? "bg-emerald-100 text-emerald-700"
+                        : tx.status === "pending"
+                        ? "bg-amber-100 text-amber-700"
+                        : "bg-red-100 text-red-700"
+                    }>
+                      {tx.status || "completed"}
+                    </Badge>
+                  </div>
+                  <div className="border-t pt-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs text-slate-500">Amount</span>
+                      <p className={`font-semibold ${
+                        tx.type === "top_up" || tx.type === "earning" || tx.type === "refund"
+                          ? "text-emerald-600"
+                          : "text-slate-900"
+                      }`}>
+                        {tx.type === "top_up" || tx.type === "earning" || tx.type === "refund" ? "+" : "-"}
+                        AED {tx.amount?.toLocaleString()}
+                      </p>
+                    </div>
+                    {tx.balance_after !== undefined && (
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-slate-500">Balance</span>
+                        <span className="text-slate-600">AED {tx.balance_after?.toLocaleString()}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="border-t pt-3 text-xs text-slate-500">
+                    {tx.created_date && format(new Date(tx.created_date), "MMM d, yyyy h:mm a")}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
+      </div>
     </div>
   );
 }

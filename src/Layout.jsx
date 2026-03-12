@@ -43,6 +43,7 @@ import AdminNotifications from "@/components/admin/AdminNotifications";
 import UserNotifications from "@/components/notifications/UserNotifications";
 import NotificationMonitor from "@/components/notifications/NotificationMonitor";
 import MobileBottomNav from "@/components/mobile/MobileBottomNav";
+import PullToRefresh from "@/components/mobile/PullToRefresh";
 
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
@@ -446,9 +447,11 @@ const publicPages = [
 
       {/* Main Content */}
       <main className="lg:pl-72 min-h-screen lg:pb-0 pb-24">
-        <div className="pt-16 lg:pt-0">
-          {children}
-        </div>
+        <PullToRefresh onRefresh={() => window.location.reload()}>
+          <div className="pt-16 lg:pt-0">
+            {children}
+          </div>
+        </PullToRefresh>
       </main>
     </div>
   );

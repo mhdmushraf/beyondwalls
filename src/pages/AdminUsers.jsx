@@ -395,8 +395,8 @@ export default function AdminUsers() {
         </Tabs>
       </div>
 
-      {/* Users Table */}
-      <Card>
+      {/* Users Table - Desktop */}
+      <Card className="hidden md:block">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -522,6 +522,102 @@ export default function AdminUsers() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Users Cards - Mobile */}
+      <div className="block md:hidden space-y-4">
+        {isLoading ? (
+          <Card><CardContent className="p-8 text-center text-slate-500">Loading...</CardContent></Card>
+        ) : filteredUsers.length === 0 ? (
+          <Card><CardContent className="p-8 text-center text-slate-500">No users found</CardContent></Card>
+        ) : (
+          filteredUsers.map((user) => (
+            <Card key={user.id}>
+              <CardContent className="p-4">
+                <div className="space-y-3">
+                  {/* User Info */}
+                  <div className="flex items-start gap-3">
+                    <Avatar>
+                      <AvatarImage src={user.avatar_url} />
+                      <AvatarFallback className="bg-gradient-to-br from-violet-500 to-indigo-500 text-white">
+                        {user.full_name?.charAt(0) || "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-slate-900 truncate">{user.full_name}</p>
+                      <p className="text-xs text-slate-500 truncate">{user.email}</p>
+                      {user.phone && <p className="text-xs text-slate-500 truncate">{user.phone}</p>}
+                    </div>
+                  </div>
+
+                  {/* Type and Role */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <p className="text-xs text-slate-500 mb-1">Account Type</p>
+                      <p className="text-xs font-medium text-slate-900">{user.account_type || "Individual"}</p>
+                      {user.company_name && <p className="text-xs text-slate-500">{user.company_name}</p>}
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-500 mb-1">Role</p>
+                      <Badge className={roleColors[user.user_role] || roleColors.advertiser} variant="sm">
+                        {user.user_role === "venue_owner" ? "Venue Owner" : user.user_role === "admin" ? "Admin" : "Advertiser"}
+                      </Badge>
+                    </div>
+                  </div>
+
+                  {/* Verification and Wallet */}
+                  <div className="grid grid-cols-2 gap-2 border-t pt-3">
+                    <div>
+                      <p className="text-xs text-slate-500 mb-1">Verification</p>
+                      <Badge className={verificationColors[user.verification_status] || verificationColors.pending} variant="sm">
+                        {user.verification_status === "verified" ? "Verified" : user.verification_status === "rejected" ? "Rejected" : "Pending"}
+                      </Badge>
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-500 mb-1">Wallet</p>
+                      <p className="font-semibold text-slate-900">AED {user.wallet_balance?.toLocaleString() || 0}</p>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex flex-wrap gap-2 border-t pt-3">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleAddWallet(user)}
+                      className="flex-1 text-xs"
+                    >
+                      <Plus className="w-3 h-3 mr-1" />
+                      Add Wallet
+                    </Button>
+                    {(user.user_role === "admin" || user.role === "admin") && (
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleOpenAdminDialog(user)}
+                        className="flex-1 text-xs"
+                      >
+                        <Settings className="w-3 h-3 mr-1" />
+                        Permissions
+                      </Button>
+                    )}
+                    {(user.user_role !== "admin" && user.role !== "admin") && (
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleDeleteUser(user)}
+                        className="flex-1 text-xs text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <XCircle className="w-3 h-3 mr-1" />
+                        Delete
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
+      </div>
 
       {/* Add Wallet Dialog */}
       <Dialog open={showWalletDialog} onOpenChange={setShowWalletDialog}>
