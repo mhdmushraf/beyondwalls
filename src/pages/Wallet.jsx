@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPageUrl } from "@/utils";
 import {
   Wallet as WalletIcon,
@@ -41,6 +41,7 @@ import PayoutSettings from "@/components/wallet/PayoutSettings";
 import EarningsBreakdown from "@/components/wallet/EarningsBreakdown";
 
 export default function Wallet() {
+  const queryClient = useQueryClient();
   const [user, setUser] = useState(null);
   const [showTopUp, setShowTopUp] = useState(false);
   const [showWithdraw, setShowWithdraw] = useState(false);
@@ -190,6 +191,39 @@ export default function Wallet() {
     }
   };
 
+  const topUpMutation = useMutation({
+    mutationFn: async ({ topUpAmount, receiptUrl }) => {
+      await base44.entities.WalletRequest.create({
+        user_id: user.email,
+        user_name: user.full_name,
+        request_type: "top_up",
+        amount: topUpAmount,
+        receipt_url: receiptUrl,
+        request_date: new Date().toISOString(),
+        status: "pending"
+      });
+      return { topUpAmount };
+    },
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["wallet-requests", user?.email] });
+      const previous = queryClient.getQueryData(["wallet-requests", user?.email]);
+      return { previous };
+    },
+    onError: (error, variables, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(["wallet-requests", user?.email], context.previous);
+      }
+      toast.error("Failed to submit top-up request");
+    },
+    onSuccess: (data) => {
+      toast.success("Top-up request submitted! Admin will review your receipt.");
+      queryClient.invalidateQueries({ queryKey: ["wallet-requests", user?.email] });
+      setShowTopUp(false);
+      setAmount("");
+      setReceiptUrl("");
+    }
+  });
+
   const handleTopUp = async () => {
     const topUpAmount = parseFloat(amount);
     if (!topUpAmount || topUpAmount < 50) {
@@ -203,36 +237,54 @@ export default function Wallet() {
 
     setLoading(true);
     try {
-      await base44.entities.WalletRequest.create({
-        user_id: user.email,
-        user_name: user.full_name,
-        request_type: "top_up",
-        amount: topUpAmount,
-        receipt_url: receiptUrl,
-        request_date: new Date().toISOString(),
-        status: "pending"
-      });
-
-      await base44.entities.AdminNotification.create({
-        type: "withdrawal_request",
-        title: "New Top-up Request",
-        message: `${user.full_name || user.email} requested top-up of AED ${topUpAmount}`,
-        reference_id: user.email,
-        reference_type: "WalletRequest"
-      });
-
-      refetch();
-      refetchRequests();
-      toast.success("Top-up request submitted! Admin will review your receipt.");
-      setShowTopUp(false);
-      setAmount("");
-      setReceiptUrl("");
-    } catch (error) {
-      toast.error("Failed to submit request");
+      await topUpMutation.mutateAsync({ topUpAmount, receiptUrl });
     } finally {
       setLoading(false);
     }
   };
+
+  const withdrawMutation = useMutation({
+    mutationFn: async (withdrawAmount) => {
+      return await base44.functions.invoke('createStripePayout', {
+        amount: withdrawAmount
+      });
+    },
+    onMutate: async (withdrawAmount) => {
+      await queryClient.cancelQueries({ queryKey: ["wallet-transactions", user?.email] });
+      const previous = queryClient.getQueryData(["wallet-transactions", user?.email]);
+      
+      queryClient.setQueryData(["wallet-transactions", user?.email], (old) => [
+        ...(old || []),
+        { 
+          id: "optimistic-withdrawal",
+          type: "withdrawal",
+          amount: withdrawAmount,
+          status: "pending",
+          description: "Pending withdrawal",
+          created_date: new Date().toISOString()
+        }
+      ]);
+      
+      return { previous };
+    },
+    onError: (error, variables, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(["wallet-transactions", user?.email], context.previous);
+      }
+      toast.error(error.message || "Failed to process withdrawal");
+    },
+    onSuccess: (response) => {
+      if (response.data.success) {
+        toast.success("Withdrawal processed! Funds will arrive in 2-3 business days.");
+        queryClient.invalidateQueries({ queryKey: ["wallet-transactions", user?.email] });
+        queryClient.invalidateQueries({ queryKey: ["wallet-requests", user?.email] });
+        setShowWithdraw(false);
+        setAmount("");
+      } else {
+        toast.error(response.data.error || "Withdrawal failed");
+      }
+    }
+  });
 
   const handleWithdraw = async () => {
     const withdrawAmount = parseFloat(amount);
@@ -247,31 +299,7 @@ export default function Wallet() {
 
     setLoading(true);
     try {
-      // Call Stripe payout function
-      const response = await base44.functions.invoke('createStripePayout', {
-        amount: withdrawAmount
-      });
-
-      if (response.data.requiresSetup) {
-        // User needs to connect Stripe account first
-        toast.error(response.data.error);
-        setShowWithdraw(false);
-        setShowPayoutSettings(true);
-        return;
-      }
-
-      if (response.data.success) {
-        refetch();
-        refetchRequests();
-        loadUser();
-        toast.success(`Withdrawal of AED ${withdrawAmount} processed! Funds will arrive in 2-3 business days.`);
-        setShowWithdraw(false);
-        setAmount("");
-      } else {
-        toast.error(response.data.error || "Withdrawal failed");
-      }
-    } catch (error) {
-      toast.error(error.message || "Failed to process withdrawal");
+      await withdrawMutation.mutateAsync(withdrawAmount);
     } finally {
       setLoading(false);
     }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { format } from "date-fns";
 import {
   Megaphone,
@@ -152,6 +152,61 @@ export default function AdminBookings() {
     const venue = screen ? venues.find(v => v.id === screen.venue_id) : null;
     return { screen, venue };
   };
+
+  const approveMutation = useMutation({
+    mutationFn: async (booking) => {
+      const totalCost = booking.total_cost || 0;
+      const venueShare = totalCost * 0.7;
+      const platformShare = totalCost * 0.3;
+
+      if (booking.source === "campaign") {
+        await base44.entities.Campaign.update(booking.id, {
+          status: "active",
+          approved_at: new Date().toISOString(),
+          approved_by: user.email
+        });
+        return { type: "campaign", booking };
+      }
+
+      await base44.entities.AdSlotBooking.update(booking.id, {
+        status: "active",
+        approved_at: new Date().toISOString(),
+        approved_by: user.email,
+        venue_share: venueShare,
+        platform_share: platformShare
+      });
+      return { type: "booking", booking };
+    },
+    onMutate: async (booking) => {
+      await queryClient.cancelQueries({ queryKey: ["all-bookings"] });
+      await queryClient.cancelQueries({ queryKey: ["all-campaigns-admin"] });
+      
+      const previousBookings = queryClient.getQueryData(["all-bookings"]);
+      const previousCampaigns = queryClient.getQueryData(["all-campaigns-admin"]);
+      
+      queryClient.setQueryData(["all-bookings"], (old) =>
+        old?.map(b => b.id === booking.id ? { ...b, status: "active" } : b) || []
+      );
+      queryClient.setQueryData(["all-campaigns-admin"], (old) =>
+        old?.map(c => c.id === booking.id ? { ...c, status: "active" } : c) || []
+      );
+      
+      return { previousBookings, previousCampaigns };
+    },
+    onError: (error, booking, context) => {
+      if (context) {
+        queryClient.setQueryData(["all-bookings"], context.previousBookings);
+        queryClient.setQueryData(["all-campaigns-admin"], context.previousCampaigns);
+      }
+      toast.error("Failed to approve booking");
+    },
+    onSuccess: () => {
+      toast.success("Booking approved successfully");
+      queryClient.invalidateQueries({ queryKey: ["all-bookings"] });
+      queryClient.invalidateQueries({ queryKey: ["all-campaigns-admin"] });
+      setSelectedBooking(null);
+    }
+  });
 
   const handleApprove = async (booking) => {
     setProcessing(true);

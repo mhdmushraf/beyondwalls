@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, ShoppingCart, Wallet, Settings } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 
+// Tab scroll position storage
+const tabScrollPositions = {
+  '/Dashboard': 0,
+  '/MyBookings': 0,
+  '/Wallet': 0,
+  '/Settings': 0
+};
+
 export default function MobileBottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
+  const mainRef = useRef(null);
   
   const navItems = [
     { path: '/Dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -16,11 +25,33 @@ export default function MobileBottomNav() {
 
   const isActive = (path) => location.pathname === path;
   
+  // Save scroll position when leaving a tab
+  useEffect(() => {
+    const main = document.querySelector('main');
+    if (main && location.pathname in tabScrollPositions) {
+      tabScrollPositions[location.pathname] = main.scrollTop;
+    }
+  }, [location.pathname]);
+
+  // Restore scroll position when entering a tab
+  useEffect(() => {
+    const main = document.querySelector('main');
+    if (main && location.pathname in tabScrollPositions) {
+      // Use setTimeout to ensure DOM is rendered
+      setTimeout(() => {
+        main.scrollTop = tabScrollPositions[location.pathname];
+      }, 0);
+    }
+  }, [location.pathname]);
+  
   const handleTabClick = (path) => {
-    // If already on the active tab, navigate to the root of that tab (e.g., /Dashboard)
     if (isActive(path)) {
-      navigate(path);
-      window.scrollTo(0, 0);
+      // Double-tap resets to top and tab root
+      const main = document.querySelector('main');
+      if (main) {
+        main.scrollTo(0, 0);
+        tabScrollPositions[path] = 0;
+      }
     }
   };
 
