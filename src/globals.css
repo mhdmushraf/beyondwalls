@@ -77,6 +77,7 @@ button:focus-visible {
 @layer base {
   html, body {
     overscroll-behavior: none;
+    font-size: 16px;
   }
   * {
     @apply border-border outline-ring/50;
@@ -84,11 +85,34 @@ button:focus-visible {
   body {
     @apply bg-background text-foreground;
   }
+  /* Accessibility: Minimum font size 14px for all text */
+  p, span, li, td, div:not([role="button"]):not([role="link"]), article, section, label {
+    @apply text-base;
+    font-size: clamp(0.875rem, 2.5vw, 1rem);
+  }
+  
+  /* Ensure sufficient color contrast */
   button, [role="button"], nav a, [role="link"], nav, [role="navigation"], svg {
     user-select: none;
+    /* Focus visible for keyboard navigation */
+    &:focus-visible {
+      @apply outline-2 outline-offset-2 outline-violet-600;
+    }
   }
-  p, span, div:not([role="button"]):not([role="link"]), article, section {
-    user-select: text;
+  
+  /* Minimum 44px tap targets */
+  button, [role="button"], input[type="checkbox"], input[type="radio"], a {
+    @apply min-h-[44px] md:min-h-auto min-w-[44px] md:min-w-auto flex items-center justify-center;
+  }
+  
+  /* Keyboard navigation improvements */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-violet-600;
+  }
+  
+  input, textarea, select {
+    @apply min-h-[44px] md:min-h-10;
+    font-size: clamp(0.875rem, 2.5vw, 1rem);
   }
 }
 
@@ -168,5 +192,24 @@ button:focus-visible {
 @media (prefers-color-scheme: dark) {
   .dark {
     color-scheme: dark;
+  }
+}
+
+/* Accessibility: Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: more) {
+  * {
+    @apply border-current;
+  }
+  button, [role="button"] {
+    @apply border-2 border-current;
   }
 }
