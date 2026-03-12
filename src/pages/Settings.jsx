@@ -349,32 +349,45 @@ export default function Settings() {
         </TabsContent>
 
         <TabsContent value="security" className="space-y-6">
-          <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-xl font-bold">
-                <Shield className="w-5 h-5 text-violet-600" />
-                Security Settings
-              </CardTitle>
-              <CardDescription>Manage your account security</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-                <div>
-                  <p className="font-medium">Two-Factor Authentication</p>
-                  <p className="text-sm text-slate-500">Add an extra layer of security</p>
-                </div>
-                <Switch />
-              </div>
-              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-                <div>
-                  <p className="font-medium">Login Notifications</p>
-                  <p className="text-sm text-slate-500">Get notified of new logins</p>
-                </div>
-                <Switch defaultChecked />
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+           <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl">
+             <CardHeader>
+               <CardTitle className="flex items-center gap-2 text-xl font-bold">
+                 <Shield className="w-5 h-5 text-violet-600" />
+                 Security Settings
+               </CardTitle>
+               <CardDescription>Manage your account security</CardDescription>
+             </CardHeader>
+             <CardContent className="space-y-4">
+               <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                 <div>
+                   <p className="font-medium select-none">Two-Factor Authentication</p>
+                   <p className="text-sm text-slate-500">Add an extra layer of security</p>
+                 </div>
+                 <Switch />
+               </div>
+               <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                 <div>
+                   <p className="font-medium select-none">Login Notifications</p>
+                   <p className="text-sm text-slate-500">Get notified of new logins</p>
+                 </div>
+                 <Switch defaultChecked />
+               </div>
+             </CardContent>
+           </Card>
+
+           <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl border-red-200">
+             <CardHeader>
+               <CardTitle className="text-red-600 text-xl font-bold">Danger Zone</CardTitle>
+               <CardDescription>Irreversible actions</CardDescription>
+             </CardHeader>
+             <CardContent>
+               <p className="text-sm text-slate-600 mb-4">
+                 Deleting your account will permanently remove all your data and cannot be recovered.
+               </p>
+               <AccountDeletionDialog />
+             </CardContent>
+           </Card>
+         </TabsContent>
 
         <TabsContent value="notifications" className="space-y-6">
           <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl">
