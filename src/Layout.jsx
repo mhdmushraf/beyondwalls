@@ -50,6 +50,9 @@ export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [adminMenuOpen, setAdminMenuOpen] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  const isRootRoute = location.pathname === '/';
 
   useEffect(() => {
     loadUser();
