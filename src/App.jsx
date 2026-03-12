@@ -11,6 +11,8 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import MobileAppOnboarding from '@/components/mobile/MobileAppOnboarding';
 import { isMobileApp } from '@/components/mobile/mobileDetection';
+import MobileRouteTransition from '@/components/mobile/MobileRouteTransition';
+import { AnimatePresence } from 'framer-motion';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
