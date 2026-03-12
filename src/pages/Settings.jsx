@@ -152,14 +152,14 @@ export default function Settings() {
                 <div>
                   <p className="font-semibold text-slate-900">{user?.full_name}</p>
                   <p className="text-sm text-slate-500">{user?.email}</p>
-                  <div className="flex items-center gap-2 mt-2">
-                    <Badge className={verificationColors[user?.verification_status || "pending"]}>
-                      {user?.verification_status || "pending"}
-                    </Badge>
-                    <Badge variant="secondary" className="capitalize">
-                      {user?.user_role?.replace("_", " ") || "Advertiser"}
-                    </Badge>
-                  </div>
+                  <div className="flex items-center gap-2 mt-2 select-none">
+                        <Badge className={verificationColors[user?.verification_status || "pending"]}>
+                          {user?.verification_status || "pending"}
+                        </Badge>
+                        <Badge variant="secondary" className="capitalize">
+                          {user?.user_role?.replace("_", " ") || "Advertiser"}
+                        </Badge>
+                      </div>
                 </div>
               </div>
             </CardContent>
