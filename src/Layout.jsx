@@ -278,7 +278,7 @@ const publicPages = [
           <div className="w-8 h-8 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-lg flex items-center justify-center">
             <MonitorPlay className="w-4 h-4 text-white" />
           </div>
-          <span className="font-bold text-lg bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
+          <span className="font-bold text-lg bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent select-none">
             BeyondWalls
           </span>
         </div>
@@ -288,6 +288,9 @@ const publicPages = [
           <UserNotifications user={user} />
         )}
       </div>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav />
 
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
