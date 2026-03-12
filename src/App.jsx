@@ -22,6 +22,7 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, isAuthenticated, navigateToLogin } = useAuth();
+  const isRunningOnMobileApp = isMobileApp();
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -41,6 +42,15 @@ const AuthenticatedApp = () => {
       navigateToLogin();
       return null;
     }
+  }
+
+  // MOBILE APP: Force intro screen for unauthenticated mobile app users
+  if (isRunningOnMobileApp && !isAuthenticated) {
+    return (
+      <Routes>
+        <Route path="*" element={<MobileAppOnboarding />} />
+      </Routes>
+    );
   }
 
   // Render the main app
