@@ -445,7 +445,7 @@ const publicPages = [
       </aside>
 
       {/* Main Content */}
-      <main className="lg:pl-72 min-h-screen">
+      <main className="lg:pl-72 min-h-screen lg:pb-0 pb-24">
         <div className="pt-16 lg:pt-0">
           {children}
         </div>
