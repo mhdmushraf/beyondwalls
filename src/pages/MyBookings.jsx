@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import PullToRefresh from "@/components/mobile/PullToRefresh";
 import { format } from "date-fns";
 import {
   Megaphone,
@@ -28,6 +29,7 @@ import LiveScreenPreview from "@/components/previews/LiveScreenPreview";
 export default function MyBookings() {
   const [user, setUser] = useState(null);
   const [search, setSearch] = useState("");
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     loadUser();
@@ -191,9 +193,18 @@ export default function MyBookings() {
     );
   }
 
+  const handleRefresh = async () => {
+    await Promise.all([
+      queryClient.refetchQueries({ queryKey: ["my-bookings"] }),
+      queryClient.refetchQueries({ queryKey: ["all-screens"] }),
+      queryClient.refetchQueries({ queryKey: ["all-venues"] }),
+    ]);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/20 to-violet-50/30">
-      <div className="p-6 lg:p-8">
+    <PullToRefresh onRefresh={handleRefresh}>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/20 to-violet-50/30">
+        <div className="p-6 lg:p-8">
         {/* Header with Glassmorphism */}
         <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8 bg-white/60 backdrop-blur-xl p-4 sm:p-6 rounded-2xl border border-white/20 shadow-2xl shadow-indigo-500/10">
           <div>
@@ -264,7 +275,8 @@ export default function MyBookings() {
             </div>
           </TabsContent>
         </Tabs>
-      </div>
-    </div>
-  );
-}
+        </div>
+        </div>
+        </PullToRefresh>
+        );
+        }

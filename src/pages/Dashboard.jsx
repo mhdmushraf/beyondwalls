@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import PullToRefresh from "@/components/mobile/PullToRefresh";
 import {
   Wallet,
   MonitorPlay,
@@ -29,6 +30,7 @@ import StatsCard from "@/components/dashboard/StatsCard";
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     loadUser();
@@ -124,9 +126,20 @@ export default function Dashboard() {
     );
   }
 
+  const handleRefresh = async () => {
+    // Refetch all queries
+    await Promise.all([
+      queryClient.refetchQueries({ queryKey: ["my-venues"] }),
+      queryClient.refetchQueries({ queryKey: ["my-screens"] }),
+      queryClient.refetchQueries({ queryKey: ["my-bookings"] }),
+      queryClient.refetchQueries({ queryKey: ["my-transactions"] }),
+    ]);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/20 to-indigo-50/30">
-      <div className="p-6 lg:p-8">
+    <PullToRefresh onRefresh={handleRefresh}>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/20 to-indigo-50/30">
+        <div className="p-6 lg:p-8">
         {/* Header with Glassmorphism */}
         <div className="flex flex-col gap-4 mb-6 sm:mb-8 bg-white/60 backdrop-blur-xl p-4 sm:p-6 rounded-2xl border border-white/20 shadow-2xl shadow-violet-500/10">
           <div>
@@ -457,5 +470,6 @@ export default function Dashboard() {
         </Tabs>
       </div>
     </div>
+    </PullToRefresh>
   );
 }
