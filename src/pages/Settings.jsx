@@ -242,7 +242,7 @@ export default function Settings() {
             <Button 
               onClick={handleSave}
               disabled={loading}
-              className="bg-gradient-to-r from-violet-600 to-indigo-600"
+              className="select-none bg-gradient-to-r from-violet-600 to-indigo-600"
             >
               {loading ? (
                 <>
@@ -257,9 +257,9 @@ export default function Settings() {
               )}
             </Button>
           </div>
-        </TabsContent>
+          </TabsContent>
 
-        <TabsContent value="billing" className="space-y-6">
+          <TabsContent value="billing" className="space-y-6">
           <Card className="bg-white/80 backdrop-blur-xl border-white/20 shadow-xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-xl font-bold">
