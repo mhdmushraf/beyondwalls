@@ -64,7 +64,7 @@ export default function Layout({ children, currentPageName }) {
   const getNavItems = () => {
     if (!user) return [];
     const isAdmin = user?.user_role === "admin" || user?.role === "admin";
-    const isVenueOwner = user?.user_role === "venue_owner";
+    const isVenueOwner = !isAdmin && user?.user_role === "venue_owner";
     const isAdvertiser = user?.user_role === "advertiser";
 
     if (isAdmin) {
@@ -188,7 +188,7 @@ const publicPages = [
 
   // SECURITY: Venue owner pages protection
   const venueOwnerPages = ["VenueOwnerDashboard", "AddVenue", "MyVenues", "AddScreen", "MyScreens", "VenueEarnings"];
-  const isVenueOwner = user?.user_role === "venue_owner";
+  const isVenueOwner = !isAdmin && user?.user_role === "venue_owner";
   if (venueOwnerPages.includes(currentPageName) && !isVenueOwner && !isAdmin) {
     navigate(createPageUrl("Dashboard"));
     return null;
