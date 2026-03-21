@@ -186,8 +186,7 @@ const publicPages = [
         <Bell className="w-5 h-5 text-slate-400" />
       </div>
 
-      {/* Mobile Bottom Navigation */}
-      <MobileBottomNav />
+
 
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
