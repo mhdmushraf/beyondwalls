@@ -3,30 +3,12 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { createPageUrl } from "./utils";
 import { base44 } from "@/api/base44Client";
 import {
-  LayoutDashboard,
   MonitorPlay,
-  Megaphone,
-  Wallet,
-  Building2,
-  Users,
-  Settings,
   LogOut,
   Menu,
   X,
   ChevronDown,
-  ChevronRight,
   Bell,
-  Plus,
-  Shield,
-  UserCheck,
-  CreditCard,
-  PiggyBank,
-  TrendingUp,
-  BarChart3,
-  Zap,
-  Package,
-  Leaf,
-  FileText,
   ArrowLeft
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
