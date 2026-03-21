@@ -161,9 +161,6 @@ const publicPages = [
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Real-time Notification Monitor */}
-      <NotificationMonitor user={user} />
-      
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-slate-200 z-50 px-4 flex items-center justify-between safe-area-inset-top">
         {!isRootRoute ? (
