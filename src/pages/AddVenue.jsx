@@ -155,8 +155,7 @@ export default function AddVenue() {
                     <Input className="mt-1" placeholder="e.g. The Coffee House" value={form.name} onChange={e => set("name", e.target.value)} required />
                   </div>
                   <SelectField label="Venue Type" value={form.venue_type} onChange={v => set("venue_type", v)} options={VENUE_TYPES} placeholder="Select venue type" required />
-                  <SelectField label="City" value={form.city} onChange={v => { set("city", v); set("area", ""); }} options={CITIES} placeholder="Select city" required />
-                  <SelectField label="Area / Neighborhood" value={form.area} onChange={v => set("area", v)} options={form.city ? CITIES_AREAS[form.city] : []} placeholder={form.city ? "Select area" : "Select city first"} />
+                  <SelectField label="City" value={form.city} onChange={v => set("city", v)} options={CITIES} placeholder="Select city" required />
                   <div className="sm:col-span-2">
                     <Label className="text-sm font-medium text-slate-700">Full Address *</Label>
                     <Input className="mt-1" placeholder="Street, building, floor" value={form.address} onChange={e => set("address", e.target.value)} required />
