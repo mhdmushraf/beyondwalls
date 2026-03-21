@@ -65,8 +65,9 @@ export default function AddVenue() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [form, setForm] = useState({
-    name: "", venue_type: "", address: "", city: "", area: "",
+    name: "", venue_type: "", address: "", city: "",
     description: "", daily_footfall: "", weekly_footfall: "",
+    photo_urls: [],
     peak_hours: "", avg_dwell_time_minutes: "",
     audience_age_group: "", audience_gender: "",
     opening_time: "", closing_time: "",
