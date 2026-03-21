@@ -151,7 +151,8 @@ export default function CompleteProfile() {
       sessionStorage.removeItem("registration_user_role");
       
       toast.success("Profile submitted for approval!");
-      navigate(createPageUrl("PendingApproval"));
+      // Hard redirect to force fresh auth state load
+      window.location.href = createPageUrl("PendingApproval");
     } catch (error) {
       toast.error("Failed to save profile");
     } finally {

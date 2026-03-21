@@ -27,7 +27,15 @@ export default function AdminUserApprovals() {
 
   const loadUsers = async () => {
     const all = await base44.entities.User.list("-created_date");
-    setUsers(all.filter(u => u.profile_complete));
+    const complete = all.filter(u => u.profile_complete);
+    // Deduplicate by email, keeping the most recently created record
+    const seen = new Set();
+    const deduped = complete.filter(u => {
+      if (!u.email || seen.has(u.email)) return false;
+      seen.add(u.email);
+      return true;
+    });
+    setUsers(deduped);
     setLoading(false);
   };
 
