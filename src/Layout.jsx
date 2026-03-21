@@ -360,7 +360,7 @@ const publicPages = [
                       {user?.full_name || "User"}
                     </p>
                     <p className="text-xs text-slate-500 capitalize truncate">
-                      {user?.user_role?.replace("_", " ") || "Advertiser"}
+                      {(user?.role === "admin" || user?.user_role === "admin") ? "Admin" : user?.user_role?.replace("_", " ") || "Advertiser"}
                     </p>
                   </div>
                   <ChevronDown className="w-4 h-4 text-slate-400 flex-shrink-0" />
