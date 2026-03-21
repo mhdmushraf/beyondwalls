@@ -183,11 +183,7 @@ const publicPages = [
             BeyondWalls
           </span>
         </div>
-        {(user?.user_role === "admin" || user?.role === "admin") ? (
-          <AdminNotifications />
-        ) : (
-          <UserNotifications user={user} />
-        )}
+        <Bell className="w-5 h-5 text-slate-400" />
       </div>
 
       {/* Mobile Bottom Navigation */}
