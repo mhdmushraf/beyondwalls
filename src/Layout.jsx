@@ -185,7 +185,7 @@ const publicPages = [
     "AdminCampaigns", "AdminVenues", "AdminScreens", "AdminWallet",
     "AdminWalletRequests", "AdminTransactions", "AdminPricing",
     "AdminPlatformWallet", "AdminBlog", "AdminCRM", "AdminDefaultContent",
-    "LogoGenerator"
+    "LogoGenerator", "ScreenMonitor"
   ];
 
   // SECURITY: Venue owner pages protection
