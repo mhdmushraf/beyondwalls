@@ -170,6 +170,19 @@ export default function AddVenue() {
             </CardContent>
           </Card>
 
+          {/* Venue Photos */}
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-5 sm:p-6">
+              <Section icon={Camera} title="Venue Photos (up to 3)">
+                <p className="text-xs text-slate-500 -mt-2">Help advertisers visualize your venue with real photos.</p>
+                <VenuePhotoUploader
+                  photos={form.photo_urls}
+                  onChange={urls => set("photo_urls", urls)}
+                />
+              </Section>
+            </CardContent>
+          </Card>
+
           {/* Map */}
           <Card className="border-0 shadow-sm">
             <CardContent className="p-5 sm:p-6">
