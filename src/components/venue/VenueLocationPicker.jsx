@@ -37,10 +37,15 @@ export default function VenueLocationPicker({ latitude, longitude, onChange }) {
           style={{ height: "100%", width: "100%" }}
           scrollWheelZoom={true}
         >
-          {/* Modern CartoDB Voyager tile — clean, professional look */}
+          {/* Esri World Imagery — high-resolution satellite tiles */}
           <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
-            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+            attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+          />
+          {/* Esri street labels overlay on top of satellite */}
+          <TileLayer
+            attribution=""
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
           />
           <MapClickHandler onLocationSelect={onChange} />
           {position && <Marker position={position} />}
