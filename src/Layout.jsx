@@ -185,6 +185,14 @@ const publicPages = [
     "AdminPlatformWallet", "AdminBlog", "AdminCRM", "AdminDefaultContent",
     "LogoGenerator"
   ];
+
+  // SECURITY: Venue owner pages protection
+  const venueOwnerPages = ["VenueOwnerDashboard", "AddVenue", "MyVenues", "AddScreen", "MyScreens", "VenueEarnings"];
+  const isVenueOwner = user?.user_role === "venue_owner";
+  if (venueOwnerPages.includes(currentPageName) && !isVenueOwner && !isAdmin) {
+    navigate(createPageUrl("Dashboard"));
+    return null;
+  }
   
   if (adminPages.includes(currentPageName) && !isAdmin) {
     // Non-admin trying to access admin page - redirect to user dashboard
