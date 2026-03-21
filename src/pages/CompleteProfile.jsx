@@ -63,6 +63,11 @@ export default function CompleteProfile() {
       const userData = await base44.auth.me();
       setUser(userData);
       
+      // Admins should never go through CompleteProfile
+      if (userData.role === "admin" || userData.user_role === "admin") {
+        navigate(createPageUrl("AdminDashboard"));
+        return;
+      }
       if (userData.profile_complete) {
         redirectToDashboard(userData.user_role);
       }
