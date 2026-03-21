@@ -12,7 +12,15 @@ import {
   Bell,
   Shield,
   Settings,
-  ArrowLeft
+  ArrowLeft,
+  BarChart3,
+  Users,
+  Megaphone,
+  Building2,
+  DollarSign,
+  Plus,
+  Wallet as WalletIcon,
+  Settings as Settings2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -53,7 +61,41 @@ export default function Layout({ children, currentPageName }) {
     base44.auth.logout(createPageUrl("Home"));
   };
 
-  const getNavItems = () => [];
+  const getNavItems = () => {
+    if (!user) return [];
+    const isAdmin = user?.user_role === "admin" || user?.role === "admin";
+    const isVenueOwner = user?.user_role === "venue_owner";
+    const isAdvertiser = user?.user_role === "advertiser";
+
+    if (isAdmin) {
+      return [
+        { name: "Dashboard", page: "AdminDashboard", icon: BarChart3 },
+        { name: "User Approvals", page: "AdminUserApprovals", icon: Users },
+        { name: "Campaigns", page: "AdminCampaigns", icon: Megaphone },
+        { name: "Screens", page: "AdminScreens", icon: MonitorPlay },
+        { name: "Venues", page: "AdminVenues", icon: Building2 },
+        { name: "Payout Requests", page: "AdminWalletRequests", icon: DollarSign },
+        { name: "Settings", page: "Settings", icon: Settings2 },
+      ];
+    }
+    if (isVenueOwner) {
+      return [
+        { name: "Dashboard", page: "VenueOwnerDashboard", icon: BarChart3 },
+        { name: "My Venues", page: "MyVenues", icon: Building2 },
+        { name: "My Screens", page: "MyScreens", icon: MonitorPlay },
+        { name: "Earnings", page: "VenueEarnings", icon: DollarSign },
+        { name: "Settings", page: "Settings", icon: Settings2 },
+      ];
+    }
+    // Default: Advertiser
+    return [
+      { name: "Dashboard", page: "Dashboard", icon: BarChart3 },
+      { name: "My Campaigns", page: "MyCampaigns", icon: Megaphone },
+      { name: "Create Campaign", page: "CreateCampaign", icon: Plus },
+      { name: "Wallet", page: "Wallet", icon: WalletIcon },
+      { name: "Settings", page: "Settings", icon: Settings2 },
+    ];
+  };
 
 // Public pages without sidebar - no auth required
 const publicPages = [
