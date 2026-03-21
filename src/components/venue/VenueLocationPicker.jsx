@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import { MapPin } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
-// Fix default marker icon issue with webpack/vite
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
@@ -31,16 +30,17 @@ export default function VenueLocationPicker({ latitude, longitude, onChange }) {
         <MapPin className="w-4 h-4 text-violet-600" />
         <span>Click on the map to pin your exact venue location</span>
       </div>
-      <div className="rounded-xl overflow-hidden border border-slate-200 shadow-sm" style={{ height: 320 }}>
+      <div className="rounded-xl overflow-hidden border border-slate-200 shadow-sm" style={{ height: 340 }}>
         <MapContainer
           center={position || defaultCenter}
-          zoom={12}
+          zoom={13}
           style={{ height: "100%", width: "100%" }}
-          scrollWheelZoom={false}
+          scrollWheelZoom={true}
         >
+          {/* Modern CartoDB Voyager tile — clean, professional look */}
           <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
+            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           />
           <MapClickHandler onLocationSelect={onChange} />
           {position && <Marker position={position} />}
