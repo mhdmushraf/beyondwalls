@@ -54,9 +54,11 @@ export default function Home() {
       const isAuth = await base44.auth.isAuthenticated();
       if (isAuth) {
         const user = await base44.auth.me();
-        // Redirect logged-in users to dashboard
+        // Redirect logged-in users to their appropriate dashboard
         if (user?.user_role === "admin" || user?.role === "admin") {
           navigate(createPageUrl("AdminDashboard"), { replace: true });
+        } else if (user?.user_role === "venue_owner") {
+          navigate(createPageUrl("VenueOwnerDashboard"), { replace: true });
         } else {
           navigate(createPageUrl("Dashboard"), { replace: true });
         }
