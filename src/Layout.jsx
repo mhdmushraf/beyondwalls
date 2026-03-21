@@ -23,12 +23,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import AdminNotifications from "@/components/admin/AdminNotifications";
-import UserNotifications from "@/components/notifications/UserNotifications";
-import NotificationMonitor from "@/components/notifications/NotificationMonitor";
-import MobileBottomNav from "@/components/mobile/MobileBottomNav";
-import PullToRefresh from "@/components/mobile/PullToRefresh";
 
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
