@@ -1,4 +1,20 @@
 import About from './pages/About';
+import Dashboard from './pages/Dashboard';
+import CreateCampaign from './pages/CreateCampaign';
+import MyCampaigns from './pages/MyCampaigns';
+import Wallet from './pages/Wallet';
+import VenueOwnerDashboard from './pages/VenueOwnerDashboard';
+import AddVenue from './pages/AddVenue';
+import MyVenues from './pages/MyVenues';
+import AddScreen from './pages/AddScreen';
+import MyScreens from './pages/MyScreens';
+import VenueEarnings from './pages/VenueEarnings';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminUserApprovals from './pages/AdminUserApprovals';
+import AdminCampaigns from './pages/AdminCampaigns';
+import AdminScreens from './pages/AdminScreens';
+import AdminWalletRequests from './pages/AdminWalletRequests';
+import Settings from './pages/Settings';
 import ARDashboard from './pages/ARDashboard';
 import AuthorProfile from './pages/AuthorProfile';
 import Blog from './pages/Blog';
@@ -51,6 +67,22 @@ export const PAGES = {
     "SitemapPage": SitemapPage,
     "SitemapXML": SitemapXML,
     "Terms": Terms,
+    "Dashboard": Dashboard,
+    "CreateCampaign": CreateCampaign,
+    "MyCampaigns": MyCampaigns,
+    "Wallet": Wallet,
+    "VenueOwnerDashboard": VenueOwnerDashboard,
+    "AddVenue": AddVenue,
+    "MyVenues": MyVenues,
+    "AddScreen": AddScreen,
+    "MyScreens": MyScreens,
+    "VenueEarnings": VenueEarnings,
+    "AdminDashboard": AdminDashboard,
+    "AdminUserApprovals": AdminUserApprovals,
+    "AdminCampaigns": AdminCampaigns,
+    "AdminScreens": AdminScreens,
+    "AdminWalletRequests": AdminWalletRequests,
+    "Settings": Settings,
 }
 
 export const pagesConfig = {
