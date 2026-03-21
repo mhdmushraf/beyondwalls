@@ -17,6 +17,7 @@ import AdminWalletRequests from './pages/AdminWalletRequests';
 import Settings from './pages/Settings';
 import AdminVenues from './pages/AdminVenues';
 import CampaignDetail from './pages/CampaignDetail';
+import ScreenMonitor from './pages/ScreenMonitor';
 import ARDashboard from './pages/ARDashboard';
 import AuthorProfile from './pages/AuthorProfile';
 import Blog from './pages/Blog';
@@ -87,6 +88,7 @@ export const PAGES = {
     "Settings": Settings,
     "AdminVenues": AdminVenues,
     "CampaignDetail": CampaignDetail,
+    "ScreenMonitor": ScreenMonitor,
 }
 
 export const pagesConfig = {
