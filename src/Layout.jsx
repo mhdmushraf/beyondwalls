@@ -374,7 +374,7 @@ const publicPages = [
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to={createPageUrl("NotificationPreferences")} className="cursor-pointer">
+                    <Link to={createPageUrl("Settings")} className="cursor-pointer">
                       <Bell className="w-4 h-4 mr-2" />
                       Notifications
                     </Link>
