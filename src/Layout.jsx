@@ -8,7 +8,10 @@ import {
   Menu,
   X,
   ChevronDown,
+  ChevronRight,
   Bell,
+  Shield,
+  Settings,
   ArrowLeft
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
