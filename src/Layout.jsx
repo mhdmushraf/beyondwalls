@@ -342,11 +342,9 @@ const publicPages = [
 
       {/* Main Content */}
       <main className="lg:pl-72 min-h-screen lg:pb-0 pb-24">
-        <PullToRefresh onRefresh={() => window.location.reload()}>
-          <div className="pt-16 lg:pt-0">
-            {children}
-          </div>
-        </PullToRefresh>
+        <div className="pt-16 lg:pt-0">
+          {children}
+        </div>
       </main>
     </div>
   );
