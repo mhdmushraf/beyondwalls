@@ -19,6 +19,7 @@ import {
   Building2,
   DollarSign,
   Plus,
+  Activity,
   Wallet as WalletIcon,
   Settings as Settings2,
 } from "lucide-react";
