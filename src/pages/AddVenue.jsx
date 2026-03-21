@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { ArrowLeft, Loader2, Building2, MapPin, Users, Clock, Phone } from "lucide-react";
 import VenueLocationPicker from "@/components/venue/VenueLocationPicker";
+import VenuePhotoUploader from "@/components/venue/VenuePhotoUploader";
+import { Camera } from "lucide-react";
 
 const VENUE_TYPES = ["restaurant", "cafe", "gym", "mall", "coworking", "hotel", "clinic", "salon", "retail", "other"];
 
