@@ -147,7 +147,7 @@ const publicPages = [
   }
 
   // SECURITY: Check if user profile is complete (except for admins)
-  const isAdmin = user?.user_role === "admin" || user?.role === "admin";
+  const isAdmin = user?.role === "admin" || user?.user_role === "admin";
   if (!isAdmin && !user?.profile_complete) {
     navigate(createPageUrl("CompleteProfile"));
     return (
