@@ -59,91 +59,15 @@ export default function Layout({ children, currentPageName }) {
     base44.auth.logout(createPageUrl("Home"));
   };
 
-  const getNavItems = () => {
-    const userRole = user?.user_role;
-    const isAdmin = userRole === "admin" || user?.role === "admin";
-    const isMunicipalInspector = userRole === "municipal_inspector";
-
-    if (isMunicipalInspector) {
-      return [
-        { name: "Approval Queue", icon: Shield, page: "MunicipalApproval" },
-        { name: "Reports & Audit", icon: FileText, page: "MunicipalReports" }
-      ];
-    } else if (isAdmin) {
-                const permissions = user?.admin_permissions || ["all"];
-                const hasPermission = (perm) => permissions.includes("all") || permissions.includes(perm);
-
-                const adminItems = [];
-                if (hasPermission("all") || hasPermission("dashboard")) adminItems.push({ name: "Dashboard", icon: LayoutDashboard, page: "AdminDashboard" });
-                if (hasPermission("all") || hasPermission("users")) adminItems.push({ name: "User Approvals", icon: UserCheck, page: "AdminUserApprovals" });
-                if (hasPermission("all") || hasPermission("users")) adminItems.push({ name: "Users", icon: Users, page: "AdminUsers" });
-                if (hasPermission("all") || hasPermission("bookings")) adminItems.push({ name: "Ad Bookings", icon: Megaphone, page: "AdminBookings" });
-                if (hasPermission("all") || hasPermission("bookings")) adminItems.push({ name: "Campaigns", icon: Megaphone, page: "AdminCampaigns" });
-                if (hasPermission("all") || hasPermission("venues")) adminItems.push({ name: "Venues", icon: Building2, page: "AdminVenues" });
-                if (hasPermission("all") || hasPermission("screens")) adminItems.push({ name: "Screens", icon: MonitorPlay, page: "AdminScreens" });
-                if (hasPermission("all") || hasPermission("wallet")) adminItems.push({ name: "Wallet System", icon: Wallet, page: "AdminWallet" });
-                      if (hasPermission("all") || hasPermission("wallet")) adminItems.push({ name: "Wallet Requests", icon: CreditCard, page: "AdminWalletRequests" });
-                if (hasPermission("all") || hasPermission("wallet")) adminItems.push({ name: "Transactions", icon: CreditCard, page: "AdminTransactions" });
-                if (hasPermission("all") || hasPermission("pricing")) adminItems.push({ name: "Dynamic Pricing", icon: CreditCard, page: "AdminPricing" });
-                if (hasPermission("all") || hasPermission("wallet")) adminItems.push({ name: "Platform Revenue", icon: PiggyBank, page: "AdminPlatformWallet" });
-                if (hasPermission("all") || hasPermission("blog")) adminItems.push({ name: "Blog", icon: Megaphone, page: "AdminBlog" });
-                if (hasPermission("all") || hasPermission("crm")) adminItems.push({ name: "CRM", icon: Users, page: "AdminCRM" });
-                if (hasPermission("all")) adminItems.push({ name: "Default Content", icon: MonitorPlay, page: "AdminDefaultContent" });
-                if (hasPermission("all")) adminItems.push({ name: "AR Campaigns", icon: Megaphone, page: "AdminARCampaigns" });
-                      if (hasPermission("all")) adminItems.push({ name: "Logo Generator", icon: Settings, page: "LogoGenerator" });
-                if (hasPermission("all")) adminItems.push({ name: "Social Media", icon: Megaphone, page: "SocialMediaGenerator" });
-                    if (hasPermission("all") || hasPermission("screens")) adminItems.push({ name: "B.One Players", icon: MonitorPlay, page: "AdminBOnePlayer" });
-                if (hasPermission("all")) adminItems.push({ name: "Municipality Approval", icon: Shield, page: "MunicipalApproval" });
-                if (hasPermission("all")) adminItems.push({ name: "Municipal Reports", icon: FileText, page: "MunicipalReports" });
-
-                return adminItems;
-    } else {
-      // Unified dashboard for all users (both advertiser and venue owner)
-      const items = [
-                                  { name: "Dashboard", icon: LayoutDashboard, page: "Dashboard" },
-                                  { name: "Advertiser Hub", icon: TrendingUp, page: "AdvertiserHub" },
-                                  { name: "Analytics", icon: BarChart3, page: "AnalyticsDashboard" },
-                                  { name: "AI Campaign", icon: Megaphone, page: "AICampaignCreator" },
-                      { name: "Book Ad Slot", icon: Plus, page: "BookSlot" },
-                      { name: "Campaign Bundles", icon: Package, page: "CampaignBundles" },
-                      { name: "Local Business", icon: Building2, page: "LocalBusinessBooking" },
-                      { name: "Favorites", icon: MonitorPlay, page: "FavoriteScreens" },
-                      { name: "My Bookings", icon: Megaphone, page: "MyBookings" },
-            { name: "Auto-Booking", icon: Zap, page: "AutoBooking" },
-                            { name: "AR Engage", icon: Megaphone, page: "ARDashboard" },
-                            { name: "Sustainability", icon: Leaf, page: "SustainabilityReport" },
-                            { name: "Wallet", icon: Wallet, page: "Wallet" },
-                    ];
-
-      // Add owner-specific options if user is venue owner
-      if (user?.is_venue_owner) {
-        items.push(
-          { name: "Venue Hub", icon: Building2, page: "VenueOwnerHub" },
-          { name: "My Venues", icon: Building2, page: "MyVenues" },
-          { name: "My Screens", icon: MonitorPlay, page: "MyScreens" },
-          { name: "My Ad Slots", icon: Settings, page: "ManageOwnerSlots" },
-        );
-      }
-      
-      return items;
-    }
-  };
-// Add import for FileText icon if not present
+  const getNavItems = () => [];
 
 // Public pages without sidebar - no auth required
 const publicPages = [
         "Home", "Login", "Register", "CompleteProfile", "ScreenPlayer", 
         "About", "Services", "Contact", "ScreenLocations", "Blog", 
         "HelpCenter", "Terms", "Privacy", "HowItWorks", "PendingApproval", 
-        "Connect", "BlogPost", "AuthorProfile", "NotFound", "ARPremium", "Sitemap",
-        "SitemapPage", "DOOHAdvertisingDubai", "DigitalSignageUAE", "AdPlatformDubai", 
-        "VenueAdvertisingUAE", "BeyondWallsUAEvsUSA", "DOOHDubaiMarina", "DOOHDowntownDubai",
-        "DOOHDIFC", "DOOHAbuDhabi", "DOOHSharjah", "DOOHJBRDubai", "DOOHBusinessBay",
-        "DOOHDubaiMall", "CafeAdvertisingDubai", "GymAdvertisingDubai", "MallAdvertisingUAE",
-        "HotelAdvertisingDubai", "CoworkingAdvertisingDubai", "DigitalBillboardDubai", "ScreenAdvertisingUAE",
-        "DOOHDubaiShoppingFestival", "DOOHUAENationalDay", "DOOHRamadanAdvertising", 
-        "DOOHDubaiSummerSurprises", "DOOHExpoCity", "DOOHEidAdvertising", "VenueOnboarding",
-        "CEOProfile", "COOProfile", "Onboarding"
+        "Connect", "BlogPost", "AuthorProfile", "NotFound", "ARDashboard", "Sitemap",
+        "SitemapPage", "DOOHAdvertisingDubai", "DigitalSignageUAE", "RobotsTxt", "SitemapXML"
       ];
 
   // Scroll to top when navigating to public pages
