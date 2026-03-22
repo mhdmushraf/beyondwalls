@@ -57,9 +57,7 @@ export default function LiveScreenMonitorPage() {
   const [bookings, setBookings] = useState([]);
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeIndex, setActiveIndex] = useState(0);
   const [lastRefresh, setLastRefresh] = useState(new Date());
-  const intervalRef = useRef(null);
   const pollRef = useRef(null);
 
   useEffect(() => {
