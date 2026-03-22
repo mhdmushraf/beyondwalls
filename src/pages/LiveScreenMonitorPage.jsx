@@ -146,20 +146,11 @@ export default function LiveScreenMonitorPage() {
 
   const playlist = buildPlaylist();
 
-  // Only cycle through slots that have actual content for the live preview
-  const playableSlots = playlist.filter(s => s.url);
-  const activeSlot = playableSlots.length > 0 ? playableSlots[activeIndex % playableSlots.length] : null;
-  const activePlaylistIndex = activeSlot ? playlist.indexOf(activeSlot) : -1;
-
-  // Auto-advance preview at same rate as ScreenPlayer
-  useEffect(() => {
-    if (playableSlots.length === 0) return;
-    const duration = screen?.slot_duration ? screen.slot_duration * 1000 : AD_DURATION;
-    intervalRef.current = setInterval(() => {
-      setActiveIndex(i => i + 1);
-    }, duration);
-    return () => clearInterval(intervalRef.current);
-  }, [playableSlots.length, screen?.slot_duration]);
+  // Use the exact index the ScreenPlayer wrote to the DB
+  const currentAdIndex = screen?.current_ad_index ?? 0;
+  const playlistLength = screen?.current_playlist_length ?? playlist.length;
+  const activePlaylistIndex = playlistLength > 0 ? currentAdIndex % Math.max(playlist.length, 1) : 0;
+  const activeSlot = playlist[activePlaylistIndex] || null;
 
   // Check if screen is truly online (heartbeat within last 30 seconds)
   const isOnline = screen?.is_online && screen?.last_heartbeat &&
