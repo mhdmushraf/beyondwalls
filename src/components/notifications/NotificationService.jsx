@@ -82,37 +82,9 @@ export const NotificationService = {
     if (notify.email) {
       try {
         await base44.integrations.Core.SendEmail({
-        to: user.email,
-        subject: `Campaign Review: ${booking.campaign_name} | BeyondWalls`,
-        body: `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        BEYONDWALLS
-   Campaign Review Update
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Dear ${user.full_name || "Valued Advertiser"},
-
-Your campaign "${booking.campaign_name}" was reviewed but could not be approved at this time.
-
-📋 REASON
-━━━━━━━━━━━━━━━━━━━━━━━━━
-${reason || "The campaign does not meet our content guidelines."}
-
-💡 NEXT STEPS
-• Review our advertising guidelines
-• Update your creative content
-• Resubmit your campaign
-
-Your booking amount has been refunded to your wallet.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Questions? Contact us at info@beyondwalls.ae
-Phone: +971 55 614 0067
-
-BeyondWalls - Advertise Beyond Boundaries
-www.beyondwalls.ae
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        `.trim()
+          to: user.email,
+          subject: `Campaign Review: ${booking.campaign_name} | BeyondWalls`,
+          body: EmailTemplates.accountRejected(user.full_name || "Valued Advertiser", reason || "The campaign does not meet our content guidelines.")
         });
       } catch (e) {
         console.error("Failed to send campaign rejected email", e);
