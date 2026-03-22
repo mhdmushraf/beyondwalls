@@ -143,8 +143,8 @@ export default function ManageScreenContent() {
     setSaving(false);
   };
 
-  // Build preview slots from current state
-  const previewSlots = [1, 2, 3].map(n => ({
+  // Build preview slots from current state (dynamic based on internal_slots)
+  const previewSlots = Array.from({ length: screen?.internal_slots || 6 }, (_, i) => i + 1).map(n => ({
     url: slots[`owner_slot_${n}_url`],
     type: slots[`owner_slot_${n}_type`] || "image",
     name: `Internal Slot ${n}`,
