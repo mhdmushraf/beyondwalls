@@ -37,7 +37,11 @@ export default function AdminVenues() {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  useEffect(() => { loadVenues(); }, []);
+  useEffect(() => {
+    loadVenues();
+    const interval = setInterval(() => loadVenues(), 20000);
+    return () => clearInterval(interval);
+  }, []);
 
   const loadVenues = async () => {
     const v = await base44.entities.Venue.list("-created_date");

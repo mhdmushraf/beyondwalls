@@ -89,6 +89,11 @@ export default function ManageScreenContent() {
   useEffect(() => {
     if (!screenId) { navigate("/MyScreens"); return; }
     loadData();
+    const interval = setInterval(async () => {
+      const s = await base44.entities.Screen.filter({ id: screenId });
+      if (s[0]) setScreen(s[0]);
+    }, 15000);
+    return () => clearInterval(interval);
   }, [screenId]);
 
   const loadData = async () => {
@@ -170,7 +175,7 @@ export default function ManageScreenContent() {
             <p className="text-sm text-slate-500">{venue?.name} · Internal Content Manager</p>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            {screen?.is_online
+            {screen?.last_heartbeat && (new Date() - new Date(screen.last_heartbeat)) < 60000
               ? <Badge className="bg-emerald-100 text-emerald-700 flex items-center gap-1"><Wifi className="w-3 h-3" />Online</Badge>
               : <Badge className="bg-slate-100 text-slate-500 flex items-center gap-1"><WifiOff className="w-3 h-3" />Offline</Badge>}
             <Link to={`/LiveScreenMonitorPage?id=${screenId}`}>

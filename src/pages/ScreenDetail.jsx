@@ -32,18 +32,21 @@ export default function ScreenDetail() {
   const [venue, setVenue] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const loadData = async () => {
+    const screens = await base44.entities.Screen.filter({ id });
+    const s = screens[0];
+    setScreen(s);
+    if (s?.venue_id) {
+      const venues = await base44.entities.Venue.filter({ id: s.venue_id });
+      setVenue(venues[0] || null);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const load = async () => {
-      const screens = await base44.entities.Screen.filter({ id });
-      const s = screens[0];
-      setScreen(s);
-      if (s?.venue_id) {
-        const venues = await base44.entities.Venue.filter({ id: s.venue_id });
-        setVenue(venues[0] || null);
-      }
-      setLoading(false);
-    };
-    load();
+    loadData();
+    const interval = setInterval(() => loadData(), 15000);
+    return () => clearInterval(interval);
   }, [id]);
 
   if (loading) return (
@@ -57,6 +60,9 @@ export default function ScreenDetail() {
       <p className="text-slate-500">Screen not found.</p>
     </div>
   );
+
+  // Accurate online check based on heartbeat (not stale is_online field)
+  const isOnline = screen?.last_heartbeat && (new Date() - new Date(screen.last_heartbeat)) < 60000;
 
   const approvalColors = {
     approved: "bg-emerald-100 text-emerald-700",
@@ -117,10 +123,15 @@ export default function ScreenDetail() {
         {/* Online Status & Setup Code */}
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex items-center gap-2">
-            {screen.is_online
+            {isOnline
               ? <><Wifi className="w-5 h-5 text-emerald-500" /><span className="text-sm font-medium text-emerald-600">Online</span></>
               : <><WifiOff className="w-5 h-5 text-slate-400" /><span className="text-sm font-medium text-slate-500">Offline</span></>
             }
+            {screen.last_heartbeat && (
+              <span className="text-xs text-slate-400 ml-1">
+                · Last seen: {new Date(screen.last_heartbeat).toLocaleTimeString()}
+              </span>
+            )}
           </div>
           {screen.approval_status === "approved" && screen.setup_code && (
             <div className="flex flex-col sm:flex-row gap-2 sm:ml-auto">

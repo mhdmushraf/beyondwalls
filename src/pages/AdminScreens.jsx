@@ -27,7 +27,11 @@ export default function AdminScreens() {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  useEffect(() => { loadData(); }, []);
+  useEffect(() => {
+    loadData();
+    const interval = setInterval(() => loadData(), 20000);
+    return () => clearInterval(interval);
+  }, []);
 
   const loadData = async () => {
     const [s, v] = await Promise.all([
@@ -148,7 +152,7 @@ export default function AdminScreens() {
                         </div>
                         <div className="mt-2 space-y-0.5">
                           <div className="flex items-center gap-1 text-xs text-slate-500">
-                            {s.is_online
+                            {s.last_heartbeat && (new Date() - new Date(s.last_heartbeat)) < 60000
                               ? <Wifi className="w-3 h-3 text-emerald-500 flex-shrink-0" />
                               : <WifiOff className="w-3 h-3 text-slate-300 flex-shrink-0" />}
                             <span>{s.width_px}×{s.height_px}px · {s.total_slots} slots</span>
@@ -185,7 +189,7 @@ export default function AdminScreens() {
                     </button>
                     <div className="absolute bottom-3 left-3 flex gap-2">
                       <Badge className={`${statusColor[selected.approval_status]} capitalize shadow`}>{selected.approval_status}</Badge>
-                      {selected.is_online
+                      {selected.last_heartbeat && (new Date() - new Date(selected.last_heartbeat)) < 60000
                         ? <Badge className="bg-emerald-100 text-emerald-700 shadow">Online</Badge>
                         : <Badge className="bg-slate-100 text-slate-500 shadow">Offline</Badge>}
                     </div>
