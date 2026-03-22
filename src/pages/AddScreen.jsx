@@ -188,6 +188,46 @@ export default function AddScreen() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 space-y-5">
         <form onSubmit={handleSubmit} className="space-y-5">
 
+          {/* Screen Photo Upload */}
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sm:p-6">
+            <SectionHeader icon={Camera} title="Screen Photo" subtitle="Upload a photo of the physical screen installation" />
+            <div>
+              {screenImageUrl ? (
+                <div className="relative">
+                  <img src={screenImageUrl} alt="Screen" className="w-full h-48 object-cover rounded-xl border border-slate-200" />
+                  <button
+                    type="button"
+                    onClick={() => setScreenImageUrl("")}
+                    className="absolute top-2 right-2 w-8 h-8 bg-white rounded-full shadow flex items-center justify-center hover:bg-red-50"
+                  >
+                    <X className="w-4 h-4 text-slate-600" />
+                  </button>
+                </div>
+              ) : (
+                <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-violet-400 hover:bg-violet-50/50 transition-all">
+                  {uploadingPhoto ? (
+                    <><Loader2 className="w-6 h-6 text-violet-500 animate-spin mb-2" /><span className="text-sm text-slate-500">Uploading...</span></>
+                  ) : (
+                    <><Camera className="w-8 h-8 text-slate-300 mb-2" /><span className="text-sm text-slate-500">Click to upload a photo</span><span className="text-xs text-slate-400 mt-1">JPG, PNG, WEBP</span></>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files[0];
+                      if (!file) return;
+                      setUploadingPhoto(true);
+                      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                      setScreenImageUrl(file_url);
+                      setUploadingPhoto(false);
+                    }}
+                  />
+                </label>
+              )}
+            </div>
+          </div>
+
           {/* Basic Info */}
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sm:p-6">
             <SectionHeader icon={Monitor} title="Basic Information" subtitle="Identify this screen and its location" />
