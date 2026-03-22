@@ -10,7 +10,6 @@ import { toast } from "sonner";
 export default function VenueDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [venue, setVenue] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -34,10 +33,7 @@ export default function VenueDetail() {
     setUpdating(true);
     await base44.entities.Venue.update(venue.id, { approval_status: status });
     setVenue(prev => ({ ...prev, approval_status: status }));
-    toast({
-      title: status === "approved" ? "Venue Approved" : "Venue Rejected",
-      description: `The venue has been ${status}.`,
-    });
+    toast.success(status === "approved" ? "Venue Approved" : "Venue Rejected", { description: `The venue has been ${status}.`, duration: 3000 });
     setUpdating(false);
   };
 
