@@ -221,33 +221,8 @@ export const NotificationService = {
     try {
       await base44.integrations.Core.SendEmail({
         to: user.email,
-        subject: `✅ Top-up Approved: AED ${amount} | BeyondWalls`,
-        body: `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        BEYONDWALLS
-   Top-up Confirmation
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Dear ${user.full_name || "Valued Advertiser"},
-
-Your wallet top-up has been approved!
-
-💰 TOP-UP DETAILS
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Amount: AED ${amount}
-Status: Completed
-Date: ${new Date().toLocaleDateString()}
-
-Your wallet has been credited. You can now book ad slots and launch campaigns!
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Questions? Contact us at info@beyondwalls.ae
-Phone: +971 55 614 0067
-
-BeyondWalls - Advertise Beyond Boundaries
-www.beyondwalls.ae
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        `.trim()
+        subject: `✅ Wallet Top-up Approved: AED ${amount} | BeyondWalls`,
+        body: EmailTemplates.topUpApproved(user.full_name || "Valued Advertiser", amount)
       });
     } catch (e) {
       console.error("Failed to send top-up approved email", e);
