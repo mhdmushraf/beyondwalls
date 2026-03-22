@@ -262,59 +262,33 @@ export default function ScreenPlayer() {
     ...campaigns.map(c => ({ id: c.id, name: c.name, creative_url: c.creative_url, creative_type: c.creative_type, type: "campaign" }))
   ].filter(ad => ad.creative_url);
 
-  // Build playlist: Slot1 -> Owner1 -> Slot2 -> Owner2 -> Slot3 -> Owner3 -> Slot4 -> Default -> Slot5 -> loop
+  // Build playlist: interleave advertiser ads and owner slots based on screen config
   const buildPlaylist = () => {
+    const maxPublicAds = screen?.public_ad_slots || 0;
+    const maxInternalSlots = screen?.internal_slots || 0;
+
+    const availableAdvertiserAds = advertiserAds.slice(0, maxPublicAds);
+    const availableOwnerSlots = ownerSlots.slice(0, maxInternalSlots);
+
     const playlist = [];
-    const sortedAds = [...advertiserAds].sort((a, b) => {
-      // Sort by slot number if available
-      const aBooking = bookings.find(bk => bk.id === a.id);
-      const bBooking = bookings.find(bk => bk.id === b.id);
-      const aSlot = aBooking?.slot_number || 999;
-      const bSlot = bBooking?.slot_number || 999;
-      return aSlot - bSlot;
-    });
-
-    // Get default BeyondWalls ad - always include it
-    const defaultAd = { 
-      id: "default-beyondwalls", 
-      name: "BeyondWalls Default", 
-      creative_url: defaultContentUrl, 
-      creative_type: defaultContentType || "image", 
-      type: "default" 
-    };
-
-    // Build rotation: Ad1, Owner1, Ad2, Owner2, Ad3, Owner3, Ad4, Default, Ad5
-    let adIdx = 0;
+    let advIdx = 0;
     let ownerIdx = 0;
 
-    // Slot 1 + Owner 1
-    if (adIdx < sortedAds.length) playlist.push(sortedAds[adIdx++]);
-    if (ownerIdx < ownerSlots.length) playlist.push(ownerSlots[ownerIdx++]);
-
-    // Slot 2 + Owner 2
-    if (adIdx < sortedAds.length) playlist.push(sortedAds[adIdx++]);
-    if (ownerIdx < ownerSlots.length) playlist.push(ownerSlots[ownerIdx++]);
-
-    // Slot 3 + Owner 3
-    if (adIdx < sortedAds.length) playlist.push(sortedAds[adIdx++]);
-    if (ownerIdx < ownerSlots.length) playlist.push(ownerSlots[ownerIdx++]);
-
-    // Slot 4 + BeyondWalls default ad (always include)
-    if (adIdx < sortedAds.length) playlist.push(sortedAds[adIdx++]);
-    playlist.push(defaultAd); // Always show BeyondWalls default
-
-    // Slot 5
-    if (adIdx < sortedAds.length) playlist.push(sortedAds[adIdx++]);
-
-    // Add any remaining ads
-    while (adIdx < sortedAds.length) {
-      playlist.push(sortedAds[adIdx++]);
+    // Interleave: one ad, one owner slot, repeat
+    while (advIdx < availableAdvertiserAds.length || ownerIdx < availableOwnerSlots.length) {
+      if (advIdx < availableAdvertiserAds.length) playlist.push(availableAdvertiserAds[advIdx++]);
+      if (ownerIdx < availableOwnerSlots.length) playlist.push(availableOwnerSlots[ownerIdx++]);
     }
 
-    // Fallback: if playlist is empty, show default ad and/or owner slots
+    // Fallback: only show default BeyondWalls ad if absolutely no content
     if (playlist.length === 0) {
-      if (ownerSlots.length > 0) return [...ownerSlots, defaultAd];
-      return [defaultAd]; // Always show at least BeyondWalls default
+      return [{
+        id: "default-beyondwalls",
+        name: "BeyondWalls Default",
+        creative_url: defaultContentUrl,
+        creative_type: defaultContentType || "image",
+        type: "default"
+      }];
     }
 
     return playlist;
