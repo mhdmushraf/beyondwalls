@@ -56,9 +56,13 @@ export default function MyVenues() {
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 bg-violet-100 rounded-xl flex items-center justify-center">
-                        <Building2 className="w-5 h-5 text-violet-600" />
-                      </div>
+                      {v.image_url ? (
+                        <img src={v.image_url} alt={v.name} className="w-11 h-11 rounded-xl object-cover flex-shrink-0" />
+                      ) : (
+                        <div className="w-11 h-11 bg-violet-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <Building2 className="w-5 h-5 text-violet-600" />
+                        </div>
+                      )}
                       <div>
                         <h3 className="font-semibold text-slate-900">{v.name}</h3>
                         <p className="text-xs text-slate-500 capitalize">{v.venue_type}</p>
@@ -78,7 +82,7 @@ export default function MyVenues() {
                         <MonitorPlay className="w-3 h-3 mr-1" /> Add Screen
                       </Button>
                     </Link>
-                    <Link to={`/VenueDetail?id=${v.id}`} className="flex-1">
+                    <Link to={`/VenueDetail/${v.id}`} className="flex-1">
                       <Button size="sm" className="w-full bg-violet-600 hover:bg-violet-700 text-xs">View Details</Button>
                     </Link>
                   </div>

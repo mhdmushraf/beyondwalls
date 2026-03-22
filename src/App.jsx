@@ -14,6 +14,7 @@ import MobileAppOnboarding from '@/components/mobile/MobileAppOnboarding';
 import { isMobileApp } from '@/components/mobile/mobileDetection';
 import MobileRouteTransition from '@/components/mobile/MobileRouteTransition';
 import { AnimatePresence } from 'framer-motion';
+import VenueDetail from './pages/VenueDetail';
 
 // Lazy load pages for code splitting
 const LazyPageLoader = ({ Page }) => (
@@ -91,6 +92,15 @@ const AuthenticatedApp = () => {
              }
            />
          ))}
+         <Route path="/VenueDetail/:id" element={
+           <LayoutWrapper currentPageName="VenueDetail">
+             <MobileRouteTransition>
+               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+                 <VenueDetail />
+               </Suspense>
+             </MobileRouteTransition>
+           </LayoutWrapper>
+         } />
          <Route path="*" element={<PageNotFound />} />
        </Routes>
      </AnimatePresence>
@@ -129,7 +139,7 @@ function App() {
           <NavigationTracker />
           <AuthenticatedApp />
         </Router>
-        <Toaster />
+        <Toaster closeButton />
         <VisualEditAgent />
       </QueryClientProvider>
     </AuthProvider>
