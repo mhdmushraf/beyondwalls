@@ -315,40 +315,7 @@ export const NotificationService = {
       await base44.integrations.Core.SendEmail({
         to: screenOwner.email,
         subject: `📺 Screen Approved: ${screen.name} | BeyondWalls`,
-        body: `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        BEYONDWALLS
-   Your Screen is Live!
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Dear ${screenOwner.full_name || "Venue Partner"},
-
-Congratulations! Your screen has been approved and is now available for advertisers.
-
-📋 SCREEN DETAILS
-━━━━━━━━━━━━━━━━━━━━━━━━━
-📺 Screen: ${screen.name}
-📍 Venue: ${venue?.name || "N/A"}
-📐 Size: ${screen.size}
-📱 Orientation: ${screen.orientation}
-💰 Slot Price: AED ${screen.slot_price}/week
-
-Your screen is now discoverable by advertisers and you'll start earning revenue from bookings.
-
-💰 EARNINGS
-━━━━━━━━━━━━━━━━━━━━━━━━━
-• You earn 70% of every booking
-• Weekly automatic payouts
-• Track earnings in your dashboard
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Questions? Contact us at info@beyondwalls.ae
-Phone: +971 55 614 0067
-
-BeyondWalls - Advertise Beyond Boundaries
-www.beyondwalls.ae
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        `.trim()
+        body: EmailTemplates.screenApproved(screenOwner.full_name || "Venue Partner", screen.name, venue?.name, screen.price_per_week || screen.slot_price || "N/A")
       });
     } catch (e) {
       console.error("Failed to send screen approved email", e);
