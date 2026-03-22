@@ -196,34 +196,9 @@ export const NotificationService = {
     if (notify.email) {
       try {
         await base44.integrations.Core.SendEmail({
-        to: user.email,
-        subject: `✅ Withdrawal Processed: AED ${amount} | BeyondWalls`,
-        body: `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        BEYONDWALLS
-   Withdrawal Confirmation
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Dear ${user.full_name || "Valued Partner"},
-
-Your withdrawal request has been processed successfully!
-
-💰 WITHDRAWAL DETAILS
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Amount: AED ${amount}
-Status: Completed
-Date: ${new Date().toLocaleDateString()}
-
-The funds have been transferred to your registered bank account. Please allow 1-3 business days for the amount to reflect in your account.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Questions? Contact us at info@beyondwalls.ae
-Phone: +971 55 614 0067
-
-BeyondWalls - Advertise Beyond Boundaries
-www.beyondwalls.ae
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        `.trim()
+          to: user.email,
+          subject: `✅ Withdrawal Processed: AED ${amount} | BeyondWalls`,
+          body: EmailTemplates.payoutProcessed(user.full_name || "Valued Partner", amount)
         });
       } catch (e) {
         console.error("Failed to send payout completed email", e);
