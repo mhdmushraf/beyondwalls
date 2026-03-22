@@ -1,0 +1,185 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { base44 } from "@/api/base44Client";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  ArrowLeft, MonitorPlay, MapPin, Wifi, WifiOff, Code,
+  Layers, Clock, DollarSign, LayoutGrid, Maximize2, Image as ImageIcon
+} from "lucide-react";
+
+function StatCard({ icon: Icon, label, value, iconClass = "text-violet-500" }) {
+  return (
+    <div className="bg-slate-50 rounded-xl p-4 flex items-center gap-3">
+      <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center shadow-sm flex-shrink-0">
+        <Icon className={`w-4 h-4 ${iconClass}`} />
+      </div>
+      <div>
+        <p className="text-xs text-slate-400">{label}</p>
+        <p className="font-semibold text-slate-800 text-sm">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+export default function ScreenDetail() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [screen, setScreen] = useState(null);
+  const [venue, setVenue] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      const screens = await base44.entities.Screen.filter({ id });
+      const s = screens[0];
+      setScreen(s);
+      if (s?.venue_id) {
+        const venues = await base44.entities.Venue.filter({ id: s.venue_id });
+        setVenue(venues[0] || null);
+      }
+      setLoading(false);
+    };
+    load();
+  }, [id]);
+
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin" />
+    </div>
+  );
+
+  if (!screen) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <p className="text-slate-500">Screen not found.</p>
+    </div>
+  );
+
+  const approvalColors = {
+    approved: "bg-emerald-100 text-emerald-700",
+    pending: "bg-amber-100 text-amber-700",
+    rejected: "bg-red-100 text-red-700",
+  };
+
+  const gcd = (a, b) => b ? gcd(b, a % b) : a;
+  const aspectRatio = () => {
+    const w = screen.width_px, h = screen.height_px;
+    if (!w || !h) return null;
+    const d = gcd(w, h);
+    return `${w / d}:${h / d}`;
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-violet-50/30">
+      {/* Header */}
+      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-slate-100 px-4 sm:px-6 py-4">
+        <div className="max-w-3xl mx-auto flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="rounded-xl">
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-md shadow-violet-200 flex-shrink-0">
+              <MonitorPlay className="w-5 h-5 text-white" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-lg font-bold text-slate-900 truncate">{screen.name}</h1>
+              <p className="text-xs text-slate-500 truncate">{venue?.name || "Unknown Venue"}</p>
+            </div>
+          </div>
+          <Badge className={`flex-shrink-0 ${approvalColors[screen.approval_status] || "bg-slate-100 text-slate-600"}`}>
+            {screen.approval_status}
+          </Badge>
+        </div>
+      </div>
+
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 space-y-5">
+
+        {/* Screen Photo */}
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+          {screen.screen_image_url ? (
+            <img src={screen.screen_image_url} alt={screen.name} className="w-full h-56 sm:h-72 object-cover" />
+          ) : (
+            <div className="w-full h-48 bg-slate-100 flex flex-col items-center justify-center gap-2">
+              <ImageIcon className="w-10 h-10 text-slate-300" />
+              <p className="text-sm text-slate-400">No photo uploaded</p>
+            </div>
+          )}
+        </div>
+
+        {/* Online Status & Setup Code */}
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="flex items-center gap-2">
+            {screen.is_online
+              ? <><Wifi className="w-5 h-5 text-emerald-500" /><span className="text-sm font-medium text-emerald-600">Online</span></>
+              : <><WifiOff className="w-5 h-5 text-slate-400" /><span className="text-sm font-medium text-slate-500">Offline</span></>
+            }
+          </div>
+          {screen.approval_status === "approved" && screen.setup_code && (
+            <div className="flex items-center gap-2 bg-violet-50 rounded-xl px-4 py-2 sm:ml-auto">
+              <Code className="w-4 h-4 text-violet-600" />
+              <span className="text-sm text-violet-700 font-mono font-bold tracking-widest">{screen.setup_code}</span>
+              <span className="text-xs text-violet-400 ml-1">Setup Code</span>
+            </div>
+          )}
+          {screen.approval_status === "pending" && (
+            <p className="text-xs text-amber-600 sm:ml-auto">⏳ Awaiting admin approval before you can connect this screen.</p>
+          )}
+          {screen.approval_status === "rejected" && (
+            <p className="text-xs text-red-600 sm:ml-auto">❌ {screen.rejection_reason || "Screen was rejected."}</p>
+          )}
+        </div>
+
+        {/* Location */}
+        {(screen.location_description || venue) && (
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+            <h2 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-violet-500" /> Location
+            </h2>
+            {venue && <p className="text-slate-800 font-medium">{venue.name}</p>}
+            {venue?.address && <p className="text-sm text-slate-500">{venue.address}, {venue.city}</p>}
+            {screen.location_description && (
+              <p className="text-sm text-slate-600 mt-1 bg-slate-50 rounded-lg px-3 py-2">{screen.location_description}</p>
+            )}
+          </div>
+        )}
+
+        {/* Dimensions */}
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+          <h2 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+            <Maximize2 className="w-4 h-4 text-violet-500" /> Screen Specifications
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <StatCard icon={Maximize2} label="Resolution" value={`${screen.width_px || "—"} × ${screen.height_px || "—"} px`} />
+            {aspectRatio() && <StatCard icon={Maximize2} label="Aspect Ratio" value={aspectRatio()} />}
+            <StatCard icon={Layers} label="Display Mode" value={screen.display_mode || "fit"} />
+          </div>
+        </div>
+
+        {/* Ad Slots */}
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+          <h2 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+            <LayoutGrid className="w-4 h-4 text-violet-500" /> Ad Slot Configuration
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <StatCard icon={LayoutGrid} label="Total Slots" value={screen.total_slots ?? "—"} />
+            <StatCard icon={LayoutGrid} label="Ad Slots" value={screen.public_ad_slots ?? "—"} iconClass="text-blue-500" />
+            <StatCard icon={LayoutGrid} label="Internal Slots" value={screen.internal_slots ?? "—"} iconClass="text-indigo-500" />
+            <StatCard icon={Clock} label="Slot Duration" value={`${screen.slot_duration ?? "—"}s`} iconClass="text-amber-500" />
+          </div>
+        </div>
+
+        {/* Pricing & Performance */}
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+          <h2 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+            <DollarSign className="w-4 h-4 text-violet-500" /> Pricing & Performance
+          </h2>
+          <div className="grid grid-cols-2 gap-3">
+            <StatCard icon={DollarSign} label="Price / Slot / Week" value={`AED ${screen.price_per_week ?? "—"}`} iconClass="text-emerald-500" />
+            <StatCard icon={MonitorPlay} label="Total Impressions" value={(screen.total_impressions || 0).toLocaleString()} iconClass="text-violet-500" />
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
