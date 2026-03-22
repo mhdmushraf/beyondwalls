@@ -131,14 +131,6 @@ export default function CompleteProfile() {
       }
 
       const updatedUser = await base44.auth.updateMe(updateData);
-      
-      await base44.entities.AdminNotification.create({
-        type: "new_user",
-        title: "New User Registration",
-        message: `${formData.full_name} (${accountType}) has registered as ${userRole}`,
-        reference_id: updatedUser.id,
-        reference_type: "User"
-      });
 
       // Send registration notification emails (admin + welcome)
       try {
