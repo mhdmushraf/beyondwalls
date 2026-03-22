@@ -70,6 +70,8 @@ export default function AddScreen() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [venues, setVenues] = useState([]);
+  const [screenImageUrl, setScreenImageUrl] = useState("");
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   const [physicalWidth, setPhysicalWidth] = useState("");
   const [physicalHeight, setPhysicalHeight] = useState("");
@@ -123,6 +125,7 @@ export default function AddScreen() {
       ...form,
       owner_email: user.email,
       setup_code: generateSetupCode(),
+      screen_image_url: screenImageUrl || null,
       width_px: Number(form.width_px),
       height_px: Number(form.height_px),
       total_slots: Number(form.total_slots),

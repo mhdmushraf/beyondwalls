@@ -49,39 +49,45 @@ export default function MyScreens() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {screens.map(s => (
-              <Card key={s.id} className="border-0 shadow-sm hover:shadow-md transition-all">
-                <CardContent className="p-5">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${s.is_online ? "bg-emerald-100" : "bg-slate-100"}`}>
-                        <MonitorPlay className={`w-5 h-5 ${s.is_online ? "text-emerald-600" : "text-slate-400"}`} />
-                      </div>
+              <Link key={s.id} to={`/ScreenDetail/${s.id}`}>
+                <Card className="border-0 shadow-sm hover:shadow-md transition-all cursor-pointer hover:ring-2 hover:ring-violet-200">
+                  {/* Thumbnail */}
+                  {s.screen_image_url ? (
+                    <img src={s.screen_image_url} alt={s.name} className="w-full h-36 object-cover rounded-t-xl" />
+                  ) : (
+                    <div className="w-full h-36 bg-slate-100 rounded-t-xl flex flex-col items-center justify-center gap-1">
+                      <ImageIcon className="w-7 h-7 text-slate-300" />
+                      <span className="text-xs text-slate-400">No photo</span>
+                    </div>
+                  )}
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between mb-3">
                       <div>
                         <h3 className="font-semibold text-slate-900">{s.name}</h3>
                         <p className="text-xs text-slate-500">{s.width_px}×{s.height_px}px</p>
                       </div>
+                      <div className="flex items-center gap-1.5 flex-shrink-0">
+                        {s.is_online ? <Wifi className="w-4 h-4 text-emerald-500" /> : <WifiOff className="w-4 h-4 text-slate-400" />}
+                        <Badge className={statusColor[s.approval_status] || "bg-slate-100 text-slate-600"}>
+                          {s.approval_status}
+                        </Badge>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      {s.is_online ? <Wifi className="w-4 h-4 text-emerald-500" /> : <WifiOff className="w-4 h-4 text-slate-400" />}
-                      <Badge className={statusColor[s.approval_status] || "bg-slate-100 text-slate-600"}>
-                        {s.approval_status}
-                      </Badge>
+                    <div className="grid grid-cols-2 gap-2 text-xs text-slate-600 mb-3">
+                      <div className="bg-slate-50 rounded-lg p-2"><span className="text-slate-400">Slots:</span> {s.total_slots}</div>
+                      <div className="bg-slate-50 rounded-lg p-2"><span className="text-slate-400">Duration:</span> {s.slot_duration}s</div>
+                      <div className="bg-slate-50 rounded-lg p-2"><span className="text-slate-400">Price/wk:</span> AED {s.price_per_week}</div>
+                      <div className="bg-slate-50 rounded-lg p-2"><span className="text-slate-400">Impressions:</span> {s.total_impressions?.toLocaleString() || 0}</div>
                     </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-xs text-slate-600 mb-3">
-                    <div className="bg-slate-50 rounded-lg p-2"><span className="text-slate-400">Slots:</span> {s.total_slots}</div>
-                    <div className="bg-slate-50 rounded-lg p-2"><span className="text-slate-400">Duration:</span> {s.slot_duration}s</div>
-                    <div className="bg-slate-50 rounded-lg p-2"><span className="text-slate-400">Price/wk:</span> AED {s.price_per_week}</div>
-                    <div className="bg-slate-50 rounded-lg p-2"><span className="text-slate-400">Impressions:</span> {s.total_impressions?.toLocaleString() || 0}</div>
-                  </div>
-                  {s.setup_code && (
-                    <div className="flex items-center gap-2 bg-violet-50 rounded-lg p-2 mb-3">
-                      <Code className="w-3.5 h-3.5 text-violet-600" />
-                      <span className="text-xs text-violet-700 font-mono font-bold">Setup Code: {s.setup_code}</span>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+                    {s.approval_status === "approved" && s.setup_code && (
+                      <div className="flex items-center gap-2 bg-violet-50 rounded-lg p-2">
+                        <Code className="w-3.5 h-3.5 text-violet-600" />
+                        <span className="text-xs text-violet-700 font-mono font-bold">Setup Code: {s.setup_code}</span>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         )}
