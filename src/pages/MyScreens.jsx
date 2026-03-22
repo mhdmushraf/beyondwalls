@@ -22,15 +22,25 @@ export default function MyScreens() {
   const [onlineFilter, setOnlineFilter] = useState("all");
 
   useEffect(() => {
-    base44.auth.me().then(async (u) => {
+    let userEmail = null;
+    const loadScreens = async (showLoading = false) => {
+      if (showLoading) setLoading(true);
+      if (!userEmail) {
+        const u = await base44.auth.me();
+        userEmail = u.email;
+      }
       const [s, v] = await Promise.all([
-        base44.entities.Screen.filter({ owner_email: u.email }, "-created_date"),
-        base44.entities.Venue.filter({ owner_email: u.email }),
+        base44.entities.Screen.filter({ owner_email: userEmail }, "-created_date"),
+        base44.entities.Venue.filter({ owner_email: userEmail }),
       ]);
       setScreens(s);
       setVenues(v);
       setLoading(false);
-    });
+    };
+    loadScreens(true);
+    // Refresh every 20s to keep online status current
+    const interval = setInterval(() => loadScreens(false), 20000);
+    return () => clearInterval(interval);
   }, []);
 
   const statusColor = {
