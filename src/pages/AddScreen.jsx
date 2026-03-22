@@ -22,7 +22,11 @@ function convertToPixels(value, unit) {
 }
 
 function generateSetupCode() {
-  return Math.random().toString(36).substring(2, 8).toUpperCase();
+  return "BW-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+}
+
+function generatePin() {
+  return String(Math.floor(100000 + Math.random() * 900000));
 }
 
 function SectionHeader({ icon: Icon, title, subtitle }) {
