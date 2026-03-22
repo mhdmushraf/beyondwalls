@@ -152,9 +152,9 @@ export default function LiveScreenMonitorPage() {
   const activePlaylistIndex = playlistLength > 0 ? currentAdIndex % Math.max(playlist.length, 1) : 0;
   const activeSlot = playlist[activePlaylistIndex] || null;
 
-  // Check if screen is truly online (heartbeat within last 30 seconds)
-  const isOnline = screen?.is_online && screen?.last_heartbeat &&
-    (new Date() - new Date(screen.last_heartbeat)) < 30000;
+  // Online = heartbeat received within last 60 seconds (player sends every 15s)
+  const isOnline = screen?.last_heartbeat &&
+    (new Date() - new Date(screen.last_heartbeat)) < 60000;
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center">
