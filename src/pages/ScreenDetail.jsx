@@ -3,9 +3,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
 import {
   ArrowLeft, MonitorPlay, MapPin, Wifi, WifiOff, Code,
-  Layers, Clock, DollarSign, LayoutGrid, Maximize2, Image as ImageIcon
+  Layers, Clock, DollarSign, LayoutGrid, Maximize2, Image as ImageIcon,
+  Pencil, KeyRound
 } from "lucide-react";
 
 function StatCard({ icon: Icon, label, value, iconClass = "text-violet-500" }) {
@@ -89,6 +91,11 @@ export default function ScreenDetail() {
           <Badge className={`flex-shrink-0 ${approvalColors[screen.approval_status] || "bg-slate-100 text-slate-600"}`}>
             {screen.approval_status}
           </Badge>
+          <Link to={`/EditScreen/${screen.id}`}>
+            <Button size="sm" variant="outline" className="flex-shrink-0 rounded-xl border-slate-200">
+              <Pencil className="w-3.5 h-3.5 mr-1.5" /> Edit
+            </Button>
+          </Link>
         </div>
       </div>
 
@@ -115,10 +122,19 @@ export default function ScreenDetail() {
             }
           </div>
           {screen.approval_status === "approved" && screen.setup_code && (
-            <div className="flex items-center gap-2 bg-violet-50 rounded-xl px-4 py-2 sm:ml-auto">
-              <Code className="w-4 h-4 text-violet-600" />
-              <span className="text-sm text-violet-700 font-mono font-bold tracking-widest">{screen.setup_code}</span>
-              <span className="text-xs text-violet-400 ml-1">Setup Code</span>
+            <div className="flex flex-col sm:flex-row gap-2 sm:ml-auto">
+              <div className="flex items-center gap-2 bg-violet-50 rounded-xl px-4 py-2">
+                <Code className="w-4 h-4 text-violet-600" />
+                <span className="text-sm text-violet-700 font-mono font-bold tracking-widest">{screen.setup_code}</span>
+                <span className="text-xs text-violet-400 ml-1">Setup Code</span>
+              </div>
+              {screen.screen_pin && (
+                <div className="flex items-center gap-2 bg-indigo-50 rounded-xl px-4 py-2">
+                  <KeyRound className="w-4 h-4 text-indigo-600" />
+                  <span className="text-sm text-indigo-700 font-mono font-bold tracking-widest">{screen.screen_pin}</span>
+                  <span className="text-xs text-indigo-400 ml-1">PIN</span>
+                </div>
+              )}
             </div>
           )}
           {screen.approval_status === "pending" && (

@@ -127,6 +127,7 @@ export default function AddScreen() {
       ...form,
       owner_email: user.email,
       setup_code: generateSetupCode(),
+      screen_pin: generatePin(),
       screen_image_url: screenImageUrl || null,
       width_px: Number(form.width_px),
       height_px: Number(form.height_px),

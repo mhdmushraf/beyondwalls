@@ -18,6 +18,7 @@ import VenueDetail from './pages/VenueDetail';
 import EditVenue from './pages/EditVenue';
 import ScreenDetail from './pages/ScreenDetail';
 import ManageScreenContent from './pages/ManageScreenContent';
+import EditScreen from './pages/EditScreen';
 
 // Lazy load pages for code splitting
 const LazyPageLoader = ({ Page }) => (
@@ -118,6 +119,15 @@ const AuthenticatedApp = () => {
              <MobileRouteTransition>
                <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
                  <ScreenDetail />
+               </Suspense>
+             </MobileRouteTransition>
+           </LayoutWrapper>
+         } />
+         <Route path="/EditScreen/:id" element={
+           <LayoutWrapper currentPageName="EditScreen">
+             <MobileRouteTransition>
+               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+                 <EditScreen />
                </Suspense>
              </MobileRouteTransition>
            </LayoutWrapper>
