@@ -289,38 +289,7 @@ export const NotificationService = {
       await base44.integrations.Core.SendEmail({
         to: venueOwner.email,
         subject: `✅ Venue Approved: ${venue.name} | BeyondWalls`,
-        body: `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        BEYONDWALLS
-   Your Venue is Approved!
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Dear ${venueOwner.full_name || "Venue Partner"},
-
-Great news! Your venue has been approved and is now active in the BeyondWalls network.
-
-📋 VENUE DETAILS
-━━━━━━━━━━━━━━━━━━━━━━━━━
-📍 Venue: ${venue.name}
-🏢 Type: ${venue.type}
-📍 Location: ${venue.city}${venue.area ? `, ${venue.area}` : ''}
-
-💡 NEXT STEPS
-━━━━━━━━━━━━━━━━━━━━━━━━━
-1. Add screens to your venue
-2. Configure screen settings
-3. Start earning 70% revenue share from advertisers
-
-Log in to your dashboard to get started!
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Questions? Contact us at info@beyondwalls.ae
-Phone: +971 55 614 0067
-
-BeyondWalls - Advertise Beyond Boundaries
-www.beyondwalls.ae
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        `.trim()
+        body: EmailTemplates.venueApproved(venueOwner.full_name || "Venue Partner", venue.name, venue.venue_type || venue.type || "N/A", venue.city)
       });
     } catch (e) {
       console.error("Failed to send venue approved email", e);
