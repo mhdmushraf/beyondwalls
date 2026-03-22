@@ -84,6 +84,7 @@ export default function ScreenPlayer() {
       status: "active",
       is_online: true,
       player_active: true,
+      current_ad_index: 0,
       last_heartbeat: new Date().toISOString(),
       current_session_id: sessionId,
       session_started_at: new Date().toISOString(),
