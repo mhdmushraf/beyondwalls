@@ -76,8 +76,6 @@ export default function AddScreen() {
   const [physicalWidth, setPhysicalWidth] = useState("");
   const [physicalHeight, setPhysicalHeight] = useState("");
   const [physicalUnit, setPhysicalUnit] = useState("cm");
-  const [screenImageUrl, setScreenImageUrl] = useState("");
-  const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   const [form, setForm] = useState({
     venue_id: "",
