@@ -479,6 +479,190 @@ ${this.footer()}
     return this.baseTemplate(content, "Update on your BeyondWalls account application");
   },
 
+  // Generic notification email (for venue approved, screen approved, bookings, payouts etc.)
+  notification(title, emoji, headerColor, bodyHtml) {
+    const content = `
+<tr>
+  <td style="background: ${headerColor}; padding: 36px 40px 28px;">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+      <tr>
+        <td align="center">
+          <div style="background-color: rgba(255,255,255,0.2); width: 64px; height: 64px; border-radius: 16px; display: inline-block; margin-bottom: 12px; font-size: 32px; line-height: 64px;">${emoji}</div>
+          <h1 style="margin: 0; color: #ffffff; font-size: 26px; font-weight: 700;">${title}</h1>
+          <p style="margin: 6px 0 0; color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 500;">BeyondWalls — Advertise Beyond Boundaries</p>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+  <td style="padding: 36px 40px;">
+    ${bodyHtml}
+  </td>
+</tr>
+${this.footer()}
+    `;
+    return this.baseTemplate(content);
+  },
+
+  // Venue approved
+  venueApproved(ownerName, venueName, venueType, city) {
+    const body = `
+      <p style="margin: 0 0 20px; color: #475569; font-size: 16px; line-height: 1.6;">Dear <strong>${ownerName}</strong>,</p>
+      <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-left: 4px solid #10b981; border-radius: 12px; padding: 20px; margin-bottom: 28px;">
+        <p style="margin: 0; color: #065f46; font-size: 15px; font-weight: 600;">🎉 Your venue has been approved and is now live on the BeyondWalls network!</p>
+      </div>
+      <div style="background-color: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 28px;">
+        <h3 style="margin: 0 0 16px; color: #0f172a; font-size: 16px; font-weight: 600;">📋 Venue Details</h3>
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+          <tr><td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;"><span style="color:#64748b;font-size:13px;">VENUE</span><br><span style="color:#0f172a;font-size:15px;font-weight:600;">${venueName}</span></td></tr>
+          <tr><td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;"><span style="color:#64748b;font-size:13px;">TYPE</span><br><span style="color:#0f172a;font-size:15px;font-weight:600;text-transform:capitalize;">${venueType}</span></td></tr>
+          <tr><td style="padding: 8px 0;"><span style="color:#64748b;font-size:13px;">LOCATION</span><br><span style="color:#0f172a;font-size:15px;font-weight:600;">📍 ${city}</span></td></tr>
+        </table>
+      </div>
+      <div style="background-color: #f0fdf4; border-radius: 12px; padding: 20px; margin-bottom: 28px;">
+        <p style="margin: 0 0 12px; color: #0f172a; font-size: 15px; font-weight: 600;">💡 Next Steps</p>
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+          <tr><td style="padding: 6px 0; color: #475569; font-size: 14px;">1. Add screens to your venue from the dashboard</td></tr>
+          <tr><td style="padding: 6px 0; color: #475569; font-size: 14px;">2. Configure screen settings and pricing</td></tr>
+          <tr><td style="padding: 6px 0; color: #475569; font-size: 14px;">3. Start earning 70% revenue share from advertisers</td></tr>
+        </table>
+      </div>
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr><td align="center"><a href="https://beyondwalls.ae/MyVenues" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">Go to My Venues →</a></td></tr>
+      </table>
+    `;
+    return this.notification("Venue Approved! 🏢", "✅", "linear-gradient(135deg, #059669 0%, #10b981 100%)", body);
+  },
+
+  // Screen approved
+  screenApproved(ownerName, screenName, venueName, slotPrice) {
+    const body = `
+      <p style="margin: 0 0 20px; color: #475569; font-size: 16px; line-height: 1.6;">Dear <strong>${ownerName}</strong>,</p>
+      <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-left: 4px solid #10b981; border-radius: 12px; padding: 20px; margin-bottom: 28px;">
+        <p style="margin: 0; color: #065f46; font-size: 15px; font-weight: 600;">📺 Your screen is now live and visible to advertisers across the UAE!</p>
+      </div>
+      <div style="background-color: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 28px;">
+        <h3 style="margin: 0 0 16px; color: #0f172a; font-size: 16px; font-weight: 600;">📋 Screen Details</h3>
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+          <tr><td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;"><span style="color:#64748b;font-size:13px;">SCREEN</span><br><span style="color:#0f172a;font-size:15px;font-weight:600;">${screenName}</span></td></tr>
+          <tr><td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;"><span style="color:#64748b;font-size:13px;">VENUE</span><br><span style="color:#0f172a;font-size:15px;font-weight:600;">📍 ${venueName || "N/A"}</span></td></tr>
+          <tr><td style="padding: 8px 0;"><span style="color:#64748b;font-size:13px;">SLOT PRICE</span><br><span style="color:#0f172a;font-size:15px;font-weight:600;">💰 AED ${slotPrice}/week</span></td></tr>
+        </table>
+      </div>
+      <div style="background-color: #f0fdf4; border-radius: 12px; padding: 20px; margin-bottom: 28px;">
+        <p style="margin: 0; color: #065f46; font-size: 14px; line-height: 1.7;">✓ You earn <strong>70%</strong> of every booking automatically added to your wallet.</p>
+      </div>
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr><td align="center"><a href="https://beyondwalls.ae/MyScreens" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">View My Screens →</a></td></tr>
+      </table>
+    `;
+    return this.notification("Screen Approved! 📺", "📺", "linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)", body);
+  },
+
+  // New booking for venue owner
+  newBooking(ownerName, screenName, campaignName, advertiserName, startDate, endDate, venueShare) {
+    const body = `
+      <p style="margin: 0 0 20px; color: #475569; font-size: 16px; line-height: 1.6;">Dear <strong>${ownerName}</strong>,</p>
+      <div style="background: linear-gradient(135deg, #fef9c3 0%, #fde68a 100%); border-left: 4px solid #f59e0b; border-radius: 12px; padding: 20px; margin-bottom: 28px;">
+        <p style="margin: 0; color: #78350f; font-size: 15px; font-weight: 600;">💰 You have a new ad booking on your screen!</p>
+      </div>
+      <div style="background-color: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 28px;">
+        <h3 style="margin: 0 0 16px; color: #0f172a; font-size: 16px; font-weight: 600;">📋 Booking Details</h3>
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+          <tr><td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;"><span style="color:#64748b;font-size:13px;">SCREEN</span><br><span style="color:#0f172a;font-size:15px;font-weight:600;">${screenName}</span></td></tr>
+          <tr><td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;"><span style="color:#64748b;font-size:13px;">CAMPAIGN</span><br><span style="color:#0f172a;font-size:15px;font-weight:600;">${campaignName}</span></td></tr>
+          <tr><td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;"><span style="color:#64748b;font-size:13px;">ADVERTISER</span><br><span style="color:#0f172a;font-size:15px;font-weight:600;">${advertiserName}</span></td></tr>
+          <tr><td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;"><span style="color:#64748b;font-size:13px;">DURATION</span><br><span style="color:#0f172a;font-size:15px;font-weight:600;">📅 ${startDate} → ${endDate}</span></td></tr>
+          <tr><td style="padding: 8px 0;"><span style="color:#64748b;font-size:13px;">YOUR EARNINGS (70%)</span><br><span style="color:#059669;font-size:18px;font-weight:700;">💰 AED ${venueShare}</span></td></tr>
+        </table>
+      </div>
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr><td align="center"><a href="https://beyondwalls.ae/VenueEarnings" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">View Earnings →</a></td></tr>
+      </table>
+    `;
+    return this.notification("New Ad Booking! 💰", "💰", "linear-gradient(135deg, #d97706 0%, #f59e0b 100%)", body);
+  },
+
+  // Booking confirmed for advertiser
+  bookingConfirmed(advertiserName, campaignName, screenName, venueName, city, startDate, endDate, totalCost) {
+    const body = `
+      <p style="margin: 0 0 20px; color: #475569; font-size: 16px; line-height: 1.6;">Dear <strong>${advertiserName}</strong>,</p>
+      <div style="background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%); border-left: 4px solid #7c3aed; border-radius: 12px; padding: 20px; margin-bottom: 28px;">
+        <p style="margin: 0; color: #4c1d95; font-size: 15px; font-weight: 600;">🎯 Your booking is confirmed and pending admin review. We'll notify you once it goes live!</p>
+      </div>
+      <div style="background-color: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 28px;">
+        <h3 style="margin: 0 0 16px; color: #0f172a; font-size: 16px; font-weight: 600;">📋 Booking Details</h3>
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+          <tr><td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;"><span style="color:#64748b;font-size:13px;">CAMPAIGN</span><br><span style="color:#0f172a;font-size:15px;font-weight:600;">${campaignName}</span></td></tr>
+          <tr><td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;"><span style="color:#64748b;font-size:13px;">SCREEN & VENUE</span><br><span style="color:#0f172a;font-size:15px;font-weight:600;">📺 ${screenName}</span><br><span style="color:#64748b;font-size:14px;">📍 ${venueName}, ${city}</span></td></tr>
+          <tr><td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;"><span style="color:#64748b;font-size:13px;">DURATION</span><br><span style="color:#0f172a;font-size:15px;font-weight:600;">📅 ${startDate} → ${endDate}</span></td></tr>
+          <tr><td style="padding: 8px 0;"><span style="color:#64748b;font-size:13px;">TOTAL COST</span><br><span style="color:#0f172a;font-size:18px;font-weight:700;">AED ${totalCost}</span></td></tr>
+        </table>
+      </div>
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr><td align="center"><a href="https://beyondwalls.ae/MyCampaigns" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">Track Campaign →</a></td></tr>
+      </table>
+    `;
+    return this.notification("Booking Confirmed! 🎯", "🎯", "linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)", body);
+  },
+
+  // Payout processed
+  payoutProcessed(userName, amount) {
+    const body = `
+      <p style="margin: 0 0 20px; color: #475569; font-size: 16px; line-height: 1.6;">Dear <strong>${userName}</strong>,</p>
+      <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-left: 4px solid #10b981; border-radius: 12px; padding: 20px; margin-bottom: 28px;">
+        <p style="margin: 0; color: #065f46; font-size: 15px; font-weight: 600;">💸 Your withdrawal has been processed successfully!</p>
+      </div>
+      <div style="text-align:center; background-color: #f8fafc; border-radius: 12px; padding: 32px 20px; margin-bottom: 28px;">
+        <p style="margin: 0 0 8px; color: #64748b; font-size: 14px; font-weight: 500;">AMOUNT TRANSFERRED</p>
+        <p style="margin: 0; color: #059669; font-size: 40px; font-weight: 700;">AED ${amount}</p>
+        <p style="margin: 12px 0 0; color: #94a3b8; font-size: 13px;">Please allow 1-3 business days to reflect in your bank account</p>
+      </div>
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr><td align="center"><a href="https://beyondwalls.ae/VenueEarnings" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">View Earnings →</a></td></tr>
+      </table>
+    `;
+    return this.notification("Payout Processed! 💸", "💸", "linear-gradient(135deg, #059669 0%, #10b981 100%)", body);
+  },
+
+  // Low balance warning
+  lowBalance(userName, currentBalance) {
+    const body = `
+      <p style="margin: 0 0 20px; color: #475569; font-size: 16px; line-height: 1.6;">Dear <strong>${userName}</strong>,</p>
+      <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b; border-radius: 12px; padding: 20px; margin-bottom: 28px;">
+        <p style="margin: 0; color: #78350f; font-size: 15px; font-weight: 600;">⚠️ Your wallet balance is running low. Top up now to keep your campaigns running without interruption.</p>
+      </div>
+      <div style="text-align:center; background-color: #f8fafc; border-radius: 12px; padding: 32px 20px; margin-bottom: 28px;">
+        <p style="margin: 0 0 8px; color: #64748b; font-size: 14px; font-weight: 500;">CURRENT BALANCE</p>
+        <p style="margin: 0; color: #f59e0b; font-size: 40px; font-weight: 700;">AED ${currentBalance}</p>
+      </div>
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr><td align="center"><a href="https://beyondwalls.ae/Wallet" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">Top Up Wallet →</a></td></tr>
+      </table>
+    `;
+    return this.notification("Low Balance Alert ⚠️", "⚠️", "linear-gradient(135deg, #d97706 0%, #f59e0b 100%)", body);
+  },
+
+  // Top up approved
+  topUpApproved(userName, amount) {
+    const body = `
+      <p style="margin: 0 0 20px; color: #475569; font-size: 16px; line-height: 1.6;">Dear <strong>${userName}</strong>,</p>
+      <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-left: 4px solid #10b981; border-radius: 12px; padding: 20px; margin-bottom: 28px;">
+        <p style="margin: 0; color: #065f46; font-size: 15px; font-weight: 600;">✅ Your wallet has been credited successfully!</p>
+      </div>
+      <div style="text-align:center; background-color: #f8fafc; border-radius: 12px; padding: 32px 20px; margin-bottom: 28px;">
+        <p style="margin: 0 0 8px; color: #64748b; font-size: 14px; font-weight: 500;">AMOUNT ADDED</p>
+        <p style="margin: 0; color: #059669; font-size: 40px; font-weight: 700;">AED ${amount}</p>
+        <p style="margin: 12px 0 0; color: #94a3b8; font-size: 13px;">Your wallet is ready — launch your next campaign now!</p>
+      </div>
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr><td align="center"><a href="https://beyondwalls.ae/CreateCampaign" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">Create Campaign →</a></td></tr>
+      </table>
+    `;
+    return this.notification("Wallet Topped Up! ✅", "💳", "linear-gradient(135deg, #059669 0%, #10b981 100%)", body);
+  },
+
   // Admin notification for new user
   adminNewUser(userName, userEmail, userPhone, accountType, userRole, companyName = null) {
     const content = `
