@@ -8,6 +8,7 @@ import { Plus, MonitorPlay, Wifi, WifiOff, Code, Image as ImageIcon } from "luci
 
 export default function MyScreens() {
   const [screens, setScreens] = useState([]);
+  const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

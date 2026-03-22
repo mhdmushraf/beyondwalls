@@ -8,6 +8,7 @@ import { Plus, Building2, MapPin, Users, MonitorPlay } from "lucide-react";
 
 export default function MyVenues() {
   const [venues, setVenues] = useState([]);
+  const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
