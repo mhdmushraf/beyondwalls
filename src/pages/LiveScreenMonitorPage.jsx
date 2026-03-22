@@ -122,10 +122,10 @@ export default function LiveScreenMonitorPage() {
       ownerSlots.push({ name: `Owner Slot ${i}`, type, url, isOwner: true });
     }
 
-    // Ad slots from bookings + campaigns
+    // Ad slots from bookings + campaigns — use creative_url to match ScreenPlayer
     const advertiserAds = [
       ...bookings.map(b => ({ name: b.campaign_name || "Ad Slot", type: b.creative_type || "image", url: b.creative_url, isOwner: false })),
-      ...campaigns.map(c => ({ name: c.name, type: c.creative_type || "image", url: c.creative_url, isOwner: false }))
+      ...campaigns.map(c => ({ name: c.name, type: c.creative_type || "image", url: c.creative_urls?.[0] || c.creative_url, isOwner: false }))
     ].filter(ad => ad.url).slice(0, maxPublicAds);
 
     // Interleave
