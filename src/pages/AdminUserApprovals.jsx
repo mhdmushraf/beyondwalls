@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { Users, CheckCircle2, XCircle, Search, Loader2, Eye } from "lucide-react";
+import { EmailTemplates } from "@/components/notifications/EmailTemplates";
 
 export default function AdminUserApprovals() {
   const [users, setUsers] = useState([]);
