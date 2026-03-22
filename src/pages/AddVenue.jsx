@@ -81,7 +81,7 @@ export default function AddVenue() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.name || !form.venue_type || !form.city || !form.address) {
-      toast({ title: "Please fill in all required fields", variant: "destructive" });
+      toast.error("Please fill in all required fields");
       return;
     }
     setLoading(true);
@@ -110,10 +110,10 @@ export default function AddVenue() {
         body: `Hi ${user.full_name},\n\nYour venue "${form.name}" has been submitted and is pending admin approval. We'll notify you once it's reviewed (usually within 24 hours).\n\nBeyondWalls Team`,
       });
 
-      toast({ title: "Venue submitted!", description: "Awaiting admin approval." });
+      toast.success("Venue submitted!", { description: "Awaiting admin approval.", duration: 3000 });
       navigate("/MyVenues");
     } catch (err) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast.error("Error: " + err.message);
     }
     setLoading(false);
   };

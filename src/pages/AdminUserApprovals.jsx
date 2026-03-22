@@ -54,18 +54,18 @@ export default function AdminUserApprovals() {
         subject: "🎉 Account Approved - Welcome to BeyondWalls!",
         body: EmailTemplates.accountApproved(u.full_name, u.user_role),
       });
-      toast({ title: "User approved!", description: `Email sent to ${u.email}` });
+      toast.success("User approved!", { description: `Email sent to ${u.email}`, duration: 3000 });
       setSelected(null);
       loadUsers();
     } catch (err) {
-      toast({ title: "Error", variant: "destructive" });
+      toast.error("Something went wrong");
     }
     setActionLoading(false);
   };
 
   const handleReject = async (u) => {
     if (!rejectionReason.trim()) {
-      toast({ title: "Please provide a rejection reason", variant: "destructive" });
+      toast.error("Please provide a rejection reason");
       return;
     }
     setActionLoading(true);
@@ -82,12 +82,12 @@ export default function AdminUserApprovals() {
         subject: "Account Application Update - BeyondWalls",
         body: EmailTemplates.accountRejected(u.full_name, rejectionReason),
       });
-      toast({ title: "User rejected", description: `Email sent to ${u.email}` });
+      toast.success("User rejected", { description: `Email sent to ${u.email}`, duration: 3000 });
       setSelected(null);
       setRejectionReason("");
       loadUsers();
     } catch (err) {
-      toast({ title: "Error", variant: "destructive" });
+      toast.error("Something went wrong");
     }
     setActionLoading(false);
   };
