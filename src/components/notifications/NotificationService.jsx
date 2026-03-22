@@ -164,32 +164,9 @@ export const NotificationService = {
     if (notify.email) {
       try {
         await base44.integrations.Core.SendEmail({
-        to: user.email,
-        subject: `⚠️ Low Wallet Balance Alert | BeyondWalls`,
-        body: `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        BEYONDWALLS
-   Low Balance Alert
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Dear ${user.full_name || "Valued User"},
-
-Your BeyondWalls wallet balance is running low.
-
-💰 CURRENT BALANCE: AED ${currentBalance}
-
-To ensure your advertising campaigns continue running smoothly, we recommend topping up your wallet soon.
-
-👉 Top up now: Visit your Wallet page in the dashboard
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Questions? Contact us at info@beyondwalls.ae
-Phone: +971 55 614 0067
-
-BeyondWalls - Advertise Beyond Boundaries
-www.beyondwalls.ae
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        `.trim()
+          to: user.email,
+          subject: `⚠️ Low Wallet Balance Alert | BeyondWalls`,
+          body: EmailTemplates.lowBalance(user.full_name || "Valued User", currentBalance)
         });
       } catch (e) {
         console.error("Failed to send low balance email", e);
