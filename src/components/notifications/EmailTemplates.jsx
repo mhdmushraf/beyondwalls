@@ -379,6 +379,106 @@ ${this.footer()}
     return this.baseTemplate(content, `Verify your email to get started with BeyondWalls`);
   },
 
+  // Account approved email to user
+  accountApproved(userName, userRole) {
+    const content = `
+${this.header()}
+<tr>
+  <td style="padding: 40px;">
+    <div style="text-align: center; margin-bottom: 32px;">
+      <div style="display: inline-block; background: linear-gradient(135deg, #dcfce7 0%, #d1fae5 100%); width: 80px; height: 80px; border-radius: 50%; font-size: 40px; line-height: 80px; margin-bottom: 16px;">✅</div>
+      <h2 style="margin: 0; color: #0f172a; font-size: 28px; font-weight: 700;">Account Approved!</h2>
+      <p style="margin: 8px 0 0; color: #64748b; font-size: 16px;">Welcome to the BeyondWalls network</p>
+    </div>
+
+    <p style="margin: 0 0 24px; color: #475569; font-size: 16px; line-height: 1.6;">Dear <strong>${userName}</strong>,</p>
+
+    <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-left: 4px solid #10b981; border-radius: 12px; padding: 24px; margin-bottom: 32px;">
+      <p style="margin: 0; color: #065f46; font-size: 16px; font-weight: 600; line-height: 1.6;">
+        🎉 Your BeyondWalls account has been verified and approved!
+      </p>
+      <p style="margin: 8px 0 0; color: #047857; font-size: 14px; line-height: 1.6;">
+        You can now ${userRole === 'venue_owner' ? 'add venues, register screens, and start earning revenue' : 'create campaigns, book screens across UAE, and reach your target audience'}.
+      </p>
+    </div>
+
+    <div style="background-color: #f8fafc; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+      <h3 style="margin: 0 0 16px; color: #0f172a; font-size: 18px; font-weight: 600;">🚀 Get Started</h3>
+      ${userRole === 'venue_owner' ? `
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr><td style="padding: 10px 0; border-bottom: 1px solid #e2e8f0; color: #475569; font-size: 14px;">1. 🏢 Add your first venue from the dashboard</td></tr>
+        <tr><td style="padding: 10px 0; border-bottom: 1px solid #e2e8f0; color: #475569; font-size: 14px;">2. 📺 Register your screens and set up pricing</td></tr>
+        <tr><td style="padding: 10px 0; color: #475569; font-size: 14px;">3. 💰 Start earning 70% revenue share from advertisers</td></tr>
+      </table>
+      ` : `
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr><td style="padding: 10px 0; border-bottom: 1px solid #e2e8f0; color: #475569; font-size: 14px;">1. 💳 Top up your wallet to get started</td></tr>
+        <tr><td style="padding: 10px 0; border-bottom: 1px solid #e2e8f0; color: #475569; font-size: 14px;">2. 🎯 Browse premium screens across UAE</td></tr>
+        <tr><td style="padding: 10px 0; color: #475569; font-size: 14px;">3. 🚀 Launch your first campaign in minutes</td></tr>
+      </table>
+      `}
+    </div>
+
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-top: 32px;">
+      <tr>
+        <td align="center">
+          <a href="https://beyondwalls.ae" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 10px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">Go to Dashboard →</a>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+${this.footer()}
+    `;
+    return this.baseTemplate(content, "Your BeyondWalls account is approved - Get started now!");
+  },
+
+  // Account rejected email to user
+  accountRejected(userName, reason) {
+    const content = `
+${this.header()}
+<tr>
+  <td style="padding: 40px;">
+    <div style="text-align: center; margin-bottom: 32px;">
+      <div style="display: inline-block; background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); width: 80px; height: 80px; border-radius: 50%; font-size: 40px; line-height: 80px; margin-bottom: 16px;">📋</div>
+      <h2 style="margin: 0; color: #0f172a; font-size: 28px; font-weight: 700;">Application Update</h2>
+      <p style="margin: 8px 0 0; color: #64748b; font-size: 16px;">BeyondWalls Account Review</p>
+    </div>
+
+    <p style="margin: 0 0 24px; color: #475569; font-size: 16px; line-height: 1.6;">Dear <strong>${userName}</strong>,</p>
+
+    <p style="margin: 0 0 24px; color: #475569; font-size: 15px; line-height: 1.7;">
+      Thank you for applying to join the BeyondWalls platform. After reviewing your application, we're unable to approve your account at this time.
+    </p>
+
+    <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-left: 4px solid #ef4444; border-radius: 12px; padding: 24px; margin-bottom: 32px;">
+      <p style="margin: 0 0 8px; color: #991b1b; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Reason</p>
+      <p style="margin: 0; color: #7f1d1d; font-size: 15px; line-height: 1.6;">${reason || "Your application did not meet our current requirements."}</p>
+    </div>
+
+    <div style="background-color: #f8fafc; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+      <h3 style="margin: 0 0 16px; color: #0f172a; font-size: 16px; font-weight: 600;">💡 What You Can Do</h3>
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr><td style="padding: 8px 0; color: #475569; font-size: 14px;">• Review our <a href="https://beyondwalls.ae/terms" style="color: #7c3aed;">Terms & Conditions</a></td></tr>
+        <tr><td style="padding: 8px 0; color: #475569; font-size: 14px;">• Ensure all uploaded documents are valid and clearly visible</td></tr>
+        <tr><td style="padding: 8px 0; color: #475569; font-size: 14px;">• Contact our support team for guidance before re-applying</td></tr>
+      </table>
+    </div>
+
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-top: 32px;">
+      <tr>
+        <td align="center">
+          <a href="mailto:hello@beyondwalls.ae" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 10px; font-weight: 600; font-size: 16px;">Contact Support</a>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+${this.footer()}
+    `;
+    return this.baseTemplate(content, "Update on your BeyondWalls account application");
+  },
+
   // Admin notification for new user
   adminNewUser(userName, userEmail, userPhone, accountType, userRole, companyName = null) {
     const content = `
