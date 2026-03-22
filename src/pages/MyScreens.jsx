@@ -234,7 +234,7 @@ export default function MyScreens() {
                         <p className="text-xs text-slate-500">{s.width_px}×{s.height_px}px</p>
                       </div>
                       <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
-                        {s.is_online
+                        {s.last_heartbeat && (new Date() - new Date(s.last_heartbeat)) < 60000
                           ? <Wifi className="w-4 h-4 text-emerald-500" />
                           : <WifiOff className="w-4 h-4 text-slate-400" />}
                         <Badge className={statusColor[s.approval_status] || "bg-slate-100 text-slate-600"}>
