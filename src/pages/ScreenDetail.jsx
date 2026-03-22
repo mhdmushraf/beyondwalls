@@ -146,6 +146,32 @@ export default function ScreenDetail() {
           )}
         </div>
 
+        {/* Kiosk Auto-Login Link */}
+        {screen.approval_status === "approved" && screen.setup_code && (
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+            <h2 className="text-sm font-semibold text-slate-700 mb-1 flex items-center gap-2">
+              <ExternalLink className="w-4 h-4 text-violet-500" /> Kiosk Auto-Login Link
+            </h2>
+            <p className="text-xs text-slate-400 mb-3">Copy this link and paste it into your kiosk browser. It will auto-connect the screen on load.</p>
+            <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
+              <span className="text-xs text-slate-600 font-mono flex-1 min-w-0 truncate">
+                {`${window.location.origin}/ScreenPlayer?setup_code=${screen.setup_code}&auto_start=true`}
+              </span>
+              <Button
+                size="sm"
+                variant="outline"
+                className="flex-shrink-0 rounded-lg"
+                onClick={() => {
+                  navigator.clipboard.writeText(`${window.location.origin}/ScreenPlayer?setup_code=${screen.setup_code}&auto_start=true`);
+                  toast.success("Kiosk link copied!");
+                }}
+              >
+                <Copy className="w-3.5 h-3.5 mr-1.5" /> Copy
+              </Button>
+            </div>
+          </div>
+        )}
+
         {/* Location */}
         {(screen.location_description || venue) && (
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
