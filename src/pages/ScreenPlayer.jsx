@@ -600,14 +600,7 @@ export default function ScreenPlayer() {
           backgroundColor: "black",
         } : { width: "100%", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}
       >
-        <div style={screen?.width_px && screen?.height_px ? (() => {
-          const aspectRatio = screen.width_px / screen.height_px;
-          const vwHeight = window.innerHeight;
-          const vwWidth = window.innerWidth;
-          let w = vwWidth, h = vwWidth / aspectRatio;
-          if (h > vwHeight) { h = vwHeight; w = vwHeight * aspectRatio; }
-          return { width: w, height: h, overflow: "hidden", position: "relative", flexShrink: 0 };
-        })() : { width: "100%", height: "100%" }}>
+        <div style={getInnerScreenStyle()}>
         {currentAd?.creative_url ? (
           currentAd.creative_type === "video" ? (
             <video ref={videoRef} key={currentAd.id} src={currentAd.creative_url} className={`w-full h-full ${objectFitClass}`} autoPlay muted={isMuted} playsInline onEnded={handleVideoEnded} onTimeUpdate={handleVideoProgress} onError={handleMediaError} />
