@@ -314,7 +314,7 @@ export default function LiveScreenMonitorPage() {
               </button>
             </div>
 
-            <p className="text-xs text-slate-500 text-center">Last refreshed: {lastRefresh.toLocaleTimeString()} · Auto-polls every 20s</p>
+            <p className="text-xs text-slate-500 text-center">Last synced: {lastRefresh.toLocaleTimeString()} · Auto-syncs every 8s</p>
           </div>
         </div>
       </div>
