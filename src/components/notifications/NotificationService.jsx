@@ -1,6 +1,7 @@
 import { base44 } from "@/api/base44Client";
 import { EmailTemplates } from "./EmailTemplates";
 
+
 // Notification Service - handles creating notifications and sending emails
 export const NotificationService = {
   // Check user preferences before sending
