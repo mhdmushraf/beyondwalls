@@ -77,8 +77,8 @@ export default function MyVenues() {
                     {v.daily_footfall > 0 && <div className="flex items-center gap-2"><Users className="w-3.5 h-3.5" />{v.daily_footfall.toLocaleString()} daily visitors</div>}
                   </div>
                   <div className="flex gap-2 mt-4">
-                    <Link to={`/AddScreen?venue_id=${v.id}`} className="flex-1">
-                      <Button size="sm" variant="outline" className="w-full text-xs">
+                    <Link to={`/AddScreen?venue_id=${v.id}`} className={`flex-1 ${v.approval_status !== "approved" ? "pointer-events-none" : ""}`}>
+                      <Button size="sm" variant="outline" className="w-full text-xs" disabled={v.approval_status !== "approved"} title={v.approval_status !== "approved" ? "Venue must be approved before adding screens" : ""}>
                         <MonitorPlay className="w-3 h-3 mr-1" /> Add Screen
                       </Button>
                     </Link>
