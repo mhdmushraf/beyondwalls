@@ -52,9 +52,10 @@ export default function MyScreens() {
 
       const matchStatus = statusFilter === "all" || s.approval_status === statusFilter;
       const matchVenue = venueFilter === "all" || s.venue_id === venueFilter;
+      const isOnline = s.last_heartbeat && (new Date() - new Date(s.last_heartbeat)) < 60000;
       const matchOnline = onlineFilter === "all" ||
-        (onlineFilter === "online" && s.is_online) ||
-        (onlineFilter === "offline" && !s.is_online);
+        (onlineFilter === "online" && isOnline) ||
+        (onlineFilter === "offline" && !isOnline);
 
       return matchSearch && matchStatus && matchVenue && matchOnline;
     });
