@@ -38,7 +38,20 @@ export default function MyScreens() {
             </Button>
           </Link>
         </div>
-        {screens.length === 0 ? (
+        {/* Filter Tabs */}
+        <div className="flex gap-2 mb-5 flex-wrap">
+          {["all", "approved", "pending", "rejected"].map(tab => (
+            <button
+              key={tab}
+              onClick={() => setFilter(tab)}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium capitalize transition-all ${filter === tab ? "bg-violet-600 text-white shadow" : "bg-white text-slate-600 border border-slate-200 hover:border-violet-300"}`}
+            >
+              {tab === "all" ? "All" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
+        </div>
+
+        {screens.filter(s => filter === "all" || s.approval_status === filter).length === 0 ? (
           <Card className="border-0 shadow-sm">
             <CardContent className="flex flex-col items-center py-16">
               <MonitorPlay className="w-14 h-14 text-slate-200 mb-4" />
