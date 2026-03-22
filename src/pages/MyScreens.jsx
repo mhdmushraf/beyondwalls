@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, MonitorPlay, Wifi, WifiOff, Code, Image as ImageIcon } from "lucide-react";
+import { Plus, MonitorPlay, Wifi, WifiOff, Code, Image as ImageIcon, Settings } from "lucide-react";
 
 export default function MyScreens() {
   const [screens, setScreens] = useState([]);

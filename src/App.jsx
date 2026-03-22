@@ -17,6 +17,7 @@ import { AnimatePresence } from 'framer-motion';
 import VenueDetail from './pages/VenueDetail';
 import EditVenue from './pages/EditVenue';
 import ScreenDetail from './pages/ScreenDetail';
+import ManageScreenContent from './pages/ManageScreenContent';
 
 // Lazy load pages for code splitting
 const LazyPageLoader = ({ Page }) => (
