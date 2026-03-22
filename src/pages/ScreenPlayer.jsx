@@ -1,27 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
-  MonitorPlay,
-  Lock,
-  Wifi,
-  WifiOff,
-  Volume2,
-  VolumeX,
-  Maximize,
-  Minimize,
-  RefreshCw,
-  CheckCircle2,
-  AlertCircle,
-  SkipForward,
-  SkipBack,
-  Play,
-  Pause,
-  Clock,
-  Zap,
-  Activity,
-  Settings,
-  X
+  MonitorPlay, Lock, Wifi, WifiOff, Volume2, VolumeX,
+  Maximize, Minimize, RefreshCw, CheckCircle2, AlertCircle,
+  SkipForward, SkipBack, Play, Pause, Clock, Zap, Activity, Settings, X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,13 +12,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 
-// Generate session ID
-const generateSessionId = () => {
-  return "SES-" + Date.now().toString(36) + "-" + Math.random().toString(36).substr(2, 9);
-};
+const generateSessionId = () => "SES-" + Date.now().toString(36) + "-" + Math.random().toString(36).substr(2, 9);
+const PLAYER_VERSION = "2.1.0";
+const AD_DURATION = 8000;
+const animations = ["fade", "slideLeft", "slideRight", "slideUp", "slideDown", "zoom", "flip", "blur"];
 
 export default function ScreenPlayer() {
-  const queryClient = useQueryClient();
   const [screenId, setScreenId] = useState("");
   const [setupCode, setSetupCode] = useState("");
   const [authMode, setAuthMode] = useState("setup_code");
@@ -58,27 +40,16 @@ export default function ScreenPlayer() {
   const [totalPlaytime, setTotalPlaytime] = useState(0);
   const [adsPlayed, setAdsPlayed] = useState(0);
   const [mediaError, setMediaError] = useState(null);
-  const [sessionId, setSessionId] = useState("");
+  const [sessionId] = useState(generateSessionId);
   const [uptimeSeconds, setUptimeSeconds] = useState(0);
+  const [autoStartMode, setAutoStartMode] = useState(false);
+  const [urlParams, setUrlParams] = useState(null);
   const containerRef = useRef(null);
   const videoRef = useRef(null);
   const progressIntervalRef = useRef(null);
-  const sessionCheckRef = useRef(null);
 
-  const AD_DURATION = 8000;
-  const animations = ["fade", "slideLeft", "slideRight", "slideUp", "slideDown", "zoom", "flip", "blur"];
-  const PLAYER_VERSION = "2.1.0";
-
-  const [autoStartMode, setAutoStartMode] = useState(false);
-
-  const [urlParams, setUrlParams] = useState(null);
-
-  // Initialize session ID on mount and parse URL params
+  // Parse URL params once on mount
   useEffect(() => {
-    const sessId = generateSessionId();
-    setSessionId(sessId);
-    
-    // Parse URL parameters
     const params = new URLSearchParams(window.location.search);
     setUrlParams({
       code: params.get("setup_code"),
@@ -89,78 +60,59 @@ export default function ScreenPlayer() {
     });
   }, []);
 
-  // Handle auto-login after session ID is ready
+  // Handle auto-login
   useEffect(() => {
     if (!urlParams || !sessionId) return;
-
     const { code, id, pin: pinParam, autoStart, token } = urlParams;
-
-    if (autoStart || token) {
-      setAutoStartMode(true);
-    }
-
+    if (autoStart || token) setAutoStartMode(true);
     if (token) {
-      // Device token — silent kiosk autologin, no UI interaction needed
       handleAutoAuthenticate("device_token", token, null);
     } else if (code) {
       setSetupCode(code);
       setAuthMode("setup_code");
-      if (autoStart) {
-        handleAutoAuthenticate("setup_code", code, null);
-      }
+      if (autoStart) handleAutoAuthenticate("setup_code", code, null);
     } else if (id) {
       setScreenId(id);
       setAuthMode("screen_id");
-      if (pinParam) {
-        setPin(pinParam);
-      }
-      if (autoStart) {
-        handleAutoAuthenticate("screen_id", id, pinParam);
-      }
+      if (pinParam) setPin(pinParam);
+      if (autoStart) handleAutoAuthenticate("screen_id", id, pinParam);
     }
   }, [urlParams, sessionId]);
 
-  // Auto-authenticate function for URL parameter login
+  const markScreenOnline = async (foundScreen) => {
+    await base44.entities.Screen.update(foundScreen.id, {
+      status: "active",
+      is_online: true,
+      player_active: true,
+      last_heartbeat: new Date().toISOString(),
+      current_session_id: sessionId,
+      session_started_at: new Date().toISOString(),
+      uptime_seconds: 0,
+      player_version: PLAYER_VERSION
+    });
+  };
+
   const handleAutoAuthenticate = async (mode, idOrCode, pinCode) => {
     if (authenticated || connecting) return;
-    
     setConnecting(true);
     try {
       const screens = await base44.entities.Screen.list();
       let foundScreen = null;
-
       if (mode === "device_token") {
         foundScreen = screens.find(s => s.device_token === idOrCode);
-        if (!foundScreen) {
-          setError("Invalid device token. Please contact your administrator.");
-          setConnecting(false);
-          return;
-        }
+        if (!foundScreen) { setError("Invalid device token."); setConnecting(false); return; }
       } else if (mode === "setup_code") {
         foundScreen = screens.find(s => s.setup_code === idOrCode.toUpperCase());
       } else {
         foundScreen = screens.find(s => s.device_id === idOrCode || s.id === idOrCode);
         if (foundScreen?.player_pin && foundScreen.player_pin !== pinCode) {
-          setError("Invalid PIN");
-          setConnecting(false);
-          return;
+          setError("Invalid PIN"); setConnecting(false); return;
         }
       }
-
       if (foundScreen) {
-        const updateData = { 
-          status: "online", 
-          player_active: true, 
-          last_heartbeat: new Date().toISOString(),
-          current_session_id: sessionId,
-          session_started_at: new Date().toISOString(),
-          uptime_seconds: 0,
-          player_version: PLAYER_VERSION
-        };
-
         setScreen(foundScreen);
         setAuthenticated(true);
-        await base44.entities.Screen.update(foundScreen.id, updateData);
+        await markScreenOnline(foundScreen);
       } else {
         setError("Screen not found");
       }
@@ -170,32 +122,29 @@ export default function ScreenPlayer() {
     setConnecting(false);
   };
 
-  // Fetch ad slot bookings - refetch every 10 seconds for real-time updates
+  // Fetch ad bookings
   const { data: bookings = [], refetch: refetchBookings } = useQuery({
     queryKey: ["player-bookings", screen?.id],
     queryFn: async () => {
-      const allBookings = await base44.entities.AdSlotBooking.filter({ 
-        screen_id: screen?.id, 
-        status: "active" 
-      });
+      const allBookings = await base44.entities.AdBooking.filter({ screen_id: screen?.id, status: "active" });
       const today = new Date().toISOString().split('T')[0];
       return allBookings.filter(b => b.start_date <= today && b.end_date >= today);
     },
     enabled: authenticated && !!screen?.id,
-    refetchInterval: 10000, // Check for new ads every 10 seconds
-    staleTime: 0 // Always consider data stale to force refresh
+    refetchInterval: 10000,
+    staleTime: 0
   });
 
-  // Fetch campaigns - refetch every 10 seconds for real-time updates
+  // Fetch campaigns
   const { data: campaigns = [], refetch: refetchCampaigns } = useQuery({
     queryKey: ["player-campaigns", screen?.id],
     queryFn: async () => {
       const allCampaigns = await base44.entities.Campaign.filter({ status: "active" });
-      return allCampaigns.filter(c => c.screen_ids?.includes(screen?.id));
+      return allCampaigns.filter(c => c.selected_screens?.includes(screen?.id));
     },
     enabled: authenticated && !!screen?.id,
-    refetchInterval: 10000, // Check for new campaigns every 10 seconds
-    staleTime: 0 // Always consider data stale to force refresh
+    refetchInterval: 10000,
+    staleTime: 0
   });
 
   // Fetch platform settings
@@ -203,55 +152,45 @@ export default function ScreenPlayer() {
     queryKey: ["platform-settings"],
     queryFn: () => base44.entities.PlatformSettings.list(),
     enabled: authenticated,
-    staleTime: 60000 // Cache for 1 minute
+    staleTime: 60000
   });
 
-  // Check for remote commands (skip/replay from admin)
+  // Check for remote commands
   const { data: screenData } = useQuery({
     queryKey: ["screen-commands", screen?.id],
     queryFn: () => base44.entities.Screen.filter({ id: screen?.id }),
     enabled: authenticated && !!screen?.id,
-    refetchInterval: 5000 // Check every 5 seconds for commands
+    refetchInterval: 5000
   });
 
-  // Handle remote commands
   useEffect(() => {
     if (screenData?.[0]?.player_command) {
       const command = screenData[0].player_command;
-      if (command === "skip") {
-        goToNextAd();
-      } else if (command === "replay") {
-        replayCurrentAd();
-      } else if (command === "pause") {
-        setIsPaused(true);
-      } else if (command === "resume") {
-        setIsPaused(false);
-      } else if (command === "refresh") {
-        // Force content refresh
-        refetchBookings();
-        refetchCampaigns();
-      } else if (command === "restart") {
-        // Reload the page
-        window.location.reload();
-      }
-      // Clear the command after processing
+      if (command === "skip") goToNextAd();
+      else if (command === "pause") setIsPaused(true);
+      else if (command === "resume") setIsPaused(false);
+      else if (command === "refresh") { refetchBookings(); refetchCampaigns(); }
+      else if (command === "restart") window.location.reload();
       base44.entities.Screen.update(screen.id, { player_command: null });
     }
-
   }, [screenData]);
 
   const defaultContentUrl = platformSettings.find(s => s.setting_key === "default_screen_content_url")?.setting_value || "https://images.unsplash.com/photo-1557683316-973673baf926?w=1920";
   const defaultContentType = platformSettings.find(s => s.setting_key === "default_screen_content_type")?.setting_value || "image";
 
-  // Build owner slots dynamically (supports up to 6)
+  // Build owner slots
   const ownerSlots = [];
   if (screen) {
     const totalInternal = screen.internal_slots || 6;
     for (let i = 1; i <= totalInternal; i++) {
-      const urlKey = `owner_slot_${i}_url`;
-      const typeKey = `owner_slot_${i}_type`;
-      if (screen[urlKey]) {
-        ownerSlots.push({ id: `owner-${i}`, name: `Owner Slot ${i}`, creative_url: screen[urlKey], creative_type: screen[typeKey] || "image", type: "owner" });
+      if (screen[`owner_slot_${i}_url`]) {
+        ownerSlots.push({
+          id: `owner-${i}`,
+          name: `Owner Slot ${i}`,
+          creative_url: screen[`owner_slot_${i}_url`],
+          creative_type: screen[`owner_slot_${i}_type`] || "image",
+          type: "owner"
+        });
       }
     }
   }
@@ -262,153 +201,127 @@ export default function ScreenPlayer() {
     ...campaigns.map(c => ({ id: c.id, name: c.name, creative_url: c.creative_url, creative_type: c.creative_type, type: "campaign" }))
   ].filter(ad => ad.creative_url);
 
-  // Build playlist: interleave advertiser ads and owner slots based on screen config
+  // Build interleaved playlist
   const buildPlaylist = () => {
     const maxPublicAds = screen?.public_ad_slots || 0;
     const maxInternalSlots = screen?.internal_slots || 0;
-
     const availableAdvertiserAds = advertiserAds.slice(0, maxPublicAds);
     const availableOwnerSlots = ownerSlots.slice(0, maxInternalSlots);
-
     const playlist = [];
-    let advIdx = 0;
-    let ownerIdx = 0;
-
-    // Interleave: one ad, one owner slot, repeat
+    let advIdx = 0, ownerIdx = 0;
     while (advIdx < availableAdvertiserAds.length || ownerIdx < availableOwnerSlots.length) {
       if (advIdx < availableAdvertiserAds.length) playlist.push(availableAdvertiserAds[advIdx++]);
       if (ownerIdx < availableOwnerSlots.length) playlist.push(availableOwnerSlots[ownerIdx++]);
     }
-
-    // Fallback: only show default BeyondWalls ad if absolutely no content
     if (playlist.length === 0) {
-      return [{
-        id: "default-beyondwalls",
-        name: "BeyondWalls Default",
-        creative_url: defaultContentUrl,
-        creative_type: defaultContentType || "image",
-        type: "default"
-      }];
+      return [{ id: "default-beyondwalls", name: "BeyondWalls Default", creative_url: defaultContentUrl, creative_type: defaultContentType || "image", type: "default" }];
     }
-
     return playlist;
   };
 
   const allAds = buildPlaylist();
   const currentAd = allAds[currentAdIndex];
 
-  // Progress bar update
+  // Progress bar
   useEffect(() => {
     if (!authenticated || allAds.length === 0 || isPaused) {
       if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
       return;
     }
-
     setAdStartTime(Date.now());
     setAdProgress(0);
-
-    const isVideo = currentAd?.creative_type === "video";
-    if (!isVideo) {
+    if (currentAd?.creative_type !== "video") {
       progressIntervalRef.current = setInterval(() => {
         const elapsed = Date.now() - (adStartTime || Date.now());
-        const progress = Math.min((elapsed / AD_DURATION) * 100, 100);
-        setAdProgress(progress);
+        setAdProgress(Math.min((elapsed / AD_DURATION) * 100, 100));
       }, 100);
     }
-
-    return () => {
-      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
-    };
+    return () => { if (progressIntervalRef.current) clearInterval(progressIntervalRef.current); };
   }, [authenticated, currentAdIndex, isPaused, allAds.length]);
 
   // Ad cycling
   useEffect(() => {
-    if (!authenticated || allAds.length === 0 || isPaused) return;
-    const isVideo = currentAd?.creative_type === "video";
-    if (isVideo) return;
-
-    const timer = setTimeout(() => {
-      goToNextAd();
-    }, AD_DURATION);
-
+    if (!authenticated || allAds.length === 0 || isPaused || currentAd?.creative_type === "video") return;
+    const timer = setTimeout(() => goToNextAd(), AD_DURATION);
     return () => clearTimeout(timer);
   }, [authenticated, allAds.length, currentAdIndex, isPaused]);
 
   // Playtime tracking
   useEffect(() => {
     if (!authenticated || isPaused) return;
-    const timer = setInterval(() => {
-      setTotalPlaytime(prev => prev + 1);
-    }, 1000);
+    const timer = setInterval(() => setTotalPlaytime(prev => prev + 1), 1000);
     return () => clearInterval(timer);
   }, [authenticated, isPaused]);
 
-  // Track content analytics
-  const trackContentImpression = async (ad, completed = false, watchTime = 0) => {
-    if (!screen?.id || !ad) return;
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      // Find existing analytics for this content today
-      const existingAnalytics = await base44.entities.ContentAnalytics.filter({
-        screen_id: screen.id,
-        content_id: ad.id,
-        date: today
-      });
-      
-      if (existingAnalytics.length > 0) {
-        const existing = existingAnalytics[0];
-        const newImpressions = (existing.impressions || 0) + 1;
-        const newCompletions = (existing.completions || 0) + (completed ? 1 : 0);
-        const newTotalWatchTime = (existing.total_watch_time || 0) + watchTime;
-        await base44.entities.ContentAnalytics.update(existing.id, {
-          impressions: newImpressions,
-          completions: newCompletions,
-          total_watch_time: newTotalWatchTime,
-          avg_watch_time: newTotalWatchTime / newImpressions,
-          completion_rate: (newCompletions / newImpressions) * 100,
-          skips: (existing.skips || 0) + (completed ? 0 : 1)
+  // Uptime tracking
+  useEffect(() => {
+    if (!authenticated || isPaused) return;
+    const timer = setInterval(() => setUptimeSeconds(prev => prev + 1), 1000);
+    return () => clearInterval(timer);
+  }, [authenticated, isPaused]);
+
+  // Heartbeat — sets is_online: true every 15s, clears on unmount
+  useEffect(() => {
+    if (!authenticated || !screen?.id) return;
+
+    const sendHeartbeat = async () => {
+      try {
+        await base44.entities.Screen.update(screen.id, {
+          last_heartbeat: new Date().toISOString(),
+          status: "active",
+          is_online: true,
+          player_active: !isPaused,
+          current_ad_index: currentAdIndex,
+          total_playtime: totalPlaytime,
+          ads_played_count: adsPlayed,
+          current_session_id: sessionId,
+          uptime_seconds: uptimeSeconds,
+          current_content_name: currentAd?.name || null,
+          player_version: PLAYER_VERSION
         });
-      } else {
-        await base44.entities.ContentAnalytics.create({
-          screen_id: screen.id,
-          content_id: ad.id,
-          content_type: ad.type === "owner" ? "owner_slot" : ad.type,
-          content_name: ad.name,
-          creative_url: ad.creative_url,
-          media_type: ad.creative_type || "image",
-          impressions: 1,
-          completions: completed ? 1 : 0,
-          total_watch_time: watchTime,
-          avg_watch_time: watchTime,
-          completion_rate: completed ? 100 : 0,
-          skips: completed ? 0 : 1,
-          date: today
-        });
+        setConnectionStatus("connected");
+        setLastHeartbeat(new Date());
+      } catch (e) {
+        const timeSinceLastSuccess = lastHeartbeat ? Date.now() - lastHeartbeat.getTime() : 0;
+        if (timeSinceLastSuccess > 30000) setConnectionStatus("reconnecting");
       }
-    } catch (e) {
-      console.log("Analytics tracking error:", e);
-    }
-  };
+    };
+
+    sendHeartbeat();
+    const interval = setInterval(sendHeartbeat, 15000);
+
+    return () => {
+      clearInterval(interval);
+      // Mark offline on disconnect
+      base44.entities.Screen.update(screen.id, {
+        player_active: false,
+        is_online: false,
+        status: "inactive"
+      }).catch(() => {});
+    };
+  }, [authenticated, screen?.id, currentAdIndex, totalPlaytime, adsPlayed, uptimeSeconds, isPaused, currentAd]);
+
+  // Network status
+  useEffect(() => {
+    const handleOnline = () => setConnectionStatus("connected");
+    const handleOffline = () => setConnectionStatus("offline");
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => { window.removeEventListener("online", handleOnline); window.removeEventListener("offline", handleOffline); };
+  }, []);
 
   const goToNextAd = useCallback(() => {
-    // Track impression for current ad (not completed since it's being skipped/cycled)
-    const watchTime = adStartTime ? (Date.now() - adStartTime) / 1000 : 0;
-    const completed = watchTime >= (AD_DURATION / 1000) * 0.9; // 90% watch = completion
-    trackContentImpression(currentAd, completed, watchTime);
-    
     setMediaError(null);
-    const randomAnim = animations[Math.floor(Math.random() * animations.length)];
-    setAnimationType(randomAnim);
+    setAnimationType(animations[Math.floor(Math.random() * animations.length)]);
     setTransitioning(true);
     setAdsPlayed(prev => prev + 1);
-
     setTimeout(() => {
       setCurrentAdIndex(prev => (prev + 1) % allAds.length);
       setAdStartTime(Date.now());
       setAdProgress(0);
       setTimeout(() => setTransitioning(false), 50);
     }, 400);
-  }, [allAds.length, currentAd, adStartTime]);
+  }, [allAds.length]);
 
   const goToPrevAd = () => {
     setMediaError(null);
@@ -421,27 +334,11 @@ export default function ScreenPlayer() {
     }, 400);
   };
 
-  const replayCurrentAd = () => {
-    setMediaError(null);
-    setAdStartTime(Date.now());
-    setAdProgress(0);
-    if (videoRef.current) {
-      videoRef.current.currentTime = 0;
-      videoRef.current.play();
-    }
-  };
-
   const handleVideoEnded = () => {
-    // Video completed fully
-    const watchTime = videoRef.current?.duration || AD_DURATION / 1000;
-    trackContentImpression(currentAd, true, watchTime);
-    
     setMediaError(null);
-    const randomAnim = animations[Math.floor(Math.random() * animations.length)];
-    setAnimationType(randomAnim);
+    setAnimationType(animations[Math.floor(Math.random() * animations.length)]);
     setTransitioning(true);
     setAdsPlayed(prev => prev + 1);
-
     setTimeout(() => {
       setCurrentAdIndex(prev => (prev + 1) % allAds.length);
       setAdStartTime(Date.now());
@@ -452,127 +349,34 @@ export default function ScreenPlayer() {
 
   const handleVideoProgress = () => {
     if (videoRef.current) {
-      const progress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
-      setAdProgress(progress);
+      setAdProgress((videoRef.current.currentTime / videoRef.current.duration) * 100);
     }
   };
 
-  const handleMediaError = (e) => {
-    console.error("Media error:", e);
+  const handleMediaError = () => {
     setMediaError(`Failed to load: ${currentAd?.name}`);
-    // Auto-skip to next ad after 3 seconds on error
-    setTimeout(() => {
-      if (allAds.length > 1) goToNextAd();
-    }, 3000);
+    setTimeout(() => { if (allAds.length > 1) goToNextAd(); }, 3000);
   };
-
-  // Uptime tracking
-  useEffect(() => {
-    if (!authenticated || isPaused) return;
-    const timer = setInterval(() => {
-      setUptimeSeconds(prev => prev + 1);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [authenticated, isPaused]);
-
-  // Get network strength estimate
-  const getNetworkStrength = () => {
-    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    if (!conn) return "good";
-    const effectiveType = conn.effectiveType;
-    if (effectiveType === "4g") return "excellent";
-    if (effectiveType === "3g") return "good";
-    if (effectiveType === "2g") return "fair";
-    return "poor";
-  };
-
-  // Send heartbeat with enhanced status
-  useEffect(() => {
-    if (!authenticated || !screen?.id) return;
-
-    const sendHeartbeat = async () => {
-      try {
-        await base44.entities.Screen.update(screen.id, {
-          last_heartbeat: new Date().toISOString(),
-          status: "online",
-          player_active: !isPaused,
-          current_ad_index: currentAdIndex,
-          total_playtime: totalPlaytime,
-          ads_played_count: adsPlayed,
-          current_session_id: sessionId,
-          uptime_seconds: uptimeSeconds,
-          network_strength: getNetworkStrength(),
-          current_content_name: currentAd?.name || null,
-          player_version: PLAYER_VERSION
-        });
-        setConnectionStatus("connected");
-        setLastHeartbeat(new Date());
-      } catch (e) {
-        console.error("Heartbeat failed:", e);
-        // Only show reconnecting if we haven't had a successful heartbeat in 30 seconds
-        const timeSinceLastSuccess = lastHeartbeat ? Date.now() - lastHeartbeat.getTime() : 0;
-        if (timeSinceLastSuccess > 30000) {
-          setConnectionStatus("reconnecting");
-        }
-      }
-    };
-
-    sendHeartbeat();
-    const interval = setInterval(sendHeartbeat, 15000); // More frequent heartbeat for real-time monitoring
-
-    return () => {
-      clearInterval(interval);
-      base44.entities.Screen.update(screen.id, { player_active: false }).catch(() => {});
-    };
-  }, [authenticated, screen?.id, currentAdIndex, totalPlaytime, adsPlayed, uptimeSeconds, isPaused, currentAd]);
-
-  // Connection status monitoring
-  useEffect(() => {
-    const handleOnline = () => setConnectionStatus("connected");
-    const handleOffline = () => setConnectionStatus("offline");
-    
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
-    
-    return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
-    };
-  }, []);
 
   const handleAuthenticate = async () => {
     setError("");
     setConnecting(true);
-
     try {
       const screens = await base44.entities.Screen.list();
       let foundScreen = null;
-
       if (authMode === "setup_code") {
         if (!setupCode) { setError("Please enter a setup code"); setConnecting(false); return; }
         foundScreen = screens.find(s => s.setup_code === setupCode.toUpperCase());
-        if (!foundScreen) { setError("Invalid setup code. Please check and try again."); setConnecting(false); return; }
+        if (!foundScreen) { setError("Invalid setup code."); setConnecting(false); return; }
       } else {
         if (!screenId) { setError("Please enter a screen ID"); setConnecting(false); return; }
         foundScreen = screens.find(s => s.device_id === screenId || s.id === screenId);
-        if (!foundScreen) { setError("Screen not found. Check your screen ID."); setConnecting(false); return; }
-        if (foundScreen.player_pin && foundScreen.player_pin !== pin) { setError("Invalid PIN. Please try again."); setConnecting(false); return; }
-        }
-
-        // Prepare update data with session info
-        const updateData = { 
-        status: "online", 
-        player_active: true, 
-        last_heartbeat: new Date().toISOString(),
-        current_session_id: sessionId,
-        session_started_at: new Date().toISOString(),
-        uptime_seconds: 0,
-        player_version: PLAYER_VERSION
-        };
-
+        if (!foundScreen) { setError("Screen not found."); setConnecting(false); return; }
+        if (foundScreen.player_pin && foundScreen.player_pin !== pin) { setError("Invalid PIN."); setConnecting(false); return; }
+      }
       setScreen(foundScreen);
       setAuthenticated(true);
-      await base44.entities.Screen.update(foundScreen.id, updateData);
+      await markScreenOnline(foundScreen);
     } catch (e) {
       setError("Failed to connect. Please try again.");
     }
@@ -598,7 +402,6 @@ export default function ScreenPlayer() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Auto-enter fullscreen in kiosk mode
   useEffect(() => {
     if (autoStartMode && authenticated && containerRef.current && !document.fullscreenElement) {
       containerRef.current.requestFullscreen?.().catch(() => {});
@@ -606,10 +409,11 @@ export default function ScreenPlayer() {
     }
   }, [autoStartMode, authenticated]);
 
-  // Hide controls in kiosk/auto-start mode
   const isKioskMode = autoStartMode && authenticated;
+  const objectFitClass = screen?.display_mode === "stretch" ? "object-fill" :
+                         screen?.display_mode === "fill" ? "object-cover" : "object-contain";
 
-  // Login Screen
+  // ─── Login Screen ───────────────────────────────────────────
   if (!authenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-violet-900 to-slate-900 flex items-center justify-center p-6">
@@ -633,7 +437,7 @@ export default function ScreenPlayer() {
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-white/80">Setup Code</label>
                   <Input placeholder="e.g., BW-ABCD1234" value={setupCode} onChange={(e) => setSetupCode(e.target.value.toUpperCase())} className="bg-white/10 border-white/20 text-white placeholder:text-white/40 h-14 text-xl text-center tracking-wider font-mono" />
-                  <p className="text-xs text-white/40 text-center">Enter the setup code provided by your admin</p>
+                  <p className="text-xs text-white/40 text-center">Enter the setup code from your B.One dashboard</p>
                 </div>
               ) : (
                 <>
@@ -656,7 +460,7 @@ export default function ScreenPlayer() {
               )}
 
               <Button onClick={handleAuthenticate} disabled={connecting} className="w-full h-12 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-lg">
-                {connecting ? (<><RefreshCw className="w-5 h-5 mr-2 animate-spin" />Connecting...</>) : (<><Wifi className="w-5 h-5 mr-2" />Connect Screen</>)}
+                {connecting ? <><RefreshCw className="w-5 h-5 mr-2 animate-spin" />Connecting...</> : <><Wifi className="w-5 h-5 mr-2" />Connect Screen</>}
               </Button>
             </div>
 
@@ -669,10 +473,10 @@ export default function ScreenPlayer() {
     );
   }
 
-  // Player Screen
+  // ─── Player Screen ──────────────────────────────────────────
   return (
     <div ref={containerRef} className="min-h-screen bg-black relative overflow-hidden">
-      {/* Connection Status Indicator - only show if truly offline or reconnecting after failed heartbeat */}
+      {/* Connection Status */}
       {(connectionStatus === "offline" || (connectionStatus === "reconnecting" && Date.now() - (lastHeartbeat?.getTime() || 0) > 30000)) && (
         <div className={`absolute top-4 left-1/2 -translate-x-1/2 z-[100] px-4 py-2 rounded-full flex items-center gap-2 ${connectionStatus === "offline" ? "bg-red-500" : "bg-amber-500"}`}>
           {connectionStatus === "offline" ? <WifiOff className="w-4 h-4 text-white" /> : <RefreshCw className="w-4 h-4 text-white animate-spin" />}
@@ -680,7 +484,6 @@ export default function ScreenPlayer() {
         </div>
       )}
 
-      {/* Media Error Indicator */}
       {mediaError && (
         <div className="absolute top-16 left-1/2 -translate-x-1/2 z-[100] px-4 py-2 rounded-full bg-red-500/90 flex items-center gap-2">
           <AlertCircle className="w-4 h-4 text-white" />
@@ -688,11 +491,10 @@ export default function ScreenPlayer() {
         </div>
       )}
 
-      {/* Real-time Dashboard - hidden in kiosk mode */}
+      {/* Dashboard */}
       {showDashboard && !isFullscreen && !isKioskMode && (
         <div className="absolute top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/90 via-black/70 to-transparent p-4">
           <div className="max-w-7xl mx-auto">
-            {/* Top Bar */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
@@ -704,74 +506,43 @@ export default function ScreenPlayer() {
                     <span className="text-violet-400 text-xs block -mt-1">Player</span>
                   </div>
                 </div>
-                
-                {/* Connection Status Badge */}
                 <Badge className={`${connectionStatus === "connected" ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : connectionStatus === "reconnecting" ? "bg-amber-500/20 text-amber-400 border-amber-500/30" : "bg-red-500/20 text-red-400 border-red-500/30"}`}>
                   {connectionStatus === "connected" ? <><Wifi className="w-3 h-3 mr-1" />Connected</> : connectionStatus === "reconnecting" ? <><RefreshCw className="w-3 h-3 mr-1 animate-spin" />Reconnecting</> : <><WifiOff className="w-3 h-3 mr-1" />Offline</>}
                 </Badge>
               </div>
-
               <div className="flex items-center gap-3">
                 <div className="text-right text-white/60 text-sm">
                   <p className="font-medium text-white">{screen?.name}</p>
-                  <p className="text-xs">{screen?.device_id}</p>
                 </div>
                 <Button variant="ghost" size="icon" onClick={() => setShowDashboard(false)} className="text-white/60 hover:text-white">
                   <X className="w-4 h-4" />
                 </Button>
               </div>
             </div>
-
-            {/* Stats Row */}
             <div className="grid grid-cols-4 gap-3">
-              <div className="bg-white/5 backdrop-blur rounded-xl p-3 border border-white/10">
-                <div className="flex items-center gap-2 text-white/60 text-xs mb-1">
-                  <Activity className="w-3 h-3" />
-                  Current Ad
+              {[
+                { icon: Activity, label: "Current Ad", value: currentAd?.name || "No Ad", sub: currentAd?.type === "owner" ? "Owner Content" : "Advertiser", subColor: "text-violet-400" },
+                { icon: Clock, label: "Playtime", value: formatTime(totalPlaytime), sub: `${adsPlayed} ads played`, subColor: "text-emerald-400" },
+                { icon: Zap, label: "Queue Position", value: `${currentAdIndex + 1} / ${allAds.length}`, sub: `${allAds.length} total`, subColor: "text-blue-400" },
+                { icon: CheckCircle2, label: "Last Sync", value: lastHeartbeat ? new Date(lastHeartbeat).toLocaleTimeString() : "--:--", sub: "Every 15s", subColor: "text-white/40" },
+              ].map(({ icon: Icon, label, value, sub, subColor }) => (
+                <div key={label} className="bg-white/5 backdrop-blur rounded-xl p-3 border border-white/10">
+                  <div className="flex items-center gap-2 text-white/60 text-xs mb-1"><Icon className="w-3 h-3" />{label}</div>
+                  <p className="text-white font-medium truncate">{value}</p>
+                  <p className={`text-xs ${subColor}`}>{sub}</p>
                 </div>
-                <p className="text-white font-medium truncate">{currentAd?.name || "No Ad"}</p>
-                <p className="text-violet-400 text-xs">{currentAd?.type === "owner" ? "Owner Content" : "Advertiser"}</p>
-              </div>
-              
-              <div className="bg-white/5 backdrop-blur rounded-xl p-3 border border-white/10">
-                <div className="flex items-center gap-2 text-white/60 text-xs mb-1">
-                  <Clock className="w-3 h-3" />
-                  Playtime
-                </div>
-                <p className="text-white font-bold text-lg">{formatTime(totalPlaytime)}</p>
-                <p className="text-emerald-400 text-xs">{adsPlayed} ads played</p>
-              </div>
-              
-              <div className="bg-white/5 backdrop-blur rounded-xl p-3 border border-white/10">
-                <div className="flex items-center gap-2 text-white/60 text-xs mb-1">
-                  <Zap className="w-3 h-3" />
-                  Queue Position
-                </div>
-                <p className="text-white font-bold text-lg">{currentAdIndex + 1} / {allAds.length}</p>
-                <p className="text-blue-400 text-xs">{allAds.length} total ads</p>
-              </div>
-              
-              <div className="bg-white/5 backdrop-blur rounded-xl p-3 border border-white/10">
-                <div className="flex items-center gap-2 text-white/60 text-xs mb-1">
-                  <CheckCircle2 className="w-3 h-3" />
-                  Last Sync
-                </div>
-                <p className="text-white font-medium">{lastHeartbeat ? new Date(lastHeartbeat).toLocaleTimeString() : "--:--"}</p>
-                <p className="text-white/40 text-xs">Every 30s</p>
-              </div>
+              ))}
             </div>
           </div>
         </div>
       )}
 
-      {/* Show Dashboard Button when hidden - not in kiosk mode */}
       {!showDashboard && !isFullscreen && !isKioskMode && (
         <Button variant="ghost" size="icon" onClick={() => setShowDashboard(true)} className="absolute top-4 right-4 z-50 text-white/40 hover:text-white bg-black/40 hover:bg-black/60">
           <Settings className="w-5 h-5" />
         </Button>
       )}
 
-      {/* Animation Styles */}
       <style>{`
         .ad-container { transition: all 0.4s ease-in-out; }
         .ad-container.transitioning.fade { opacity: 0; }
@@ -785,52 +556,26 @@ export default function ScreenPlayer() {
       `}</style>
 
       {/* Ad Content */}
-      {(() => {
-        const objectFitClass = screen?.display_mode === "stretch" ? "object-fill" :
-                               screen?.display_mode === "fill" ? "object-cover" :
-                               "object-contain";
-        return (
-          <div className={`w-full h-screen flex items-center justify-center ad-container ${transitioning ? `transitioning ${animationType}` : ''}`}>
-            {allAds.length === 0 ? (
-              defaultContentUrl ? (
-                defaultContentType === "video" ? (
-                  <video src={defaultContentUrl} className={`w-full h-full ${objectFitClass}`} autoPlay loop muted playsInline onError={handleMediaError} />
-                ) : (
-                  <img src={defaultContentUrl} alt="Default Content" className={`w-full h-full ${objectFitClass}`} onError={handleMediaError} />
-                )
-              ) : (
-                <div className="text-center text-white">
-                  <div className="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                    <MonitorPlay className="w-12 h-12 text-white/60" />
-                  </div>
-                  <h2 className="text-2xl font-bold mb-2">No Active Campaigns</h2>
-                  <p className="text-white/60">Waiting for approved ads to be scheduled...</p>
-                  <Button variant="ghost" className="mt-6 text-white/60" onClick={() => { refetchBookings(); refetchCampaigns(); }}>
-                    <RefreshCw className="w-4 h-4 mr-2" />Refresh
-                  </Button>
-                </div>
-              )
-            ) : currentAd?.creative_url ? (
-              currentAd.creative_type === "video" ? (
-                <video
-                  ref={videoRef}
-                  key={currentAd.id}
-                  src={currentAd.creative_url}
-                  className={`w-full h-full ${objectFitClass}`}
-                  autoPlay
-                  muted={isMuted}
-                  playsInline
-                  onEnded={handleVideoEnded}
-                  onTimeUpdate={handleVideoProgress}
-                  onError={handleMediaError}
-                />
-              ) : (
-                <img key={currentAd.id} src={currentAd.creative_url} alt={currentAd.name} className={`w-full h-full ${objectFitClass}`} onError={handleMediaError} />
-              )
-            ) : null}
+      <div className={`w-full h-screen flex items-center justify-center ad-container ${transitioning ? `transitioning ${animationType}` : ''}`}>
+        {currentAd?.creative_url ? (
+          currentAd.creative_type === "video" ? (
+            <video ref={videoRef} key={currentAd.id} src={currentAd.creative_url} className={`w-full h-full ${objectFitClass}`} autoPlay muted={isMuted} playsInline onEnded={handleVideoEnded} onTimeUpdate={handleVideoProgress} onError={handleMediaError} />
+          ) : (
+            <img key={currentAd.id} src={currentAd.creative_url} alt={currentAd.name} className={`w-full h-full ${objectFitClass}`} onError={handleMediaError} />
+          )
+        ) : (
+          <div className="text-center text-white">
+            <div className="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
+              <MonitorPlay className="w-12 h-12 text-white/60" />
+            </div>
+            <h2 className="text-2xl font-bold mb-2">No Active Content</h2>
+            <p className="text-white/60">Waiting for content to be scheduled...</p>
+            <Button variant="ghost" className="mt-6 text-white/60" onClick={() => { refetchBookings(); refetchCampaigns(); }}>
+              <RefreshCw className="w-4 h-4 mr-2" />Refresh
+            </Button>
           </div>
-        );
-      })()}
+        )}
+      </div>
 
       {/* Progress Bar */}
       {!isFullscreen && allAds.length > 0 && (
@@ -839,29 +584,22 @@ export default function ScreenPlayer() {
         </div>
       )}
 
-      {/* Controls - hidden in kiosk mode */}
+      {/* Controls */}
       {!isFullscreen && !isKioskMode && (
         <div className="absolute bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-black/90 to-transparent p-4">
           <div className="flex items-center justify-between max-w-7xl mx-auto">
-            {/* Ad Indicators */}
             <div className="flex items-center gap-2">
               {allAds.slice(0, 10).map((ad, idx) => (
                 <button key={idx} onClick={() => { setCurrentAdIndex(idx); setAdProgress(0); }} className={`h-2 rounded-full transition-all ${idx === currentAdIndex ? "bg-violet-500 w-8" : "bg-white/30 w-2 hover:bg-white/50"}`} title={ad.name} />
               ))}
               {allAds.length > 10 && <span className="text-white/40 text-xs ml-1">+{allAds.length - 10}</span>}
             </div>
-
-            {/* Playback Controls */}
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" onClick={goToPrevAd} className="text-white/60 hover:text-white hover:bg-white/10" title="Previous Ad">
-                <SkipBack className="w-5 h-5" />
-              </Button>
-              <Button variant="ghost" size="icon" onClick={() => setIsPaused(!isPaused)} className="text-white/60 hover:text-white hover:bg-white/10" title={isPaused ? "Resume" : "Pause"}>
+              <Button variant="ghost" size="icon" onClick={goToPrevAd} className="text-white/60 hover:text-white hover:bg-white/10"><SkipBack className="w-5 h-5" /></Button>
+              <Button variant="ghost" size="icon" onClick={() => setIsPaused(!isPaused)} className="text-white/60 hover:text-white hover:bg-white/10">
                 {isPaused ? <Play className="w-5 h-5" /> : <Pause className="w-5 h-5" />}
               </Button>
-              <Button variant="ghost" size="icon" onClick={goToNextAd} className="text-white/60 hover:text-white hover:bg-white/10" title="Skip Ad">
-                <SkipForward className="w-5 h-5" />
-              </Button>
+              <Button variant="ghost" size="icon" onClick={goToNextAd} className="text-white/60 hover:text-white hover:bg-white/10"><SkipForward className="w-5 h-5" /></Button>
               <div className="w-px h-6 bg-white/20 mx-2" />
               <Button variant="ghost" size="icon" onClick={() => setIsMuted(!isMuted)} className="text-white/60 hover:text-white hover:bg-white/10">
                 {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
@@ -874,7 +612,7 @@ export default function ScreenPlayer() {
         </div>
       )}
 
-      {/* Campaign Info Overlay - hidden in kiosk mode */}
+      {/* Current Ad Info */}
       {!isFullscreen && !isKioskMode && currentAd && (
         <div className="absolute bottom-28 left-4 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2">
           <p className="text-white text-sm font-medium">{currentAd.name}</p>
