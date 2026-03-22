@@ -8,6 +8,8 @@ import {
   Image as ImageIcon, Video, Play, RefreshCw, Eye, Layers, ChevronRight
 } from "lucide-react";
 
+const AD_DURATION = 8000; // must match ScreenPlayer
+
 function PlaylistItem({ index, slot, isActive }) {
   return (
     <div className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-300 ${isActive ? "bg-violet-50 border border-violet-200 shadow-sm" : "hover:bg-slate-50"}`}>
@@ -28,12 +30,11 @@ function PlaylistItem({ index, slot, isActive }) {
       <div className="flex-1 min-w-0">
         <p className={`text-sm font-medium truncate ${isActive ? "text-violet-800" : "text-slate-700"}`}>{slot.name}</p>
         <div className="flex items-center gap-1.5 mt-0.5">
-          {slot.type === "video"
-            ? <Video className="w-3 h-3 text-slate-400" />
-            : <ImageIcon className="w-3 h-3 text-slate-400" />}
+          {slot.type === "video" ? <Video className="w-3 h-3 text-slate-400" /> : <ImageIcon className="w-3 h-3 text-slate-400" />}
           <span className="text-xs text-slate-400 capitalize">{slot.type}</span>
-          {slot.isOwner && <span className="text-xs bg-indigo-100 text-indigo-600 px-1.5 rounded-full">Owner</span>}
-          {!slot.isOwner && <span className="text-xs bg-blue-100 text-blue-600 px-1.5 rounded-full">Ad Slot</span>}
+          {slot.isOwner
+            ? <span className="text-xs bg-indigo-100 text-indigo-600 px-1.5 rounded-full">Owner</span>
+            : <span className="text-xs bg-blue-100 text-blue-600 px-1.5 rounded-full">Ad Slot</span>}
         </div>
       </div>
       {isActive && (
@@ -53,10 +54,13 @@ export default function LiveScreenMonitorPage() {
 
   const [screen, setScreen] = useState(null);
   const [venue, setVenue] = useState(null);
+  const [bookings, setBookings] = useState([]);
+  const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const intervalRef = useRef(null);
+  const pollRef = useRef(null);
 
   useEffect(() => {
     if (!screenId) { navigate("/MyScreens"); return; }
@@ -68,46 +72,100 @@ export default function LiveScreenMonitorPage() {
     const s = screens[0];
     if (!s) { navigate("/MyScreens"); return; }
     setScreen(s);
+
     if (s.venue_id) {
       const venues = await base44.entities.Venue.filter({ id: s.venue_id });
       setVenue(venues[0] || null);
     }
+
+    // Load active ad bookings
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const allBookings = await base44.entities.AdBooking.filter({ screen_id: s.id, status: "active" });
+      setBookings(allBookings.filter(b => b.start_date <= today && b.end_date >= today));
+    } catch (e) { setBookings([]); }
+
+    // Load active campaigns for this screen
+    try {
+      const allCampaigns = await base44.entities.Campaign.filter({ status: "active" });
+      setCampaigns(allCampaigns.filter(c => c.selected_screens?.includes(s.id)));
+    } catch (e) { setCampaigns([]); }
+
     setLastRefresh(new Date());
     setLoading(false);
   };
 
-  // Build full playlist: interleave owner slots between ad slot placeholders
+  // Poll screen online status every 20s (detects heartbeat from ScreenPlayer)
+  useEffect(() => {
+    if (!screenId) return;
+    pollRef.current = setInterval(async () => {
+      try {
+        const screens = await base44.entities.Screen.filter({ id: screenId });
+        if (screens[0]) {
+          setScreen(prev => ({ ...prev, ...screens[0] }));
+        }
+      } catch (e) {}
+    }, 20000);
+    return () => clearInterval(pollRef.current);
+  }, [screenId]);
+
+  // Build the SAME playlist as ScreenPlayer does
   const buildPlaylist = () => {
     if (!screen) return [];
-    const playlist = [];
-    const internalCount = screen.internal_slots || 0;
-    const adCount = screen.public_ad_slots || 0;
 
-    // Add ad slot placeholders
-    for (let i = 1; i <= adCount; i++) {
-      playlist.push({ name: `Ad Slot ${i}`, type: "image", url: null, isOwner: false });
-    }
-    // Add owner slots
-    for (let i = 1; i <= internalCount; i++) {
+    const maxPublicAds = screen.public_ad_slots || 0;
+    const maxInternalSlots = screen.internal_slots || 0;
+
+    // Owner slots
+    const ownerSlots = [];
+    for (let i = 1; i <= maxInternalSlots; i++) {
       const url = screen[`owner_slot_${i}_url`];
       const type = screen[`owner_slot_${i}_type`] || "image";
-      playlist.push({ name: `Internal Slot ${i}`, type, url, isOwner: true });
+      ownerSlots.push({ name: `Owner Slot ${i}`, type, url, isOwner: true });
     }
+
+    // Ad slots from bookings + campaigns
+    const advertiserAds = [
+      ...bookings.map(b => ({ name: b.campaign_name || "Ad Slot", type: b.creative_type || "image", url: b.creative_url, isOwner: false })),
+      ...campaigns.map(c => ({ name: c.name, type: c.creative_type || "image", url: c.creative_url, isOwner: false }))
+    ].filter(ad => ad.url).slice(0, maxPublicAds);
+
+    // Interleave
+    const playlist = [];
+    let advIdx = 0, ownerIdx = 0;
+    while (advIdx < advertiserAds.length || ownerIdx < ownerSlots.length) {
+      if (advIdx < advertiserAds.length) playlist.push(advertiserAds[advIdx++]);
+      if (ownerIdx < ownerSlots.length) playlist.push(ownerSlots[ownerIdx++]);
+    }
+
+    // Fill remaining ad slots as placeholders if no advertiser content
+    if (advertiserAds.length === 0 && ownerSlots.length === 0) {
+      return [{ name: "BeyondWalls Default", type: "image", url: null, isOwner: false }];
+    }
+
     return playlist;
   };
 
   const playlist = buildPlaylist();
-  const ownerSlots = playlist.filter(s => s.isOwner && s.url);
-  const activeOwnerIndex = ownerSlots.length > 0 ? activeIndex % ownerSlots.length : 0;
-  const activeSlot = ownerSlots[activeOwnerIndex] || null;
 
+  // Only cycle through slots that have actual content for the live preview
+  const playableSlots = playlist.filter(s => s.url);
+  const activeSlot = playableSlots.length > 0 ? playableSlots[activeIndex % playableSlots.length] : null;
+  const activePlaylistIndex = activeSlot ? playlist.indexOf(activeSlot) : -1;
+
+  // Auto-advance preview at same rate as ScreenPlayer
   useEffect(() => {
-    if (ownerSlots.length === 0) return;
+    if (playableSlots.length === 0) return;
+    const duration = screen?.slot_duration ? screen.slot_duration * 1000 : AD_DURATION;
     intervalRef.current = setInterval(() => {
       setActiveIndex(i => i + 1);
-    }, (screen?.slot_duration || 30) * 1000);
+    }, duration);
     return () => clearInterval(intervalRef.current);
-  }, [ownerSlots.length, screen?.slot_duration]);
+  }, [playableSlots.length, screen?.slot_duration]);
+
+  // Check if screen is truly online (heartbeat within last 30 seconds)
+  const isOnline = screen?.is_online && screen?.last_heartbeat &&
+    (new Date() - new Date(screen.last_heartbeat)) < 30000;
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center">
@@ -131,7 +189,7 @@ export default function LiveScreenMonitorPage() {
             <p className="text-xs text-slate-400 truncate">{venue?.name} · Live Monitor</p>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            {screen?.is_online
+            {isOnline
               ? <Badge className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1"><Wifi className="w-3 h-3" />Online</Badge>
               : <Badge className="bg-slate-700 text-slate-400 border border-slate-600 flex items-center gap-1"><WifiOff className="w-3 h-3" />Offline</Badge>}
             <Button size="sm" variant="ghost" onClick={loadData} className="text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl">
@@ -144,9 +202,8 @@ export default function LiveScreenMonitorPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
         <div className="grid lg:grid-cols-5 gap-6">
 
-          {/* Left: Live Preview (wider) */}
+          {/* Left: Live Preview */}
           <div className="lg:col-span-3 space-y-4">
-            {/* Live Screen Preview */}
             <div className="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
               <div className="flex items-center justify-between px-4 py-3 border-b border-slate-700">
                 <div className="flex items-center gap-2">
@@ -156,7 +213,9 @@ export default function LiveScreenMonitorPage() {
                 </div>
                 <div className="flex items-center gap-1.5">
                   <Eye className="w-3.5 h-3.5 text-violet-400" />
-                  <span className="text-xs text-slate-400 font-medium">Live Preview — Owner Content</span>
+                  <span className="text-xs text-slate-400 font-medium">
+                    Live Preview — {activeSlot?.isOwner ? "Owner Content" : activeSlot ? "Ad Content" : "No Content"}
+                  </span>
                 </div>
                 <span className="text-xs text-slate-500">{screen?.width_px}×{screen?.height_px}</span>
               </div>
@@ -169,14 +228,13 @@ export default function LiveScreenMonitorPage() {
                 ) : (
                   <div className="flex flex-col items-center gap-3 text-slate-600">
                     <MonitorPlay className="w-16 h-16 opacity-30" />
-                    <p className="text-sm">No owner content uploaded yet</p>
+                    <p className="text-sm">No content uploaded yet</p>
                     <Button size="sm" variant="outline" onClick={() => navigate(`/ManageScreenContent?id=${screenId}`)} className="border-slate-600 text-slate-400 hover:text-white mt-1">
                       Upload Content
                     </Button>
                   </div>
                 )}
 
-                {/* Overlay badges */}
                 {activeSlot && (
                   <div className="absolute top-3 left-3 flex items-center gap-2">
                     <span className="bg-violet-600/90 text-white text-xs px-2.5 py-1 rounded-full flex items-center gap-1 backdrop-blur-sm">
@@ -185,18 +243,25 @@ export default function LiveScreenMonitorPage() {
                     <span className="bg-black/60 text-slate-300 text-xs px-2.5 py-1 rounded-full backdrop-blur-sm">{activeSlot.name}</span>
                   </div>
                 )}
+
+                {/* Last heartbeat info */}
+                {screen?.last_heartbeat && (
+                  <div className="absolute bottom-3 right-3 bg-black/60 text-slate-400 text-xs px-2 py-1 rounded-full backdrop-blur-sm">
+                    Last ping: {new Date(screen.last_heartbeat).toLocaleTimeString()}
+                  </div>
+                )}
               </div>
 
               {/* Progress bar */}
-              {ownerSlots.length > 0 && (
+              {playableSlots.length > 0 && (
                 <div className="px-4 py-3 border-t border-slate-700">
                   <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
-                    <span>Playing {activeOwnerIndex + 1} of {ownerSlots.length} owner slots</span>
-                    <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{screen?.slot_duration}s per slot</span>
+                    <span>Slot {(activeIndex % playableSlots.length) + 1} of {playableSlots.length} (with content)</span>
+                    <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{screen?.slot_duration || Math.round(AD_DURATION / 1000)}s per slot</span>
                   </div>
                   <div className="flex gap-1">
-                    {ownerSlots.map((_, i) => (
-                      <div key={i} className={`h-1 rounded-full flex-1 transition-all duration-300 ${i === activeOwnerIndex ? "bg-violet-500" : "bg-slate-700"}`} />
+                    {playableSlots.map((_, i) => (
+                      <div key={i} className={`h-1 rounded-full flex-1 transition-all duration-300 ${i === (activeIndex % playableSlots.length) ? "bg-violet-500" : "bg-slate-700"}`} />
                     ))}
                   </div>
                 </div>
@@ -236,7 +301,7 @@ export default function LiveScreenMonitorPage() {
                     key={i}
                     index={i}
                     slot={slot}
-                    isActive={slot.isOwner && ownerSlots.indexOf(slot) === activeOwnerIndex}
+                    isActive={i === activePlaylistIndex}
                   />
                 ))}
                 {playlist.length === 0 && (
@@ -248,25 +313,19 @@ export default function LiveScreenMonitorPage() {
             {/* Quick Actions */}
             <div className="bg-slate-800 rounded-2xl border border-slate-700 p-4 space-y-2">
               <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Quick Actions</p>
-              <button
-                onClick={() => navigate(`/ManageScreenContent?id=${screenId}`)}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-700 transition-colors text-left"
-              >
+              <button onClick={() => navigate(`/ManageScreenContent?id=${screenId}`)} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-700 transition-colors text-left">
                 <div className="w-8 h-8 bg-violet-600/20 rounded-lg flex items-center justify-center"><ImageIcon className="w-4 h-4 text-violet-400" /></div>
                 <span className="text-sm text-slate-300">Manage Content</span>
                 <ChevronRight className="w-4 h-4 text-slate-500 ml-auto" />
               </button>
-              <button
-                onClick={() => navigate(`/ScreenDetail/${screenId}`)}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-700 transition-colors text-left"
-              >
+              <button onClick={() => navigate(`/ScreenDetail/${screenId}`)} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-700 transition-colors text-left">
                 <div className="w-8 h-8 bg-indigo-600/20 rounded-lg flex items-center justify-center"><Eye className="w-4 h-4 text-indigo-400" /></div>
                 <span className="text-sm text-slate-300">Screen Details</span>
                 <ChevronRight className="w-4 h-4 text-slate-500 ml-auto" />
               </button>
             </div>
 
-            <p className="text-xs text-slate-500 text-center">Last refreshed: {lastRefresh.toLocaleTimeString()}</p>
+            <p className="text-xs text-slate-500 text-center">Last refreshed: {lastRefresh.toLocaleTimeString()} · Auto-polls every 20s</p>
           </div>
         </div>
       </div>
