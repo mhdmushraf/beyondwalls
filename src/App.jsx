@@ -15,6 +15,7 @@ import { isMobileApp } from '@/components/mobile/mobileDetection';
 import MobileRouteTransition from '@/components/mobile/MobileRouteTransition';
 import { AnimatePresence } from 'framer-motion';
 import VenueDetail from './pages/VenueDetail';
+import EditVenue from './pages/EditVenue';
 
 // Lazy load pages for code splitting
 const LazyPageLoader = ({ Page }) => (
