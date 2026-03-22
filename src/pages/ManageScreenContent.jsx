@@ -236,26 +236,6 @@ export default function ManageScreenContent() {
               </CardContent>
             </Card>
 
-            {/* Live Preview */}
-            <Card className="border-0 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base flex items-center gap-2">
-                  <Eye className="w-4 h-4 text-violet-500" /> Live Preview
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {previewSlots.length > 0 ? (
-                  <LiveScreenPreview slots={previewSlots} size="medium" autoPlay={true} />
-                ) : (
-                  <div className="bg-slate-900 rounded-lg h-40 flex flex-col items-center justify-center text-slate-500 gap-2">
-                    <MonitorPlay className="w-8 h-8 opacity-30" />
-                    <p className="text-xs">Upload content to preview</p>
-                  </div>
-                )}
-                <p className="text-xs text-slate-400 mt-2 text-center">Preview cycles every 5 seconds</p>
-              </CardContent>
-            </Card>
-
             {/* Screen specs */}
             <Card className="border-0 shadow-sm">
               <CardContent className="p-4 space-y-2 text-sm">
