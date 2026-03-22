@@ -15,7 +15,6 @@ export default function AdminUserApprovals() {
   const [rejectionReason, setRejectionReason] = useState("");
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
-  const { toast } = useToast();
 
   useEffect(() => {
     loadUsers();

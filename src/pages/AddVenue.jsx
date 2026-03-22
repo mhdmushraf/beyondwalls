@@ -61,7 +61,6 @@ const SelectField = ({ label, value, onChange, options, placeholder, required })
 
 export default function AddVenue() {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [form, setForm] = useState({
