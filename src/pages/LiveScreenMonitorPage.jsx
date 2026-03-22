@@ -3,9 +3,11 @@ import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import {
   ArrowLeft, MonitorPlay, Wifi, WifiOff, Clock, LayoutGrid,
-  Image as ImageIcon, Video, Play, RefreshCw, Eye, Layers, ChevronRight
+  Image as ImageIcon, Video, Play, RefreshCw, Eye, Layers, ChevronRight,
+  Power, RotateCcw, PowerOff
 } from "lucide-react";
 
 function PlaylistItem({ index, slot, isActive }) {
@@ -56,6 +58,7 @@ export default function LiveScreenMonitorPage() {
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [lastRefresh, setLastRefresh] = useState(new Date());
+  const [commandLoading, setCommandLoading] = useState(null);
   const pollRef = useRef(null);
 
 
@@ -155,6 +158,13 @@ export default function LiveScreenMonitorPage() {
   // Online = heartbeat received within last 60 seconds (player sends every 15s)
   const isOnline = screen?.last_heartbeat &&
     (new Date() - new Date(screen.last_heartbeat)) < 60000;
+
+  const sendCommand = async (command) => {
+    setCommandLoading(command);
+    await base44.entities.Screen.update(screenId, { player_command: command });
+    toast.success(`Command "${command}" sent to screen. Player will respond shortly.`);
+    setCommandLoading(null);
+  };
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center">
