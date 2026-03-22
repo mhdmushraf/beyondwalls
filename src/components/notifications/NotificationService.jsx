@@ -342,35 +342,16 @@ export const NotificationService = {
       await base44.integrations.Core.SendEmail({
         to: advertiser.email,
         subject: `✅ Booking Confirmed: ${booking.campaign_name} | BeyondWalls`,
-        body: `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        BEYONDWALLS
-   Booking Confirmation
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Dear ${advertiser.full_name || "Valued Advertiser"},
-
-Your ad booking has been confirmed and is now pending admin approval!
-
-📋 BOOKING DETAILS
-━━━━━━━━━━━━━━━━━━━━━━━━━
-🎯 Campaign: ${booking.campaign_name}
-📺 Screen: ${screen?.name || "N/A"}
-📍 Venue: ${venue?.name || "N/A"} - ${venue?.city || "N/A"}
-📅 Start Date: ${booking.start_date}
-📅 End Date: ${booking.end_date}
-💰 Total Cost: AED ${booking.total_cost}
-
-Your creative will be reviewed by our team and approved shortly. You'll receive a confirmation email once your campaign goes live.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Questions? Contact us at info@beyondwalls.ae
-Phone: +971 55 614 0067
-
-BeyondWalls - Advertise Beyond Boundaries
-www.beyondwalls.ae
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        `.trim()
+        body: EmailTemplates.bookingConfirmed(
+          advertiser.full_name || "Valued Advertiser",
+          booking.campaign_name,
+          screen?.name || "N/A",
+          venue?.name || "N/A",
+          venue?.city || "N/A",
+          booking.start_date,
+          booking.end_date,
+          booking.total_cost
+        )
       });
     } catch (e) {
       console.error("Failed to send booking created email", e);
