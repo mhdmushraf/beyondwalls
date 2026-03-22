@@ -261,7 +261,25 @@ export default function ScreenPlayer() {
     return () => clearInterval(timer);
   }, [authenticated, isPaused]);
 
+  // Use refs to track latest values without causing heartbeat interval to restart
+  const currentAdIndexRef = useRef(currentAdIndex);
+  const allAdsLengthRef = useRef(allAds.length);
+  const currentAdNameRef = useRef(currentAd?.name);
+  const isPausedRef = useRef(isPaused);
+  const totalPlaytimeRef = useRef(totalPlaytime);
+  const adsPlayedRef = useRef(adsPlayed);
+  const uptimeSecondsRef = useRef(uptimeSeconds);
+
+  useEffect(() => { currentAdIndexRef.current = currentAdIndex; }, [currentAdIndex]);
+  useEffect(() => { allAdsLengthRef.current = allAds.length; }, [allAds.length]);
+  useEffect(() => { currentAdNameRef.current = currentAd?.name; }, [currentAd]);
+  useEffect(() => { isPausedRef.current = isPaused; }, [isPaused]);
+  useEffect(() => { totalPlaytimeRef.current = totalPlaytime; }, [totalPlaytime]);
+  useEffect(() => { adsPlayedRef.current = adsPlayed; }, [adsPlayed]);
+  useEffect(() => { uptimeSecondsRef.current = uptimeSeconds; }, [uptimeSeconds]);
+
   // Heartbeat — sets is_online: true every 15s, clears on unmount
+  // CRITICAL: deps are ONLY [authenticated, screen?.id] so the interval is stable
   useEffect(() => {
     if (!authenticated || !screen?.id) return;
 
@@ -271,21 +289,24 @@ export default function ScreenPlayer() {
           last_heartbeat: new Date().toISOString(),
           status: "active",
           is_online: true,
-          player_active: !isPaused,
-          current_ad_index: currentAdIndex,
-          current_playlist_length: allAds.length,
-          total_playtime: totalPlaytime,
-          ads_played_count: adsPlayed,
+          player_active: !isPausedRef.current,
+          current_ad_index: currentAdIndexRef.current,
+          current_playlist_length: allAdsLengthRef.current,
+          total_playtime: totalPlaytimeRef.current,
+          ads_played_count: adsPlayedRef.current,
           current_session_id: sessionId,
-          uptime_seconds: uptimeSeconds,
-          current_content_name: currentAd?.name || null,
+          uptime_seconds: uptimeSecondsRef.current,
+          current_content_name: currentAdNameRef.current || null,
           player_version: PLAYER_VERSION
         });
         setConnectionStatus("connected");
         setLastHeartbeat(new Date());
       } catch (e) {
-        const timeSinceLastSuccess = lastHeartbeat ? Date.now() - lastHeartbeat.getTime() : 0;
-        if (timeSinceLastSuccess > 30000) setConnectionStatus("reconnecting");
+        setLastHeartbeat(prev => {
+          const timeSinceLastSuccess = prev ? Date.now() - prev.getTime() : 0;
+          if (timeSinceLastSuccess > 30000) setConnectionStatus("reconnecting");
+          return prev;
+        });
       }
     };
 
@@ -301,7 +322,7 @@ export default function ScreenPlayer() {
         status: "inactive"
       }).catch(() => {});
     };
-  }, [authenticated, screen?.id, currentAdIndex, totalPlaytime, adsPlayed, uptimeSeconds, isPaused, currentAd]);
+  }, [authenticated, screen?.id]); // stable deps — no restarts on every ad change
 
   // Network status
   useEffect(() => {
