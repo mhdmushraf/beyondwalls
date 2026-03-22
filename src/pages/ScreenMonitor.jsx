@@ -104,8 +104,9 @@ export default function ScreenMonitor() {
       }
     }
 
-    prevScreensRef.current = screenList;
-    setScreens(screenList);
+    const approvedScreens = screenList.filter(s => s.approval_status === "approved");
+    prevScreensRef.current = approvedScreens;
+    setScreens(approvedScreens);
     setLastRefresh(new Date());
     setLoading(false);
     setRefreshing(false);
