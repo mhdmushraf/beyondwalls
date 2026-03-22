@@ -139,7 +139,7 @@ function App() {
           <NavigationTracker />
           <AuthenticatedApp />
         </Router>
-        <Toaster closeButton />
+        <Toaster closeButton richColors position="top-right" />
         <VisualEditAgent />
       </QueryClientProvider>
     </AuthProvider>
