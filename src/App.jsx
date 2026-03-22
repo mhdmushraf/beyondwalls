@@ -19,6 +19,7 @@ import EditVenue from './pages/EditVenue';
 import ScreenDetail from './pages/ScreenDetail';
 import ManageScreenContent from './pages/ManageScreenContent';
 import EditScreen from './pages/EditScreen';
+import LiveScreenMonitorPage from './pages/LiveScreenMonitorPage';
 
 // Lazy load pages for code splitting
 const LazyPageLoader = ({ Page }) => (

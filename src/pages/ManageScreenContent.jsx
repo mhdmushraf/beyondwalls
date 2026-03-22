@@ -5,9 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 import {
   ArrowLeft, Upload, Loader2, Image as ImageIcon, Video, X,
-  CheckCircle2, MonitorPlay, Eye, Wifi, WifiOff, Play, Pause
+  CheckCircle2, MonitorPlay, Eye, Wifi, WifiOff, Activity
 } from "lucide-react";
 import LiveScreenPreview from "@/components/previews/LiveScreenPreview";
 
