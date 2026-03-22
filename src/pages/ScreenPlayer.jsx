@@ -84,7 +84,8 @@ export default function ScreenPlayer() {
       code: params.get("setup_code"),
       id: params.get("screen_id"),
       pin: params.get("pin"),
-      autoStart: params.get("auto_start") === "true"
+      autoStart: params.get("auto_start") === "true",
+      token: params.get("device_token")
     });
   }, []);
 

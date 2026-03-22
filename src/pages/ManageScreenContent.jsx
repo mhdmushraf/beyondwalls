@@ -95,14 +95,13 @@ export default function ManageScreenContent() {
     const scr = s[0];
     if (!scr) { navigate("/MyScreens"); return; }
     setScreen(scr);
-    setSlots({
-      owner_slot_1_url: scr.owner_slot_1_url || "",
-      owner_slot_1_type: scr.owner_slot_1_type || "image",
-      owner_slot_2_url: scr.owner_slot_2_url || "",
-      owner_slot_2_type: scr.owner_slot_2_type || "image",
-      owner_slot_3_url: scr.owner_slot_3_url || "",
-      owner_slot_3_type: scr.owner_slot_3_type || "image",
-    });
+    const initialSlots = {};
+    const totalInternal = scr.internal_slots || 6;
+    for (let i = 1; i <= totalInternal; i++) {
+      initialSlots[`owner_slot_${i}_url`] = scr[`owner_slot_${i}_url`] || "";
+      initialSlots[`owner_slot_${i}_type`] = scr[`owner_slot_${i}_type`] || "image";
+    }
+    setSlots(initialSlots);
 
     if (scr.venue_id) {
       const venues = await base44.entities.Venue.filter({ id: scr.venue_id });
