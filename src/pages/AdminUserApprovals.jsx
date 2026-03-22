@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { Users, CheckCircle2, XCircle, Search, Loader2, Eye } from "lucide-react";
 import { EmailTemplates } from "@/components/notifications/EmailTemplates";
 
