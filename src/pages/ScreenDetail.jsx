@@ -4,10 +4,11 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import {
   ArrowLeft, MonitorPlay, MapPin, Wifi, WifiOff, Code,
   Layers, Clock, DollarSign, LayoutGrid, Maximize2, Image as ImageIcon,
-  Pencil, KeyRound
+  Pencil, KeyRound, Copy, ExternalLink
 } from "lucide-react";
 
 function StatCard({ icon: Icon, label, value, iconClass = "text-violet-500" }) {
