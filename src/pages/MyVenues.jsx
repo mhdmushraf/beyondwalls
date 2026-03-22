@@ -56,8 +56,8 @@ export default function MyVenues() {
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      {v.image_url ? (
-                        <img src={v.image_url} alt={v.name} className="w-11 h-11 rounded-xl object-cover flex-shrink-0" />
+                      {(v.image_url || (v.photo_urls && v.photo_urls.length > 0)) ? (
+                        <img src={v.image_url || v.photo_urls[0]} alt={v.name} className="w-11 h-11 rounded-xl object-cover flex-shrink-0" />
                       ) : (
                         <div className="w-11 h-11 bg-violet-100 rounded-xl flex items-center justify-center flex-shrink-0">
                           <Building2 className="w-5 h-5 text-violet-600" />
