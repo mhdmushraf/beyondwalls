@@ -122,6 +122,15 @@ const AuthenticatedApp = () => {
              </MobileRouteTransition>
            </LayoutWrapper>
          } />
+         <Route path="/ManageScreenContent" element={
+           <LayoutWrapper currentPageName="ManageScreenContent">
+             <MobileRouteTransition>
+               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+                 <ManageScreenContent />
+               </Suspense>
+             </MobileRouteTransition>
+           </LayoutWrapper>
+         } />
          <Route path="*" element={<PageNotFound />} />
        </Routes>
      </AnimatePresence>

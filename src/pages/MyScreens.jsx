@@ -98,6 +98,13 @@ export default function MyScreens() {
                         <span className="text-xs text-violet-700 font-mono font-bold">Setup Code: {s.setup_code}</span>
                       </div>
                     )}
+                    {s.approval_status === "approved" && (
+                      <Link to={`/ManageScreenContent?id=${s.id}`} onClick={e => e.stopPropagation()}>
+                        <Button size="sm" variant="outline" className="w-full mt-2 text-violet-700 border-violet-200 hover:bg-violet-50">
+                          <Settings className="w-3.5 h-3.5 mr-1.5" /> Manage Internal Content
+                        </Button>
+                      </Link>
+                    )}
                   </CardContent>
                 </Card>
               </Link>
