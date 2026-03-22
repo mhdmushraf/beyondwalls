@@ -8,8 +8,6 @@ import {
   Image as ImageIcon, Video, Play, RefreshCw, Eye, Layers, ChevronRight
 } from "lucide-react";
 
-const AD_DURATION = 8000; // must match ScreenPlayer
-
 function PlaylistItem({ index, slot, isActive }) {
   return (
     <div className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-300 ${isActive ? "bg-violet-50 border border-violet-200 shadow-sm" : "hover:bg-slate-50"}`}>
