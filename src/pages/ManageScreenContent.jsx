@@ -188,7 +188,7 @@ export default function ManageScreenContent() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {[1, 2, 3].map(n => (
+                {Array.from({ length: screen?.internal_slots || 6 }, (_, i) => i + 1).map(n => (
                   <SlotUploader
                     key={n}
                     slotNumber={n}

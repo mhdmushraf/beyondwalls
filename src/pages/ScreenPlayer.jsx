@@ -243,16 +243,17 @@ export default function ScreenPlayer() {
   const defaultContentUrl = platformSettings.find(s => s.setting_key === "default_screen_content_url")?.setting_value || "https://images.unsplash.com/photo-1557683316-973673baf926?w=1920";
   const defaultContentType = platformSettings.find(s => s.setting_key === "default_screen_content_type")?.setting_value || "image";
 
-  // Build owner slots
+  // Build owner slots dynamically (supports up to 6)
   const ownerSlots = [];
-  if (screen?.owner_slot_1_url) {
-    ownerSlots.push({ id: "owner-1", name: "Owner Slot 1", creative_url: screen.owner_slot_1_url, creative_type: screen.owner_slot_1_type || "image", type: "owner" });
-  }
-  if (screen?.owner_slot_2_url) {
-    ownerSlots.push({ id: "owner-2", name: "Owner Slot 2", creative_url: screen.owner_slot_2_url, creative_type: screen.owner_slot_2_type || "image", type: "owner" });
-  }
-  if (screen?.owner_slot_3_url) {
-    ownerSlots.push({ id: "owner-3", name: "Owner Slot 3", creative_url: screen.owner_slot_3_url, creative_type: screen.owner_slot_3_type || "image", type: "owner" });
+  if (screen) {
+    const totalInternal = screen.internal_slots || 6;
+    for (let i = 1; i <= totalInternal; i++) {
+      const urlKey = `owner_slot_${i}_url`;
+      const typeKey = `owner_slot_${i}_type`;
+      if (screen[urlKey]) {
+        ownerSlots.push({ id: `owner-${i}`, name: `Owner Slot ${i}`, creative_url: screen[urlKey], creative_type: screen[typeKey] || "image", type: "owner" });
+      }
+    }
   }
 
   // Build advertiser ads
