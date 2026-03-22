@@ -578,8 +578,26 @@ export default function ScreenPlayer() {
         .ad-container.transitioning.blur { filter: blur(20px); opacity: 0; }
       `}</style>
 
-      {/* Ad Content */}
-      <div className={`w-full h-screen flex items-center justify-center ad-container ${transitioning ? `transitioning ${animationType}` : ''}`}>
+      {/* Ad Content — constrained to screen's configured resolution */}
+      <div
+        className={`ad-container ${transitioning ? `transitioning ${animationType}` : ''}`}
+        style={screen?.width_px && screen?.height_px ? {
+          width: "100vw",
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "black",
+        } : { width: "100%", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}
+      >
+        <div style={screen?.width_px && screen?.height_px ? (() => {
+          const aspectRatio = screen.width_px / screen.height_px;
+          const vwHeight = window.innerHeight;
+          const vwWidth = window.innerWidth;
+          let w = vwWidth, h = vwWidth / aspectRatio;
+          if (h > vwHeight) { h = vwHeight; w = vwHeight * aspectRatio; }
+          return { width: w, height: h, overflow: "hidden", position: "relative", flexShrink: 0 };
+        })() : { width: "100%", height: "100%" }}>
         {currentAd?.creative_url ? (
           currentAd.creative_type === "video" ? (
             <video ref={videoRef} key={currentAd.id} src={currentAd.creative_url} className={`w-full h-full ${objectFitClass}`} autoPlay muted={isMuted} playsInline onEnded={handleVideoEnded} onTimeUpdate={handleVideoProgress} onError={handleMediaError} />
