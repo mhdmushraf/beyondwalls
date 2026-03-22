@@ -100,10 +100,11 @@ export default function LiveScreenMonitorPage() {
       try {
         const screens = await base44.entities.Screen.filter({ id: screenId });
         if (screens[0]) {
-          setScreen(prev => ({ ...prev, ...screens[0] }));
+          setScreen(screens[0]);
+          setLastRefresh(new Date());
         }
       } catch (e) {}
-    }, 20000);
+    }, 8000); // poll every 8s to track slot changes in near real-time
     return () => clearInterval(pollRef.current);
   }, [screenId]);
 
