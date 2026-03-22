@@ -246,7 +246,7 @@ export default function LiveScreenMonitorPage() {
                 <div className="px-4 py-3 border-t border-slate-700">
                   <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
                     <span>Slot {activePlaylistIndex + 1} of {playlist.length}</span>
-                    <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{screen?.slot_duration || Math.round(AD_DURATION / 1000)}s per slot</span>
+                    <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{screen?.slot_duration || 30}s per slot</span>
                   </div>
                   <div className="flex gap-1">
                     {playlist.map((_, i) => (
