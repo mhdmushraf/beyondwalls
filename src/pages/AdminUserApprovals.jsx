@@ -52,8 +52,8 @@ export default function AdminUserApprovals() {
       });
       await base44.integrations.Core.SendEmail({
         to: u.email,
-        subject: "🎉 Account Approved - BeyondWalls",
-        body: `Hi ${u.full_name},\n\nGreat news! Your BeyondWalls account has been approved.\n\nYou can now ${u.user_role === "advertiser" ? "create campaigns and start advertising" : "add venues and register screens"}.\n\nLogin at: https://beyondwalls.ae\n\nWelcome aboard!\nBeyondWalls Team`,
+        subject: "🎉 Account Approved - Welcome to BeyondWalls!",
+        body: EmailTemplates.accountApproved(u.full_name, u.user_role),
       });
       toast({ title: "User approved!", description: `Email sent to ${u.email}` });
       setSelected(null);
