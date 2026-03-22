@@ -42,35 +42,17 @@ export const NotificationService = {
     if (notify.email) {
       try {
         await base44.integrations.Core.SendEmail({
-        to: user.email,
-        subject: `✅ Campaign Approved: ${booking.campaign_name} | BeyondWalls`,
-        body: `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        BEYONDWALLS
-   Your Campaign is Now Live!
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Dear ${user.full_name || "Valued Advertiser"},
-
-Great news! Your campaign has been approved and is now live.
-
-📋 CAMPAIGN DETAILS
-━━━━━━━━━━━━━━━━━━━━━━━━━
-🎯 Campaign: ${booking.campaign_name}
-📺 Screen: ${screen?.name || "N/A"}
-📍 Venue: ${venue?.name || "N/A"} - ${venue?.city || "N/A"}
-📅 Duration: ${booking.start_date} to ${booking.end_date}
-
-Your ad is now being displayed to audiences. Track your campaign performance in your dashboard.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Need help? Contact us at info@beyondwalls.ae
-Phone: +971 55 614 0067
-
-BeyondWalls - Advertise Beyond Boundaries
-www.beyondwalls.ae
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        `.trim()
+          to: user.email,
+          subject: `✅ Campaign Approved: ${booking.campaign_name} | BeyondWalls`,
+          body: EmailTemplates.campaignApproved(
+            user.full_name || "Valued Advertiser",
+            booking.campaign_name,
+            screen?.name || "N/A",
+            venue?.name || "N/A",
+            venue?.city || "N/A",
+            booking.start_date,
+            booking.end_date
+          )
         });
       } catch (e) {
         console.error("Failed to send campaign approved email", e);
