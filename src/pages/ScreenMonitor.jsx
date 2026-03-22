@@ -254,7 +254,7 @@ export default function ScreenMonitor() {
               const venue = venues[screen.venue_id];
               const lastSeen = screen.last_heartbeat ? new Date(screen.last_heartbeat) : null;
               return (
-                <Card key={screen.id} className={`border-0 shadow-sm transition-all ${status === "offline" ? "ring-1 ring-red-200" : status === "online" ? "ring-1 ring-emerald-200" : ""}`}>
+                <Card key={screen.id} onClick={() => navigate(`/LiveScreenMonitorPage?id=${screen.id}`)} className={`cursor-pointer border-0 shadow-sm transition-all hover:shadow-md ${status === "offline" ? "ring-1 ring-red-200" : status === "online" ? "ring-1 ring-emerald-200" : ""}`}>
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-2 min-w-0">
