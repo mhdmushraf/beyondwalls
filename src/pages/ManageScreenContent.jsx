@@ -173,6 +173,11 @@ export default function ManageScreenContent() {
             {screen?.is_online
               ? <Badge className="bg-emerald-100 text-emerald-700 flex items-center gap-1"><Wifi className="w-3 h-3" />Online</Badge>
               : <Badge className="bg-slate-100 text-slate-500 flex items-center gap-1"><WifiOff className="w-3 h-3" />Offline</Badge>}
+            <Link to={`/LiveScreenMonitorPage?id=${screenId}`}>
+              <Button size="sm" className="bg-violet-600 hover:bg-violet-700 flex items-center gap-1.5 rounded-xl">
+                <Activity className="w-3.5 h-3.5" /> Live Monitor
+              </Button>
+            </Link>
           </div>
         </div>
 
