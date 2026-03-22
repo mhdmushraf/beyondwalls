@@ -203,69 +203,120 @@ export default function LiveScreenMonitorPage() {
 
           {/* Left: Live Preview */}
           <div className="lg:col-span-3 space-y-4">
-            <div className="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-700">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 bg-red-500 rounded-full" />
-                  <span className="w-2 h-2 bg-yellow-500 rounded-full" />
-                  <span className="w-2 h-2 bg-green-500 rounded-full" />
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Eye className="w-3.5 h-3.5 text-violet-400" />
-                  <span className="text-xs text-slate-400 font-medium">
-                    Live Preview — {activeSlot?.isOwner ? "Owner Content" : activeSlot ? "Ad Content" : "No Content"}
-                  </span>
-                </div>
-                <span className="text-xs text-slate-500">{screen?.width_px}×{screen?.height_px}</span>
+
+            {/* Screen Controls */}
+            <div className="bg-slate-800 rounded-2xl border border-slate-700 p-4">
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Screen Controls</p>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  size="sm"
+                  onClick={() => sendCommand("start")}
+                  disabled={!!commandLoading}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                >
+                  {commandLoading === "start" ? <RefreshCw className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <Power className="w-3.5 h-3.5 mr-1.5" />}
+                  Start
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => sendCommand("restart")}
+                  disabled={!!commandLoading}
+                  className="bg-amber-600 hover:bg-amber-700 text-white"
+                >
+                  {commandLoading === "restart" ? <RefreshCw className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <RotateCcw className="w-3.5 h-3.5 mr-1.5" />}
+                  Restart
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => sendCommand("stop")}
+                  disabled={!!commandLoading}
+                  variant="outline"
+                  className="border-red-500/40 text-red-400 hover:bg-red-500/10 hover:text-red-300"
+                >
+                  {commandLoading === "stop" ? <RefreshCw className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <PowerOff className="w-3.5 h-3.5 mr-1.5" />}
+                  Stop
+                </Button>
+                <span className="text-xs text-slate-500 self-center ml-1">Commands are received by the player on its next sync cycle (~15s)</span>
               </div>
-
-              <div className="relative bg-black aspect-video flex items-center justify-center">
-                {activeSlot ? (
-                  activeSlot.type === "video"
-                    ? <video key={activeSlot.url} src={activeSlot.url} className="w-full h-full object-contain" autoPlay muted loop />
-                    : <img key={activeSlot.url} src={activeSlot.url} alt="Preview" className="w-full h-full object-contain" />
-                ) : (
-                  <div className="flex flex-col items-center gap-3 text-slate-600">
-                    <MonitorPlay className="w-16 h-16 opacity-30" />
-                    <p className="text-sm">No content uploaded yet</p>
-                    <Button size="sm" variant="outline" onClick={() => navigate(`/ManageScreenContent?id=${screenId}`)} className="border-slate-600 text-slate-400 hover:text-white mt-1">
-                      Upload Content
-                    </Button>
-                  </div>
-                )}
-
-                {activeSlot && (
-                  <div className="absolute top-3 left-3 flex items-center gap-2">
-                    <span className="bg-violet-600/90 text-white text-xs px-2.5 py-1 rounded-full flex items-center gap-1 backdrop-blur-sm">
-                      <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE
-                    </span>
-                    <span className="bg-black/60 text-slate-300 text-xs px-2.5 py-1 rounded-full backdrop-blur-sm">{activeSlot.name}</span>
-                  </div>
-                )}
-
-                {/* Last heartbeat info */}
-                {screen?.last_heartbeat && (
-                  <div className="absolute bottom-3 right-3 bg-black/60 text-slate-400 text-xs px-2 py-1 rounded-full backdrop-blur-sm">
-                    Last ping: {new Date(screen.last_heartbeat).toLocaleTimeString()}
-                  </div>
-                )}
-              </div>
-
-              {/* Progress bar */}
-              {playlist.length > 0 && (
-                <div className="px-4 py-3 border-t border-slate-700">
-                  <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
-                    <span>Slot {activePlaylistIndex + 1} of {playlist.length}</span>
-                    <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{screen?.slot_duration || 30}s per slot</span>
-                  </div>
-                  <div className="flex gap-1">
-                    {playlist.map((_, i) => (
-                      <div key={i} className={`h-1 rounded-full flex-1 transition-all duration-300 ${i === activePlaylistIndex ? "bg-violet-500" : "bg-slate-700"}`} />
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
+
+            {/* Live Preview — only shown when online */}
+            {isOnline ? (
+              <div className="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-slate-700">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-red-500 rounded-full" />
+                    <span className="w-2 h-2 bg-yellow-500 rounded-full" />
+                    <span className="w-2 h-2 bg-green-500 rounded-full" />
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Eye className="w-3.5 h-3.5 text-violet-400" />
+                    <span className="text-xs text-slate-400 font-medium">
+                      Live Preview — {activeSlot?.isOwner ? "Owner Content" : activeSlot ? "Ad Content" : "No Content"}
+                    </span>
+                  </div>
+                  <span className="text-xs text-slate-500">{screen?.width_px}×{screen?.height_px}</span>
+                </div>
+
+                <div className="relative bg-black aspect-video flex items-center justify-center">
+                  {activeSlot ? (
+                    activeSlot.type === "video"
+                      ? <video key={activeSlot.url} src={activeSlot.url} className="w-full h-full object-contain" autoPlay muted loop />
+                      : <img key={activeSlot.url} src={activeSlot.url} alt="Preview" className="w-full h-full object-contain" />
+                  ) : (
+                    <div className="flex flex-col items-center gap-3 text-slate-600">
+                      <MonitorPlay className="w-16 h-16 opacity-30" />
+                      <p className="text-sm">No content uploaded yet</p>
+                      <Button size="sm" variant="outline" onClick={() => navigate(`/ManageScreenContent?id=${screenId}`)} className="border-slate-600 text-slate-400 hover:text-white mt-1">
+                        Upload Content
+                      </Button>
+                    </div>
+                  )}
+
+                  {activeSlot && (
+                    <div className="absolute top-3 left-3 flex items-center gap-2">
+                      <span className="bg-violet-600/90 text-white text-xs px-2.5 py-1 rounded-full flex items-center gap-1 backdrop-blur-sm">
+                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE
+                      </span>
+                      <span className="bg-black/60 text-slate-300 text-xs px-2.5 py-1 rounded-full backdrop-blur-sm">{activeSlot.name}</span>
+                    </div>
+                  )}
+
+                  {screen?.last_heartbeat && (
+                    <div className="absolute bottom-3 right-3 bg-black/60 text-slate-400 text-xs px-2 py-1 rounded-full backdrop-blur-sm">
+                      Last ping: {new Date(screen.last_heartbeat).toLocaleTimeString()}
+                    </div>
+                  )}
+                </div>
+
+                {playlist.length > 0 && (
+                  <div className="px-4 py-3 border-t border-slate-700">
+                    <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
+                      <span>Slot {activePlaylistIndex + 1} of {playlist.length}</span>
+                      <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{screen?.slot_duration || 30}s per slot</span>
+                    </div>
+                    <div className="flex gap-1">
+                      {playlist.map((_, i) => (
+                        <div key={i} className={`h-1 rounded-full flex-1 transition-all duration-300 ${i === activePlaylistIndex ? "bg-violet-500" : "bg-slate-700"}`} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
+                <div className="aspect-video flex flex-col items-center justify-center gap-4 text-slate-500">
+                  <WifiOff className="w-14 h-14 opacity-30" />
+                  <div className="text-center">
+                    <p className="text-slate-400 font-medium">Screen is Offline</p>
+                    <p className="text-xs text-slate-600 mt-1">Live preview is unavailable. Use the controls above to start the screen.</p>
+                    {screen?.last_heartbeat && (
+                      <p className="text-xs text-slate-600 mt-1">Last seen: {new Date(screen.last_heartbeat).toLocaleString()}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Screen Stats */}
             <div className="grid grid-cols-3 gap-3">
