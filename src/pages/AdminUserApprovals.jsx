@@ -81,7 +81,7 @@ export default function AdminUserApprovals() {
       await base44.integrations.Core.SendEmail({
         to: u.email,
         subject: "Account Application Update - BeyondWalls",
-        body: `Hi ${u.full_name},\n\nWe've reviewed your BeyondWalls account application and unfortunately we're unable to approve it at this time.\n\nReason: ${rejectionReason}\n\nIf you have questions, contact hello@beyondwalls.ae\n\nBeyondWalls Team`,
+        body: EmailTemplates.accountRejected(u.full_name, rejectionReason),
       });
       toast({ title: "User rejected", description: `Email sent to ${u.email}` });
       setSelected(null);
