@@ -61,6 +61,7 @@ export default function ScreenMonitor() {
   const [refreshing, setRefreshing] = useState(false);
   const prevScreensRef = useRef([]);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadData();
