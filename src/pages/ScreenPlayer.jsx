@@ -273,6 +273,7 @@ export default function ScreenPlayer() {
           is_online: true,
           player_active: !isPaused,
           current_ad_index: currentAdIndex,
+          current_playlist_length: allAds.length,
           total_playtime: totalPlaytime,
           ads_played_count: adsPlayed,
           current_session_id: sessionId,
