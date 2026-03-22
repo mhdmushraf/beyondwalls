@@ -93,13 +93,16 @@ export default function ScreenPlayer() {
   useEffect(() => {
     if (!urlParams || !sessionId) return;
 
-    const { code, id, pin: pinParam, autoStart } = urlParams;
+    const { code, id, pin: pinParam, autoStart, token } = urlParams;
 
-    if (autoStart) {
+    if (autoStart || token) {
       setAutoStartMode(true);
     }
 
-    if (code) {
+    if (token) {
+      // Device token — silent kiosk autologin, no UI interaction needed
+      handleAutoAuthenticate("device_token", token, null);
+    } else if (code) {
       setSetupCode(code);
       setAuthMode("setup_code");
       if (autoStart) {
@@ -126,7 +129,14 @@ export default function ScreenPlayer() {
       const screens = await base44.entities.Screen.list();
       let foundScreen = null;
 
-      if (mode === "setup_code") {
+      if (mode === "device_token") {
+        foundScreen = screens.find(s => s.device_token === idOrCode);
+        if (!foundScreen) {
+          setError("Invalid device token. Please contact your administrator.");
+          setConnecting(false);
+          return;
+        }
+      } else if (mode === "setup_code") {
         foundScreen = screens.find(s => s.setup_code === idOrCode.toUpperCase());
       } else {
         foundScreen = screens.find(s => s.device_id === idOrCode || s.id === idOrCode);
