@@ -61,7 +61,7 @@ export default function MyScreens() {
           </Card>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {screens.map(s => (
+            {screens.filter(s => filter === "all" || s.approval_status === filter).map(s => (
               <Link key={s.id} to={`/ScreenDetail/${s.id}`}>
                 <Card className="border-0 shadow-sm hover:shadow-md transition-all cursor-pointer hover:ring-2 hover:ring-violet-200">
                   {/* Thumbnail */}

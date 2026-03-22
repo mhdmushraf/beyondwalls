@@ -65,7 +65,7 @@ export default function MyVenues() {
           </Card>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {venues.map(v => (
+            {venues.filter(v => filter === "all" || v.approval_status === filter).map(v => (
               <Card key={v.id} className="border-0 shadow-sm hover:shadow-md transition-all">
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between mb-3">
