@@ -785,45 +785,52 @@ export default function ScreenPlayer() {
       `}</style>
 
       {/* Ad Content */}
-      <div className={`w-full h-screen flex items-center justify-center ad-container ${transitioning ? `transitioning ${animationType}` : ''}`}>
-        {allAds.length === 0 ? (
-          defaultContentUrl ? (
-            defaultContentType === "video" ? (
-              <video src={defaultContentUrl} className="w-full h-full object-contain" autoPlay loop muted playsInline onError={handleMediaError} />
-            ) : (
-              <img src={defaultContentUrl} alt="Default Content" className="w-full h-full object-contain" onError={handleMediaError} />
-            )
-          ) : (
-            <div className="text-center text-white">
-              <div className="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                <MonitorPlay className="w-12 h-12 text-white/60" />
-              </div>
-              <h2 className="text-2xl font-bold mb-2">No Active Campaigns</h2>
-              <p className="text-white/60">Waiting for approved ads to be scheduled...</p>
-              <Button variant="ghost" className="mt-6 text-white/60" onClick={() => { refetchBookings(); refetchCampaigns(); }}>
-                <RefreshCw className="w-4 h-4 mr-2" />Refresh
-              </Button>
-            </div>
-          )
-        ) : currentAd?.creative_url ? (
-          currentAd.creative_type === "video" ? (
-            <video 
-              ref={videoRef} 
-              key={currentAd.id} 
-              src={currentAd.creative_url} 
-              className="w-full h-full object-contain" 
-              autoPlay 
-              muted={isMuted} 
-              playsInline 
-              onEnded={handleVideoEnded} 
-              onTimeUpdate={handleVideoProgress} 
-              onError={handleMediaError}
-            />
-          ) : (
-            <img key={currentAd.id} src={currentAd.creative_url} alt={currentAd.name} className="w-full h-full object-contain" onError={handleMediaError} />
-          )
-        ) : null}
-      </div>
+      {(() => {
+        const objectFitClass = screen?.display_mode === "stretch" ? "object-fill" :
+                               screen?.display_mode === "fill" ? "object-cover" :
+                               "object-contain";
+        return (
+          <div className={`w-full h-screen flex items-center justify-center ad-container ${transitioning ? `transitioning ${animationType}` : ''}`}>
+            {allAds.length === 0 ? (
+              defaultContentUrl ? (
+                defaultContentType === "video" ? (
+                  <video src={defaultContentUrl} className={`w-full h-full ${objectFitClass}`} autoPlay loop muted playsInline onError={handleMediaError} />
+                ) : (
+                  <img src={defaultContentUrl} alt="Default Content" className={`w-full h-full ${objectFitClass}`} onError={handleMediaError} />
+                )
+              ) : (
+                <div className="text-center text-white">
+                  <div className="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                    <MonitorPlay className="w-12 h-12 text-white/60" />
+                  </div>
+                  <h2 className="text-2xl font-bold mb-2">No Active Campaigns</h2>
+                  <p className="text-white/60">Waiting for approved ads to be scheduled...</p>
+                  <Button variant="ghost" className="mt-6 text-white/60" onClick={() => { refetchBookings(); refetchCampaigns(); }}>
+                    <RefreshCw className="w-4 h-4 mr-2" />Refresh
+                  </Button>
+                </div>
+              )
+            ) : currentAd?.creative_url ? (
+              currentAd.creative_type === "video" ? (
+                <video
+                  ref={videoRef}
+                  key={currentAd.id}
+                  src={currentAd.creative_url}
+                  className={`w-full h-full ${objectFitClass}`}
+                  autoPlay
+                  muted={isMuted}
+                  playsInline
+                  onEnded={handleVideoEnded}
+                  onTimeUpdate={handleVideoProgress}
+                  onError={handleMediaError}
+                />
+              ) : (
+                <img key={currentAd.id} src={currentAd.creative_url} alt={currentAd.name} className={`w-full h-full ${objectFitClass}`} onError={handleMediaError} />
+              )
+            ) : null}
+          </div>
+        );
+      })()}
 
       {/* Progress Bar */}
       {!isFullscreen && allAds.length > 0 && (
