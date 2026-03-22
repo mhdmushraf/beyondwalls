@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import {
   ArrowLeft, Loader2, MonitorPlay, Ruler, Settings2,
-  DollarSign, MapPin, LayoutGrid, Monitor, Info
+  DollarSign, MapPin, LayoutGrid, Monitor, Info, Camera, X
 } from "lucide-react";
 
 const DPI = 96; // Standard screen DPI for conversions
