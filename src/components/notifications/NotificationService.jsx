@@ -114,36 +114,17 @@ export const NotificationService = {
     if (notify.email) {
       try {
         await base44.integrations.Core.SendEmail({
-        to: venueOwner.email,
-        subject: `💰 New Ad Booking on ${screen?.name} | BeyondWalls`,
-        body: `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        BEYONDWALLS
-   New Booking Alert!
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Dear ${venueOwner.full_name || "Venue Partner"},
-
-Great news! You have a new ad booking on your screen.
-
-📋 BOOKING DETAILS
-━━━━━━━━━━━━━━━━━━━━━━━━━
-📺 Screen: ${screen?.name}
-🎯 Campaign: ${booking.campaign_name}
-👤 Advertiser: ${advertiser?.full_name || "Advertiser"}
-📅 Duration: ${booking.start_date} to ${booking.end_date}
-💰 Revenue: AED ${booking.venue_share || Math.round(booking.total_cost * 0.7)} (Your 70% share)
-
-This revenue will be added to your wallet once the campaign completes.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Questions? Contact us at info@beyondwalls.ae
-Phone: +971 55 614 0067
-
-BeyondWalls - Advertise Beyond Boundaries
-www.beyondwalls.ae
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        `.trim()
+          to: venueOwner.email,
+          subject: `💰 New Ad Booking on ${screen?.name} | BeyondWalls`,
+          body: EmailTemplates.newBooking(
+            venueOwner.full_name || "Venue Partner",
+            screen?.name || "N/A",
+            booking.campaign_name,
+            advertiser?.full_name || "Advertiser",
+            booking.start_date,
+            booking.end_date,
+            booking.venue_share || Math.round(booking.total_cost * 0.7)
+          )
         });
       } catch (e) {
         console.error("Failed to send new booking email to venue owner", e);
