@@ -436,6 +436,16 @@ export default function ScreenPlayer() {
   const objectFitClass = screen?.display_mode === "stretch" ? "object-fill" :
                          screen?.display_mode === "fill" ? "object-cover" : "object-contain";
 
+  const getInnerScreenStyle = () => {
+    if (!screen?.width_px || !screen?.height_px) return { width: "100%", height: "100%" };
+    const aspectRatio = screen.width_px / screen.height_px;
+    const vwHeight = window.innerHeight;
+    const vwWidth = window.innerWidth;
+    let w = vwWidth, h = vwWidth / aspectRatio;
+    if (h > vwHeight) { h = vwHeight; w = vwHeight * aspectRatio; }
+    return { width: w, height: h, overflow: "hidden", position: "relative", flexShrink: 0 };
+  };
+
   // ─── Login Screen ───────────────────────────────────────────
   if (!authenticated) {
     return (
