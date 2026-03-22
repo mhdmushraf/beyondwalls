@@ -58,6 +58,7 @@ export default function LiveScreenMonitorPage() {
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const pollRef = useRef(null);
 
+
   useEffect(() => {
     if (!screenId) { navigate("/MyScreens"); return; }
     loadData();
