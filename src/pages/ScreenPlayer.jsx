@@ -616,6 +616,7 @@ export default function ScreenPlayer() {
             </Button>
           </div>
         )}
+        </div>
       </div>
 
       {/* Progress Bar */}
