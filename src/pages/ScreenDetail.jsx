@@ -10,7 +10,6 @@ import {
   Layers, Clock, DollarSign, LayoutGrid, Maximize2, Image as ImageIcon,
   Pencil, KeyRound, Copy, ExternalLink, Play, Pause, RotateCcw, Square, RefreshCw
 } from "lucide-react";
-import { toast } from "sonner";
 
 function StatCard({ icon: Icon, label, value, iconClass = "text-violet-500" }) {
   return (
