@@ -59,6 +59,8 @@ export default function LiveScreenMonitorPage() {
   const [loading, setLoading] = useState(true);
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const [commandLoading, setCommandLoading] = useState(null);
+  const [localAdIndex, setLocalAdIndex] = useState(0);
+  const adTimerRef = useRef(null);
   const pollRef = useRef(null);
 
 
@@ -149,11 +151,35 @@ export default function LiveScreenMonitorPage() {
 
   const playlist = buildPlaylist();
 
-  // Use the exact index the ScreenPlayer wrote to the DB
-  const currentAdIndex = screen?.current_ad_index ?? 0;
-  const playlistLength = screen?.current_playlist_length ?? playlist.length;
-  const activePlaylistIndex = playlistLength > 0 ? currentAdIndex % Math.max(playlist.length, 1) : 0;
-  const activeSlot = playlist[activePlaylistIndex] || null;
+  // Sync localAdIndex when screen heartbeat updates current_ad_index
+  useEffect(() => {
+    const idx = (screen?.current_ad_index ?? 0) % Math.max(playlist.length, 1);
+    setLocalAdIndex(idx);
+  }, [screen?.current_ad_index]);
+
+  // Local timer to advance preview in sync with slot_duration when player is active
+  useEffect(() => {
+    if (adTimerRef.current) clearInterval(adTimerRef.current);
+    if (screen?.player_active && playlist.length > 1 && screen?.slot_duration) {
+      adTimerRef.current = setInterval(() => {
+        setLocalAdIndex(prev => (prev + 1) % playlist.length);
+      }, screen.slot_duration * 1000);
+    }
+    return () => { if (adTimerRef.current) clearInterval(adTimerRef.current); };
+  }, [screen?.player_active, screen?.slot_duration, playlist.length]);
+
+  const activeSlot = playlist[localAdIndex] || null;
+
+  // objectFit based on screen display_mode (mirrors ScreenPlayer)
+  const objectFitClass = screen?.display_mode === "stretch" ? "object-fill"
+    : screen?.display_mode === "fill" ? "object-cover" : "object-contain";
+
+  // Aspect-ratio style for the preview container
+  const previewAspectStyle = screen?.width_px && screen?.height_px
+    ? { aspectRatio: `${screen.width_px} / ${screen.height_px}` }
+    : { aspectRatio: "16 / 9" };
+
+  const isPlayerActive = screen?.player_active ?? false;
 
   // Online = heartbeat received within last 60 seconds (player sends every 15s)
   const isOnline = screen?.last_heartbeat &&
@@ -208,24 +234,30 @@ export default function LiveScreenMonitorPage() {
             <div className="bg-slate-800 rounded-2xl border border-slate-700 p-4">
               <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Screen Controls</p>
               <div className="flex flex-wrap gap-2">
-                <Button
-                  size="sm"
-                  onClick={() => sendCommand("resume")}
-                  disabled={!!commandLoading}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                >
-                  {commandLoading === "resume" ? <RefreshCw className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <Play className="w-3.5 h-3.5 mr-1.5" />}
-                  Play
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={() => sendCommand("pause")}
-                  disabled={!!commandLoading}
-                  className="bg-amber-600 hover:bg-amber-700 text-white"
-                >
-                  {commandLoading === "pause" ? <RefreshCw className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <Pause className="w-3.5 h-3.5 mr-1.5" />}
-                  Pause
-                </Button>
+                {/* Play — only when paused/stopped */}
+                {!isPlayerActive && (
+                  <Button
+                    size="sm"
+                    onClick={() => sendCommand("resume")}
+                    disabled={!!commandLoading}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                  >
+                    {commandLoading === "resume" ? <RefreshCw className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <Play className="w-3.5 h-3.5 mr-1.5" />}
+                    Resume
+                  </Button>
+                )}
+                {/* Pause — only when playing */}
+                {isPlayerActive && (
+                  <Button
+                    size="sm"
+                    onClick={() => sendCommand("pause")}
+                    disabled={!!commandLoading}
+                    className="bg-amber-600 hover:bg-amber-700 text-white"
+                  >
+                    {commandLoading === "pause" ? <RefreshCw className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <Pause className="w-3.5 h-3.5 mr-1.5" />}
+                    Pause
+                  </Button>
+                )}
                 <Button
                   size="sm"
                   onClick={() => sendCommand("restart_playlist")}
@@ -265,49 +297,54 @@ export default function LiveScreenMonitorPage() {
                       Live Preview — {activeSlot?.isOwner ? "Owner Content" : activeSlot ? "Ad Content" : "No Content"}
                     </span>
                   </div>
-                  <span className="text-xs text-slate-500">{screen?.width_px}×{screen?.height_px}</span>
+                  <span className="text-xs text-slate-500">{screen?.width_px}×{screen?.height_px} · {screen?.display_mode || "fit"}</span>
                 </div>
 
-                <div className="relative bg-black aspect-video flex items-center justify-center">
-                  {activeSlot ? (
-                    activeSlot.type === "video"
-                      ? <video key={activeSlot.url} src={activeSlot.url} className="w-full h-full object-contain" autoPlay muted loop />
-                      : <img key={activeSlot.url} src={activeSlot.url} alt="Preview" className="w-full h-full object-contain" />
-                  ) : (
-                    <div className="flex flex-col items-center gap-3 text-slate-600">
-                      <MonitorPlay className="w-16 h-16 opacity-30" />
-                      <p className="text-sm">No content uploaded yet</p>
-                      <Button size="sm" variant="outline" onClick={() => navigate(`/ManageScreenContent?id=${screenId}`)} className="border-slate-600 text-slate-400 hover:text-white mt-1">
-                        Upload Content
-                      </Button>
-                    </div>
-                  )}
+                {/* Preview frame — matches screen aspect ratio & display mode */}
+                <div className="relative bg-black w-full flex items-center justify-center p-2">
+                  <div className="relative bg-black w-full" style={previewAspectStyle}>
+                    {activeSlot ? (
+                      activeSlot.type === "video"
+                        ? <video key={activeSlot.url} src={activeSlot.url} className={`w-full h-full ${objectFitClass}`} autoPlay muted loop />
+                        : <img key={activeSlot.url} src={activeSlot.url} alt="Preview" className={`w-full h-full ${objectFitClass}`} />
+                    ) : screen?.default_image_url ? (
+                      <img src={screen.default_image_url} alt="Default" className={`w-full h-full ${objectFitClass}`} />
+                    ) : (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-slate-600">
+                        <MonitorPlay className="w-16 h-16 opacity-30" />
+                        <p className="text-sm">No content uploaded yet</p>
+                        <Button size="sm" variant="outline" onClick={() => navigate(`/ManageScreenContent?id=${screenId}`)} className="border-slate-600 text-slate-400 hover:text-white mt-1">
+                          Upload Content
+                        </Button>
+                      </div>
+                    )}
 
-                  {activeSlot && (
-                    <div className="absolute top-3 left-3 flex items-center gap-2">
-                      <span className="bg-violet-600/90 text-white text-xs px-2.5 py-1 rounded-full flex items-center gap-1 backdrop-blur-sm">
-                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE
-                      </span>
-                      <span className="bg-black/60 text-slate-300 text-xs px-2.5 py-1 rounded-full backdrop-blur-sm">{activeSlot.name}</span>
-                    </div>
-                  )}
+                    {activeSlot && (
+                      <div className="absolute top-3 left-3 flex items-center gap-2">
+                        <span className="bg-violet-600/90 text-white text-xs px-2.5 py-1 rounded-full flex items-center gap-1 backdrop-blur-sm">
+                          <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE
+                        </span>
+                        <span className="bg-black/60 text-slate-300 text-xs px-2.5 py-1 rounded-full backdrop-blur-sm">{activeSlot.name}</span>
+                      </div>
+                    )}
 
-                  {screen?.last_heartbeat && (
-                    <div className="absolute bottom-3 right-3 bg-black/60 text-slate-400 text-xs px-2 py-1 rounded-full backdrop-blur-sm">
-                      Last ping: {new Date(screen.last_heartbeat).toLocaleTimeString()}
-                    </div>
-                  )}
+                    {screen?.last_heartbeat && (
+                      <div className="absolute bottom-3 right-3 bg-black/60 text-slate-400 text-xs px-2 py-1 rounded-full backdrop-blur-sm">
+                        Last ping: {new Date(screen.last_heartbeat).toLocaleTimeString()}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {playlist.length > 0 && (
                   <div className="px-4 py-3 border-t border-slate-700">
                     <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
-                      <span>Slot {activePlaylistIndex + 1} of {playlist.length}</span>
+                      <span>Slot {localAdIndex + 1} of {playlist.length}</span>
                       <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{screen?.slot_duration || 30}s per slot</span>
                     </div>
                     <div className="flex gap-1">
                       {playlist.map((_, i) => (
-                        <div key={i} className={`h-1 rounded-full flex-1 transition-all duration-300 ${i === activePlaylistIndex ? "bg-violet-500" : "bg-slate-700"}`} />
+                        <div key={i} className={`h-1 rounded-full flex-1 transition-all duration-300 ${i === localAdIndex ? "bg-violet-500" : "bg-slate-700"}`} />
                       ))}
                     </div>
                   </div>
