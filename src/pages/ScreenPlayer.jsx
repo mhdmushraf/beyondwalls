@@ -80,19 +80,19 @@ export default function ScreenPlayer() {
     }
   }, [urlParams, sessionId]);
 
-  const markScreenOnline = async (foundScreen) => {
-    await base44.entities.Screen.update(foundScreen.id, {
-      status: "active",
-      is_online: true,
-      player_active: true,
-      current_ad_index: 0,
-      last_heartbeat: new Date().toISOString(),
-      current_session_id: sessionId,
-      session_started_at: new Date().toISOString(),
-      uptime_seconds: 0,
-      player_version: PLAYER_VERSION
-    });
+  const logActivity = async (scrId, eventType, sessId, version) => {
+    try {
+      await base44.entities.ScreenActivityLog.create({
+        screen_id: scrId,
+        event_type: eventType,
+        timestamp: new Date().toISOString(),
+        session_id: sessId || null,
+        player_version: version || PLAYER_VERSION,
+      });
+    } catch (e) { /* silent */ }
   };
+
+  const markScreenOnline = async (foundScreen) => {
 
   const handleAutoAuthenticate = async (mode, idOrCode, pinCode) => {
     if (authenticated || connecting) return;
@@ -169,8 +169,8 @@ export default function ScreenPlayer() {
     if (screenData?.[0]?.player_command) {
       const command = screenData[0].player_command;
       if (command === "skip") goToNextAd();
-      else if (command === "pause") { setIsPaused(true); }
-      else if (command === "resume") { setIsPaused(false); setIsStopped(false); }
+      else if (command === "pause") { setIsPaused(true); logActivity(screen.id, "paused", sessionId); }
+      else if (command === "resume") { setIsPaused(false); setIsStopped(false); logActivity(screen.id, "resumed", sessionId); }
       else if (command === "refresh") { refetchBookings(); refetchCampaigns(); }
       else if (command === "restart") window.location.reload();
       else if (command === "restart_playlist") {
@@ -179,11 +179,13 @@ export default function ScreenPlayer() {
         setCurrentAdIndex(0);
         setAdProgress(0);
         setAdStartTime(Date.now());
+        logActivity(screen.id, "restarted", sessionId);
       }
       else if (command === "stop_playback") {
         setIsStopped(true);
         setIsPaused(true);
         if (videoRef.current) { videoRef.current.pause(); }
+        logActivity(screen.id, "stopped", sessionId);
       }
       base44.entities.Screen.update(screen.id, { player_command: null });
     }
@@ -334,6 +336,7 @@ export default function ScreenPlayer() {
         is_online: false,
         status: "inactive"
       }).catch(() => {});
+      logActivity(screen.id, "offline", sessionId, PLAYER_VERSION).catch(() => {});
     };
   }, [authenticated, screen?.id]); // stable deps — no restarts on every ad change
 

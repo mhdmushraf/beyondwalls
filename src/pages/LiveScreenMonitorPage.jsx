@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import ScreenActivityHistory from "@/components/screens/ScreenActivityHistory";
 import {
   ArrowLeft, MonitorPlay, Wifi, WifiOff, Clock, LayoutGrid,
   Image as ImageIcon, Video, Play, Pause, RefreshCw, Eye, Layers, ChevronRight,
@@ -424,6 +425,11 @@ export default function LiveScreenMonitorPage() {
 
             <p className="text-xs text-slate-500 text-center">Last synced: {lastRefresh.toLocaleTimeString()} · Auto-syncs every 3s</p>
           </div>
+        </div>
+
+        {/* Activity History — full width below grid */}
+        <div className="mt-6">
+          <ScreenActivityHistory screenId={screenId} />
         </div>
       </div>
     </div>
