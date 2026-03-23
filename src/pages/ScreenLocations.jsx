@@ -92,15 +92,13 @@ export default function ScreenLocations() {
   const { data: venues = [], isLoading } = useQuery({
     queryKey: ["public-venues"],
     queryFn: async () => {
-      const allVenues = await base44.entities.Venue.filter({ status: "approved" });
-      // Filter to show only Dubai venues for now
-      return allVenues.filter(v => v.city === "Dubai");
+      return await base44.entities.Venue.filter({ approval_status: "approved" });
     }
   });
 
   const { data: screens = [] } = useQuery({
     queryKey: ["public-screens"],
-    queryFn: () => base44.entities.Screen.filter({ status: "online" })
+    queryFn: () => base44.entities.Screen.filter({ approval_status: "approved" })
   });
 
   const filteredVenues = venues.filter(venue => {
