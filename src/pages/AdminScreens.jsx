@@ -167,8 +167,10 @@ export default function AdminScreens() {
             })}
           </div>
 
-          {/* Detail Panel */}
-          <div className="lg:sticky lg:top-6 lg:self-start">
+          {/* Detail Panel — full-screen overlay on mobile, sticky sidebar on desktop */}
+          {selected && (
+            <div className="fixed inset-0 z-50 bg-black/50 lg:static lg:bg-transparent lg:z-auto" onClick={(e) => { if (e.target === e.currentTarget) { setSelected(null); setRejectionReason(""); } }}>
+              <div className="absolute bottom-0 left-0 right-0 max-h-[90vh] overflow-y-auto lg:static lg:max-h-none lg:overflow-visible rounded-t-2xl lg:rounded-none">
             {selected ? (
               <Card className="border-0 shadow-lg">
                 <CardContent className="p-0">
