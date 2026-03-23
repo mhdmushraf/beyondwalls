@@ -115,9 +115,11 @@ export default function AdminUserApprovals() {
           <Input className="pl-9" placeholder="Search users..." value={search} onChange={e => setSearch(e.target.value)} />
         </div>
 
-        {/* User Detail Modal */}
+        {/* User Detail — bottom sheet on mobile, inline card on desktop */}
         {selected && (
-          <Card className="border-2 border-violet-200 shadow-lg mb-6">
+          <div className="fixed inset-0 z-50 bg-black/50 lg:static lg:bg-transparent lg:z-auto" onClick={(e) => { if (e.target === e.currentTarget) { setSelected(null); setRejectionReason(""); } }}>
+            <div className="absolute bottom-0 left-0 right-0 max-h-[90vh] overflow-y-auto lg:static lg:max-h-none lg:mb-6 rounded-t-2xl lg:rounded-xl">
+          <Card className="border-2 border-violet-200 shadow-lg">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle>Review: {selected.full_name}</CardTitle>
@@ -127,7 +129,7 @@ export default function AdminUserApprovals() {
             <CardContent>
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <div className="space-y-2 text-sm">
-                  <div><span className="text-slate-500">Email:</span> <span className="font-medium">{selected.email}</span></div>
+                  <div><span className="text-slate-500">Email:</span> <span className="font-medium break-all">{selected.email}</span></div>
                   <div><span className="text-slate-500">Role:</span> <Badge className={roleColor[selected.user_role] || ""}>{selected.user_role}</Badge></div>
                   <div><span className="text-slate-500">Company:</span> <span className="font-medium">{selected.company_name || "N/A"}</span></div>
                   <div><span className="text-slate-500">Phone:</span> <span className="font-medium">{selected.phone || "N/A"}</span></div>
@@ -168,6 +170,8 @@ export default function AdminUserApprovals() {
               )}
             </CardContent>
           </Card>
+            </div>
+          </div>
         )}
 
         {/* Users List */}
