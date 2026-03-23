@@ -189,7 +189,7 @@ export default function ScreenPlayer() {
     }
   }, [screenData]);
 
-  const defaultContentUrl = platformSettings.find(s => s.setting_key === "default_screen_content_url")?.setting_value || "https://images.unsplash.com/photo-1557683316-973673baf926?w=1920";
+  const defaultContentUrl = platformSettings.find(s => s.setting_key === "default_screen_content_url")?.setting_value || "https://media.base44.com/images/public/69b31183956b052c51ee3a67/8f96f8507_generated_image.png";
   const defaultContentType = platformSettings.find(s => s.setting_key === "default_screen_content_type")?.setting_value || "image";
 
   // Build owner slots
@@ -638,17 +638,7 @@ export default function ScreenPlayer() {
             <img key={currentAd.id} src={currentAd.creative_url} alt={currentAd.name} className={`w-full h-full ${objectFitClass}`} onError={handleMediaError} />
           )
         ) : (
-          <div className="text-center text-white">
-            <div className="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <MonitorPlay className="w-12 h-12 text-white/60" />
-            </div>
-            <h2 className="text-2xl font-bold mb-2">No Active Content</h2>
-            <p className="text-white/60">Waiting for content to be scheduled...</p>
-            <Button variant="ghost" className="mt-6 text-white/60" onClick={() => { refetchBookings(); refetchCampaigns(); }}>
-              <RefreshCw className="w-4 h-4 mr-2" />Refresh
-            </Button>
-          </div>
-        )}
+          <img src="https://media.base44.com/images/public/69b31183956b052c51ee3a67/8f96f8507_generated_image.png" alt="BeyondWalls" className={`w-full h-full ${objectFitClass}`} />
         </div>
       </div>
 
