@@ -183,9 +183,8 @@ export default function AdminCampaigns() {
                         <p className="text-xs text-slate-500 truncate">{c.advertiser_email} · AED {c.total_budget?.toLocaleString()}</p>
                       </div>
                     </div>
-                    <Badge className={`${statusColor[c.status] || "bg-slate-100 text-slate-600"} text-xs flex-shrink-0`}>
+                    <Badge className={`${statusColor[c.approval_status] || "bg-slate-100 text-slate-600"} text-xs flex-shrink-0`}>
                       {c.approval_status}
-                    </Badge>
                   </div>
                 </CardContent>
               </Card>

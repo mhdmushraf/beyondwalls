@@ -189,7 +189,7 @@ export default function AdminUserApprovals() {
                         <p className="text-xs text-slate-500 truncate">{u.email}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
+                    <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1 sm:gap-2 flex-shrink-0">
                       <Badge className={roleColor[u.user_role] || "bg-slate-100 text-slate-600"}>{u.user_role}</Badge>
                       <Badge className={u.approval_status === "approved" ? "bg-emerald-100 text-emerald-700" : u.approval_status === "rejected" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}>
                         {u.approval_status}
