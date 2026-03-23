@@ -46,7 +46,14 @@ function calcUptime(logs) {
   return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
 }
 
-export default function ScreenActivityHistory({ screenId }) {
+function formatUptime(seconds) {
+  if (!seconds) return "0m";
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+}
+
+export default function ScreenActivityHistory({ screenId, screen }) {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState(0); // index of FILTERS
@@ -130,10 +137,43 @@ export default function ScreenActivityHistory({ screenId }) {
         )}
 
         {!loading && filteredLogs.length === 0 && (
-          <div className="text-center py-10 text-slate-500">
-            <Activity className="w-10 h-10 mx-auto mb-3 opacity-20" />
-            <p className="text-sm">No activity recorded for this period</p>
-            <p className="text-xs mt-1 text-slate-600">Events are logged automatically when the screen player connects or changes state.</p>
+          <div className="text-center py-8 text-slate-500">
+            {screen ? (
+              <div className="space-y-4">
+                {/* Online Status */}
+                <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium ${
+                  screen.last_heartbeat && (new Date() - new Date(screen.last_heartbeat)) < 60000
+                    ? "bg-emerald-500/20 border-emerald-500/30 text-emerald-400"
+                    : "bg-slate-700 border-slate-600 text-slate-400"
+                }`}>
+                  {screen.last_heartbeat && (new Date() - new Date(screen.last_heartbeat)) < 60000
+                    ? <><Wifi className="w-4 h-4" /> Online</>
+                    : <><WifiOff className="w-4 h-4" /> Offline</>}
+                </div>
+
+                {/* Stats */}
+                <div className="grid grid-cols-2 gap-3 mt-2">
+                  <div className="bg-slate-700/50 rounded-xl p-4 text-center">
+                    <p className="text-lg font-bold text-violet-400">{formatUptime(screen.uptime_seconds)}</p>
+                    <p className="text-xs text-slate-400 mt-1">Total Uptime</p>
+                  </div>
+                  <div className="bg-slate-700/50 rounded-xl p-4 text-center">
+                    <p className="text-lg font-bold text-blue-400">
+                      {screen.last_heartbeat ? new Date(screen.last_heartbeat).toLocaleTimeString("en-AE", { hour: "2-digit", minute: "2-digit" }) : "—"}
+                    </p>
+                    <p className="text-xs text-slate-400 mt-1">Last Seen Online</p>
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-600 mt-2">No activity log events recorded for this period yet.</p>
+              </div>
+            ) : (
+              <>
+                <Activity className="w-10 h-10 mx-auto mb-3 opacity-20" />
+                <p className="text-sm">No activity recorded for this period</p>
+                <p className="text-xs mt-1 text-slate-600">Events are logged automatically when the screen player connects or changes state.</p>
+              </>
+            )}
           </div>
         )}
 
