@@ -108,7 +108,7 @@ export default function LiveScreenMonitorPage() {
           setLastRefresh(new Date());
         }
       } catch (e) {}
-    }, 8000); // poll every 8s to track slot changes in near real-time
+    }, 3000); // poll every 3s for near real-time tracking
     return () => clearInterval(pollRef.current);
   }, [screenId]);
 
@@ -422,7 +422,7 @@ export default function LiveScreenMonitorPage() {
               </button>
             </div>
 
-            <p className="text-xs text-slate-500 text-center">Last synced: {lastRefresh.toLocaleTimeString()} · Auto-syncs every 8s</p>
+            <p className="text-xs text-slate-500 text-center">Last synced: {lastRefresh.toLocaleTimeString()} · Auto-syncs every 3s</p>
           </div>
         </div>
       </div>

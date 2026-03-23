@@ -324,7 +324,7 @@ export default function ScreenPlayer() {
     };
 
     sendHeartbeat();
-    const interval = setInterval(sendHeartbeat, 15000);
+    const interval = setInterval(sendHeartbeat, 5000);
 
     return () => {
       clearInterval(interval);
