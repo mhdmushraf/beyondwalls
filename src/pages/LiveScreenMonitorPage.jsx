@@ -429,7 +429,7 @@ export default function LiveScreenMonitorPage() {
 
         {/* Activity History — full width below grid */}
         <div className="mt-6">
-          <ScreenActivityHistory screenId={screenId} />
+          <ScreenActivityHistory screenId={screenId} screen={screen} />
         </div>
       </div>
     </div>
