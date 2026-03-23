@@ -701,7 +701,7 @@ export default function ScreenPlayer() {
       )}
 
       {/* Paused Overlay */}
-      {isPaused && (
+      {isPaused && !isStopped && (
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-40">
           <div className="text-center">
             <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
