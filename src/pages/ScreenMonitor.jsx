@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
-const REFRESH_INTERVAL = 30000; // 30 seconds
+const REFRESH_INTERVAL = 15000; // 15 seconds
 const OFFLINE_THRESHOLD_MINUTES = 5;
 
 function getScreenStatus(screen) {
