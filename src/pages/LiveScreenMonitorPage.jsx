@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
   ArrowLeft, MonitorPlay, Wifi, WifiOff, Clock, LayoutGrid,
-  Image as ImageIcon, Video, Play, RefreshCw, Eye, Layers, ChevronRight,
-  Power, RotateCcw, PowerOff
+  Image as ImageIcon, Video, Play, Pause, RefreshCw, Eye, Layers, ChevronRight,
+  Power, RotateCcw, PowerOff, Square
 } from "lucide-react";
 
 function PlaylistItem({ index, slot, isActive }) {
@@ -210,34 +210,44 @@ export default function LiveScreenMonitorPage() {
               <div className="flex flex-wrap gap-2">
                 <Button
                   size="sm"
-                  onClick={() => sendCommand("start")}
+                  onClick={() => sendCommand("resume")}
                   disabled={!!commandLoading}
                   className="bg-emerald-600 hover:bg-emerald-700 text-white"
                 >
-                  {commandLoading === "start" ? <RefreshCw className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <Power className="w-3.5 h-3.5 mr-1.5" />}
-                  Start
+                  {commandLoading === "resume" ? <RefreshCw className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <Play className="w-3.5 h-3.5 mr-1.5" />}
+                  Play
                 </Button>
                 <Button
                   size="sm"
-                  onClick={() => sendCommand("restart")}
+                  onClick={() => sendCommand("pause")}
                   disabled={!!commandLoading}
                   className="bg-amber-600 hover:bg-amber-700 text-white"
                 >
-                  {commandLoading === "restart" ? <RefreshCw className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <RotateCcw className="w-3.5 h-3.5 mr-1.5" />}
+                  {commandLoading === "pause" ? <RefreshCw className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <Pause className="w-3.5 h-3.5 mr-1.5" />}
+                  Pause
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => sendCommand("restart_playlist")}
+                  disabled={!!commandLoading}
+                  variant="outline"
+                  className="border-blue-500/40 text-blue-400 hover:bg-blue-500/10 hover:text-blue-300"
+                >
+                  {commandLoading === "restart_playlist" ? <RefreshCw className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <RotateCcw className="w-3.5 h-3.5 mr-1.5" />}
                   Restart
                 </Button>
                 <Button
                   size="sm"
-                  onClick={() => sendCommand("stop")}
+                  onClick={() => sendCommand("stop_playback")}
                   disabled={!!commandLoading}
                   variant="outline"
                   className="border-red-500/40 text-red-400 hover:bg-red-500/10 hover:text-red-300"
                 >
-                  {commandLoading === "stop" ? <RefreshCw className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <PowerOff className="w-3.5 h-3.5 mr-1.5" />}
+                  {commandLoading === "stop_playback" ? <RefreshCw className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <Square className="w-3.5 h-3.5 mr-1.5" />}
                   Stop
                 </Button>
-                <span className="text-xs text-slate-500 self-center ml-1">Commands are received by the player on its next sync cycle (~15s)</span>
               </div>
+              <p className="text-xs text-slate-500 mt-2">Commands are received by the player on its next sync cycle (~15s)</p>
             </div>
 
             {/* Live Preview — only shown when online */}

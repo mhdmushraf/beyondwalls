@@ -32,6 +32,7 @@ export default function ScreenPlayer() {
   const [transitioning, setTransitioning] = useState(false);
   const [animationType, setAnimationType] = useState("fade");
   const [isPaused, setIsPaused] = useState(false);
+  const [isStopped, setIsStopped] = useState(false);
   const [showDashboard, setShowDashboard] = useState(true);
   const [connectionStatus, setConnectionStatus] = useState("connected");
   const [lastHeartbeat, setLastHeartbeat] = useState(null);
@@ -168,10 +169,22 @@ export default function ScreenPlayer() {
     if (screenData?.[0]?.player_command) {
       const command = screenData[0].player_command;
       if (command === "skip") goToNextAd();
-      else if (command === "pause") setIsPaused(true);
-      else if (command === "resume") setIsPaused(false);
+      else if (command === "pause") { setIsPaused(true); }
+      else if (command === "resume") { setIsPaused(false); setIsStopped(false); }
       else if (command === "refresh") { refetchBookings(); refetchCampaigns(); }
       else if (command === "restart") window.location.reload();
+      else if (command === "restart_playlist") {
+        setIsStopped(false);
+        setIsPaused(false);
+        setCurrentAdIndex(0);
+        setAdProgress(0);
+        setAdStartTime(Date.now());
+      }
+      else if (command === "stop_playback") {
+        setIsStopped(true);
+        setIsPaused(true);
+        if (videoRef.current) { videoRef.current.pause(); }
+      }
       base44.entities.Screen.update(screen.id, { player_command: null });
     }
   }, [screenData]);
@@ -289,7 +302,7 @@ export default function ScreenPlayer() {
           last_heartbeat: new Date().toISOString(),
           status: "active",
           is_online: true,
-          player_active: !isPausedRef.current,
+          player_active: !isPausedRef.current && !isStopped,
           current_ad_index: currentAdIndexRef.current,
           current_playlist_length: allAdsLengthRef.current,
           total_playtime: totalPlaytimeRef.current,
@@ -587,6 +600,23 @@ export default function ScreenPlayer() {
         .ad-container.transitioning.flip { transform: rotateY(90deg); opacity: 0; }
         .ad-container.transitioning.blur { filter: blur(20px); opacity: 0; }
       `}</style>
+
+      {/* Stopped Overlay — show default image */}
+      {isStopped && (
+        <div className="absolute inset-0 z-30 bg-black flex items-center justify-center">
+          {screen?.default_image_url ? (
+            <img src={screen.default_image_url} alt="Default" className="w-full h-full object-contain" />
+          ) : (
+            <div className="text-center text-white">
+              <div className="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <MonitorPlay className="w-12 h-12 text-white/40" />
+              </div>
+              <h2 className="text-2xl font-bold mb-2">Screen Stopped</h2>
+              <p className="text-white/50">Awaiting resume command...</p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Ad Content — constrained to screen's configured resolution */}
       <div

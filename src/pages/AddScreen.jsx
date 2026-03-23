@@ -76,6 +76,8 @@ export default function AddScreen() {
   const [venues, setVenues] = useState([]);
   const [screenImageUrl, setScreenImageUrl] = useState("");
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [defaultImageUrl, setDefaultImageUrl] = useState("");
+  const [uploadingDefault, setUploadingDefault] = useState(false);
 
   const [physicalWidth, setPhysicalWidth] = useState("");
   const [physicalHeight, setPhysicalHeight] = useState("");
@@ -129,6 +131,7 @@ export default function AddScreen() {
       setup_code: generateSetupCode(),
       screen_pin: generatePin(),
       screen_image_url: screenImageUrl || null,
+      default_image_url: defaultImageUrl || null,
       width_px: Number(form.width_px),
       height_px: Number(form.height_px),
       total_slots: Number(form.total_slots),
@@ -226,6 +229,37 @@ export default function AddScreen() {
                       setUploadingPhoto(false);
                     }}
                   />
+                </label>
+              )}
+            </div>
+          </div>
+
+          {/* Default Image */}
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sm:p-6">
+            <SectionHeader icon={Camera} title="Default / Stop Image" subtitle="Image shown when screen is stopped or has no active content" />
+            <div>
+              {defaultImageUrl ? (
+                <div className="relative">
+                  <img src={defaultImageUrl} alt="Default" className="w-full h-40 object-cover rounded-xl border border-slate-200" />
+                  <button type="button" onClick={() => setDefaultImageUrl("")} className="absolute top-2 right-2 w-8 h-8 bg-white rounded-full shadow flex items-center justify-center hover:bg-red-50">
+                    <X className="w-4 h-4 text-slate-600" />
+                  </button>
+                </div>
+              ) : (
+                <label className="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-violet-400 hover:bg-violet-50/50 transition-all">
+                  {uploadingDefault ? (
+                    <><Loader2 className="w-6 h-6 text-violet-500 animate-spin mb-2" /><span className="text-sm text-slate-500">Uploading...</span></>
+                  ) : (
+                    <><Camera className="w-8 h-8 text-slate-300 mb-2" /><span className="text-sm text-slate-500">Click to upload default image</span><span className="text-xs text-slate-400 mt-1">JPG, PNG, WEBP</span></>
+                  )}
+                  <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    setUploadingDefault(true);
+                    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                    setDefaultImageUrl(file_url);
+                    setUploadingDefault(false);
+                  }} />
                 </label>
               )}
             </div>
