@@ -398,7 +398,7 @@ export default function LiveScreenMonitorPage() {
                     key={i}
                     index={i}
                     slot={slot}
-                    isActive={i === activePlaylistIndex}
+                    isActive={i === localAdIndex}
                   />
                 ))}
                 {playlist.length === 0 && (
