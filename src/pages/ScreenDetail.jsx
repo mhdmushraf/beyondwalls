@@ -8,8 +8,9 @@ import { toast } from "sonner";
 import {
   ArrowLeft, MonitorPlay, MapPin, Wifi, WifiOff, Code,
   Layers, Clock, DollarSign, LayoutGrid, Maximize2, Image as ImageIcon,
-  Pencil, KeyRound, Copy, ExternalLink
+  Pencil, KeyRound, Copy, ExternalLink, Play, Pause, RotateCcw, Square, RefreshCw
 } from "lucide-react";
+import { toast } from "sonner";
 
 function StatCard({ icon: Icon, label, value, iconClass = "text-violet-500" }) {
   return (
@@ -31,6 +32,14 @@ export default function ScreenDetail() {
   const [screen, setScreen] = useState(null);
   const [venue, setVenue] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [commandLoading, setCommandLoading] = useState(null);
+
+  const sendCommand = async (command) => {
+    setCommandLoading(command);
+    await base44.entities.Screen.update(id, { player_command: command });
+    toast.success(`Command "${command}" sent. Player responds in ~15s.`);
+    setCommandLoading(null);
+  };
 
   const loadData = async () => {
     const screens = await base44.entities.Screen.filter({ id });
@@ -156,6 +165,57 @@ export default function ScreenDetail() {
             <p className="text-xs text-red-600 sm:ml-auto">❌ {screen.rejection_reason || "Screen was rejected."}</p>
           )}
         </div>
+
+        {/* Screen Controls — for approved screens */}
+        {screen.approval_status === "approved" && (
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+            <h2 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+              <MonitorPlay className="w-4 h-4 text-violet-500" /> Screen Controls
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {(!isOnline || !screen.player_active) && (
+                <button
+                  onClick={() => sendCommand("resume")}
+                  disabled={!!commandLoading}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium disabled:opacity-60"
+                >
+                  {commandLoading === "resume" ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />} Resume
+                </button>
+              )}
+              {isOnline && screen.player_active && (
+                <button
+                  onClick={() => sendCommand("pause")}
+                  disabled={!!commandLoading}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium disabled:opacity-60"
+                >
+                  {commandLoading === "pause" ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Pause className="w-4 h-4" />} Pause
+                </button>
+              )}
+              <button
+                onClick={() => sendCommand("restart_playlist")}
+                disabled={!!commandLoading}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-blue-300 text-blue-600 hover:bg-blue-50 text-sm font-medium disabled:opacity-60"
+              >
+                {commandLoading === "restart_playlist" ? <RefreshCw className="w-4 h-4 animate-spin" /> : <RotateCcw className="w-4 h-4" />} Restart
+              </button>
+              <button
+                onClick={() => sendCommand("stop_playback")}
+                disabled={!!commandLoading}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-red-300 text-red-600 hover:bg-red-50 text-sm font-medium disabled:opacity-60"
+              >
+                {commandLoading === "stop_playback" ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Square className="w-4 h-4" />} Stop
+              </button>
+              <button
+                onClick={() => sendCommand("restart")}
+                disabled={!!commandLoading}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-50 text-sm font-medium disabled:opacity-60"
+              >
+                {commandLoading === "restart" ? <RefreshCw className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />} Reboot App
+              </button>
+            </div>
+            <p className="text-xs text-slate-400 mt-2">Commands sent to screen — player responds within ~15s</p>
+          </div>
+        )}
 
         {/* Kiosk Auto-Login Link */}
         {screen.approval_status === "approved" && screen.setup_code && (

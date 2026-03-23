@@ -29,7 +29,7 @@ export default function AdminScreens() {
 
   useEffect(() => {
     loadData();
-    const interval = setInterval(() => loadData(), 20000);
+    const interval = setInterval(() => loadData(), 15000);
     return () => clearInterval(interval);
   }, []);
 
@@ -96,7 +96,7 @@ export default function AdminScreens() {
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Screen Management</h1>
           <p className="text-slate-500 mt-1">
             {screens.filter(s => s.approval_status === "pending").length} pending approval ·{" "}
-            {screens.filter(s => s.is_online && s.approval_status === "approved").length} online
+            {screens.filter(s => s.last_heartbeat && (new Date() - new Date(s.last_heartbeat)) < 60000 && s.approval_status === "approved").length} online
           </p>
         </div>
 

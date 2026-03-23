@@ -92,7 +92,7 @@ export default function ManageScreenContent() {
     const interval = setInterval(async () => {
       const s = await base44.entities.Screen.filter({ id: screenId });
       if (s[0]) setScreen(s[0]);
-    }, 15000);
+    }, 12000);
     return () => clearInterval(interval);
   }, [screenId]);
 

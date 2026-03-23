@@ -39,7 +39,7 @@ export default function MyScreens() {
     };
     loadScreens(true);
     // Refresh every 20s to keep online status current
-    const interval = setInterval(() => loadScreens(false), 20000);
+    const interval = setInterval(() => loadScreens(false), 15000);
     return () => clearInterval(interval);
   }, []);
 

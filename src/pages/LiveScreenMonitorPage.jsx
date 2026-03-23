@@ -234,8 +234,8 @@ export default function LiveScreenMonitorPage() {
             <div className="bg-slate-800 rounded-2xl border border-slate-700 p-4">
               <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Screen Controls</p>
               <div className="flex flex-wrap gap-2">
-                {/* Play — only when paused/stopped */}
-                {!isPlayerActive && (
+                {/* Play — when paused, stopped, or offline */}
+                {(!isPlayerActive || !isOnline) && (
                   <Button
                     size="sm"
                     onClick={() => sendCommand("resume")}
