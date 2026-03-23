@@ -120,9 +120,11 @@ export default function AdminCampaigns() {
           </div>
         </div>
 
-        {/* Detail Panel */}
+        {/* Detail Panel — bottom sheet on mobile */}
         {selected && (
-          <Card className="border-2 border-violet-200 shadow-lg mb-6">
+          <div className="fixed inset-0 z-50 bg-black/50 lg:static lg:bg-transparent lg:z-auto" onClick={(e) => { if (e.target === e.currentTarget) { setSelected(null); setRejectionReason(""); } }}>
+            <div className="absolute bottom-0 left-0 right-0 max-h-[90vh] overflow-y-auto lg:static lg:max-h-none lg:mb-6 rounded-t-2xl lg:rounded-xl">
+          <Card className="border-2 border-violet-200 shadow-lg">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">{selected.name}</CardTitle>
@@ -132,7 +134,7 @@ export default function AdminCampaigns() {
             <CardContent>
               <div className="grid sm:grid-cols-2 gap-4 mb-4 text-sm">
                 <div className="space-y-2">
-                  <div><span className="text-slate-500">Advertiser:</span> <span className="font-medium">{selected.advertiser_email}</span></div>
+                  <div><span className="text-slate-500">Advertiser:</span> <span className="font-medium break-all">{selected.advertiser_email}</span></div>
                   <div><span className="text-slate-500">Goal:</span> <span className="font-medium capitalize">{selected.goal?.replace("_", " ")}</span></div>
                   <div><span className="text-slate-500">Budget:</span> <span className="font-medium">AED {selected.total_budget?.toLocaleString()}</span></div>
                   <div><span className="text-slate-500">Screens:</span> <span className="font-medium">{selected.selected_screens?.length || 0} screens</span></div>
@@ -159,13 +161,15 @@ export default function AdminCampaigns() {
                       {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><XCircle className="w-4 h-4 mr-1" />Reject</>}
                     </Button>
                     <Button onClick={() => handleApprove(selected)} disabled={actionLoading} className="flex-1 bg-emerald-600 hover:bg-emerald-700">
-                      {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><CheckCircle2 className="w-4 h-4 mr-1" />Approve & Go Live</>}
+                      {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><CheckCircle2 className="w-4 h-4 mr-1" />Approve &amp; Go Live</>}
                     </Button>
                   </div>
                 </div>
               )}
             </CardContent>
           </Card>
+            </div>
+          </div>
         )}
 
         {loading ? <div className="flex justify-center py-10"><div className="w-8 h-8 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin" /></div> : (
