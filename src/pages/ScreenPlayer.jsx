@@ -639,8 +639,9 @@ export default function ScreenPlayer() {
           )
         ) : (
           <img src="https://media.base44.com/images/public/69b31183956b052c51ee3a67/8f96f8507_generated_image.png" alt="BeyondWalls" className={`w-full h-full ${objectFitClass}`} />
-        </div>
-      </div>
+          )}
+          </div>
+          </div>
 
       {/* Progress Bar */}
       {!isFullscreen && allAds.length > 0 && (
