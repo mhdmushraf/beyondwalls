@@ -633,7 +633,7 @@ export default function ScreenPlayer() {
             <img key={currentAd.id} src={currentAd.creative_url} alt={currentAd.name} className={`w-full h-full ${objectFitClass}`} onError={handleMediaError} />
           )
         ) : (
-          <img src="https://media.base44.com/images/public/69b31183956b052c51ee3a67/8f96f8507_generated_image.png" alt="BeyondWalls" className={`w-full h-full ${objectFitClass}`} />
+          <img src="https://media.base44.com/images/public/69b31183956b052c51ee3a67/0b5f6e386_generated_image.png" alt="BeyondWalls" className={`w-full h-full ${objectFitClass}`} />
           )}
           </div>
           </div>
