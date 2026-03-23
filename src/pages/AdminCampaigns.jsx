@@ -189,10 +189,11 @@ export default function AdminCampaigns() {
                     </div>
                     <Badge className={`${statusColor[c.approval_status] || "bg-slate-100 text-slate-600"} text-xs flex-shrink-0`}>
                       {c.approval_status}
+                    </Badge>
                   </div>
                 </CardContent>
               </Card>
-            ))}
+            ))
           </div>
         )}
       </div>
