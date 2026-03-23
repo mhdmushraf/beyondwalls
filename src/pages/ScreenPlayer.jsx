@@ -93,6 +93,19 @@ export default function ScreenPlayer() {
   };
 
   const markScreenOnline = async (foundScreen) => {
+    await base44.entities.Screen.update(foundScreen.id, {
+      status: "active",
+      is_online: true,
+      player_active: true,
+      current_ad_index: 0,
+      last_heartbeat: new Date().toISOString(),
+      current_session_id: sessionId,
+      session_started_at: new Date().toISOString(),
+      uptime_seconds: 0,
+      player_version: PLAYER_VERSION
+    });
+    await logActivity(foundScreen.id, "online", sessionId, PLAYER_VERSION);
+  };
 
   const handleAutoAuthenticate = async (mode, idOrCode, pinCode) => {
     if (authenticated || connecting) return;
