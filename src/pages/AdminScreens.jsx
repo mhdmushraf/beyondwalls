@@ -171,7 +171,6 @@ export default function AdminScreens() {
           {selected && (
             <div className="fixed inset-0 z-50 bg-black/50 lg:static lg:bg-transparent lg:z-auto" onClick={(e) => { if (e.target === e.currentTarget) { setSelected(null); setRejectionReason(""); } }}>
               <div className="absolute bottom-0 left-0 right-0 max-h-[90vh] overflow-y-auto lg:static lg:max-h-none lg:overflow-visible rounded-t-2xl lg:rounded-none">
-            {selected ? (
               <Card className="border-0 shadow-lg">
                 <CardContent className="p-0">
                   {/* Header image */}
@@ -198,7 +197,6 @@ export default function AdminScreens() {
                   </div>
 
                   <div className="p-4 space-y-4">
-                    {/* Name & venue */}
                     <div>
                       <h2 className="text-lg font-bold text-slate-900">{selected.name}</h2>
                       <p className="text-sm text-slate-500">{venues[selected.venue_id]?.name || "Unknown Venue"}</p>
@@ -206,87 +204,38 @@ export default function AdminScreens() {
                         <p className="text-xs text-slate-400 mt-0.5">{selected.location_description}</p>
                       )}
                     </div>
-
-                    {/* Owner */}
                     <div className="text-sm text-slate-500">
                       <span className="font-medium text-slate-700">Owner: </span>{selected.owner_email}
                     </div>
-
-                    {/* Tech Specs */}
                     <div>
                       <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Technical Specs</p>
                       <div className="grid grid-cols-2 gap-2">
-                        <div className="bg-slate-50 rounded-lg p-2.5">
-                          <p className="text-xs text-slate-400">Resolution</p>
-                          <p className="font-semibold text-slate-800 text-sm">{selected.width_px}×{selected.height_px}px</p>
-                        </div>
-                        <div className="bg-slate-50 rounded-lg p-2.5">
-                          <p className="text-xs text-slate-400">Display Mode</p>
-                          <p className="font-semibold text-slate-800 text-sm capitalize">{selected.display_mode || "fit"}</p>
-                        </div>
-                        <div className="bg-slate-50 rounded-lg p-2.5">
-                          <p className="text-xs text-slate-400">Slot Duration</p>
-                          <p className="font-semibold text-slate-800 text-sm">{selected.slot_duration}s</p>
-                        </div>
-                        <div className="bg-slate-50 rounded-lg p-2.5">
-                          <p className="text-xs text-slate-400">Price/Week</p>
-                          <p className="font-semibold text-slate-800 text-sm">AED {selected.price_per_week}</p>
-                        </div>
+                        <div className="bg-slate-50 rounded-lg p-2.5"><p className="text-xs text-slate-400">Resolution</p><p className="font-semibold text-slate-800 text-sm">{selected.width_px}×{selected.height_px}px</p></div>
+                        <div className="bg-slate-50 rounded-lg p-2.5"><p className="text-xs text-slate-400">Display Mode</p><p className="font-semibold text-slate-800 text-sm capitalize">{selected.display_mode || "fit"}</p></div>
+                        <div className="bg-slate-50 rounded-lg p-2.5"><p className="text-xs text-slate-400">Slot Duration</p><p className="font-semibold text-slate-800 text-sm">{selected.slot_duration}s</p></div>
+                        <div className="bg-slate-50 rounded-lg p-2.5"><p className="text-xs text-slate-400">Price/Week</p><p className="font-semibold text-slate-800 text-sm">AED {selected.price_per_week}</p></div>
                       </div>
                     </div>
-
-                    {/* Ad Slots */}
                     <div>
                       <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Ad Slot Config</p>
                       <div className="grid grid-cols-3 gap-2">
-                        <div className="bg-slate-50 rounded-lg p-2.5 text-center">
-                          <p className="text-xs text-slate-400">Total</p>
-                          <p className="font-bold text-slate-800">{selected.total_slots}</p>
-                        </div>
-                        <div className="bg-violet-50 rounded-lg p-2.5 text-center">
-                          <p className="text-xs text-violet-400">Ad Slots</p>
-                          <p className="font-bold text-violet-700">{selected.public_ad_slots}</p>
-                        </div>
-                        <div className="bg-slate-50 rounded-lg p-2.5 text-center">
-                          <p className="text-xs text-slate-400">Internal</p>
-                          <p className="font-bold text-slate-800">{selected.internal_slots}</p>
-                        </div>
+                        <div className="bg-slate-50 rounded-lg p-2.5 text-center"><p className="text-xs text-slate-400">Total</p><p className="font-bold text-slate-800">{selected.total_slots}</p></div>
+                        <div className="bg-violet-50 rounded-lg p-2.5 text-center"><p className="text-xs text-violet-400">Ad Slots</p><p className="font-bold text-violet-700">{selected.public_ad_slots}</p></div>
+                        <div className="bg-slate-50 rounded-lg p-2.5 text-center"><p className="text-xs text-slate-400">Internal</p><p className="font-bold text-slate-800">{selected.internal_slots}</p></div>
                       </div>
                     </div>
-
-                    {/* Setup Code */}
                     <div className="bg-violet-50 rounded-lg p-3 flex items-center gap-3">
                       <Code className="w-4 h-4 text-violet-500 flex-shrink-0" />
-                      <div>
-                        <p className="text-xs text-violet-400">Setup Code</p>
-                        <p className="font-mono font-bold text-violet-700 text-sm">{selected.setup_code}</p>
-                      </div>
+                      <div><p className="text-xs text-violet-400">Setup Code</p><p className="font-mono font-bold text-violet-700 text-sm">{selected.setup_code}</p></div>
                     </div>
-
-                    {/* Tags */}
-                    {selected.tags && selected.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5">
-                        {selected.tags.map((tag, i) => (
-                          <Badge key={i} variant="outline" className="text-xs capitalize">{tag}</Badge>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Rejection reason if rejected */}
                     {selected.approval_status === "rejected" && selected.rejection_reason && (
                       <div className="bg-red-50 rounded-lg p-3 text-sm text-red-700">
                         <span className="font-semibold">Rejection Reason: </span>{selected.rejection_reason}
                       </div>
                     )}
-
-                    {/* Admin Actions */}
                     {selected.approval_status === "pending" && (
                       <div className="space-y-2 border-t pt-4">
-                        <Input
-                          placeholder="Rejection reason (required to reject)..."
-                          value={rejectionReason}
-                          onChange={e => setRejectionReason(e.target.value)}
-                        />
+                        <Input placeholder="Rejection reason (required to reject)..." value={rejectionReason} onChange={e => setRejectionReason(e.target.value)} />
                         <div className="flex gap-3">
                           <Button onClick={() => handleReject(selected)} disabled={actionLoading} variant="outline" className="flex-1 border-red-200 text-red-600 hover:bg-red-50">
                             {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><XCircle className="w-4 h-4 mr-1" />Reject</>}
@@ -314,13 +263,9 @@ export default function AdminScreens() {
                   </div>
                 </CardContent>
               </Card>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-64 text-slate-400 border-2 border-dashed border-slate-200 rounded-2xl">
-                <MonitorPlay className="w-10 h-10 mb-2 text-slate-300" />
-                <p className="text-sm">Select a screen to view details</p>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
