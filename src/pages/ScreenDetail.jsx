@@ -171,8 +171,14 @@ export default function ScreenDetail() {
             <h2 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
               <MonitorPlay className="w-4 h-4 text-violet-500" /> Screen Controls
             </h2>
+            {!isOnline && (
+              <div className="mb-3 flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm text-slate-500">
+                <WifiOff className="w-4 h-4 text-slate-400" />
+                Screen is offline — commands are queued and will execute when the player reconnects.
+              </div>
+            )}
             <div className="flex flex-wrap gap-2">
-              {(!isOnline || !screen.player_active) && (
+              {(!screen.player_active || !isOnline) && (
                 <button
                   onClick={() => sendCommand("resume")}
                   disabled={!!commandLoading}
@@ -192,22 +198,22 @@ export default function ScreenDetail() {
               )}
               <button
                 onClick={() => sendCommand("restart_playlist")}
-                disabled={!!commandLoading}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-blue-300 text-blue-600 hover:bg-blue-50 text-sm font-medium disabled:opacity-60"
+                disabled={!isOnline || !!commandLoading}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-blue-300 text-blue-600 hover:bg-blue-50 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {commandLoading === "restart_playlist" ? <RefreshCw className="w-4 h-4 animate-spin" /> : <RotateCcw className="w-4 h-4" />} Restart
               </button>
               <button
                 onClick={() => sendCommand("stop_playback")}
-                disabled={!!commandLoading}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-red-300 text-red-600 hover:bg-red-50 text-sm font-medium disabled:opacity-60"
+                disabled={!isOnline || !!commandLoading}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-red-300 text-red-600 hover:bg-red-50 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {commandLoading === "stop_playback" ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Square className="w-4 h-4" />} Stop
               </button>
               <button
                 onClick={() => sendCommand("restart")}
-                disabled={!!commandLoading}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-50 text-sm font-medium disabled:opacity-60"
+                disabled={!isOnline || !!commandLoading}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-50 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {commandLoading === "restart" ? <RefreshCw className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />} Reboot App
               </button>
