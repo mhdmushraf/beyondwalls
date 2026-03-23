@@ -523,12 +523,7 @@ export default function ScreenPlayer() {
   return (
     <div ref={containerRef} className="min-h-screen bg-black relative overflow-hidden">
       {/* Connection Status */}
-      {(connectionStatus === "offline" || (connectionStatus === "reconnecting" && Date.now() - (lastHeartbeat?.getTime() || 0) > 30000)) && (
-        <div className={`absolute top-4 left-1/2 -translate-x-1/2 z-[100] px-4 py-2 rounded-full flex items-center gap-2 ${connectionStatus === "offline" ? "bg-red-500" : "bg-amber-500"}`}>
-          {connectionStatus === "offline" ? <WifiOff className="w-4 h-4 text-white" /> : <RefreshCw className="w-4 h-4 text-white animate-spin" />}
-          <span className="text-white text-sm font-medium">{connectionStatus === "offline" ? "No Internet Connection" : "Reconnecting..."}</span>
-        </div>
-      )}
+
 
       {mediaError && (
         <div className="absolute top-16 left-1/2 -translate-x-1/2 z-[100] px-4 py-2 rounded-full bg-red-500/90 flex items-center gap-2">
