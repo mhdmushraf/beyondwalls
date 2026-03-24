@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +12,7 @@ export default function MyContentLibrary() {
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
   const [search, setSearch] = useState("");
 
   useEffect(() => { loadData(); }, []);
@@ -62,12 +63,12 @@ export default function MyContentLibrary() {
             <h1 className="text-lg font-bold text-slate-900">Content Library</h1>
             <p className="text-xs text-slate-500">{assets.length} assets · reuse across all screens</p>
           </div>
-          <label className="cursor-pointer">
-            <input type="file" accept="image/*,video/*" className="hidden" onChange={handleUpload} disabled={uploading} />
-            <Button disabled={uploading} className="bg-gradient-to-r from-violet-600 to-indigo-600">
+          <div>
+            <input ref={fileInputRef} type="file" accept="image/*,video/*" className="hidden" onChange={handleUpload} disabled={uploading} />
+            <Button disabled={uploading} className="bg-gradient-to-r from-violet-600 to-indigo-600" onClick={() => fileInputRef.current?.click()}>
               {uploading ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />Uploading...</> : <><Plus className="w-4 h-4 mr-2" />Upload Asset</>}
             </Button>
-          </label>
+          </div>
         </div>
       </div>
 
