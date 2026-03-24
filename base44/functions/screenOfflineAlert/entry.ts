@@ -30,21 +30,25 @@ Deno.serve(async (req) => {
       reference_id: screenId,
     });
 
-    // Send email alert
-    await base44.asServiceRole.integrations.Core.SendEmail({
-      to: ownerEmail,
-      subject: `⚠️ Screen Alert: ${screenName} is offline`,
-      body: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 24px;">
-          <h2 style="color: #7c3aed;">Screen Offline Alert</h2>
-          <p>Your screen <strong>${screenName}</strong> has gone offline.</p>
-          <p>This could be due to a network issue or the device being turned off.</p>
-          <p>Log in to your BeyondWalls dashboard to check the screen status and send remote commands.</p>
-          <a href="${Deno.env.get('APP_URL') || 'https://app.beyondwalls.ae'}/ScreensOverview" style="display:inline-block;margin-top:16px;padding:12px 24px;background:#7c3aed;color:white;border-radius:8px;text-decoration:none;">View Dashboard</a>
-          <p style="margin-top:24px;color:#9ca3af;font-size:13px;">BeyondWalls · Digital Advertising Platform</p>
-        </div>
-      `,
-    });
+    // Send email alert (non-fatal — notification is already created above)
+    try {
+      await base44.asServiceRole.integrations.Core.SendEmail({
+        to: ownerEmail,
+        subject: `⚠️ Screen Alert: ${screenName} is offline`,
+        body: `
+          <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 24px;">
+            <h2 style="color: #7c3aed;">Screen Offline Alert</h2>
+            <p>Your screen <strong>${screenName}</strong> has gone offline.</p>
+            <p>This could be due to a network issue or the device being turned off.</p>
+            <p>Log in to your BeyondWalls dashboard to check the screen status and send remote commands.</p>
+            <a href="${Deno.env.get('APP_URL') || 'https://app.beyondwalls.ae'}/ScreensOverview" style="display:inline-block;margin-top:16px;padding:12px 24px;background:#7c3aed;color:white;border-radius:8px;text-decoration:none;">View Dashboard</a>
+            <p style="margin-top:24px;color:#9ca3af;font-size:13px;">BeyondWalls · Digital Advertising Platform</p>
+          </div>
+        `,
+      });
+    } catch (emailErr) {
+      console.warn("Email alert skipped:", emailErr.message);
+    }
 
     return Response.json({ ok: true, alerted: ownerEmail });
   } catch (error) {
