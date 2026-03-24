@@ -22,6 +22,7 @@ import EditScreen from './pages/EditScreen';
 import LiveScreenMonitorPage from './pages/LiveScreenMonitorPage';
 import MyContentLibrary from './pages/MyContentLibrary';
 import ScreensOverview from './pages/ScreensOverview';
+import ScheduleContent from './pages/ScheduleContent';
 
 // Lazy load pages for code splitting
 const LazyPageLoader = ({ Page }) => (
@@ -167,6 +168,15 @@ const AuthenticatedApp = () => {
              <MobileRouteTransition>
                <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
                  <ScreensOverview />
+               </Suspense>
+             </MobileRouteTransition>
+           </LayoutWrapper>
+         } />
+         <Route path="/ScheduleContent" element={
+           <LayoutWrapper currentPageName="ScheduleContent">
+             <MobileRouteTransition>
+               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+                 <ScheduleContent />
                </Suspense>
              </MobileRouteTransition>
            </LayoutWrapper>
