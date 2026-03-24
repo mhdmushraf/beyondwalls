@@ -12,6 +12,22 @@ import {
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const DAY_LABELS = { 0: "Sun", 1: "Mon", 2: "Tue", 3: "Wed", 4: "Thu", 5: "Fri", 6: "Sat" };
 
+const TIMEZONES = [
+  { value: "Asia/Dubai", label: "Dubai (GMT+4)" },
+  { value: "Asia/Riyadh", label: "Riyadh (GMT+3)" },
+  { value: "Asia/Kuwait", label: "Kuwait (GMT+3)" },
+  { value: "Asia/Bahrain", label: "Bahrain (GMT+3)" },
+  { value: "Asia/Qatar", label: "Qatar (GMT+3)" },
+  { value: "Asia/Muscat", label: "Muscat (GMT+4)" },
+  { value: "Asia/Karachi", label: "Karachi (GMT+5)" },
+  { value: "Asia/Kolkata", label: "India (GMT+5:30)" },
+  { value: "Europe/London", label: "London (GMT+0/+1)" },
+  { value: "Europe/Paris", label: "Paris (GMT+1/+2)" },
+  { value: "America/New_York", label: "New York (GMT-5/-4)" },
+  { value: "America/Los_Angeles", label: "Los Angeles (GMT-8/-7)" },
+  { value: "UTC", label: "UTC (GMT+0)" },
+];
+
 function ScheduleCard({ schedule, asset, onDelete }) {
   const daysText = schedule.days_of_week?.length > 0
     ? schedule.days_of_week.map(d => DAY_LABELS[d]).join(", ")
@@ -80,6 +96,7 @@ export default function ScheduleContent() {
     days_of_week: [],
     start_time: "08:00",
     end_time: "22:00",
+    timezone: "Asia/Dubai",
     is_active: true,
   });
 
@@ -130,12 +147,13 @@ export default function ScheduleContent() {
       days_of_week: form.days_of_week,
       start_time: form.start_time,
       end_time: form.end_time,
+      timezone: form.timezone || "Asia/Dubai",
       is_active: true,
     });
 
     toast.success("Schedule created!");
     setShowForm(false);
-    setForm({ name: "", media_asset_id: "", slot_index: 1, days_of_week: [], start_time: "08:00", end_time: "22:00", is_active: true });
+    setForm({ name: "", media_asset_id: "", slot_index: 1, days_of_week: [], start_time: "08:00", end_time: "22:00", timezone: "Asia/Dubai", is_active: true });
     setSaving(false);
     loadData();
   };
@@ -272,6 +290,20 @@ export default function ScheduleContent() {
                   </button>
                 ))}
               </div>
+            </div>
+
+            {/* Timezone */}
+            <div>
+              <label className="text-xs font-medium text-slate-600 mb-1.5 block">Timezone *</label>
+              <select
+                value={form.timezone}
+                onChange={e => setForm(prev => ({ ...prev, timezone: e.target.value }))}
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
+              >
+                {TIMEZONES.map(tz => (
+                  <option key={tz.value} value={tz.value}>{tz.label}</option>
+                ))}
+              </select>
             </div>
 
             {/* Time Range */}
