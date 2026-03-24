@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   Plus, MonitorPlay, Wifi, WifiOff, Code, Image as ImageIcon,
-  Settings, Search, X, MapPin, Building2, Filter
+  Settings, Search, X, MapPin, Building2, Filter, CalendarDays
 } from "lucide-react";
 
 export default function MyScreens() {
@@ -281,11 +281,18 @@ export default function MyScreens() {
                     )}
 
                     {s.approval_status === "approved" && (
-                      <Link to={`/ManageScreenContent?id=${s.id}`} onClick={e => e.stopPropagation()}>
-                        <Button size="sm" variant="outline" className="w-full text-violet-700 border-violet-200 hover:bg-violet-50">
-                          <Settings className="w-3.5 h-3.5 mr-1.5" /> Manage Content
-                        </Button>
-                      </Link>
+                      <div className="flex gap-2" onClick={e => e.stopPropagation()}>
+                        <Link to={`/ManageScreenContent?id=${s.id}`} className="flex-1">
+                          <Button size="sm" variant="outline" className="w-full text-violet-700 border-violet-200 hover:bg-violet-50">
+                            <Settings className="w-3.5 h-3.5 mr-1.5" /> Manage Content
+                          </Button>
+                        </Link>
+                        <Link to={`/ScheduleContent?id=${s.id}`}>
+                          <Button size="sm" variant="outline" className="text-indigo-700 border-indigo-200 hover:bg-indigo-50">
+                            <CalendarDays className="w-3.5 h-3.5" />
+                          </Button>
+                        </Link>
+                      </div>
                     )}
                   </CardContent>
                 </Card>
