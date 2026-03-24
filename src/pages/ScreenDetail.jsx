@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { QRCodeSVG } from "qrcode.react";
 import {
   ArrowLeft, MonitorPlay, MapPin, Wifi, WifiOff, Code,
   Layers, Clock, DollarSign, LayoutGrid, Maximize2, Image as ImageIcon,
@@ -219,6 +220,33 @@ export default function ScreenDetail() {
               </button>
             </div>
             <p className="text-xs text-slate-400 mt-2">Commands sent to screen — player responds within ~15s</p>
+          </div>
+        )}
+
+        {/* QR Code for Screen Player Setup */}
+        {screen.approval_status === "approved" && screen.setup_code && (
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+            <h2 className="text-sm font-semibold text-slate-700 mb-1 flex items-center gap-2">
+              <Code className="w-4 h-4 text-violet-500" /> QR Code — Screen Player Setup
+            </h2>
+            <p className="text-xs text-slate-400 mb-4">Scan this QR code with the physical device to auto-connect the screen player instantly.</p>
+            <div className="flex flex-col sm:flex-row items-center gap-6">
+              <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                <QRCodeSVG
+                  value={`${window.location.origin}/ScreenPlayer?setup_code=${screen.setup_code}&auto_start=true`}
+                  size={160}
+                  level="M"
+                  includeMargin={false}
+                />
+              </div>
+              <div className="flex-1 space-y-3">
+                <div className="flex items-center gap-2 bg-violet-50 rounded-xl px-4 py-2 w-fit">
+                  <Code className="w-4 h-4 text-violet-600" />
+                  <span className="text-sm text-violet-700 font-mono font-bold tracking-widest">{screen.setup_code}</span>
+                </div>
+                <p className="text-xs text-slate-500">Point any QR scanner or Android/iOS device camera at the code. The screen player app will open and auto-configure.</p>
+              </div>
+            </div>
           </div>
         )}
 

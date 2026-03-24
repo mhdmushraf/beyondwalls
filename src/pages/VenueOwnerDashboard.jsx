@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Building2, MonitorPlay, DollarSign, Plus, ArrowRight, Wifi, WifiOff, TrendingUp } from "lucide-react";
+import { Building2, MonitorPlay, DollarSign, Plus, ArrowRight, Wifi, WifiOff, TrendingUp, Library, LayoutGrid, Play, Pause, RotateCcw } from "lucide-react";
+import { toast } from "sonner";
 
 export default function VenueOwnerDashboard() {
   const [user, setUser] = useState(null);
@@ -29,8 +30,14 @@ export default function VenueOwnerDashboard() {
   if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin" /></div>;
 
   const activeScreens = screens.filter(s => s.status === "active").length;
-  const onlineScreens = screens.filter(s => s.is_online).length;
+  const onlineScreens = screens.filter(s => s.last_heartbeat && (new Date() - new Date(s.last_heartbeat)) < 60000).length;
   const totalEarned = user?.total_earned || 0;
+
+  const sendBulkCommand = async (command, label) => {
+    const ids = screens.map(s => s.id);
+    await Promise.all(ids.map(id => base44.entities.Screen.update(id, { player_command: command })));
+    toast.success(`"${label}" sent to all screens`);
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 p-4 sm:p-6">
@@ -66,6 +73,52 @@ export default function VenueOwnerDashboard() {
             </Card>
           ))}
         </div>
+
+        {/* Quick Access */}
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <Link to="/ScreensOverview">
+            <div className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-3 hover:border-violet-300 hover:shadow-sm transition-all cursor-pointer">
+              <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <LayoutGrid className="w-5 h-5 text-violet-600" />
+              </div>
+              <div>
+                <p className="font-semibold text-sm text-slate-800">Screens Overview</p>
+                <p className="text-xs text-slate-500">Live status of all screens</p>
+              </div>
+            </div>
+          </Link>
+          <Link to="/MyContentLibrary">
+            <div className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-3 hover:border-violet-300 hover:shadow-sm transition-all cursor-pointer">
+              <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Library className="w-5 h-5 text-indigo-600" />
+              </div>
+              <div>
+                <p className="font-semibold text-sm text-slate-800">Content Library</p>
+                <p className="text-xs text-slate-500">Manage all media assets</p>
+              </div>
+            </div>
+          </Link>
+        </div>
+
+        {/* Bulk Screen Controls */}
+        {screens.length > 0 && (
+          <Card className="border-0 shadow-sm mb-6">
+            <CardContent className="p-4">
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Quick Controls — All Screens</p>
+              <div className="flex flex-wrap gap-2">
+                <Button size="sm" onClick={() => sendBulkCommand("resume", "Play All")} className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                  <Play className="w-3.5 h-3.5 mr-1.5" /> Play All
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => sendBulkCommand("pause", "Pause All")} className="border-amber-400 text-amber-600 hover:bg-amber-50">
+                  <Pause className="w-3.5 h-3.5 mr-1.5" /> Pause All
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => sendBulkCommand("restart_playlist", "Restart All")} className="border-blue-400 text-blue-600 hover:bg-blue-50">
+                  <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Restart All
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Earnings Card */}
         <Card className="border-0 shadow-sm bg-gradient-to-r from-emerald-500 to-teal-600 text-white mb-6">
