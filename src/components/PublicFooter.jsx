@@ -51,6 +51,15 @@ export default function PublicFooter() {
             </div>
           </div>
           <div>
+            <h4 className="font-semibold text-white mb-4">Blog & Guides</h4>
+            <div className="space-y-2 text-sm">
+              <Link to={createPageUrl("DOOHAdvertisingCostDubai")} className="block text-slate-400 hover:text-white">DOOH Advertising Cost Dubai</Link>
+              <Link to={createPageUrl("IndoorVenueDOOHvsBillboardsDubai")} className="block text-slate-400 hover:text-white">Indoor DOOH vs Billboards</Link>
+              <Link to={createPageUrl("WhatIsDOOHAdvertisingGuide")} className="block text-slate-400 hover:text-white">What Is DOOH Advertising?</Link>
+              <Link to={createPageUrl("EarnMoneyVenueScreensDubai")} className="block text-slate-400 hover:text-white">Earn From Venue Screens</Link>
+            </div>
+          </div>
+          <div>
             <h4 className="font-semibold text-white mb-4">Contact</h4>
             <div className="space-y-2 text-sm text-slate-400">
               <a href="mailto:hello@beyondwalls.ae" className="block hover:text-white">hello@beyondwalls.ae</a>

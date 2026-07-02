@@ -104,7 +104,11 @@ export const SITEMAP_PAGES = [
   { url: "/GymScreenAdvertisingDubai", priority: "0.8", changefreq: "weekly" },
   { url: "/CoworkingSpaceAdvertisingDubai", priority: "0.8", changefreq: "weekly" },
   { url: "/ClinicScreenAdvertisingDubai", priority: "0.8", changefreq: "weekly" },
-  { url: "/MonetizeYourScreensDubai", priority: "0.8", changefreq: "weekly" }
+  { url: "/MonetizeYourScreensDubai", priority: "0.8", changefreq: "weekly" },
+  { url: "/DOOHAdvertisingCostDubai", priority: "0.8", changefreq: "monthly" },
+  { url: "/IndoorVenueDOOHvsBillboardsDubai", priority: "0.8", changefreq: "monthly" },
+  { url: "/WhatIsDOOHAdvertisingGuide", priority: "0.8", changefreq: "monthly" },
+  { url: "/EarnMoneyVenueScreensDubai", priority: "0.8", changefreq: "monthly" }
 ];
 
 export default function SEOHead({ 

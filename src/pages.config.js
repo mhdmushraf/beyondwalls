@@ -31,6 +31,10 @@ import GymScreenAdvertisingDubai from './pages/GymScreenAdvertisingDubai';
 import CoworkingSpaceAdvertisingDubai from './pages/CoworkingSpaceAdvertisingDubai';
 import ClinicScreenAdvertisingDubai from './pages/ClinicScreenAdvertisingDubai';
 import MonetizeYourScreensDubai from './pages/MonetizeYourScreensDubai';
+import DOOHAdvertisingCostDubai from './pages/DOOHAdvertisingCostDubai';
+import IndoorVenueDOOHvsBillboardsDubai from './pages/IndoorVenueDOOHvsBillboardsDubai';
+import WhatIsDOOHAdvertisingGuide from './pages/WhatIsDOOHAdvertisingGuide';
+import EarnMoneyVenueScreensDubai from './pages/EarnMoneyVenueScreensDubai';
 import DOOHAdvertisingDubai from './pages/DOOHAdvertisingDubai';
 import HelpCenter from './pages/HelpCenter';
 import Home from './pages/Home';
@@ -64,6 +68,10 @@ export const PAGES = {
     "CoworkingSpaceAdvertisingDubai": CoworkingSpaceAdvertisingDubai,
     "ClinicScreenAdvertisingDubai": ClinicScreenAdvertisingDubai,
     "MonetizeYourScreensDubai": MonetizeYourScreensDubai,
+    "DOOHAdvertisingCostDubai": DOOHAdvertisingCostDubai,
+    "IndoorVenueDOOHvsBillboardsDubai": IndoorVenueDOOHvsBillboardsDubai,
+    "WhatIsDOOHAdvertisingGuide": WhatIsDOOHAdvertisingGuide,
+    "EarnMoneyVenueScreensDubai": EarnMoneyVenueScreensDubai,
     "DOOHAdvertisingDubai": DOOHAdvertisingDubai,
     "HelpCenter": HelpCenter,
     "Home": Home,

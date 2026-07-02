@@ -21,12 +21,57 @@ import PublicFooter from "@/components/PublicFooter";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
 
+// Static SEO articles (always visible, not loaded from database)
+const STATIC_ARTICLES = [
+  {
+    title: "How Much Does DOOH Advertising Cost in Dubai? (2026 Pricing Guide)",
+    excerpt: "A clear breakdown of digital out-of-home advertising costs in Dubai — what drives pricing, typical ranges by venue type, and how self-serve booking saves money.",
+    category: "dooh-advertising",
+    slug: "DOOHAdvertisingCostDubai",
+    cover_image: "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600&h=400&fit=crop",
+    author_name: "Beyond Walls",
+    published_at: "2026-01-15",
+    read_time: 7
+  },
+  {
+    title: "Indoor Venue DOOH vs Billboards: Which Wins for Small Brands in Dubai?",
+    excerpt: "Billboards get 2 seconds of attention; a gym or clinic screen gets 15–45 minutes. Here's why indoor venue DOOH outperforms billboards for Dubai's small and mid-size brands.",
+    category: "dooh-advertising",
+    slug: "IndoorVenueDOOHvsBillboardsDubai",
+    cover_image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&h=400&fit=crop",
+    author_name: "Beyond Walls",
+    published_at: "2026-01-20",
+    read_time: 8
+  },
+  {
+    title: "What Is DOOH Advertising? A Simple Guide for Dubai Businesses",
+    excerpt: "DOOH explained in plain English — what digital out-of-home advertising is, the main formats in Dubai, how campaigns work, and how to launch one without an agency.",
+    category: "guides",
+    slug: "WhatIsDOOHAdvertisingGuide",
+    cover_image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&h=400&fit=crop",
+    author_name: "Beyond Walls",
+    published_at: "2026-01-10",
+    read_time: 8
+  },
+  {
+    title: "How to Earn Passive Income From Your Venue Screens in Dubai",
+    excerpt: "Own a café, gym, salon or clinic in Dubai? Your idle TV screens can earn money. Here's how venue owners monetise screens with DOOH advertising through Beyond Walls.",
+    category: "guides",
+    slug: "EarnMoneyVenueScreensDubai",
+    cover_image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&h=400&fit=crop",
+    author_name: "Beyond Walls",
+    published_at: "2026-01-25",
+    read_time: 7
+  }
+];
+
 export default function Blog() {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const categories = [
     { id: "all", label: "All Posts" },
+    { id: "guides", label: "Guides" },
     { id: "dooh-advertising", label: "DOOH Advertising" },
     { id: "marketing-tips", label: "Marketing Tips" },
     { id: "uae-market-insights", label: "UAE Market Insights" },
@@ -50,7 +95,10 @@ export default function Blog() {
     queryFn: () => base44.entities.BlogPost.filter({ status: "published" }, "-published_at")
   });
 
-  const filteredPosts = blogPosts.filter(post => {
+  // Merge static articles with database posts
+  const allPosts = [...STATIC_ARTICLES, ...blogPosts];
+
+  const filteredPosts = allPosts.filter(post => {
     const matchesSearch = post.title?.toLowerCase().includes(search.toLowerCase()) ||
                          post.excerpt?.toLowerCase().includes(search.toLowerCase()) ||
                          post.tags?.some(tag => tag.toLowerCase().includes(search.toLowerCase()));
@@ -157,7 +205,7 @@ export default function Blog() {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredPosts.map((post) => (
-                <Link key={post.id} to={createPageUrl(`BlogPost?id=${post.id}`)}>
+                <Link key={post.id || post.slug} to={post.slug ? createPageUrl(post.slug) : createPageUrl(`BlogPost?id=${post.id}`)}>
               <Card className="overflow-hidden hover:shadow-xl transition-shadow group cursor-pointer">
                   <div className="relative h-48 overflow-hidden">
                     {post.cover_image ? (

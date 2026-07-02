@@ -28,6 +28,10 @@ import GymScreenAdvertisingDubai from './pages/GymScreenAdvertisingDubai';
 import CoworkingSpaceAdvertisingDubai from './pages/CoworkingSpaceAdvertisingDubai';
 import ClinicScreenAdvertisingDubai from './pages/ClinicScreenAdvertisingDubai';
 import MonetizeYourScreensDubai from './pages/MonetizeYourScreensDubai';
+import DOOHAdvertisingCostDubai from './pages/DOOHAdvertisingCostDubai';
+import IndoorVenueDOOHvsBillboardsDubai from './pages/IndoorVenueDOOHvsBillboardsDubai';
+import WhatIsDOOHAdvertisingGuide from './pages/WhatIsDOOHAdvertisingGuide';
+import EarnMoneyVenueScreensDubai from './pages/EarnMoneyVenueScreensDubai';
 
 // Lazy load pages for code splitting
 const LazyPageLoader = ({ Page }) => (
@@ -227,6 +231,42 @@ const AuthenticatedApp = () => {
              <MobileRouteTransition>
                <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
                  <MonetizeYourScreensDubai />
+               </Suspense>
+             </MobileRouteTransition>
+           </LayoutWrapper>
+         } />
+         <Route path="/DOOHAdvertisingCostDubai" element={
+           <LayoutWrapper currentPageName="DOOHAdvertisingCostDubai">
+             <MobileRouteTransition>
+               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+                 <DOOHAdvertisingCostDubai />
+               </Suspense>
+             </MobileRouteTransition>
+           </LayoutWrapper>
+         } />
+         <Route path="/IndoorVenueDOOHvsBillboardsDubai" element={
+           <LayoutWrapper currentPageName="IndoorVenueDOOHvsBillboardsDubai">
+             <MobileRouteTransition>
+               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+                 <IndoorVenueDOOHvsBillboardsDubai />
+               </Suspense>
+             </MobileRouteTransition>
+           </LayoutWrapper>
+         } />
+         <Route path="/WhatIsDOOHAdvertisingGuide" element={
+           <LayoutWrapper currentPageName="WhatIsDOOHAdvertisingGuide">
+             <MobileRouteTransition>
+               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+                 <WhatIsDOOHAdvertisingGuide />
+               </Suspense>
+             </MobileRouteTransition>
+           </LayoutWrapper>
+         } />
+         <Route path="/EarnMoneyVenueScreensDubai" element={
+           <LayoutWrapper currentPageName="EarnMoneyVenueScreensDubai">
+             <MobileRouteTransition>
+               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+                 <EarnMoneyVenueScreensDubai />
                </Suspense>
              </MobileRouteTransition>
            </LayoutWrapper>
