@@ -58,7 +58,7 @@ export default function BlogPost() {
 
   const blogSEO = post ? {
     title: `${post.title} | BeyondWalls Blog`,
-    description: post.excerpt || post.content?.substring(0, 160),
+    description: post.excerpt || (post.content ? post.content.substring(0, 157).replace(/\s+\S*$/, "") + "…" : ""),
     keywords: `${post.title}, DOOH advertising, digital advertising Dubai, ${categoryLabels[post.category] || post.category}, BeyondWalls blog, ${(post.tags || []).join(", ")}`,
     image: post.cover_image || "https://www.beyondwalls.ae/og-blog.jpg",
     url: `/blog/${post.slug || post.id}`,
