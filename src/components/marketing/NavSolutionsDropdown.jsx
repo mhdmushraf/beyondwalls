@@ -9,6 +9,7 @@ const SOLUTIONS = [
   { name: "Co-Working Spaces", page: "CoworkingSpaceAdvertisingDubai" },
   { name: "Clinics & Healthcare", page: "ClinicScreenAdvertisingDubai" },
   { name: "Monetize Your Screens", page: "MonetizeYourScreensDubai" },
+  { name: "DOOH Marketplace", page: "DOOHAdvertisingMarketplaceDubai" },
 ];
 
 export default function NavSolutionsDropdown({ onNavigate }) {

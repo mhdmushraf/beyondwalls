@@ -96,6 +96,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://beyondwalls.ae/DOOHAdvertisingMarketplaceDubai</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://beyondwalls.ae/Privacy</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

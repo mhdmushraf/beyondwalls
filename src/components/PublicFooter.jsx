@@ -48,6 +48,7 @@ export default function PublicFooter() {
               <Link to={createPageUrl("CoworkingSpaceAdvertisingDubai")} className="block text-slate-400 hover:text-white">Co-Working Space Ads</Link>
               <Link to={createPageUrl("ClinicScreenAdvertisingDubai")} className="block text-slate-400 hover:text-white">Clinic Screen Advertising</Link>
               <Link to={createPageUrl("MonetizeYourScreensDubai")} className="block text-slate-400 hover:text-white">Monetize Your Screens</Link>
+              <Link to={createPageUrl("DOOHAdvertisingMarketplaceDubai")} className="block text-slate-400 hover:text-white">DOOH Marketplace</Link>
             </div>
           </div>
           <div>
