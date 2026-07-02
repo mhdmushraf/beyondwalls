@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
+import SEOHead from "@/components/SEOHead";
 import { Clock, CheckCircle2, XCircle, RefreshCw, MonitorPlay } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -45,6 +46,7 @@ export default function PendingApproval() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-indigo-50 flex flex-col">
+      <SEOHead noIndex title="Pending Approval | Beyond Walls" />
       {/* Header */}
       <div className="p-6">
         <div className="flex items-center gap-3">

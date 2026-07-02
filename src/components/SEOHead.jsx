@@ -97,9 +97,6 @@ export const SITEMAP_PAGES = [
   // SEO Landing Pages
   { url: "/DOOHAdvertisingDubai", priority: "0.9", changefreq: "weekly" },
   { url: "/DigitalSignageUAE", priority: "0.9", changefreq: "weekly" },
-  { url: "/AdPlatformDubai", priority: "0.8", changefreq: "weekly" },
-  { url: "/VenueAdvertisingUAE", priority: "0.8", changefreq: "weekly" },
-  { url: "/BeyondWallsUAEvsUSA", priority: "0.7", changefreq: "monthly" },
   { url: "/CafeScreenAdvertisingDubai", priority: "0.8", changefreq: "weekly" },
   { url: "/GymScreenAdvertisingDubai", priority: "0.8", changefreq: "weekly" },
   { url: "/CoworkingSpaceAdvertisingDubai", priority: "0.8", changefreq: "weekly" },
@@ -209,15 +206,18 @@ export default function SEOHead({
     }
     canonicalLink.setAttribute("href", finalCanonical);
 
-    // Structured data (JSON-LD)
+    // Structured data (JSON-LD) — supports one or more blocks
+    // Remove all previously injected JSON-LD scripts from this component
+    document.querySelectorAll('script[type="application/ld+json"][data-seo-jsonld]').forEach(s => s.remove());
     if (structuredData) {
-      let script = document.querySelector('script[type="application/ld+json"]');
-      if (!script) {
-        script = document.createElement("script");
+      const schemas = Array.isArray(structuredData) ? structuredData : [structuredData];
+      schemas.forEach(schema => {
+        const script = document.createElement("script");
         script.setAttribute("type", "application/ld+json");
+        script.setAttribute("data-seo-jsonld", "true");
+        script.textContent = JSON.stringify(schema);
         document.head.appendChild(script);
-      }
-      script.textContent = JSON.stringify(structuredData);
+      });
     }
 
     // Additional meta tags for better SEO

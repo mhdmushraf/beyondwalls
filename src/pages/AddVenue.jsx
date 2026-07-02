@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import SEOHead from "@/components/SEOHead";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -132,6 +133,7 @@ export default function AddVenue() {
 
   return (
     <div className="min-h-screen bg-slate-50 p-4 sm:p-6">
+      <SEOHead noIndex title="Add Venue | Beyond Walls" />
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>

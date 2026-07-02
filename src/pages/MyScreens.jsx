@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
+import SEOHead from "@/components/SEOHead";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -88,6 +89,7 @@ export default function MyScreens() {
 
   return (
     <div className="min-h-screen bg-slate-50 p-4 sm:p-6">
+      <SEOHead noIndex title="My Screens | Beyond Walls" />
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">

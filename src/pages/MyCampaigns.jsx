@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import SEOHead from "@/components/SEOHead";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -43,6 +44,7 @@ export default function MyCampaigns() {
 
   return (
     <div className="min-h-screen bg-slate-50 p-4 sm:p-6">
+      <SEOHead noIndex title="My Campaigns | Beyond Walls" />
       <div className="max-w-5xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">My Campaigns</h1>

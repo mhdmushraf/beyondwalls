@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import SEOHead from "@/components/SEOHead";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -137,6 +138,7 @@ export default function ScreenMonitor() {
 
   return (
     <div className="min-h-screen bg-slate-50 p-4 sm:p-6">
+      <SEOHead noIndex title="Screen Monitor | Beyond Walls" />
       <div className="max-w-7xl mx-auto space-y-6">
 
         {/* Header */}

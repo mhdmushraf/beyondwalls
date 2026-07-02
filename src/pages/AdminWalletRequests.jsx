@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import SEOHead from "@/components/SEOHead";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -73,6 +74,7 @@ export default function AdminWalletRequests() {
 
   return (
     <div className="min-h-screen bg-slate-50 p-4 sm:p-6">
+      <SEOHead noIndex title="Payout Requests | Beyond Walls" />
       <div className="max-w-4xl mx-auto">
         <div className="mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Payout Requests</h1>

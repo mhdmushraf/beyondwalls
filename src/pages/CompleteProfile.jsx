@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
+import SEOHead from "@/components/SEOHead";
 import {
   MonitorPlay,
   Upload,
@@ -254,6 +255,7 @@ export default function CompleteProfile() {
 
   return (
     <div className="min-h-screen flex">
+      <SEOHead noIndex title="Complete Profile | Beyond Walls" />
       {/* Left Side - Visual */}
       <div className="hidden lg:flex lg:w-5/12 bg-gradient-to-br from-violet-600 via-indigo-600 to-purple-700 relative overflow-hidden">
         <div className="absolute inset-0">

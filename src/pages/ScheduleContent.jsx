@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import SEOHead from "@/components/SEOHead";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -175,6 +176,7 @@ export default function ScheduleContent() {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      <SEOHead noIndex title="Schedule Content | Beyond Walls" />
       {/* Header */}
       <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-4 sticky top-0 z-10">
         <div className="max-w-3xl mx-auto flex items-center gap-3">

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
+import SEOHead from "@/components/SEOHead";
 import { useQuery } from "@tanstack/react-query";
 import {
   MonitorPlay, Lock, Wifi, WifiOff, Volume2, VolumeX,
@@ -541,6 +542,7 @@ export default function ScreenPlayer() {
   // ─── Player Screen ──────────────────────────────────────────
   return (
     <div ref={containerRef} className="min-h-screen bg-black relative overflow-hidden">
+      <SEOHead noIndex title="Screen Player | Beyond Walls" />
       {/* Connection Status */}
 
 
