@@ -99,7 +99,12 @@ export const SITEMAP_PAGES = [
   { url: "/DigitalSignageUAE", priority: "0.9", changefreq: "weekly" },
   { url: "/AdPlatformDubai", priority: "0.8", changefreq: "weekly" },
   { url: "/VenueAdvertisingUAE", priority: "0.8", changefreq: "weekly" },
-  { url: "/BeyondWallsUAEvsUSA", priority: "0.7", changefreq: "monthly" }
+  { url: "/BeyondWallsUAEvsUSA", priority: "0.7", changefreq: "monthly" },
+  { url: "/CafeScreenAdvertisingDubai", priority: "0.8", changefreq: "weekly" },
+  { url: "/GymScreenAdvertisingDubai", priority: "0.8", changefreq: "weekly" },
+  { url: "/CoworkingSpaceAdvertisingDubai", priority: "0.8", changefreq: "weekly" },
+  { url: "/ClinicScreenAdvertisingDubai", priority: "0.8", changefreq: "weekly" },
+  { url: "/MonetizeYourScreensDubai", priority: "0.8", changefreq: "weekly" }
 ];
 
 export default function SEOHead({ 

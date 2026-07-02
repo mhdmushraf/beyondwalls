@@ -26,6 +26,11 @@ import CompleteProfile from './pages/CompleteProfile';
 import Connect from './pages/Connect';
 import Contact from './pages/Contact';
 import DigitalSignageUAE from './pages/DigitalSignageUAE';
+import CafeScreenAdvertisingDubai from './pages/CafeScreenAdvertisingDubai';
+import GymScreenAdvertisingDubai from './pages/GymScreenAdvertisingDubai';
+import CoworkingSpaceAdvertisingDubai from './pages/CoworkingSpaceAdvertisingDubai';
+import ClinicScreenAdvertisingDubai from './pages/ClinicScreenAdvertisingDubai';
+import MonetizeYourScreensDubai from './pages/MonetizeYourScreensDubai';
 import DOOHAdvertisingDubai from './pages/DOOHAdvertisingDubai';
 import HelpCenter from './pages/HelpCenter';
 import Home from './pages/Home';
@@ -54,6 +59,11 @@ export const PAGES = {
     "Connect": Connect,
     "Contact": Contact,
     "DigitalSignageUAE": DigitalSignageUAE,
+    "CafeScreenAdvertisingDubai": CafeScreenAdvertisingDubai,
+    "GymScreenAdvertisingDubai": GymScreenAdvertisingDubai,
+    "CoworkingSpaceAdvertisingDubai": CoworkingSpaceAdvertisingDubai,
+    "ClinicScreenAdvertisingDubai": ClinicScreenAdvertisingDubai,
+    "MonetizeYourScreensDubai": MonetizeYourScreensDubai,
     "DOOHAdvertisingDubai": DOOHAdvertisingDubai,
     "HelpCenter": HelpCenter,
     "Home": Home,

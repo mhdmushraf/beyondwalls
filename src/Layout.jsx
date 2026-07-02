@@ -114,7 +114,9 @@ const publicPages = [
         "About", "Services", "Contact", "ScreenLocations", "Blog", 
         "HelpCenter", "Terms", "Privacy", "HowItWorks", "PendingApproval", 
         "Connect", "BlogPost", "AuthorProfile", "NotFound", "ARDashboard", "Sitemap",
-        "SitemapPage", "DOOHAdvertisingDubai", "DigitalSignageUAE", "RobotsTxt", "SitemapXML"
+        "SitemapPage", "DOOHAdvertisingDubai", "DigitalSignageUAE", "RobotsTxt", "SitemapXML",
+        "CafeScreenAdvertisingDubai", "GymScreenAdvertisingDubai", "CoworkingSpaceAdvertisingDubai",
+        "ClinicScreenAdvertisingDubai", "MonetizeYourScreensDubai"
       ];
 
   // Scroll to top when navigating to public pages

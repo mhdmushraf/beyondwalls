@@ -33,6 +33,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
 import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
+import FAQSection, { buildFAQSchema } from "@/components/marketing/FAQSection";
 import PublicAIChatWidget from "@/components/chat/PublicAIChatWidget";
 import ARFeatureSection from "@/components/home/ARFeatureSection";
 import BOneShowcase from "@/components/home/BOneShowcase";
@@ -176,11 +177,35 @@ export default function Home() {
 
   const cities = ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "RAK"];
 
+  const homeFaqs = [
+    {
+      question: "What is Beyond Walls?",
+      answer: "Beyond Walls is Dubai's leading self-serve digital out-of-home (DOOH) advertising platform. We connect advertisers with 500+ digital screens in cafés, gyms, malls, clinics, and co-working spaces across the UAE, with campaigns starting from AED 99 per week."
+    },
+    {
+      question: "How much does digital screen advertising cost in Dubai?",
+      answer: "Digital screen advertising on Beyond Walls starts from AED 99 per week per screen. There are no minimum spends, no long-term contracts, and no setup fees — you only pay for the screens and weeks you book."
+    },
+    {
+      question: "How quickly can my campaign go live?",
+      answer: "Once you upload your creative and complete checkout, your ad typically goes live within 30 minutes. There is no need for production crews or physical installation — everything is managed through our self-serve platform."
+    },
+    {
+      question: "Where are Beyond Walls screens located?",
+      answer: "Beyond Walls has 500+ screens across Dubai, Abu Dhabi, Sharjah, Ajman, and RAK. Screens are located in cafés, gyms, malls, clinics, co-working spaces, hotels, and retail stores throughout the UAE."
+    },
+    {
+      question: "Can venue owners earn from their screens?",
+      answer: "Yes. If you own a venue with digital screens, you can list them on Beyond Walls for free and earn passive income. Venue owners keep 70% of all ad revenue and maintain full control over which ads appear."
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-white">
       <SEOHead 
         {...PAGE_SEO.home}
-        structuredData={{
+        structuredData={[
+          {
           "@context": "https://schema.org",
           "@type": "Organization",
           "name": "Beyond Walls",
@@ -196,7 +221,9 @@ export default function Home() {
             "https://www.linkedin.com/company/beyondwallsae",
             "https://www.instagram.com/beyondwallsae/"
           ]
-        }}
+        },
+        buildFAQSchema(homeFaqs)
+        ]}
       />
       <PublicNav />
 
@@ -702,6 +729,8 @@ export default function Home() {
 
       {/* B.One Product Showcase */}
       <BOneShowcase />
+
+      <FAQSection faqs={homeFaqs} title="Frequently Asked Questions" subtitle="Everything you need to know about DOOH advertising with Beyond Walls" />
 
       {/* Final CTA */}
       <section className="py-24 px-6 bg-gradient-to-br from-violet-600 via-indigo-600 to-violet-700 relative overflow-hidden">

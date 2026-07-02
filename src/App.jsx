@@ -23,6 +23,11 @@ import LiveScreenMonitorPage from './pages/LiveScreenMonitorPage';
 import MyContentLibrary from './pages/MyContentLibrary';
 import ScreensOverview from './pages/ScreensOverview';
 import ScheduleContent from './pages/ScheduleContent';
+import CafeScreenAdvertisingDubai from './pages/CafeScreenAdvertisingDubai';
+import GymScreenAdvertisingDubai from './pages/GymScreenAdvertisingDubai';
+import CoworkingSpaceAdvertisingDubai from './pages/CoworkingSpaceAdvertisingDubai';
+import ClinicScreenAdvertisingDubai from './pages/ClinicScreenAdvertisingDubai';
+import MonetizeYourScreensDubai from './pages/MonetizeYourScreensDubai';
 
 // Lazy load pages for code splitting
 const LazyPageLoader = ({ Page }) => (
@@ -177,6 +182,51 @@ const AuthenticatedApp = () => {
              <MobileRouteTransition>
                <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
                  <ScheduleContent />
+               </Suspense>
+             </MobileRouteTransition>
+           </LayoutWrapper>
+         } />
+         <Route path="/CafeScreenAdvertisingDubai" element={
+           <LayoutWrapper currentPageName="CafeScreenAdvertisingDubai">
+             <MobileRouteTransition>
+               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+                 <CafeScreenAdvertisingDubai />
+               </Suspense>
+             </MobileRouteTransition>
+           </LayoutWrapper>
+         } />
+         <Route path="/GymScreenAdvertisingDubai" element={
+           <LayoutWrapper currentPageName="GymScreenAdvertisingDubai">
+             <MobileRouteTransition>
+               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+                 <GymScreenAdvertisingDubai />
+               </Suspense>
+             </MobileRouteTransition>
+           </LayoutWrapper>
+         } />
+         <Route path="/CoworkingSpaceAdvertisingDubai" element={
+           <LayoutWrapper currentPageName="CoworkingSpaceAdvertisingDubai">
+             <MobileRouteTransition>
+               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+                 <CoworkingSpaceAdvertisingDubai />
+               </Suspense>
+             </MobileRouteTransition>
+           </LayoutWrapper>
+         } />
+         <Route path="/ClinicScreenAdvertisingDubai" element={
+           <LayoutWrapper currentPageName="ClinicScreenAdvertisingDubai">
+             <MobileRouteTransition>
+               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+                 <ClinicScreenAdvertisingDubai />
+               </Suspense>
+             </MobileRouteTransition>
+           </LayoutWrapper>
+         } />
+         <Route path="/MonetizeYourScreensDubai" element={
+           <LayoutWrapper currentPageName="MonetizeYourScreensDubai">
+             <MobileRouteTransition>
+               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+                 <MonetizeYourScreensDubai />
                </Suspense>
              </MobileRouteTransition>
            </LayoutWrapper>

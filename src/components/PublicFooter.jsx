@@ -43,6 +43,11 @@ export default function PublicFooter() {
               <Link to={createPageUrl("HelpCenter")} className="block text-slate-400 hover:text-white">Help Center</Link>
               <Link to={createPageUrl("DOOHAdvertisingDubai")} className="block text-slate-400 hover:text-white">DOOH Advertising Dubai</Link>
               <Link to={createPageUrl("DigitalSignageUAE")} className="block text-slate-400 hover:text-white">Digital Signage UAE</Link>
+              <Link to={createPageUrl("CafeScreenAdvertisingDubai")} className="block text-slate-400 hover:text-white">Café Screen Advertising</Link>
+              <Link to={createPageUrl("GymScreenAdvertisingDubai")} className="block text-slate-400 hover:text-white">Gym Screen Advertising</Link>
+              <Link to={createPageUrl("CoworkingSpaceAdvertisingDubai")} className="block text-slate-400 hover:text-white">Co-Working Space Ads</Link>
+              <Link to={createPageUrl("ClinicScreenAdvertisingDubai")} className="block text-slate-400 hover:text-white">Clinic Screen Advertising</Link>
+              <Link to={createPageUrl("MonetizeYourScreensDubai")} className="block text-slate-400 hover:text-white">Monetize Your Screens</Link>
             </div>
           </div>
           <div>

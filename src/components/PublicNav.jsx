@@ -4,6 +4,7 @@ import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { MonitorPlay, ArrowRight, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import NavSolutionsDropdown from "@/components/marketing/NavSolutionsDropdown";
 
 export default function PublicNav() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -62,6 +63,7 @@ export default function PublicNav() {
 
         {/* Desktop Nav */}
         <div className="hidden lg:flex items-center gap-6">
+          <NavSolutionsDropdown />
           {navLinks.map((link) => (
             <Link 
               key={link.name} 

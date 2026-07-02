@@ -11,9 +11,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
 import SEOHead from "@/components/SEOHead";
+import FAQSection, { buildFAQSchema } from "@/components/marketing/FAQSection";
 
 export default function DOOHAdvertisingDubai() {
-  const structuredData = {
+  const serviceSchema = {
     "@context": "https://schema.org",
     "@type": "Service",
     "name": "DOOH Advertising Dubai",
@@ -25,6 +26,31 @@ export default function DOOHAdvertisingDubai() {
     "areaServed": "Dubai, UAE",
     "description": "Digital Out-of-Home advertising platform in Dubai with 500+ screens across premium venues."
   };
+
+  const faqs = [
+    {
+      question: "How much does DOOH advertising cost in Dubai?",
+      answer: "DOOH advertising on Beyond Walls starts from AED 99 per week per screen. There are no minimum spends, no long-term contracts, and no setup fees — you only pay for the screens and weeks you book."
+    },
+    {
+      question: "How quickly can my DOOH campaign go live?",
+      answer: "Once you upload your creative and complete checkout, your ad typically goes live within 30 minutes. There is no need for production crews or physical installation — everything is managed through our self-serve platform."
+    },
+    {
+      question: "What audience does DOOH advertising reach in Dubai?",
+      answer: "Beyond Walls screens reach a combined daily audience of 9,000+ across Dubai's premium venues, including cafés, gyms, malls, clinics, and co-working spaces. You can target by venue type, location, and audience demographics."
+    },
+    {
+      question: "How do I book a DOOH campaign?",
+      answer: "Create a free Beyond Walls account, browse available screens, select your preferred locations and dates, upload your image or video creative, and check out. The entire process takes under five minutes and your ad goes live within 30 minutes."
+    },
+    {
+      question: "Can I track my campaign performance in real time?",
+      answer: "Yes. Beyond Walls provides a real-time analytics dashboard that tracks impressions, plays, and performance metrics for every screen in your campaign. You can monitor results and adjust your strategy as your campaign runs."
+    }
+  ];
+
+  const structuredData = [serviceSchema, buildFAQSchema(faqs)];
 
   const benefits = [
     { icon: Target, title: "Targeted Reach", desc: "Reach your audience in premium Dubai venues" },
@@ -159,6 +185,8 @@ export default function DOOHAdvertisingDubai() {
           </div>
         </div>
       </section>
+
+      <FAQSection faqs={faqs} subtitle="Everything you need to know about DOOH advertising in Dubai" />
 
       {/* CTA */}
       <section className="py-20 px-6 bg-gradient-to-r from-violet-600 to-indigo-600">
