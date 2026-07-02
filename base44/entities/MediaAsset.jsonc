@@ -10,6 +10,11 @@
       "type": "string",
       "description": "Asset name/label"
     },
+    "description": {
+      "type": "string",
+      "description": "Optional asset description (up to 1000 characters)",
+      "maxLength": 1000
+    },
     "file_url": {
       "type": "string",
       "description": "URL of uploaded file"

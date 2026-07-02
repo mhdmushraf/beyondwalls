@@ -27,6 +27,11 @@
     "message": {
       "type": "string"
     },
+    "description": {
+      "type": "string",
+      "description": "Optional notification description (up to 1000 characters)",
+      "maxLength": 1000
+    },
     "is_read": {
       "type": "boolean",
       "default": false

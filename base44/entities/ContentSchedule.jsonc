@@ -31,6 +31,11 @@
       "type": "string",
       "description": "Schedule label"
     },
+    "description": {
+      "type": "string",
+      "description": "Optional schedule description (up to 1000 characters)",
+      "maxLength": 1000
+    },
     "days_of_week": {
       "type": "array",
       "items": {

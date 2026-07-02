@@ -14,6 +14,11 @@
       "type": "string",
       "description": "Screen name/identifier"
     },
+    "description": {
+      "type": "string",
+      "description": "Optional description of the screen (up to 1000 characters)",
+      "maxLength": 1000
+    },
     "setup_code": {
       "type": "string",
       "description": "Unique setup code for player (BW- prefix)"

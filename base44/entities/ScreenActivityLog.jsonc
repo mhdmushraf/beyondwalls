@@ -19,6 +19,11 @@
       ],
       "description": "Type of player event"
     },
+    "description": {
+      "type": "string",
+      "description": "Optional activity log description (up to 1000 characters)",
+      "maxLength": 1000
+    },
     "timestamp": {
       "type": "string",
       "description": "ISO timestamp of the event"
