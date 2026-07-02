@@ -41,10 +41,10 @@ export default function DOOHAdvertisingDubai() {
   return (
     <div className="min-h-screen bg-white">
       <SEOHead 
-        title="DOOH Advertising Dubai | Digital Out-of-Home Ads | BeyondWalls"
-        description="Book DOOH advertising in Dubai on 500+ digital screens. Self-serve platform, real-time analytics, instant activation. Start from AED 99/week. #1 DOOH platform in UAE."
+        title="DOOH Advertising in Dubai | Digital Out-of-Home Ads | Beyond Walls"
+        description="Run DOOH campaigns on premium digital screens across Dubai. Compare venues, book instantly, and track live performance with Beyond Walls."
         keywords="DOOH advertising Dubai, digital out of home Dubai, DOOH screens Dubai, digital billboard Dubai, OOH advertising UAE, programmatic DOOH Dubai"
-        canonical="https://www.beyondwalls.ae/dooh-advertising-dubai"
+        canonical="https://www.beyondwalls.ae/DOOHAdvertisingDubai"
         structuredData={structuredData}
       />
       <PublicNav />

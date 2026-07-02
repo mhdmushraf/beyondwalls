@@ -33,6 +33,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+const NOINDEX_PAGES = new Set([
+  "Dashboard", "AdminDashboard", "AdminCampaigns", "AdminScreens", "AdminVenues",
+  "AdminUserApprovals", "AdminWalletRequests", "MyCampaigns", "MyScreens", "MyVenues",
+  "MyContentLibrary", "CreateCampaign", "EditScreen", "EditVenue", "AddScreen", "AddVenue",
+  "ScheduleContent", "ManageScreenContent", "Wallet", "Settings", "CompleteProfile",
+  "PendingApproval", "VenueOwnerDashboard", "VenueEarnings", "ARDashboard", "ScreenMonitor",
+  "LiveScreenMonitorPage", "ScreenPlayer"
+]);
+
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -114,7 +123,20 @@ const publicPages = [
       window.scrollTo(0, 0);
     }
   }, [currentPageName]);
-  
+
+  // SEO: Block private/authenticated pages from search indexing
+  useEffect(() => {
+    if (NOINDEX_PAGES.has(currentPageName)) {
+      let tag = document.querySelector('meta[name="robots"]');
+      if (!tag) {
+        tag = document.createElement("meta");
+        tag.setAttribute("name", "robots");
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute("content", "noindex, nofollow");
+    }
+  }, [currentPageName]);
+
   if (publicPages.includes(currentPageName)) {
     return <>{children}</>;
   }

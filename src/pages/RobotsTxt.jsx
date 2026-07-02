@@ -7,100 +7,57 @@ export default function RobotsTxt() {
 # Generated: ${new Date().toISOString()}
 
 User-agent: *
-Allow: /
+
+# Private/authenticated pages — blocked from indexing
 Disallow: /Dashboard
 Disallow: /AdminDashboard
+Disallow: /AdminCampaigns
+Disallow: /AdminScreens
+Disallow: /AdminVenues
+Disallow: /AdminUserApprovals
+Disallow: /AdminWalletRequests
+Disallow: /MyCampaigns
+Disallow: /MyScreens
+Disallow: /MyVenues
+Disallow: /MyContentLibrary
+Disallow: /CreateCampaign
+Disallow: /EditScreen
+Disallow: /EditVenue
+Disallow: /AddScreen
+Disallow: /AddVenue
+Disallow: /ScheduleContent
+Disallow: /ManageScreenContent
 Disallow: /Wallet
 Disallow: /Settings
-Disallow: /MyVenues
-Disallow: /MyScreens
-Disallow: /MyBookings
-Disallow: /AddVenue
-Disallow: /AddScreen
-Disallow: /BookSlot
-Disallow: /Admin*
-Disallow: /Campaign*
-Disallow: /Venue*
-Disallow: /Screen*
-Disallow: /Booking*
-Disallow: /AR*
-Disallow: /Auto*
-Disallow: /Favorite*
-Disallow: /Notification*
-Disallow: /Complete*
-Disallow: /Pending*
-Disallow: /Advertiser*
-Disallow: /Analytics*
-Disallow: /Local*
-Disallow: /Manage*
-Disallow: /Programmatic*
-Disallow: /AI*
+Disallow: /CompleteProfile
+Disallow: /PendingApproval
+Disallow: /VenueOwnerDashboard
+Disallow: /VenueEarnings
+Disallow: /ARDashboard
+Disallow: /ScreenMonitor
+Disallow: /LiveScreenMonitorPage
+Disallow: /ScreenPlayer
 
-# Allow important public pages
+# Public marketing pages — allowed for indexing
 Allow: /Home
 Allow: /About
 Allow: /Services
 Allow: /Contact
 Allow: /Blog
-Allow: /ScreenLocations
+Allow: /BlogPost
 Allow: /HowItWorks
-Allow: /Register
-Allow: /Terms
-Allow: /Privacy
-Allow: /HelpCenter
 Allow: /Connect
-Allow: /ARPremium
-Allow: /Sitemap
-Allow: /DOOH*
-Allow: /Digital*
-Allow: /AdPlatform*
-Allow: /Venue*UAE
-Allow: /BeyondWalls*
-Allow: /Cafe*
-Allow: /Gym*
-Allow: /Mall*
-Allow: /Hotel*
-Allow: /Coworking*
+Allow: /HelpCenter
+Allow: /Privacy
+Allow: /Terms
+Allow: /ScreenLocations
+Allow: /Register
+Allow: /DOOHAdvertisingDubai
+Allow: /DigitalSignageUAE
+Allow: /HotelAdvertisingDubai
 
-# Sitemaps
-Sitemap: https://www.beyondwalls.ae/sitemap.xml
-
-# Crawl-delay for bots
-Crawl-delay: 1
-
-# Specific bot rules
-User-agent: Googlebot
-Allow: /
-Crawl-delay: 0
-
-User-agent: Googlebot-Image
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 1
-
-User-agent: Slurp
-Crawl-delay: 1
-
-User-agent: DuckDuckBot
-Allow: /
-Crawl-delay: 1
-
-User-agent: Baiduspider
-Crawl-delay: 5
-
-User-agent: YandexBot
-Crawl-delay: 1
-
-# Block bad bots
-User-agent: AhrefsBot
-Crawl-delay: 10
-
-User-agent: SemrushBot
-Crawl-delay: 10
+Sitemap: https://beyondwalls.ae/sitemap.xml
 `;
-
     // Create downloadable robots.txt file
     const blob = new Blob([robotsTxt], { type: 'text/plain' });
     const url = window.URL.createObjectURL(blob);

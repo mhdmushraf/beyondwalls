@@ -45,10 +45,10 @@ export default function DigitalSignageUAE() {
   return (
     <div className="min-h-screen bg-white">
       <SEOHead 
-        title="Digital Signage UAE | Screen Advertising Network | BeyondWalls"
-        description="UAE's largest digital signage advertising network. 500+ screens across Dubai, Abu Dhabi, Sharjah. Book ad space on digital displays in cafés, malls, gyms. Self-serve platform."
+        title="Digital Signage Advertising UAE | Screen Network | Beyond Walls"
+        description="Advertise on a UAE-wide digital signage network. Reach audiences in malls, hotels and high-traffic venues with Beyond Walls."
         keywords="digital signage UAE, digital displays UAE, screen advertising UAE, digital signage Dubai, digital signage Abu Dhabi, LED advertising UAE"
-        canonical="https://www.beyondwalls.ae/digital-signage-uae"
+        canonical="https://www.beyondwalls.ae/DigitalSignageUAE"
         structuredData={structuredData}
       />
       <PublicNav />
