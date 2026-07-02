@@ -1,0 +1,132 @@
+{
+  "name": "Venue",
+  "type": "object",
+  "properties": {
+    "owner_email": {
+      "type": "string",
+      "description": "Email of venue owner"
+    },
+    "name": {
+      "type": "string",
+      "description": "Venue name"
+    },
+    "venue_type": {
+      "type": "string",
+      "enum": [
+        "restaurant",
+        "cafe",
+        "gym",
+        "mall",
+        "coworking",
+        "hotel",
+        "clinic",
+        "salon",
+        "retail",
+        "other"
+      ],
+      "description": "Type of venue"
+    },
+    "address": {
+      "type": "string",
+      "description": "Full address"
+    },
+    "city": {
+      "type": "string",
+      "description": "City"
+    },
+    "country": {
+      "type": "string",
+      "default": "UAE"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "longitude": {
+      "type": "number"
+    },
+    "description": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "photo_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Up to 3 venue photos"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "pending"
+      ],
+      "default": "pending"
+    },
+    "approval_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "daily_footfall": {
+      "type": "number",
+      "description": "Estimated daily visitors"
+    },
+    "weekly_footfall": {
+      "type": "number",
+      "description": "Estimated weekly visitors"
+    },
+    "peak_hours": {
+      "type": "string",
+      "description": "Peak visitor hours"
+    },
+    "avg_dwell_time_minutes": {
+      "type": "number",
+      "description": "Average time visitors spend in venue (minutes)"
+    },
+    "audience_age_group": {
+      "type": "string",
+      "enum": [
+        "under_18",
+        "18_25",
+        "25_35",
+        "35_50",
+        "50_plus",
+        "mixed"
+      ]
+    },
+    "audience_gender": {
+      "type": "string",
+      "enum": [
+        "male_dominant",
+        "female_dominant",
+        "mixed"
+      ]
+    },
+    "opening_time": {
+      "type": "string"
+    },
+    "closing_time": {
+      "type": "string"
+    },
+    "contact_phone": {
+      "type": "string"
+    },
+    "contact_email": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "venue_type",
+    "address",
+    "city"
+  ]
+}

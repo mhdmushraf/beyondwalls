@@ -1,0 +1,114 @@
+{
+  "name": "Campaign",
+  "type": "object",
+  "properties": {
+    "advertiser_email": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "goal": {
+      "type": "string",
+      "enum": [
+        "brand_awareness",
+        "drive_traffic",
+        "promote_event",
+        "product_launch",
+        "other"
+      ],
+      "default": "brand_awareness"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "pending_approval",
+        "approved",
+        "active",
+        "paused",
+        "completed",
+        "rejected"
+      ],
+      "default": "draft"
+    },
+    "total_budget": {
+      "type": "number",
+      "description": "Total campaign budget in AED"
+    },
+    "spent_budget": {
+      "type": "number",
+      "default": 0
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "selected_screens": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of screen IDs"
+    },
+    "creative_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Uploaded creative file URLs"
+    },
+    "creative_type": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "default": "image"
+    },
+    "approval_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "rejection_reason": {
+      "type": "string"
+    },
+    "total_impressions": {
+      "type": "number",
+      "default": 0
+    },
+    "total_plays": {
+      "type": "number",
+      "default": 0
+    },
+    "target_venue_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "target_cities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "admin_notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "goal",
+    "total_budget"
+  ]
+}

@@ -14,6 +14,14 @@ export default function DocumentPreview({ url, title = "Document" }) {
   const [loading, setLoading] = useState(true);
   const [pdfError, setPdfError] = useState(false);
 
+  // Reset states when dialog opens
+  useEffect(() => {
+    if (showPreview) {
+      setLoading(true);
+      setPdfError(false);
+    }
+  }, [showPreview]);
+
   if (!url) return null;
 
   // Better detection for file types
@@ -28,14 +36,6 @@ export default function DocumentPreview({ url, title = "Document" }) {
 
   const handleZoomIn = () => setZoom(prev => Math.min(prev + 25, 200));
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 25, 50));
-
-  // Reset states when dialog opens
-  useEffect(() => {
-    if (showPreview) {
-      setLoading(true);
-      setPdfError(false);
-    }
-  }, [showPreview]);
 
   // Google Docs Viewer for PDFs (works better with cross-origin PDFs)
   const googleDocsViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;

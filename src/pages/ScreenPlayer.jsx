@@ -93,16 +93,18 @@ export default function ScreenPlayer() {
   };
 
   const markScreenOnline = async (foundScreen) => {
-    await base44.entities.Screen.update(foundScreen.id, {
-      status: "active",
-      is_online: true,
-      player_active: true,
-      current_ad_index: 0,
-      last_heartbeat: new Date().toISOString(),
-      current_session_id: sessionId,
-      session_started_at: new Date().toISOString(),
-      uptime_seconds: 0,
-      player_version: PLAYER_VERSION
+    await base44.functions.invoke('screenHeartbeat', {
+      screen_id: foundScreen.id,
+      auth_token: foundScreen.device_token || foundScreen.setup_code,
+      stats: {
+        status: "active",
+        player_active: true,
+        current_ad_index: 0,
+        current_session_id: sessionId,
+        session_started_at: new Date().toISOString(),
+        uptime_seconds: 0,
+        player_version: PLAYER_VERSION
+      }
     });
     await logActivity(foundScreen.id, "online", sessionId, PLAYER_VERSION);
   };
@@ -313,19 +315,20 @@ export default function ScreenPlayer() {
 
     const sendHeartbeat = async () => {
       try {
-        await base44.entities.Screen.update(screen.id, {
-          last_heartbeat: new Date().toISOString(),
-          status: "active",
-          is_online: true,
-          player_active: !isPausedRef.current && !isStopped,
-          current_ad_index: currentAdIndexRef.current,
-          current_playlist_length: allAdsLengthRef.current,
-          total_playtime: totalPlaytimeRef.current,
-          ads_played_count: adsPlayedRef.current,
-          current_session_id: sessionId,
-          uptime_seconds: uptimeSecondsRef.current,
-          current_content_name: currentAdNameRef.current || null,
-          player_version: PLAYER_VERSION
+        await base44.functions.invoke('screenHeartbeat', {
+          screen_id: screen.id,
+          auth_token: screen.device_token || screen.setup_code,
+          stats: {
+            player_active: !isPausedRef.current && !isStopped,
+            current_ad_index: currentAdIndexRef.current,
+            current_playlist_length: allAdsLengthRef.current,
+            total_playtime: totalPlaytimeRef.current,
+            ads_played_count: adsPlayedRef.current,
+            current_session_id: sessionId,
+            uptime_seconds: uptimeSecondsRef.current,
+            current_content_name: currentAdNameRef.current || null,
+            player_version: PLAYER_VERSION
+          }
         });
         setConnectionStatus("connected");
         setLastHeartbeat(new Date());

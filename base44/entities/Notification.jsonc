@@ -1,0 +1,48 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "recipient_email": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "account_approved",
+        "account_rejected",
+        "campaign_approved",
+        "campaign_rejected",
+        "screen_approved",
+        "screen_offline",
+        "screen_recovered",
+        "payout_processed",
+        "new_booking",
+        "wallet_low",
+        "system"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false
+    },
+    "link": {
+      "type": "string",
+      "description": "Optional deep link"
+    },
+    "reference_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "recipient_email",
+    "type",
+    "title",
+    "message"
+  ]
+}

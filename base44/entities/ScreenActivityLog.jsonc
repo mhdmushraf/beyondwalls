@@ -1,0 +1,39 @@
+{
+  "name": "ScreenActivityLog",
+  "type": "object",
+  "properties": {
+    "screen_id": {
+      "type": "string",
+      "description": "ID of the screen"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "online",
+        "offline",
+        "paused",
+        "resumed",
+        "stopped",
+        "restarted",
+        "heartbeat"
+      ],
+      "description": "Type of player event"
+    },
+    "timestamp": {
+      "type": "string",
+      "description": "ISO timestamp of the event"
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Player session ID"
+    },
+    "player_version": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "screen_id",
+    "event_type",
+    "timestamp"
+  ]
+}

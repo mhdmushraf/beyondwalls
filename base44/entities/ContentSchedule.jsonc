@@ -1,0 +1,67 @@
+{
+  "name": "ContentSchedule",
+  "type": "object",
+  "properties": {
+    "owner_email": {
+      "type": "string"
+    },
+    "screen_id": {
+      "type": "string"
+    },
+    "slot_index": {
+      "type": "number",
+      "description": "owner_slot index (1-6)"
+    },
+    "media_asset_id": {
+      "type": "string",
+      "description": "MediaAsset ID to play"
+    },
+    "media_url": {
+      "type": "string"
+    },
+    "media_type": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "default": "image"
+    },
+    "name": {
+      "type": "string",
+      "description": "Schedule label"
+    },
+    "days_of_week": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "description": "0=Sun,6=Sat. Empty means every day."
+    },
+    "start_time": {
+      "type": "string",
+      "description": "HH:MM start time"
+    },
+    "end_time": {
+      "type": "string",
+      "description": "HH:MM end time"
+    },
+    "timezone": {
+      "type": "string",
+      "default": "Asia/Dubai",
+      "description": "IANA timezone, e.g. Asia/Dubai"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "owner_email",
+    "screen_id",
+    "slot_index",
+    "media_url",
+    "start_time",
+    "end_time"
+  ]
+}

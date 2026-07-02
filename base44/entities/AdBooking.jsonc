@@ -1,0 +1,66 @@
+{
+  "name": "AdBooking",
+  "type": "object",
+  "properties": {
+    "campaign_id": {
+      "type": "string"
+    },
+    "screen_id": {
+      "type": "string"
+    },
+    "advertiser_email": {
+      "type": "string"
+    },
+    "venue_owner_email": {
+      "type": "string"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "slots_booked": {
+      "type": "number",
+      "default": 1
+    },
+    "price_per_week": {
+      "type": "number"
+    },
+    "total_amount": {
+      "type": "number"
+    },
+    "platform_fee": {
+      "type": "number",
+      "description": "30% platform commission"
+    },
+    "venue_earnings": {
+      "type": "number",
+      "description": "70% to venue owner"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "completed",
+        "cancelled"
+      ],
+      "default": "active"
+    },
+    "impressions": {
+      "type": "number",
+      "default": 0
+    },
+    "plays": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "campaign_id",
+    "screen_id"
+  ]
+}

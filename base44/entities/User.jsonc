@@ -1,0 +1,164 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "account_type": {
+      "type": "string",
+      "enum": [
+        "individual",
+        "company"
+      ],
+      "description": "Type of account"
+    },
+    "company_name": {
+      "type": "string",
+      "description": "Company name if account type is company"
+    },
+    "user_role": {
+      "type": "string",
+      "enum": [
+        "advertiser",
+        "venue_owner",
+        "admin",
+        "municipal_inspector"
+      ],
+      "default": "advertiser",
+      "description": "User role in the platform"
+    },
+    "is_venue_owner": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether user is also a venue owner"
+    },
+    "profile_complete": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether user completed profile setup"
+    },
+    "approval_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending",
+      "description": "Account approval status"
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "verified",
+        "rejected"
+      ],
+      "default": "pending",
+      "description": "Verification status"
+    },
+    "wallet_balance": {
+      "type": "number",
+      "default": 0,
+      "description": "Current wallet balance in AED"
+    },
+    "total_spent": {
+      "type": "number",
+      "default": 0,
+      "description": "Total amount spent"
+    },
+    "total_earned": {
+      "type": "number",
+      "default": 0,
+      "description": "Total amount earned"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Phone number"
+    },
+    "country": {
+      "type": "string",
+      "description": "Country of residence"
+    },
+    "city": {
+      "type": "string",
+      "description": "City"
+    },
+    "address": {
+      "type": "string",
+      "description": "Full address"
+    },
+    "trade_license_url": {
+      "type": "string",
+      "description": "Trade license document URL"
+    },
+    "emirates_id_url": {
+      "type": "string",
+      "description": "Emirates ID document URL"
+    },
+    "profile_image": {
+      "type": "string",
+      "description": "Profile image URL"
+    },
+    "avatar_url": {
+      "type": "string",
+      "description": "Avatar URL"
+    },
+    "rejection_reason": {
+      "type": "string",
+      "description": "Reason for account rejection"
+    },
+    "admin_permissions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Admin permissions array"
+    },
+    "bank_name": {
+      "type": "string",
+      "description": "Bank name for payouts"
+    },
+    "account_holder_name": {
+      "type": "string",
+      "description": "Bank account holder name"
+    },
+    "iban": {
+      "type": "string",
+      "description": "IBAN for payouts"
+    },
+    "swift_code": {
+      "type": "string",
+      "description": "SWIFT/BIC code"
+    },
+    "municipal_inspector_zone": {
+      "type": "string",
+      "description": "Assigned Dubai zone for municipal inspectors"
+    },
+    "municipal_inspector_permissions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Municipal inspector specific permissions"
+    }
+  },
+  "required": [
+    "account_type",
+    "company_name",
+    "phone",
+    "country",
+    "city",
+    "address",
+    "trade_license_url",
+    "emirates_id_url",
+    "profile_image",
+    "avatar_url",
+    "rejection_reason",
+    "bank_name",
+    "account_holder_name",
+    "iban",
+    "swift_code",
+    "municipal_inspector_zone"
+  ]
+}

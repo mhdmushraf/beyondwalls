@@ -1,55 +1,54 @@
 import React, { useEffect } from "react";
 
+const baseUrl = "https://www.beyondwalls.ae";
+const today = new Date().toISOString().split('T')[0];
+
+const pages = [
+  { loc: `${baseUrl}/`, priority: "1.0", changefreq: "daily", lastmod: today },
+  { loc: `${baseUrl}/About`, priority: "0.8", changefreq: "monthly", lastmod: today },
+  { loc: `${baseUrl}/Services`, priority: "0.9", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/Contact`, priority: "0.7", changefreq: "monthly", lastmod: today },
+  { loc: `${baseUrl}/Blog`, priority: "0.8", changefreq: "daily", lastmod: today },
+  { loc: `${baseUrl}/ScreenLocations`, priority: "0.9", changefreq: "daily", lastmod: today },
+  { loc: `${baseUrl}/HowItWorks`, priority: "0.8", changefreq: "monthly", lastmod: today },
+  { loc: `${baseUrl}/Register`, priority: "0.9", changefreq: "monthly", lastmod: today },
+  { loc: `${baseUrl}/Terms`, priority: "0.3", changefreq: "yearly", lastmod: today },
+  { loc: `${baseUrl}/Privacy`, priority: "0.3", changefreq: "yearly", lastmod: today },
+  { loc: `${baseUrl}/HelpCenter`, priority: "0.6", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/ARPremium`, priority: "0.7", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/Connect`, priority: "0.6", changefreq: "monthly", lastmod: today },
+
+  // SEO Landing Pages
+  { loc: `${baseUrl}/DOOHAdvertisingDubai`, priority: "0.9", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/DigitalSignageUAE`, priority: "0.9", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/AdPlatformDubai`, priority: "0.8", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/VenueAdvertisingUAE`, priority: "0.8", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/BeyondWallsUAEvsUSA`, priority: "0.7", changefreq: "monthly", lastmod: today },
+  { loc: `${baseUrl}/DOOHDubaiMarina`, priority: "0.8", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/DOOHDowntownDubai`, priority: "0.8", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/DOOHDIFC`, priority: "0.8", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/DOOHAbuDhabi`, priority: "0.8", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/DOOHSharjah`, priority: "0.8", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/DOOHJBRDubai`, priority: "0.8", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/DOOHBusinessBay`, priority: "0.8", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/DOOHDubaiMall`, priority: "0.8", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/CafeAdvertisingDubai`, priority: "0.8", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/GymAdvertisingDubai`, priority: "0.8", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/MallAdvertisingUAE`, priority: "0.8", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/HotelAdvertisingDubai`, priority: "0.8", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/CoworkingAdvertisingDubai`, priority: "0.8", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/DigitalBillboardDubai`, priority: "0.8", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/ScreenAdvertisingUAE`, priority: "0.8", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/DOOHDubaiShoppingFestival`, priority: "0.7", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/DOOHUAENationalDay`, priority: "0.7", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/DOOHRamadanAdvertising`, priority: "0.7", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/DOOHDubaiSummerSurprises`, priority: "0.7", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/DOOHExpoCity`, priority: "0.7", changefreq: "weekly", lastmod: today },
+  { loc: `${baseUrl}/DOOHEidAdvertising`, priority: "0.7", changefreq: "weekly", lastmod: today }
+];
+
 export default function SitemapXML() {
   useEffect(() => {
-    // Generate XML sitemap dynamically
-    const baseUrl = "https://www.beyondwalls.ae";
-    const today = new Date().toISOString().split('T')[0];
-    
-    const pages = [
-      { loc: `${baseUrl}/`, priority: "1.0", changefreq: "daily", lastmod: today },
-      { loc: `${baseUrl}/About`, priority: "0.8", changefreq: "monthly", lastmod: today },
-      { loc: `${baseUrl}/Services`, priority: "0.9", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/Contact`, priority: "0.7", changefreq: "monthly", lastmod: today },
-      { loc: `${baseUrl}/Blog`, priority: "0.8", changefreq: "daily", lastmod: today },
-      { loc: `${baseUrl}/ScreenLocations`, priority: "0.9", changefreq: "daily", lastmod: today },
-      { loc: `${baseUrl}/HowItWorks`, priority: "0.8", changefreq: "monthly", lastmod: today },
-      { loc: `${baseUrl}/Register`, priority: "0.9", changefreq: "monthly", lastmod: today },
-      { loc: `${baseUrl}/Terms`, priority: "0.3", changefreq: "yearly", lastmod: today },
-      { loc: `${baseUrl}/Privacy`, priority: "0.3", changefreq: "yearly", lastmod: today },
-      { loc: `${baseUrl}/HelpCenter`, priority: "0.6", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/ARPremium`, priority: "0.7", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/Connect`, priority: "0.6", changefreq: "monthly", lastmod: today },
-      
-      // SEO Landing Pages
-      { loc: `${baseUrl}/DOOHAdvertisingDubai`, priority: "0.9", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/DigitalSignageUAE`, priority: "0.9", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/AdPlatformDubai`, priority: "0.8", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/VenueAdvertisingUAE`, priority: "0.8", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/BeyondWallsUAEvsUSA`, priority: "0.7", changefreq: "monthly", lastmod: today },
-      { loc: `${baseUrl}/DOOHDubaiMarina`, priority: "0.8", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/DOOHDowntownDubai`, priority: "0.8", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/DOOHDIFC`, priority: "0.8", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/DOOHAbuDhabi`, priority: "0.8", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/DOOHSharjah`, priority: "0.8", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/DOOHJBRDubai`, priority: "0.8", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/DOOHBusinessBay`, priority: "0.8", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/DOOHDubaiMall`, priority: "0.8", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/CafeAdvertisingDubai`, priority: "0.8", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/GymAdvertisingDubai`, priority: "0.8", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/MallAdvertisingUAE`, priority: "0.8", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/HotelAdvertisingDubai`, priority: "0.8", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/CoworkingAdvertisingDubai`, priority: "0.8", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/DigitalBillboardDubai`, priority: "0.8", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/ScreenAdvertisingUAE`, priority: "0.8", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/DOOHDubaiShoppingFestival`, priority: "0.7", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/DOOHUAENationalDay`, priority: "0.7", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/DOOHRamadanAdvertising`, priority: "0.7", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/DOOHDubaiSummerSurprises`, priority: "0.7", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/DOOHExpoCity`, priority: "0.7", changefreq: "weekly", lastmod: today },
-      { loc: `${baseUrl}/DOOHEidAdvertising`, priority: "0.7", changefreq: "weekly", lastmod: today }
-    ];
-
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${pages.map(page => `  <url>
@@ -70,7 +69,6 @@ ${pages.map(page => `  <url>
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
-
   }, []);
 
   return (

@@ -1,0 +1,245 @@
+{
+  "name": "Screen",
+  "type": "object",
+  "properties": {
+    "owner_email": {
+      "type": "string",
+      "description": "Email of venue owner"
+    },
+    "venue_id": {
+      "type": "string",
+      "description": "Associated venue ID"
+    },
+    "name": {
+      "type": "string",
+      "description": "Screen name/identifier"
+    },
+    "setup_code": {
+      "type": "string",
+      "description": "Unique setup code for player (BW- prefix)"
+    },
+    "screen_pin": {
+      "type": "string",
+      "description": "6-digit PIN for secondary authentication"
+    },
+    "device_token": {
+      "type": "string",
+      "description": "Secure token for kiosk autologin"
+    },
+    "screen_image_url": {
+      "type": "string",
+      "description": "Photo of the physical screen"
+    },
+    "default_image_url": {
+      "type": "string",
+      "description": "Default image shown when screen is stopped or has no content"
+    },
+    "width_px": {
+      "type": "number",
+      "description": "Screen width in pixels"
+    },
+    "height_px": {
+      "type": "number",
+      "description": "Screen height in pixels"
+    },
+    "display_mode": {
+      "type": "string",
+      "enum": [
+        "fit",
+        "stretch",
+        "fill"
+      ],
+      "default": "fit"
+    },
+    "total_slots": {
+      "type": "number",
+      "default": 10,
+      "description": "Total ad slots"
+    },
+    "public_ad_slots": {
+      "type": "number",
+      "default": 7,
+      "description": "Slots for public advertisers"
+    },
+    "internal_slots": {
+      "type": "number",
+      "default": 3,
+      "description": "Slots for internal/owner content"
+    },
+    "slot_duration": {
+      "type": "number",
+      "enum": [
+        15,
+        30,
+        45,
+        60
+      ],
+      "default": 30,
+      "description": "Seconds per slot"
+    },
+    "price_per_week": {
+      "type": "number",
+      "description": "Price per slot per week (AED)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "offline",
+        "pending"
+      ],
+      "default": "pending"
+    },
+    "approval_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "is_online": {
+      "type": "boolean",
+      "default": false
+    },
+    "last_heartbeat": {
+      "type": "string",
+      "description": "Last online timestamp"
+    },
+    "current_ad_index": {
+      "type": "number",
+      "default": 0,
+      "description": "Index of ad currently playing on device"
+    },
+    "current_playlist_length": {
+      "type": "number",
+      "default": 0,
+      "description": "Total playlist length currently on device"
+    },
+    "current_content_name": {
+      "type": "string",
+      "description": "Name of currently playing content"
+    },
+    "player_active": {
+      "type": "boolean",
+      "default": false
+    },
+    "player_version": {
+      "type": "string"
+    },
+    "player_command": {
+      "type": "string"
+    },
+    "current_session_id": {
+      "type": "string"
+    },
+    "session_started_at": {
+      "type": "string"
+    },
+    "uptime_seconds": {
+      "type": "number",
+      "default": 0
+    },
+    "ads_played_count": {
+      "type": "number",
+      "default": 0
+    },
+    "total_playtime": {
+      "type": "number",
+      "default": 0
+    },
+    "location_description": {
+      "type": "string",
+      "description": "Where screen is placed in venue"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "rejection_reason": {
+      "type": "string"
+    },
+    "total_impressions": {
+      "type": "number",
+      "default": 0
+    },
+    "total_revenue": {
+      "type": "number",
+      "default": 0
+    },
+    "owner_slot_1_url": {
+      "type": "string"
+    },
+    "owner_slot_1_type": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "default": "image"
+    },
+    "owner_slot_2_url": {
+      "type": "string"
+    },
+    "owner_slot_2_type": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "default": "image"
+    },
+    "owner_slot_3_url": {
+      "type": "string"
+    },
+    "owner_slot_3_type": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "default": "image"
+    },
+    "owner_slot_4_url": {
+      "type": "string"
+    },
+    "owner_slot_4_type": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "default": "image"
+    },
+    "owner_slot_5_url": {
+      "type": "string"
+    },
+    "owner_slot_5_type": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "default": "image"
+    },
+    "owner_slot_6_url": {
+      "type": "string"
+    },
+    "owner_slot_6_type": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "default": "image"
+    }
+  },
+  "required": [
+    "name",
+    "venue_id"
+  ]
+}

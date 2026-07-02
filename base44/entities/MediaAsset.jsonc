@@ -1,0 +1,48 @@
+{
+  "name": "MediaAsset",
+  "type": "object",
+  "properties": {
+    "owner_email": {
+      "type": "string",
+      "description": "Email of venue owner"
+    },
+    "name": {
+      "type": "string",
+      "description": "Asset name/label"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "URL of uploaded file"
+    },
+    "file_type": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "default": "image"
+    },
+    "file_size_kb": {
+      "type": "number"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "used_on_screens": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Screen IDs using this asset"
+    }
+  },
+  "required": [
+    "owner_email",
+    "name",
+    "file_url",
+    "file_type"
+  ]
+}

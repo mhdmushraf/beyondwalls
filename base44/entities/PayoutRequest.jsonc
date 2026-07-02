@@ -1,0 +1,44 @@
+{
+  "name": "PayoutRequest",
+  "type": "object",
+  "properties": {
+    "venue_owner_email": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "bank_name": {
+      "type": "string"
+    },
+    "account_holder_name": {
+      "type": "string"
+    },
+    "iban": {
+      "type": "string"
+    },
+    "swift_code": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "paid",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "admin_notes": {
+      "type": "string"
+    },
+    "processed_date": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "venue_owner_email",
+    "amount"
+  ]
+}

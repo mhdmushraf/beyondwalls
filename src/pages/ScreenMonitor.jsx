@@ -13,16 +13,15 @@ import {
 import { formatDistanceToNow } from "date-fns";
 
 const REFRESH_INTERVAL = 15000; // 15 seconds
-const OFFLINE_THRESHOLD_MINUTES = 5;
+const OFFLINE_THRESHOLD_MINUTES = 10;
 
 function getScreenStatus(screen) {
   if (screen.approval_status !== "approved") return "unregistered";
   if (!screen.last_heartbeat) return "offline";
   const lastSeen = new Date(screen.last_heartbeat);
   const minutesAgo = (Date.now() - lastSeen.getTime()) / 60000;
-  if (minutesAgo > OFFLINE_THRESHOLD_MINUTES) return "offline";
-  if (screen.is_online) return "online";
-  return "idle";
+  if (minutesAgo <= OFFLINE_THRESHOLD_MINUTES) return "online";
+  return "offline";
 }
 
 function StatusBadge({ status }) {
