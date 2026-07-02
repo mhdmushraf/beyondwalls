@@ -13,24 +13,24 @@ import FAQSection, { buildFAQSchema } from "@/components/marketing/FAQSection";
 export default function MonetizeYourScreensDubai() {
   const faqs = [
     {
-      question: "How do venue owners earn from their screens on Beyond Walls?",
-      answer: "List your screens for free on Beyond Walls, and advertisers book ad slots on them through our self-serve platform. You earn 70% of every booking — the highest revenue share in the industry. Earnings are tracked in real time and paid out weekly to your bank account."
+      question: "How much can I earn from my screen?",
+      answer: "Earnings depend on your screen size, venue location, and daily footfall, but venue owners on Beyond Walls typically earn AED 2,000–4,000+ per screen per month. Screens in high-traffic areas like Dubai Marina or Downtown Dubai can earn significantly more. If you have multiple screens, those earnings multiply. All revenue is tracked in real time and paid out weekly to your bank account."
     },
     {
-      question: "Is there any upfront cost to list my screens?",
-      answer: "No. Listing your screens on Beyond Walls is completely free. There are no setup fees, no monthly charges, and no hidden costs. You only earn — we make our revenue from the 30% platform commission on advertiser bookings."
+      question: "Does it cost anything to list?",
+      answer: "No. Listing your screens on Beyond Walls is completely free. There are no setup fees, no monthly charges, and no hidden costs. You only earn — we make our revenue from the 30% platform commission on advertiser bookings. You keep 70% of every booking, the highest revenue share in the UAE DOOH industry."
     },
     {
-      question: "What types of venues can monetize their screens?",
-      answer: "Any venue with a digital screen can participate — cafés, restaurants, gyms, co-working spaces, clinics, salons, hotels, retail stores, and more. If you have a TV or digital display that customers can see, you can earn from it."
+      question: "Do I control what plays?",
+      answer: "Yes. Venue owners have full control over which ad categories are allowed on their screens. You can set category preferences — for example, a family restaurant might exclude alcohol or gambling ads — and you can approve or reject individual campaigns before they go live. Your screens are your space, and nothing plays without your say-so."
     },
     {
-      question: "Do I control what ads appear on my screens?",
-      answer: "Yes. Venue owners have full control over which ad categories are allowed on their screens. You can approve or reject specific ads before they go live, ensuring that only content you're comfortable with appears in your venue."
+      question: "What venues qualify?",
+      answer: "Any venue with a digital screen that customers can see can participate. This includes cafés, restaurants, gyms, co-working spaces, clinics, salons, hotels, and retail stores. If you have a TV or digital display mounted in a customer-visible area, you can earn from it — regardless of venue size or type."
     },
     {
-      question: "How much can I earn from my venue screens?",
-      answer: "Earnings depend on your screen size, location, and footfall, but venue owners typically earn AED 2,000–4,000+ per screen per month. Screens in high-traffic areas like Dubai Marina or Downtown Dubai can earn significantly more."
+      question: "How do I sign up?",
+      answer: "Create a free venue owner account on Beyond Walls in under two minutes, add your screen details (size, location, venue type), set your preferred ad categories, and your screens go live on the marketplace for advertisers to discover. You approve campaigns as they come in, and earnings are paid weekly. Get started at our registration page — it costs nothing to join."
     }
   ];
 
@@ -179,12 +179,19 @@ export default function MonetizeYourScreensDubai() {
             ))}
           </div>
 
-          <h2 className="text-3xl font-bold text-slate-900 mb-6 mt-12">How Much Can You Earn?</h2>
+          <h2 className="text-3xl font-bold text-slate-900 mb-6 mt-12">Realistic Earning Drivers: Footfall, Dwell Time, and Location</h2>
           <p className="text-slate-600 mb-6 leading-relaxed">
-            Earnings depend on three factors: your screen size, your venue's location, and your daily footfall. A
-            55-inch screen in a busy Dubai Marina café will earn more than the same screen in a quieter neighbourhood
-            café — but both will earn. On average, venue owners on Beyond Walls earn between AED 2,000 and AED 4,000
-            per screen per month, with high-traffic venues in prime locations earning significantly more. If you have
+            Three factors drive how much your screens can earn: footfall, dwell time, and location. Footfall is the
+            number of people who walk through your doors each day — a busy mall kiosk sees more viewers than a quiet
+            side-street salon. Dwell time is how long those people stay: a gym member on a 90-minute session sees your
+            screen far more often than a customer grabbing a coffee to go. And location matters because advertisers pay
+            a premium to reach specific Dubai neighbourhoods — a screen in Dubai Marina, DIFC, or Downtown Dubai
+            commands higher rates than one in a less central area.
+          </p>
+          <p className="text-slate-600 mb-6 leading-relaxed">
+            On average, venue owners on Beyond Walls earn between AED 2,000 and AED 4,000 per screen per month, with
+            high-traffic venues in prime locations earning significantly more. A 55-inch screen in a busy Dubai Marina
+            café will earn more than the same screen in a quieter neighbourhood café — but both will earn. If you have
             multiple screens, those earnings multiply.
           </p>
           <p className="text-slate-600 mb-6 leading-relaxed">
@@ -194,7 +201,37 @@ export default function MonetizeYourScreensDubai() {
             accounting.
           </p>
 
-          <h2 className="text-3xl font-bold text-slate-900 mb-6 mt-12">Sign Up in Three Simple Steps</h2>
+          <h2 className="text-3xl font-bold text-slate-900 mb-6 mt-12">What Venue Types Qualify?</h2>
+          <p className="text-slate-600 mb-6 leading-relaxed">
+            If your venue has a digital screen that customers can see, it qualifies. Beyond Walls works with a wide
+            range of venue types across Dubai and the wider UAE:
+          </p>
+          <div className="grid sm:grid-cols-2 gap-4 mb-8 not-prose">
+            {[
+              { name: "Cafés", desc: "Coffee shops with dwell times of 20–45 minutes per visit" },
+              { name: "Gyms & Fitness", desc: "Members who stay for 60–90 minute sessions, multiple times per week" },
+              { name: "Salons", desc: "Clients seated for 30–120 minutes with repeated exposure" },
+              { name: "Clinics", desc: "Waiting areas with captive audiences and extended dwell times" },
+              { name: "Restaurants", desc: "Diners seated for 45–90 minutes in a relaxed environment" },
+              { name: "Co-Working Spaces", desc: "Professionals and freelancers present for full working days" },
+            ].map((v, i) => (
+              <div key={i} className="flex items-start gap-3 p-4 bg-white rounded-xl border border-slate-200">
+                <CheckCircle2 className="w-5 h-5 text-violet-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-semibold text-slate-900 text-sm">{v.name}</h4>
+                  <p className="text-sm text-slate-600">{v.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-slate-600 mb-6 leading-relaxed">
+            Hotels, retail stores, and other customer-facing venues are welcome too. If you're unsure whether your
+            venue qualifies, the simplest test is this: do customers spend time in front of a screen? If yes, you can
+            earn from it. Explore the full <Link to={createPageUrl("DOOHAdvertisingMarketplaceDubai")} className="text-violet-600 hover:underline font-semibold">DOOH advertising marketplace</Link> to see
+            the range of venues already listed.
+          </p>
+
+          <h2 className="text-3xl font-bold text-slate-900 mb-6 mt-12">Step-by-Step: How to List a Screen</h2>
           <div className="space-y-6 mb-8">
             {[
               { step: "1", title: "Create Your Free Account", desc: "Sign up as a venue owner on Beyond Walls — it takes under two minutes and costs nothing." },
