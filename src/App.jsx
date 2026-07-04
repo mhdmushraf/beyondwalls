@@ -33,6 +33,9 @@ import IndoorVenueDOOHvsBillboardsDubai from './pages/IndoorVenueDOOHvsBillboard
 import WhatIsDOOHAdvertisingGuide from './pages/WhatIsDOOHAdvertisingGuide';
 import EarnMoneyVenueScreensDubai from './pages/EarnMoneyVenueScreensDubai';
 import DOOHAdvertisingMarketplaceDubai from './pages/DOOHAdvertisingMarketplaceDubai';
+import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 // Lazy load pages for code splitting
 const LazyPageLoader = ({ Page }) => (
@@ -281,6 +284,9 @@ const AuthenticatedApp = () => {
              </MobileRouteTransition>
            </LayoutWrapper>
          } />
+         <Route path="/login" element={<Login />} />
+         <Route path="/forgot-password" element={<ForgotPassword />} />
+         <Route path="/reset-password" element={<ResetPassword />} />
          <Route path="*" element={<PageNotFound />} />
        </Routes>
      </AnimatePresence>
