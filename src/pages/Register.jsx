@@ -59,9 +59,17 @@ export default function Register() {
       await base44.auth.register({ email, password });
       await base44.auth.loginViaEmailPassword(email, password);
       try {
-        await base44.auth.updateMe({ full_name: fullName, account_type: accountType });
+        await base44.auth.updateMe({ full_name: fullName });
       } catch (e) {
         console.warn("Could not set profile fields:", e);
+      }
+      // Provision org + membership in backend (service role). Non-blocking —
+      // user still lands in Workspace even if this fails.
+      try {
+        await base44.functions.invoke("provisionOrg", { account_type: accountType });
+      } catch (e) {
+        console.warn("Org provisioning failed, will retry in background:", e);
+        sessionStorage.setItem("bw_provision_retry", JSON.stringify({ account_type: accountType, ts: Date.now() }));
       }
       navigate("/Workspace");
     } catch (err) {

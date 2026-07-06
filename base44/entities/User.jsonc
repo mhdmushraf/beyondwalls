@@ -14,6 +14,10 @@
       ],
       "description": "Type of account"
     },
+    "current_org_id": {
+      "type": "string",
+      "description": "ID of the user's current active Organization"
+    },
     "company_name": {
       "type": "string",
       "description": "Company name if account type is company"
