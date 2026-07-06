@@ -73,10 +73,9 @@ Deno.serve(async (req) => {
       });
     }
 
-    // 3. Find all screens owned by the founder
-    const screens = await base44.asServiceRole.entities.Screen.filter({
-      owner_email: FOUNDER_EMAIL,
-    });
+    // 3. Find screens not yet linked to this org (owner_email removed — org_id is authoritative)
+    const allScreens = await base44.asServiceRole.entities.Screen.list('-created_date', 500, 0);
+    const screens = allScreens.filter(s => !s.org_id || s.org_id === org.id);
 
     let screensUpdated = 0;
     let screensAlreadyMigrated = 0;

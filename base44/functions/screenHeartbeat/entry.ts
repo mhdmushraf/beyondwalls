@@ -69,9 +69,6 @@ Deno.serve(async (req) => {
     if (screen.status === 'pending' || screen.status === 'inactive') {
       await base44.asServiceRole.entities.Screen.update(screen_id, {
         status: 'active',
-        is_online: true,
-        last_heartbeat: now,
-        player_active: stats?.player_active ?? true,
       });
     }
 

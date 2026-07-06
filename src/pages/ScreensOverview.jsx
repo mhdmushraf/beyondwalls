@@ -9,14 +9,16 @@ import {
   MonitorPlay, Building2, Activity, Square
 } from "lucide-react";
 
-function isOnline(screen) {
-  return screen.last_heartbeat && (new Date() - new Date(screen.last_heartbeat)) < 60000;
+function isOnline(telemetry) {
+  return telemetry?.is_online && telemetry?.last_heartbeat &&
+    (Date.now() - new Date(telemetry.last_heartbeat).getTime()) < 60000;
 }
 
 export default function ScreensOverview() {
   const navigate = useNavigate();
   const [screens, setScreens] = useState([]);
   const [venues, setVenues] = useState([]);
+  const [telemetryMap, setTelemetryMap] = useState({});
   const [loading, setLoading] = useState(true);
   const [commandLoading, setCommandLoading] = useState(null);
   const pollRef = useRef(null);
@@ -29,12 +31,25 @@ export default function ScreensOverview() {
 
   const loadData = async () => {
     const u = await base44.auth.me();
+    const memberships = await base44.entities.Membership.filter({ user_id: u.id }, null, 1, 0);
+    const orgId = u.current_org_id || memberships[0]?.org_id;
+    if (!orgId) { setLoading(false); return; }
     const [s, v] = await Promise.all([
-      base44.entities.Screen.filter({ owner_email: u.email }, '-created_date', 200, 0),
+      base44.entities.Screen.filter({ org_id: orgId }, '-created_date', 200, 0),
       base44.entities.Venue.filter({ owner_email: u.email }, '-created_date', 100, 0),
     ]);
     setScreens(s);
     setVenues(v);
+    // Fetch telemetry for online status
+    if (s.length > 0) {
+      try {
+        const ids = s.map(sc => sc.id);
+        const telem = await base44.entities.ScreenTelemetry.filter({ screen_id: { $in: ids } });
+        const map = {};
+        telem.forEach(t => { map[t.screen_id] = t; });
+        setTelemetryMap(map);
+      } catch { /* non-fatal */ }
+    }
     setLoading(false);
   };
 
@@ -63,8 +78,8 @@ export default function ScreensOverview() {
   }));
   const unassigned = screens.filter(s => !s.venue_id);
 
-  const onlineCount = screens.filter(isOnline).length;
-  const playingCount = screens.filter(s => s.player_active).length;
+  const onlineCount = screens.filter(s => isOnline(telemetryMap[s.id])).length;
+  const playingCount = screens.filter(s => telemetryMap[s.id]?.player_active).length;
 
   if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin" /></div>;
 
@@ -146,7 +161,8 @@ export default function ScreensOverview() {
               {vs.length === 0 ? (
                 <p className="text-center text-slate-400 text-sm py-4">No screens in this venue</p>
               ) : vs.map(screen => {
-                const online = isOnline(screen);
+                const telem = telemetryMap[screen.id];
+                const online = isOnline(telem);
                 return (
                   <div key={screen.id} className="px-4 py-3 flex items-center gap-3">
                     <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${online ? "bg-emerald-400" : "bg-slate-300"}`} />
@@ -154,11 +170,11 @@ export default function ScreensOverview() {
                       <p className="text-sm font-medium text-slate-800 truncate">{screen.name}</p>
                       <p className="text-xs text-slate-400 truncate">
                         {online
-                          ? screen.player_active
-                            ? <span className="text-emerald-600">▶ Playing: {screen.current_content_name || "content"}</span>
+                          ? telem?.player_active
+                            ? <span className="text-emerald-600">▶ Playing: {telem?.current_content_name || "content"}</span>
                             : <span className="text-amber-500">⏸ Paused</span>
-                          : screen.last_heartbeat
-                            ? `Last seen: ${new Date(screen.last_heartbeat).toLocaleTimeString()}`
+                          : telem?.last_heartbeat
+                            ? `Last seen: ${new Date(telem.last_heartbeat).toLocaleTimeString()}`
                             : "Never connected"}
                       </p>
                     </div>
@@ -188,7 +204,7 @@ export default function ScreensOverview() {
             </div>
             <div className="divide-y divide-slate-100">
               {unassigned.map(screen => {
-                const online = isOnline(screen);
+                const online = isOnline(telemetryMap[screen.id]);
                 return (
                   <div key={screen.id} className="px-4 py-3 flex items-center gap-3">
                     <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${online ? "bg-emerald-400" : "bg-slate-300"}`} />

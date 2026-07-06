@@ -19,7 +19,14 @@ export default function EnterpriseDashboard({ user, org }) {
           base44.entities.Screen.filter({ org_id: org.id }, '-created_date', 100, 0),
           base44.entities.Campaign.filter({ advertiser_email: user.email }, '-created_date', 100, 0),
         ]);
-        const online = screens.filter((s) => s.is_online).length;
+        const screenIds = screens.map(s => s.id);
+        let telem = [];
+        if (screenIds.length > 0) {
+          telem = await base44.entities.ScreenTelemetry.filter({ screen_id: { $in: screenIds } });
+        }
+        const tMap = {};
+        telem.forEach(t => { tMap[t.screen_id] = t; });
+        const online = screens.filter((s) => tMap[s.id]?.is_online).length;
         const revenueKept = screens.reduce((s, sc) => s + (sc.total_revenue || 0), 0);
         const internalCampaigns = campaigns.filter((c) => c.status === 'active').length;
         setKpis({

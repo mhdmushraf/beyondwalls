@@ -140,31 +140,6 @@ export default function ScreenActivityHistory({ screenId, screen }) {
           <div className="text-center py-8 text-slate-500">
             {screen ? (
               <div className="space-y-4">
-                {/* Online Status */}
-                <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium ${
-                  screen.last_heartbeat && (new Date() - new Date(screen.last_heartbeat)) < 60000
-                    ? "bg-emerald-500/20 border-emerald-500/30 text-emerald-400"
-                    : "bg-slate-700 border-slate-600 text-slate-400"
-                }`}>
-                  {screen.last_heartbeat && (new Date() - new Date(screen.last_heartbeat)) < 60000
-                    ? <><Wifi className="w-4 h-4" /> Online</>
-                    : <><WifiOff className="w-4 h-4" /> Offline</>}
-                </div>
-
-                {/* Stats */}
-                <div className="grid grid-cols-2 gap-3 mt-2">
-                  <div className="bg-slate-700/50 rounded-xl p-4 text-center">
-                    <p className="text-lg font-bold text-violet-400">{formatUptime(screen.uptime_seconds)}</p>
-                    <p className="text-xs text-slate-400 mt-1">Total Uptime</p>
-                  </div>
-                  <div className="bg-slate-700/50 rounded-xl p-4 text-center">
-                    <p className="text-lg font-bold text-blue-400">
-                      {screen.last_heartbeat ? new Date(screen.last_heartbeat).toLocaleTimeString("en-AE", { hour: "2-digit", minute: "2-digit" }) : "—"}
-                    </p>
-                    <p className="text-xs text-slate-400 mt-1">Last Seen Online</p>
-                  </div>
-                </div>
-
                 <p className="text-xs text-slate-600 mt-2">No activity log events recorded for this period yet.</p>
               </div>
             ) : (

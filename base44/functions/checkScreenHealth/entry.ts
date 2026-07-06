@@ -83,11 +83,6 @@ Deno.serve(async (req) => {
         is_online: newOnline,
       });
 
-      // Mirror to Screen for transition week
-      await base44.asServiceRole.entities.Screen.update(screen.id, {
-        is_online: newOnline,
-      });
-
       const venueName = venueMap[screen.venue_id]?.name || 'Unknown venue';
       const notificationType = newOnline ? 'screen_recovered' : 'screen_offline';
       const notificationTitle = newOnline

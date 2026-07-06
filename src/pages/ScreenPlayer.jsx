@@ -347,10 +347,8 @@ export default function ScreenPlayer() {
 
     return () => {
       clearInterval(interval);
-      // Mark offline on disconnect
+      // Mark inactive on disconnect (telemetry is handled by ScreenTelemetry)
       base44.entities.Screen.update(screen.id, {
-        player_active: false,
-        is_online: false,
         status: "inactive"
       }).catch(() => {});
       logActivity(screen.id, "offline", sessionId, PLAYER_VERSION).catch(() => {});

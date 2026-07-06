@@ -138,12 +138,6 @@ export default function ScreenStatusControl({
             </div>
           </div>
 
-          {/* Last Heartbeat */}
-          {screen?.last_heartbeat && (
-            <div className="text-xs text-slate-400 text-center">
-              Last heartbeat: {new Date(screen.last_heartbeat).toLocaleString()}
-            </div>
-          )}
         </div>
 
         <DialogFooter>

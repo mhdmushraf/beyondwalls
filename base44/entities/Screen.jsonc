@@ -2,10 +2,6 @@
   "name": "Screen",
   "type": "object",
   "properties": {
-    "owner_email": {
-      "type": "string",
-      "description": "DEPRECATED \u2014 use org_id + Membership for access control. Retained for backward compatibility; removed in Phase 4 cleanup."
-    },
     "org_id": {
       "type": "string",
       "description": "ID of the Organization that owns this screen"
@@ -126,55 +122,8 @@
       ],
       "default": "pending"
     },
-    "is_online": {
-      "type": "boolean",
-      "default": false
-    },
-    "last_heartbeat": {
-      "type": "string",
-      "description": "Last online timestamp"
-    },
-    "current_ad_index": {
-      "type": "number",
-      "default": 0,
-      "description": "Index of ad currently playing on device"
-    },
-    "current_playlist_length": {
-      "type": "number",
-      "default": 0,
-      "description": "Total playlist length currently on device"
-    },
-    "current_content_name": {
-      "type": "string",
-      "description": "Name of currently playing content"
-    },
-    "player_active": {
-      "type": "boolean",
-      "default": false
-    },
-    "player_version": {
-      "type": "string"
-    },
     "player_command": {
       "type": "string"
-    },
-    "current_session_id": {
-      "type": "string"
-    },
-    "session_started_at": {
-      "type": "string"
-    },
-    "uptime_seconds": {
-      "type": "number",
-      "default": 0
-    },
-    "ads_played_count": {
-      "type": "number",
-      "default": 0
-    },
-    "total_playtime": {
-      "type": "number",
-      "default": 0
     },
     "location_description": {
       "type": "string",
