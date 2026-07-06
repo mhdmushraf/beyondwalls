@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Wallet, Clock, MonitorPlay, CalendarCheck } from 'lucide-react';
 import moment from 'moment';
 import KpiCard from './KpiCard';
+import VenueEarnings from './VenueEarnings';
 import { ListSkeleton } from './Skeletons';
 import EmptyState from './EmptyState';
 import { usePaginatedList } from '@/hooks/usePaginatedList';
@@ -103,6 +104,8 @@ export default function VenueDashboard({ user, org }) {
           </div>
         )}
       </div>
+
+      <VenueEarnings user={user} org={org} />
     </div>
   );
 }

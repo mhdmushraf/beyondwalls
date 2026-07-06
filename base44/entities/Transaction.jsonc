@@ -5,11 +5,16 @@
     "user_email": {
       "type": "string"
     },
+    "org_id": {
+      "type": "string",
+      "description": "ID of the Organization this transaction belongs to (for ledger queries)"
+    },
     "type": {
       "type": "string",
       "enum": [
         "topup",
         "campaign_payment",
+        "booking_payment",
         "payout",
         "refund",
         "platform_fee",
