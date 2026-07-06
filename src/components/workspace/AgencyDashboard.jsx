@@ -30,12 +30,12 @@ export default function AgencyDashboard({ user, org }) {
     (async () => {
       try {
         const [campaigns, txns, bookings] = await Promise.all([
-          base44.entities.Campaign.filter({ advertiser_email: user.email }, null, 100, 0),
+          base44.entities.Campaign.filter({ advertiser_email: user.email }, '-created_date', 100, 0),
           base44.entities.Transaction.filter(
             { user_email: user.email, type: 'campaign_payment' },
-            null, 100, 0
+            '-created_date', 100, 0
           ),
-          base44.entities.AdBooking.filter({ advertiser_email: user.email }, null, 100, 0),
+          base44.entities.AdBooking.filter({ advertiser_email: user.email }, '-created_date', 100, 0),
         ]);
         const campaignsLive = campaigns.filter((c) => c.status === 'active').length;
         const managedSpend = txns.reduce((s, t) => s + (t.amount || 0), 0);

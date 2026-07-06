@@ -16,8 +16,8 @@ export default function EnterpriseDashboard({ user, org }) {
     (async () => {
       try {
         const [screens, campaigns] = await Promise.all([
-          base44.entities.Screen.filter({ org_id: org.id }, null, 100, 0),
-          base44.entities.Campaign.filter({ advertiser_email: user.email }, null, 100, 0),
+          base44.entities.Screen.filter({ org_id: org.id }, '-created_date', 100, 0),
+          base44.entities.Campaign.filter({ advertiser_email: user.email }, '-created_date', 100, 0),
         ]);
         const online = screens.filter((s) => s.is_online).length;
         const revenueKept = screens.reduce((s, sc) => s + (sc.total_revenue || 0), 0);

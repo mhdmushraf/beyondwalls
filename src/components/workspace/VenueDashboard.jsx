@@ -25,18 +25,18 @@ export default function VenueDashboard({ user, org }) {
     (async () => {
       try {
         const [screens, txns, payouts, bookings] = await Promise.all([
-          base44.entities.Screen.filter({ org_id: org.id }, null, 100, 0),
+          base44.entities.Screen.filter({ org_id: org.id }, '-created_date', 100, 0),
           base44.entities.Transaction.filter(
             { user_email: user.email, type: 'earnings', created_date: { $gte: monthStart } },
-            null, 100, 0
+            '-created_date', 100, 0
           ),
           base44.entities.PayoutRequest.filter(
             { venue_owner_email: user.email, status: 'pending' },
-            null, 100, 0
+            '-created_date', 100, 0
           ),
           base44.entities.AdBooking.filter(
             { venue_owner_email: user.email, created_date: { $gte: weekStart } },
-            null, 100, 0
+            '-created_date', 100, 0
           ),
         ]);
         const screenIds = screens.map(s => s.id);

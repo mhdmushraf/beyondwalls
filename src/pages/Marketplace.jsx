@@ -27,7 +27,7 @@ export default function Marketplace() {
   // Fetch venues for audience/location data (cached, one-time)
   const { data: venues = [] } = useQuery({
     queryKey: ['marketplace-venues'],
-    queryFn: () => base44.entities.Venue.filter({ status: 'active' }, null, 100, 0),
+    queryFn: () => base44.entities.Venue.filter({ status: 'active' }, '-created_date', 100, 0),
     staleTime: 60000,
   });
 

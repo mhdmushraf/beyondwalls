@@ -30,8 +30,8 @@ export default function ScreensOverview() {
   const loadData = async () => {
     const u = await base44.auth.me();
     const [s, v] = await Promise.all([
-      base44.entities.Screen.filter({ owner_email: u.email }),
-      base44.entities.Venue.filter({ owner_email: u.email }),
+      base44.entities.Screen.filter({ owner_email: u.email }, '-created_date', 200, 0),
+      base44.entities.Venue.filter({ owner_email: u.email }, '-created_date', 100, 0),
     ]);
     setScreens(s);
     setVenues(v);

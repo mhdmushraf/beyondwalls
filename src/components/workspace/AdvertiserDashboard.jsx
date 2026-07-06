@@ -31,10 +31,10 @@ export default function AdvertiserDashboard({ user, org }) {
     (async () => {
       try {
         const [campaigns, txns] = await Promise.all([
-          base44.entities.Campaign.filter({ advertiser_email: user.email }, null, 100, 0),
+          base44.entities.Campaign.filter({ advertiser_email: user.email }, '-created_date', 100, 0),
           base44.entities.Transaction.filter(
             { user_email: user.email, type: 'campaign_payment', created_date: { $gte: monthStart } },
-            null, 100, 0
+            '-created_date', 100, 0
           ),
         ]);
         const activeCount = campaigns.filter((c) => c.status === 'active').length;

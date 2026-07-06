@@ -92,13 +92,13 @@ export default function ScreenLocations() {
   const { data: venues = [], isLoading } = useQuery({
     queryKey: ["public-venues"],
     queryFn: async () => {
-      return await base44.entities.Venue.filter({ approval_status: "approved" });
+      return await base44.entities.Venue.filter({ approval_status: "approved" }, '-created_date', 100, 0);
     }
   });
 
   const { data: screens = [] } = useQuery({
     queryKey: ["public-screens"],
-    queryFn: () => base44.entities.Screen.filter({ approval_status: "approved" })
+    queryFn: () => base44.entities.Screen.filter({ approval_status: "approved" }, '-created_date', 200, 0)
   });
 
   const filteredVenues = venues.filter(venue => {
