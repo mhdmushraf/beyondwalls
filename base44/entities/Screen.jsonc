@@ -4,11 +4,18 @@
   "properties": {
     "owner_email": {
       "type": "string",
-      "description": "Email of venue owner"
+      "description": "DEPRECATED \u2014 use org_id + Membership for access control. Retained for backward compatibility; removed in Phase 4 cleanup."
     },
     "org_id": {
       "type": "string",
       "description": "ID of the Organization that owns this screen"
+    },
+    "org_member_user_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Denormalized from parent Organization.member_user_ids \u2014 drives RLS on this screen. Updated when the screen is created or when org membership changes."
     },
     "monetization_mode": {
       "type": "string",
@@ -260,5 +267,43 @@
   "required": [
     "name",
     "venue_id"
-  ]
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.org_member_user_ids": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.org_member_user_ids": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.org_member_user_ids": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
 }
