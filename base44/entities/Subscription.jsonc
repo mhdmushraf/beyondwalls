@@ -1,0 +1,77 @@
+{
+  "name": "Subscription",
+  "type": "object",
+  "properties": {
+    "org_id": {
+      "type": "string",
+      "description": "ID of the Organization this subscription belongs to"
+    },
+    "plan": {
+      "type": "string",
+      "enum": [
+        "revenue_share",
+        "saas"
+      ],
+      "default": "revenue_share",
+      "description": "Billing plan \u2014 saas = per-screen fee, 0% commission; revenue_share = free join, 30% commission"
+    },
+    "screen_quantity": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of private+listed screens tracked for SaaS billing"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "past_due",
+        "canceled",
+        "trialing"
+      ],
+      "default": "active"
+    },
+    "current_period_end": {
+      "type": "string",
+      "format": "date-time",
+      "description": "End of the current billing period"
+    },
+    "provider_ref": {
+      "type": "string",
+      "description": "Gateway subscription or checkout reference ID"
+    }
+  },
+  "required": [
+    "org_id"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.org_id": "{{user.current_org_id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.org_id": "{{user.current_org_id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
