@@ -14,6 +14,10 @@
     "venue_owner_email": {
       "type": "string"
     },
+    "org_id": {
+      "type": "string",
+      "description": "ID of the venue-side Organization that owns the screen (snapshot at booking time)"
+    },
     "description": {
       "type": "string",
       "description": "Optional booking description (up to 1000 characters)",
@@ -34,26 +38,39 @@
     "price_per_week": {
       "type": "number"
     },
+    "weeks": {
+      "type": "number",
+      "description": "Booking duration in weeks (snapshot at booking time)"
+    },
     "total_amount": {
       "type": "number"
     },
+    "commission_rate_snapshot": {
+      "type": "number",
+      "description": "Organization commission_rate captured at booking time \u2014 drives settlement even if the org rate changes later"
+    },
     "platform_fee": {
       "type": "number",
-      "description": "30% platform commission"
+      "description": "total_amount \u00d7 commission_rate_snapshot / 100"
     },
     "venue_earnings": {
       "type": "number",
-      "description": "70% to venue owner"
+      "description": "total_amount \u2212 platform_fee"
     },
     "status": {
       "type": "string",
       "enum": [
+        "pending_payment",
         "active",
         "paused",
         "completed",
         "cancelled"
       ],
-      "default": "active"
+      "default": "pending_payment"
+    },
+    "checkout_url": {
+      "type": "string",
+      "description": "Gateway checkout URL returned by the payment provider"
     },
     "impressions": {
       "type": "number",
