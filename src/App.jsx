@@ -50,6 +50,7 @@ import Approvals from './pages/Approvals';
 import Network from './pages/Network';
 import AddScreen from './pages/AddScreen';
 import ScreenPairing from './pages/ScreenPairing';
+import ScreenDetail from './pages/ScreenDetail';
 
 // Lazy load pages for code splitting
 const LazyPageLoader = ({ Page }) => (
@@ -258,6 +259,7 @@ const AuthenticatedApp = () => {
            { path: '/network', name: 'Network', Comp: Network },
            { path: '/add-screen', name: 'AddScreen', Comp: AddScreen },
            { path: '/screen-pairing', name: 'ScreenPairing', Comp: ScreenPairing },
+           { path: '/screen-detail', name: 'ScreenDetail', Comp: ScreenDetail },
          ].map(({ path, name, Comp }) => (
            <Route key={path} path={path} element={
              <LayoutWrapper currentPageName={name}>
