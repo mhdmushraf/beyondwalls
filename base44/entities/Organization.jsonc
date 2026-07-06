@@ -1,0 +1,92 @@
+{
+  "properties": {
+    "billing_email": {
+      "description": "Where invoices are sent",
+      "type": "string"
+    },
+    "commercial_plan": {
+      "default": "revenue_share",
+      "description": "revenue_share = free join, 30% commission; saas = per-screen fee, 0% commission",
+      "enum": [
+        "revenue_share",
+        "saas"
+      ],
+      "type": "string"
+    },
+    "commission_rate": {
+      "default": 30,
+      "description": "Percent taken from marketplace earnings. 30 for revenue_share, 0 for saas.",
+      "type": "number"
+    },
+    "logo_url": {
+      "description": "Organization logo",
+      "type": "string"
+    },
+    "member_user_ids": {
+      "description": "Denormalized list of member user ids for access control",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "name": {
+      "description": "Organization / business name",
+      "type": "string"
+    },
+    "screen_count": {
+      "default": 0,
+      "description": "Denormalized count of screens owned by this org",
+      "type": "number"
+    },
+    "type": {
+      "description": "Organization type, chosen at signup",
+      "enum": [
+        "advertiser",
+        "venue",
+        "enterprise",
+        "agency"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "type"
+  ],
+  "rls": {
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "$or": [
+        {
+          "data.member_user_ids": "{{user.id}}"
+        },
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  },
+  "type": "object",
+  "name": "Organization"
+}

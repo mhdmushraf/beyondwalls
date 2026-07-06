@@ -32,7 +32,7 @@ const STEP2_BRAND = {
 };
 
 const inputClass =
-  "w-full h-[48px] pl-11 pr-4 rounded-xl border bg-[#F7F8FC] border-[#E3E6F1] text-[16px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#6D3BF5] focus:border-transparent transition-all";
+  "w-full h-[48px] pl-11 pr-4 rounded-xl border bg-[#F7F8FC] border-[#E3E6F1] text-[16px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#6366f1] focus:border-transparent transition-all";
 
 export default function Register() {
   const [step, setStep] = useState(1);
@@ -96,12 +96,12 @@ export default function Register() {
           <div className="flex items-center gap-3 mb-6">
             <div
               className={`flex-1 h-1.5 rounded-full transition-colors ${
-                step >= 1 ? "bg-[#6D3BF5]" : "bg-slate-200"
+                step >= 1 ? "bg-[#6366f1]" : "bg-slate-200"
               }`}
             />
             <div
               className={`flex-1 h-1.5 rounded-full transition-colors ${
-                step >= 2 ? "bg-[#6D3BF5]" : "bg-slate-200"
+                step >= 2 ? "bg-[#6366f1]" : "bg-slate-200"
               }`}
             />
           </div>
@@ -134,17 +134,17 @@ export default function Register() {
                       onClick={() => setAccountType(key)}
                       className={`relative p-4 rounded-xl border-2 text-left transition-all min-h-[110px] ${
                         selected
-                          ? "border-[#6D3BF5] bg-violet-50"
+                          ? "border-[#6366f1] bg-violet-50"
                           : "border-[#E3E6F1] bg-[#F7F8FC] hover:border-slate-300"
                       }`}
                     >
                       {selected && (
-                        <span className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-[#6D3BF5] flex items-center justify-center">
+                        <span className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-[#6366f1] flex items-center justify-center">
                           <Check className="w-3 h-3 text-white" />
                         </span>
                       )}
                       <Icon
-                        className={`w-6 h-6 mb-3 ${selected ? "text-[#6D3BF5]" : "text-slate-400"}`}
+                        className={`w-6 h-6 mb-3 ${selected ? "text-[#6366f1]" : "text-slate-400"}`}
                       />
                       <p className="font-semibold text-slate-900 text-sm">{label}</p>
                       <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>
@@ -162,7 +162,7 @@ export default function Register() {
                 type="button"
                 onClick={() => setStep(2)}
                 disabled={!accountType}
-                className="w-full h-[52px] rounded-xl bg-[#6D3BF5] text-white font-semibold text-[16px] hover:bg-[#5b2de0] active:bg-[#4a24c0] disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                className="w-full h-[52px] rounded-xl bg-[#6366f1] text-white font-semibold text-[16px] hover:bg-[#4f46e5] active:bg-[#4338ca] disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
                 Continue
                 <ArrowRight className="w-[18px] h-[18px]" />
@@ -170,7 +170,7 @@ export default function Register() {
 
               <p className="text-center text-sm text-slate-500 mt-6">
                 Already have an account?{" "}
-                <Link to="/login" className="text-[#6D3BF5] font-semibold hover:underline">
+                <Link to="/login" className="text-[#6366f1] font-semibold hover:underline">
                   Sign in
                 </Link>
               </p>
@@ -281,7 +281,7 @@ export default function Register() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full h-[52px] rounded-xl bg-[#6D3BF5] text-white font-semibold text-[16px] hover:bg-[#5b2de0] active:bg-[#4a24c0] disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                  className="w-full h-[52px] rounded-xl bg-[#6366f1] text-white font-semibold text-[16px] hover:bg-[#4f46e5] active:bg-[#4338ca] disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <>
@@ -308,11 +308,11 @@ export default function Register() {
 
               <p className="text-center text-xs text-slate-400 mt-6 leading-relaxed">
                 By continuing you agree to our{" "}
-                <Link to="/Terms" className="text-[#6D3BF5] hover:underline">
+                <Link to="/Terms" className="text-[#6366f1] hover:underline">
                   Terms
                 </Link>{" "}
                 and{" "}
-                <Link to="/Privacy" className="text-[#6D3BF5] hover:underline">
+                <Link to="/Privacy" className="text-[#6366f1] hover:underline">
                   Privacy Policy
                 </Link>
                 .

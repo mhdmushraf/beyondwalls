@@ -5,7 +5,7 @@ import BrandPanel from "@/components/auth/BrandPanel";
 import { ArrowRight, Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 const inputClass =
-  "w-full h-[48px] pl-11 pr-4 rounded-xl border bg-[#F7F8FC] border-[#E3E6F1] text-[16px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#6D3BF5] focus:border-transparent transition-all";
+  "w-full h-[48px] pl-11 pr-4 rounded-xl border bg-[#F7F8FC] border-[#E3E6F1] text-[16px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#6366f1] focus:border-transparent transition-all";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -123,13 +123,13 @@ export default function Login() {
                   type="checkbox"
                   checked={keepSignedIn}
                   onChange={(e) => setKeepSignedIn(e.target.checked)}
-                  className="w-4 h-4 rounded border-[#E3E6F1] text-[#6D3BF5] focus:ring-[#6D3BF5]"
+                  className="w-4 h-4 rounded border-[#E3E6F1] text-[#6366f1] focus:ring-[#6366f1]"
                 />
                 <span className="text-sm text-slate-600">Keep me signed in</span>
               </label>
               <Link
                 to="/forgot-password"
-                className="text-sm text-[#6D3BF5] hover:text-[#5b2de0] font-medium"
+                className="text-sm text-[#6366f1] hover:text-[#4f46e5] font-medium"
               >
                 Forgot password?
               </Link>
@@ -138,7 +138,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-[52px] rounded-xl bg-[#6D3BF5] text-white font-semibold text-[16px] hover:bg-[#5b2de0] active:bg-[#4a24c0] disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+              className="w-full h-[52px] rounded-xl bg-[#6366f1] text-white font-semibold text-[16px] hover:bg-[#4f46e5] active:bg-[#4338ca] disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -156,7 +156,7 @@ export default function Login() {
 
           <p className="text-center text-sm text-slate-500 mt-8">
             New to Beyond Walls?{" "}
-            <Link to="/Register" className="text-[#6D3BF5] font-semibold hover:underline">
+            <Link to="/Register" className="text-[#6366f1] font-semibold hover:underline">
               Create account
             </Link>
           </p>

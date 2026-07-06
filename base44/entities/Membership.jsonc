@@ -1,0 +1,62 @@
+{
+  "properties": {
+    "org_id": {
+      "description": "The organization they belong to",
+      "type": "string"
+    },
+    "role": {
+      "default": "owner",
+      "description": "Role within the organization",
+      "enum": [
+        "owner",
+        "admin",
+        "member",
+        "advertiser"
+      ],
+      "type": "string"
+    },
+    "user_email": {
+      "description": "Denormalized user email for display",
+      "type": "string"
+    },
+    "user_id": {
+      "description": "The user who belongs to the org",
+      "type": "string"
+    },
+    "user_name": {
+      "description": "Denormalized user full name for display",
+      "type": "string"
+    }
+  },
+  "required": [
+    "user_id",
+    "org_id",
+    "role"
+  ],
+  "rls": {
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "$or": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  },
+  "type": "object",
+  "name": "Membership"
+}

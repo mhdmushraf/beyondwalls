@@ -114,7 +114,7 @@ const publicPages = [
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#6366f1] to-[#6366f1] rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
             <MonitorPlay className="w-6 h-6 text-white" />
           </div>
           <p className="text-slate-500">Loading...</p>
@@ -129,7 +129,7 @@ const publicPages = [
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#6366f1] to-[#6366f1] rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
             <MonitorPlay className="w-6 h-6 text-white" />
           </div>
           <p className="text-slate-500">Redirecting to login...</p>
@@ -145,7 +145,7 @@ const publicPages = [
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#6366f1] to-[#6366f1] rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
             <MonitorPlay className="w-6 h-6 text-white" />
           </div>
           <p className="text-slate-500">Completing profile...</p>
@@ -160,7 +160,7 @@ const publicPages = [
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#6366f1] to-[#6366f1] rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
             <MonitorPlay className="w-6 h-6 text-white" />
           </div>
           <p className="text-slate-500">Checking approval status...</p>
@@ -186,7 +186,7 @@ const publicPages = [
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#6366f1] to-[#6366f1] rounded-xl flex items-center justify-center mx-auto mb-4">
             <Shield className="w-6 h-6 text-white" />
           </div>
           <p className="text-slate-500">Access denied. Redirecting...</p>
@@ -212,11 +212,11 @@ const publicPages = [
           </button>
         )}
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-gradient-to-br from-[#6366f1] to-[#6366f1] rounded-lg flex items-center justify-center">
             <MonitorPlay className="w-4 h-4 text-white" />
           </div>
-          <span className="font-bold text-lg bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent select-none">
-            BeyondWalls
+          <span className="font-bold text-lg font-heading bg-gradient-to-r from-[#6366f1] to-[#6366f1] bg-clip-text text-transparent select-none">
+            Beyond Walls
           </span>
         </div>
         <Bell className="w-5 h-5 text-slate-400" />
@@ -243,11 +243,11 @@ const publicPages = [
           {/* Logo */}
           <div className="h-16 px-6 flex items-center justify-between border-b border-slate-100">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/25">
+              <div className="w-10 h-10 bg-gradient-to-br from-[#6366f1] to-[#6366f1] rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/25">
                 <MonitorPlay className="w-5 h-5 text-white" />
               </div>
-              <span className="font-bold text-xl bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
-                BeyondWalls
+              <span className="font-bold text-xl font-heading bg-gradient-to-r from-[#6366f1] to-[#6366f1] bg-clip-text text-transparent">
+                Beyond Walls
               </span>
             </div>
             <button 
@@ -270,13 +270,13 @@ const publicPages = [
                       className={`
                         w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200
                         ${isChildActive 
-                          ? 'bg-violet-100 text-violet-700' 
+                          ? 'bg-indigo-100 text-[#6366f1]' 
                           : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                         }
                       `}
                     >
                       <div className="flex items-center gap-3">
-                        <item.icon className={`w-5 h-5 ${isChildActive ? 'text-violet-600' : 'text-slate-500'}`} />
+                        <item.icon className={`w-5 h-5 ${isChildActive ? 'text-[#6366f1]' : 'text-slate-500'}`} />
                         {item.name}
                       </div>
                       <ChevronRight className={`w-4 h-4 transition-transform ${adminMenuOpen ? 'rotate-90' : ''}`} />
@@ -293,7 +293,7 @@ const publicPages = [
                               className={`
                                 flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200
                                 ${isActive 
-                                  ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md' 
+                                  ? 'bg-gradient-to-r from-[#6366f1] to-[#6366f1] text-white shadow-md' 
                                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                                 }
                               `}
@@ -318,7 +318,7 @@ const publicPages = [
                   className={`
                     select-none flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-sm sm:text-base font-medium transition-all duration-200
                     ${isActive 
-                      ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/25' 
+                      ? 'bg-gradient-to-r from-[#6366f1] to-[#6366f1] text-white shadow-lg shadow-indigo-500/25' 
                       : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                     }
                   `}
