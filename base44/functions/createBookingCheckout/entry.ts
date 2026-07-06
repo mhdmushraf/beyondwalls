@@ -52,64 +52,23 @@ async function createManualCheckout(input: CreateCheckoutInput): Promise<Checkou
 }
 
 // --- Provider: Tap Payments (https://www.tap.company/docs) ---
-// Activate by setting PAYMENTS_PROVIDER = 'tap' and adding TAP_SECRET_KEY secret.
-async function createTapCheckout(input: CreateCheckoutInput): Promise<CheckoutResult> {
-  const secretKey = Deno.env.get('TAP_SECRET_KEY');
-  if (!secretKey) throw new Error('TAP_SECRET_KEY secret is not set. Add it in dashboard settings.');
-
-  const res = await fetch('https://api.tap.company/v2/charges', {
-    method: 'POST',
-    headers: {
-      authorization: `Bearer ${secretKey}`,
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      amount: input.amount,
-      currency: input.currency,
-      threeDS: { enabled: true },
-      save_card: false,
-      description: input.description,
-      metadata: { reference_id: input.referenceId },
-      redirect: { url: input.successUrl },
-    }),
-  });
-
-  const data = await res.json();
-  if (!res.ok || !data?.transaction?.url) {
-    throw new Error(`Tap checkout failed: ${data?.message ?? JSON.stringify(data)}`);
-  }
-  return { checkoutUrl: data.transaction.url, provider: 'tap', referenceId: input.referenceId };
+// To activate: set PAYMENTS_PROVIDER = 'tap', add TAP_SECRET_KEY secret,
+// then replace this stub with the fetch() call to Tap's /v2/charges endpoint.
+async function createTapCheckout(_input: CreateCheckoutInput): Promise<CheckoutResult> {
+  throw new Error(
+    'Tap provider not configured. Set PAYMENTS_PROVIDER="tap", add TAP_SECRET_KEY secret, ' +
+    'then implement the fetch call in createTapCheckout().'
+  );
 }
 
 // --- Provider: Stripe Checkout ---
-// Activate by setting PAYMENTS_PROVIDER = 'stripe' and adding STRIPE_SECRET_KEY secret.
-async function createStripeCheckout(input: CreateCheckoutInput): Promise<CheckoutResult> {
-  const secretKey = Deno.env.get('STRIPE_SECRET_KEY');
-  if (!secretKey) throw new Error('STRIPE_SECRET_KEY secret is not set. Add it in dashboard settings.');
-
-  const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {
-    method: 'POST',
-    headers: {
-      authorization: `Bearer ${secretKey}`,
-      'content-type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams({
-      mode: 'payment',
-      'line_items[0][quantity]': '1',
-      'line_items[0][price_data][currency]': input.currency,
-      'line_items[0][price_data][product_data][name]': input.description,
-      'line_items[0][price_data][unit_amount]': String(Math.round(input.amount * 100)),
-      'metadata[reference_id]': input.referenceId,
-      'success_url': input.successUrl,
-      'cancel_url': input.cancelUrl,
-    }),
-  });
-
-  const data = await res.json();
-  if (!res.ok || !data?.url) {
-    throw new Error(`Stripe checkout failed: ${data?.error?.message ?? JSON.stringify(data)}`);
-  }
-  return { checkoutUrl: data.url, provider: 'stripe', referenceId: input.referenceId };
+// To activate: set PAYMENTS_PROVIDER = 'stripe', add STRIPE_SECRET_KEY secret,
+// then replace this stub with the fetch() call to Stripe's /v1/checkout/sessions endpoint.
+async function createStripeCheckout(_input: CreateCheckoutInput): Promise<CheckoutResult> {
+  throw new Error(
+    'Stripe provider not configured. Set PAYMENTS_PROVIDER="stripe", add STRIPE_SECRET_KEY secret, ' +
+    'then implement the fetch call in createStripeCheckout().'
+  );
 }
 
 // =============================================================================
