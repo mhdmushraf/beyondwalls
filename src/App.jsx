@@ -14,15 +14,6 @@ import MobileAppOnboarding from '@/components/mobile/MobileAppOnboarding';
 import { isMobileApp } from '@/components/mobile/mobileDetection';
 import MobileRouteTransition from '@/components/mobile/MobileRouteTransition';
 import { AnimatePresence } from 'framer-motion';
-import VenueDetail from './pages/VenueDetail';
-import EditVenue from './pages/EditVenue';
-import ScreenDetail from './pages/ScreenDetail';
-import ManageScreenContent from './pages/ManageScreenContent';
-import EditScreen from './pages/EditScreen';
-import LiveScreenMonitorPage from './pages/LiveScreenMonitorPage';
-import MyContentLibrary from './pages/MyContentLibrary';
-import ScreensOverview from './pages/ScreensOverview';
-import ScheduleContent from './pages/ScheduleContent';
 import CafeScreenAdvertisingDubai from './pages/CafeScreenAdvertisingDubai';
 import GymScreenAdvertisingDubai from './pages/GymScreenAdvertisingDubai';
 import CoworkingSpaceAdvertisingDubai from './pages/CoworkingSpaceAdvertisingDubai';
@@ -33,6 +24,7 @@ import IndoorVenueDOOHvsBillboardsDubai from './pages/IndoorVenueDOOHvsBillboard
 import WhatIsDOOHAdvertisingGuide from './pages/WhatIsDOOHAdvertisingGuide';
 import EarnMoneyVenueScreensDubai from './pages/EarnMoneyVenueScreensDubai';
 import DOOHAdvertisingMarketplaceDubai from './pages/DOOHAdvertisingMarketplaceDubai';
+import ScreensOverview from './pages/ScreensOverview';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -113,83 +105,11 @@ const AuthenticatedApp = () => {
              }
            />
          ))}
-         <Route path="/EditVenue/:id" element={
-           <LayoutWrapper currentPageName="EditVenue">
-             <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
-                 <EditVenue />
-               </Suspense>
-             </MobileRouteTransition>
-           </LayoutWrapper>
-         } />
-         <Route path="/VenueDetail/:id" element={
-           <LayoutWrapper currentPageName="VenueDetail">
-             <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
-                 <VenueDetail />
-               </Suspense>
-             </MobileRouteTransition>
-           </LayoutWrapper>
-         } />
-         <Route path="/ScreenDetail/:id" element={
-           <LayoutWrapper currentPageName="ScreenDetail">
-             <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
-                 <ScreenDetail />
-               </Suspense>
-             </MobileRouteTransition>
-           </LayoutWrapper>
-         } />
-         <Route path="/EditScreen/:id" element={
-           <LayoutWrapper currentPageName="EditScreen">
-             <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
-                 <EditScreen />
-               </Suspense>
-             </MobileRouteTransition>
-           </LayoutWrapper>
-         } />
-         <Route path="/ManageScreenContent" element={
-           <LayoutWrapper currentPageName="ManageScreenContent">
-             <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
-                 <ManageScreenContent />
-               </Suspense>
-             </MobileRouteTransition>
-           </LayoutWrapper>
-         } />
-         <Route path="/LiveScreenMonitorPage" element={
-           <LayoutWrapper currentPageName="LiveScreenMonitorPage">
-             <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
-                 <LiveScreenMonitorPage />
-               </Suspense>
-             </MobileRouteTransition>
-           </LayoutWrapper>
-         } />
-         <Route path="/MyContentLibrary" element={
-           <LayoutWrapper currentPageName="MyContentLibrary">
-             <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
-                 <MyContentLibrary />
-               </Suspense>
-             </MobileRouteTransition>
-           </LayoutWrapper>
-         } />
          <Route path="/ScreensOverview" element={
            <LayoutWrapper currentPageName="ScreensOverview">
              <MobileRouteTransition>
                <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
                  <ScreensOverview />
-               </Suspense>
-             </MobileRouteTransition>
-           </LayoutWrapper>
-         } />
-         <Route path="/ScheduleContent" element={
-           <LayoutWrapper currentPageName="ScheduleContent">
-             <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
-                 <ScheduleContent />
                </Suspense>
              </MobileRouteTransition>
            </LayoutWrapper>

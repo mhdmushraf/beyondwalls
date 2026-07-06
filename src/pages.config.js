@@ -1,28 +1,7 @@
 import About from './pages/About';
-import Dashboard from './pages/Dashboard';
-import CreateCampaign from './pages/CreateCampaign';
-import MyCampaigns from './pages/MyCampaigns';
-import Wallet from './pages/Wallet';
-import VenueOwnerDashboard from './pages/VenueOwnerDashboard';
-import AddVenue from './pages/AddVenue';
-import MyVenues from './pages/MyVenues';
-import AddScreen from './pages/AddScreen';
-import MyScreens from './pages/MyScreens';
-import VenueEarnings from './pages/VenueEarnings';
-import AdminDashboard from './pages/AdminDashboard';
-import AdminUserApprovals from './pages/AdminUserApprovals';
-import AdminCampaigns from './pages/AdminCampaigns';
-import AdminScreens from './pages/AdminScreens';
-import AdminWalletRequests from './pages/AdminWalletRequests';
-import Settings from './pages/Settings';
-import AdminVenues from './pages/AdminVenues';
-import CampaignDetail from './pages/CampaignDetail';
-import ScreenMonitor from './pages/ScreenMonitor';
-import ARDashboard from './pages/ARDashboard';
 import AuthorProfile from './pages/AuthorProfile';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
-import CompleteProfile from './pages/CompleteProfile';
 import Connect from './pages/Connect';
 import Contact from './pages/Contact';
 import DigitalSignageUAE from './pages/DigitalSignageUAE';
@@ -40,11 +19,11 @@ import HelpCenter from './pages/HelpCenter';
 import Home from './pages/Home';
 import HowItWorks from './pages/HowItWorks';
 import NotFound from './pages/NotFound';
-import PendingApproval from './pages/PendingApproval';
 import Privacy from './pages/Privacy';
 import Register from './pages/Register';
 import RobotsTxt from './pages/RobotsTxt';
 import ScreenLocations from './pages/ScreenLocations';
+import ScreensOverview from './pages/ScreensOverview';
 import ScreenPlayer from './pages/ScreenPlayer';
 import Services from './pages/Services';
 import Sitemap from './pages/Sitemap';
@@ -55,11 +34,9 @@ import __Layout from './Layout.jsx';
 
 export const PAGES = {
     "About": About,
-    "ARDashboard": ARDashboard,
     "AuthorProfile": AuthorProfile,
     "Blog": Blog,
     "BlogPost": BlogPost,
-    "CompleteProfile": CompleteProfile,
     "Connect": Connect,
     "Contact": Contact,
     "DigitalSignageUAE": DigitalSignageUAE,
@@ -77,37 +54,18 @@ export const PAGES = {
     "Home": Home,
     "HowItWorks": HowItWorks,
     "NotFound": NotFound,
-    "PendingApproval": PendingApproval,
     "Privacy": Privacy,
     "Register": Register,
     "RobotsTxt": RobotsTxt,
     "ScreenLocations": ScreenLocations,
+    "ScreensOverview": ScreensOverview,
     "ScreenPlayer": ScreenPlayer,
     "Services": Services,
     "Sitemap": Sitemap,
     "SitemapPage": SitemapPage,
     "SitemapXML": SitemapXML,
     "Terms": Terms,
-    "Dashboard": Dashboard,
-    "CreateCampaign": CreateCampaign,
-    "MyCampaigns": MyCampaigns,
-    "Wallet": Wallet,
-    "VenueOwnerDashboard": VenueOwnerDashboard,
-    "AddVenue": AddVenue,
-    "MyVenues": MyVenues,
-    "AddScreen": AddScreen,
-    "MyScreens": MyScreens,
-    "VenueEarnings": VenueEarnings,
-    "AdminDashboard": AdminDashboard,
-    "AdminUserApprovals": AdminUserApprovals,
-    "AdminCampaigns": AdminCampaigns,
-    "AdminScreens": AdminScreens,
-    "AdminWalletRequests": AdminWalletRequests,
-    "Settings": Settings,
-    "AdminVenues": AdminVenues,
-    "CampaignDetail": CampaignDetail,
-    "ScreenMonitor": ScreenMonitor,
-}
+};
 
 export const pagesConfig = {
     mainPage: "Home",

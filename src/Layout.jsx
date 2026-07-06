@@ -34,12 +34,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const NOINDEX_PAGES = new Set([
-  "Dashboard", "AdminDashboard", "AdminCampaigns", "AdminScreens", "AdminVenues",
-  "AdminUserApprovals", "AdminWalletRequests", "MyCampaigns", "MyScreens", "MyVenues",
-  "MyContentLibrary", "CreateCampaign", "EditScreen", "EditVenue", "AddScreen", "AddVenue",
-  "ScheduleContent", "ManageScreenContent", "Wallet", "Settings", "CompleteProfile",
-  "PendingApproval", "VenueOwnerDashboard", "VenueEarnings", "ARDashboard", "ScreenMonitor",
-  "LiveScreenMonitorPage", "ScreenPlayer"
+  "ScreenPlayer"
 ]);
 
 export default function Layout({ children, currentPageName }) {
@@ -72,54 +67,22 @@ export default function Layout({ children, currentPageName }) {
   };
 
   const getNavItems = () => {
-    if (!user) return [];
-    const isAdmin = user?.user_role === "admin" || user?.role === "admin";
-    const isVenueOwner = !isAdmin && user?.user_role === "venue_owner";
-    const isAdvertiser = user?.user_role === "advertiser";
-
-    if (isAdmin) {
-      return [
-        { name: "Dashboard", page: "AdminDashboard", icon: BarChart3 },
-        { name: "User Approvals", page: "AdminUserApprovals", icon: Users },
-        { name: "Campaigns", page: "AdminCampaigns", icon: Megaphone },
-        { name: "Screens", page: "AdminScreens", icon: MonitorPlay },
-        { name: "Screen Monitor", page: "ScreenMonitor", icon: Activity },
-        { name: "Venues", page: "AdminVenues", icon: Building2 },
-        { name: "Payout Requests", page: "AdminWalletRequests", icon: DollarSign },
-        { name: "Settings", page: "Settings", icon: Settings2 },
-      ];
-    }
-    if (isVenueOwner) {
-      return [
-        { name: "Dashboard", page: "VenueOwnerDashboard", icon: BarChart3 },
-        { name: "My Venues", page: "MyVenues", icon: Building2 },
-        { name: "My Screens", page: "MyScreens", icon: MonitorPlay },
-        { name: "Earnings", page: "VenueEarnings", icon: DollarSign },
-        { name: "Settings", page: "Settings", icon: Settings2 },
-      ];
-    }
-    // Default: Advertiser
-    return [
-      { name: "Dashboard", page: "Dashboard", icon: BarChart3 },
-      { name: "My Campaigns", page: "MyCampaigns", icon: Megaphone },
-      { name: "Create Campaign", page: "CreateCampaign", icon: Plus },
-      { name: "Wallet", page: "Wallet", icon: WalletIcon },
-      { name: "Settings", page: "Settings", icon: Settings2 },
-    ];
+    return [];
   };
 
 // Public pages without sidebar - no auth required
 const publicPages = [
-        "Home", "Login", "Register", "CompleteProfile", "ScreenPlayer", 
+        "Home", "Login", "Register", "ScreenPlayer", 
         "About", "Services", "Contact", "ScreenLocations", "Blog", 
-        "HelpCenter", "Terms", "Privacy", "HowItWorks", "PendingApproval", 
-        "Connect", "BlogPost", "AuthorProfile", "NotFound", "ARDashboard", "Sitemap",
+        "HelpCenter", "Terms", "Privacy", "HowItWorks", 
+        "Connect", "BlogPost", "AuthorProfile", "NotFound", "Sitemap",
         "SitemapPage", "DOOHAdvertisingDubai", "DigitalSignageUAE", "RobotsTxt", "SitemapXML",
         "CafeScreenAdvertisingDubai", "GymScreenAdvertisingDubai", "CoworkingSpaceAdvertisingDubai",
         "ClinicScreenAdvertisingDubai", "MonetizeYourScreensDubai",
         "DOOHAdvertisingCostDubai", "IndoorVenueDOOHvsBillboardsDubai",
         "WhatIsDOOHAdvertisingGuide", "EarnMoneyVenueScreensDubai",
-        "DOOHAdvertisingMarketplaceDubai", "Login", "ForgotPassword", "ResetPassword"
+        "DOOHAdvertisingMarketplaceDubai", "ForgotPassword", "ResetPassword",
+        "ScreensOverview"
       ];
 
   // Scroll to top when navigating to public pages
@@ -178,7 +141,7 @@ const publicPages = [
   // SECURITY: Check if user profile is complete (except for admins)
   const isAdmin = user?.role === "admin" || user?.user_role === "admin";
   if (!isAdmin && !user?.profile_complete) {
-    navigate(createPageUrl("CompleteProfile"));
+    navigate(createPageUrl("Home"));
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
@@ -193,7 +156,7 @@ const publicPages = [
 
   // SECURITY: Check approval status for non-admin users
   if (!isAdmin && user?.approval_status !== "approved") {
-    navigate(createPageUrl("PendingApproval"));
+    navigate(createPageUrl("Home"));
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
@@ -207,25 +170,19 @@ const publicPages = [
   }
 
   // SECURITY: Admin pages protection
-  const adminPages = [
-    "AdminDashboard", "AdminUserApprovals", "AdminUsers", "AdminBookings",
-    "AdminCampaigns", "AdminVenues", "AdminScreens", "AdminWallet",
-    "AdminWalletRequests", "AdminTransactions", "AdminPricing",
-    "AdminPlatformWallet", "AdminBlog", "AdminCRM", "AdminDefaultContent",
-    "LogoGenerator", "ScreenMonitor"
-  ];
+  const adminPages = [];
 
   // SECURITY: Venue owner pages protection
-  const venueOwnerPages = ["VenueOwnerDashboard", "AddVenue", "MyVenues", "AddScreen", "MyScreens", "VenueEarnings"];
+  const venueOwnerPages = [];
   const isVenueOwner = !isAdmin && user?.user_role === "venue_owner";
   if (venueOwnerPages.includes(currentPageName) && !isVenueOwner && !isAdmin) {
-    navigate(createPageUrl("Dashboard"));
+    navigate(createPageUrl("Home"));
     return null;
   }
   
   if (adminPages.includes(currentPageName) && !isAdmin) {
-    // Non-admin trying to access admin page - redirect to user dashboard
-    navigate(createPageUrl("Dashboard"));
+    // Non-admin trying to access admin page - redirect to home
+    navigate(createPageUrl("Home"));
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
@@ -396,19 +353,7 @@ const publicPages = [
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem asChild>
-                    <Link to={createPageUrl("Settings")} className="cursor-pointer">
-                      <Settings className="w-4 h-4 mr-2" />
-                      Settings
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to={createPageUrl("Settings")} className="cursor-pointer">
-                      <Bell className="w-4 h-4 mr-2" />
-                      Notifications
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
+                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="text-red-600 cursor-pointer">
                   <LogOut className="w-4 h-4 mr-2" />
                   Logout
