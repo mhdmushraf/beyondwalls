@@ -1,8 +1,10 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
 // Called by the ScreenPlayer every 5 seconds.
-// Validates the device token, updates last_heartbeat + is_online,
-// and writes a throttled "heartbeat" activity log (once per 30 min).
+// Validates the device token, upserts telemetry to ScreenTelemetry,
+// and updates Screen ONLY on status/approval change (e.g. first heartbeat
+// auto-activates a pending screen).
+// Writes a throttled "heartbeat" activity log (once per 30 min).
 
 Deno.serve(async (req) => {
   try {
@@ -30,24 +32,50 @@ Deno.serve(async (req) => {
 
     const now = new Date().toISOString();
 
-    // Update heartbeat + stats
-    await base44.asServiceRole.entities.Screen.update(screen_id, {
-      last_heartbeat: now,
+    // --- Upsert ScreenTelemetry by screen_id ---
+    const existing = await base44.asServiceRole.entities.ScreenTelemetry.filter(
+      { screen_id },
+      null,
+      1,
+      0
+    );
+
+    const telemetryData = {
+      screen_id,
+      org_id: screen.org_id || null,
+      org_member_user_ids: screen.org_member_user_ids || [],
       is_online: true,
-      status: stats?.status || 'active',
-      player_active: stats?.player_active ?? true,
-      current_ad_index: stats?.current_ad_index ?? 0,
-      current_playlist_length: stats?.current_playlist_length ?? 0,
-      total_playtime: stats?.total_playtime ?? 0,
-      ads_played_count: stats?.ads_played_count ?? 0,
+      last_heartbeat: now,
+      player_version: stats?.player_version || null,
       current_session_id: stats?.current_session_id || null,
       session_started_at: stats?.session_started_at || null,
       uptime_seconds: stats?.uptime_seconds ?? 0,
+      current_ad_index: stats?.current_ad_index ?? 0,
+      current_playlist_length: stats?.current_playlist_length ?? 0,
       current_content_name: stats?.current_content_name || null,
-      player_version: stats?.player_version || null,
-    });
+      player_active: stats?.player_active ?? true,
+      ads_played_count: stats?.ads_played_count ?? 0,
+      total_playtime: stats?.total_playtime ?? 0,
+    };
 
-    // Throttled heartbeat log — once per 30 minutes
+    if (existing.length > 0) {
+      await base44.asServiceRole.entities.ScreenTelemetry.update(existing[0].id, telemetryData);
+    } else {
+      await base44.asServiceRole.entities.ScreenTelemetry.create(telemetryData);
+    }
+
+    // --- Update Screen ONLY on status change ---
+    // Auto-activate on first heartbeat: pending/inactive → active
+    if (screen.status === 'pending' || screen.status === 'inactive') {
+      await base44.asServiceRole.entities.Screen.update(screen_id, {
+        status: 'active',
+        is_online: true,
+        last_heartbeat: now,
+        player_active: stats?.player_active ?? true,
+      });
+    }
+
+    // --- Throttled heartbeat log — once per 30 minutes ---
     const recentLogs = await base44.asServiceRole.entities.ScreenActivityLog.filter(
       { screen_id, event_type: 'heartbeat' },
       '-timestamp',

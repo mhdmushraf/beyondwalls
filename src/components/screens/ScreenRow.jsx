@@ -5,9 +5,9 @@ import { Pencil, Wifi, WifiOff, QrCode } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 
-export default function ScreenRow({ screen, onEdit, onToggleMonetization }) {
-  const isLive = screen.is_online && screen.last_heartbeat &&
-    (Date.now() - new Date(screen.last_heartbeat).getTime()) < 30000;
+export default function ScreenRow({ screen, telemetry, onEdit, onToggleMonetization }) {
+  const isLive = telemetry?.is_online && telemetry?.last_heartbeat &&
+    (Date.now() - new Date(telemetry.last_heartbeat).getTime()) < 30000;
   const mode = screen.monetization_mode || 'marketplace';
 
   return (
@@ -23,7 +23,7 @@ export default function ScreenRow({ screen, onEdit, onToggleMonetization }) {
         </div>
         <p className="text-xs text-slate-400 truncate">
           {screen.location_description || 'No location set'}
-          {screen.last_heartbeat && ` · ${moment(screen.last_heartbeat).fromNow()}`}
+          {telemetry?.last_heartbeat && ` · ${moment(telemetry.last_heartbeat).fromNow()}`}
         </p>
         <p className="text-xs text-slate-300 font-mono mt-0.5">{screen.setup_code}</p>
       </div>

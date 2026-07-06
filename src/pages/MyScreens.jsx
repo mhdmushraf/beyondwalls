@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -18,6 +18,7 @@ export default function MyScreens() {
   const [org, setOrg] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editScreen, setEditScreen] = useState(null);
+  const [telemetryMap, setTelemetryMap] = useState({});
 
   useEffect(() => {
     (async () => {
@@ -43,10 +44,23 @@ export default function MyScreens() {
     PAGE_SIZE
   );
 
+  const fetchTelemetry = useCallback(async () => {
+    if (items.length === 0) return;
+    try {
+      const ids = items.map(s => s.id);
+      const telem = await base44.entities.ScreenTelemetry.filter({ screen_id: { $in: ids } });
+      const map = {};
+      telem.forEach(t => { map[t.screen_id] = t; });
+      setTelemetryMap(map);
+    } catch { /* non-fatal */ }
+  }, [items]);
+
+  useEffect(() => { fetchTelemetry(); }, [fetchTelemetry]);
+
   // Poll for live status every 15s
   useEffect(() => {
     if (!org) return;
-    const interval = setInterval(() => refresh(), 15000);
+    const interval = setInterval(() => { refresh(); }, 15000);
     return () => clearInterval(interval);
   }, [org, refresh]);
 
@@ -97,6 +111,7 @@ export default function MyScreens() {
             <ScreenRow
               key={screen.id}
               screen={screen}
+              telemetry={telemetryMap[screen.id]}
               onEdit={() => setEditScreen(screen)}
               onToggleMonetization={() => handleToggleMonetization(screen)}
             />

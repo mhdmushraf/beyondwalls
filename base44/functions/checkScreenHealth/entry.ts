@@ -1,8 +1,10 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
 // Scheduled every 15 minutes.
-// Compares each screen's last_heartbeat to now (10-min threshold).
-// Flips is_online and sends admin notifications ONLY on state change.
+// Reads ScreenTelemetry to detect stale heartbeats (10-min threshold).
+// Flips is_online on ScreenTelemetry (mirrors to Screen for transition week).
+// Fetches admins and venues with filtered queries, not full lists.
+// Sends admin notifications ONLY on state change.
 
 const OFFLINE_THRESHOLD_MS = 10 * 60 * 1000;
 
@@ -11,65 +13,108 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const now = Date.now();
 
-    const screens = await base44.asServiceRole.entities.Screen.list();
+    // --- Fetch admin emails with filtered queries (not full user list) ---
+    const [adminRoleUsers, adminUserRoleUsers] = await Promise.all([
+      base44.asServiceRole.entities.User.filter({ role: 'admin' }, null, 50, 0),
+      base44.asServiceRole.entities.User.filter({ user_role: 'admin' }, null, 50, 0),
+    ]);
+    const adminEmails = [...new Set(
+      [...adminRoleUsers, ...adminUserRoleUsers].map(u => u.email).filter(Boolean)
+    )];
 
-    // Get admin users for notifications
-    const allUsers = await base44.asServiceRole.entities.User.list();
-    const adminEmails = allUsers
-      .filter(u => u.role === 'admin' || u.user_role === 'admin')
-      .map(u => u.email);
+    // --- Fetch all telemetry records ---
+    const telemetryRecords = await base44.asServiceRole.entities.ScreenTelemetry.list(
+      '-last_heartbeat',
+      200
+    );
 
-    // Get all venues for name lookup
-    const venues = await base44.asServiceRole.entities.Venue.list();
+    // --- First pass: detect state changes ---
+    const changes = [];
+    const screenIdsToFetch = new Set();
+
+    for (const telem of telemetryRecords) {
+      const lastHeartbeatMs = telem.last_heartbeat
+        ? new Date(telem.last_heartbeat).getTime()
+        : 0;
+      const isStale = (now - lastHeartbeatMs) > OFFLINE_THRESHOLD_MS;
+      const wasOnline = telem.is_online === true;
+
+      if (wasOnline && isStale) {
+        changes.push({ telemetry: telem, newOnline: false });
+        screenIdsToFetch.add(telem.screen_id);
+      } else if (!wasOnline && !isStale && lastHeartbeatMs > 0) {
+        changes.push({ telemetry: telem, newOnline: true });
+        screenIdsToFetch.add(telem.screen_id);
+      }
+    }
+
+    // --- Fetch only screens that changed state (not full list) ---
+    const screenMap = {};
+    for (const screenId of screenIdsToFetch) {
+      try {
+        const screen = await base44.asServiceRole.entities.Screen.get(screenId);
+        if (screen) screenMap[screenId] = screen;
+      } catch { /* non-fatal */ }
+    }
+
+    // --- Fetch only venues for changed screens (not full list) ---
+    const venueIds = new Set(
+      Object.values(screenMap).map(s => s.venue_id).filter(Boolean)
+    );
     const venueMap = {};
-    venues.forEach(v => { venueMap[v.id] = v; });
+    for (const venueId of venueIds) {
+      try {
+        const venue = await base44.asServiceRole.entities.Venue.get(venueId);
+        if (venue) venueMap[venueId] = venue;
+      } catch { /* non-fatal */ }
+    }
 
+    // --- Apply changes + send notifications ---
     let offlineChanges = 0;
     let recoveryChanges = 0;
 
-    for (const screen of screens) {
-      const lastHeartbeatMs = screen.last_heartbeat ? new Date(screen.last_heartbeat).getTime() : 0;
-      const isStale = (now - lastHeartbeatMs) > OFFLINE_THRESHOLD_MS;
-      const wasOnline = screen.is_online === true;
+    for (const change of changes) {
+      const { telemetry, newOnline } = change;
+      const screen = screenMap[telemetry.screen_id];
+      if (!screen) continue;
 
-      // State change: online → offline
-      if (wasOnline && isStale) {
-        await base44.asServiceRole.entities.Screen.update(screen.id, { is_online: false });
-        const venueName = venueMap[screen.venue_id]?.name || 'Unknown venue';
-        for (const email of adminEmails) {
-          await base44.asServiceRole.entities.Notification.create({
-            recipient_email: email,
-            type: 'screen_offline',
-            title: `Screen offline: ${screen.name}`,
-            message: `Screen ${screen.name} at ${venueName} went offline. Last heartbeat: ${screen.last_heartbeat}`,
-            is_read: false,
-            reference_id: screen.id,
-          });
-        }
-        offlineChanges++;
+      // Update ScreenTelemetry
+      await base44.asServiceRole.entities.ScreenTelemetry.update(telemetry.id, {
+        is_online: newOnline,
+      });
+
+      // Mirror to Screen for transition week
+      await base44.asServiceRole.entities.Screen.update(screen.id, {
+        is_online: newOnline,
+      });
+
+      const venueName = venueMap[screen.venue_id]?.name || 'Unknown venue';
+      const notificationType = newOnline ? 'screen_recovered' : 'screen_offline';
+      const notificationTitle = newOnline
+        ? `Screen recovered: ${screen.name}`
+        : `Screen offline: ${screen.name}`;
+      const notificationMessage = newOnline
+        ? `Screen ${screen.name} at ${venueName} is back online. Last heartbeat: ${telemetry.last_heartbeat}`
+        : `Screen ${screen.name} at ${venueName} went offline. Last heartbeat: ${telemetry.last_heartbeat}`;
+
+      for (const email of adminEmails) {
+        await base44.asServiceRole.entities.Notification.create({
+          recipient_email: email,
+          type: notificationType,
+          title: notificationTitle,
+          message: notificationMessage,
+          is_read: false,
+          reference_id: screen.id,
+        });
       }
 
-      // State change: offline → online
-      if (!wasOnline && !isStale && lastHeartbeatMs > 0) {
-        await base44.asServiceRole.entities.Screen.update(screen.id, { is_online: true });
-        const venueName = venueMap[screen.venue_id]?.name || 'Unknown venue';
-        for (const email of adminEmails) {
-          await base44.asServiceRole.entities.Notification.create({
-            recipient_email: email,
-            type: 'screen_recovered',
-            title: `Screen recovered: ${screen.name}`,
-            message: `Screen ${screen.name} at ${venueName} is back online. Last heartbeat: ${screen.last_heartbeat}`,
-            is_read: false,
-            reference_id: screen.id,
-          });
-        }
-        recoveryChanges++;
-      }
+      if (newOnline) recoveryChanges++;
+      else offlineChanges++;
     }
 
     return Response.json({
       ok: true,
-      checked: screens.length,
+      checked: telemetryRecords.length,
       offlineChanges,
       recoveryChanges,
       checkedAt: new Date().toISOString(),

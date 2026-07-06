@@ -16,6 +16,7 @@ const PAGE_SIZE = 20;
 export default function VenueDashboard({ user, org }) {
   const [kpis, setKpis] = useState(null);
   const [kpisLoading, setKpisLoading] = useState(true);
+  const [telemetryMap, setTelemetryMap] = useState({});
 
   useEffect(() => {
     const now = new Date();
@@ -38,7 +39,15 @@ export default function VenueDashboard({ user, org }) {
             null, 100, 0
           ),
         ]);
-        const online = screens.filter((s) => s.is_online).length;
+        const screenIds = screens.map(s => s.id);
+        let telem = [];
+        if (screenIds.length > 0) {
+          telem = await base44.entities.ScreenTelemetry.filter({ screen_id: { $in: screenIds } });
+        }
+        const tMap = {};
+        telem.forEach(t => { tMap[t.screen_id] = t; });
+        setTelemetryMap(tMap);
+        const online = screens.filter((s) => tMap[s.id]?.is_online).length;
         const earnings = txns.reduce((s, t) => s + (t.amount || 0), 0);
         const pendingPayout = payouts.reduce((s, p) => s + (p.amount || 0), 0);
         setKpis({ earnings, pendingPayout, online, total: screens.length, bookings: bookings.length });
@@ -80,22 +89,26 @@ export default function VenueDashboard({ user, org }) {
           />
         ) : (
           <div className="space-y-3">
-            {items.map((s) => (
-              <div key={s.id} className="bg-white rounded-xl border border-slate-200 p-4 flex items-center justify-between gap-3">
-                <div className="min-w-0 flex-1">
-                  <p className="font-medium text-slate-900 truncate">{s.name}</p>
-                  <p className="text-xs text-slate-400 truncate">
-                    {s.location_description || moment(s.created_date).format('DD MMM YYYY')}
-                  </p>
+            {items.map((s) => {
+              const telem = telemetryMap[s.id];
+              const isOnline = telem?.is_online ?? false;
+              return (
+                <div key={s.id} className="bg-white rounded-xl border border-slate-200 p-4 flex items-center justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium text-slate-900 truncate">{s.name}</p>
+                    <p className="text-xs text-slate-400 truncate">
+                      {s.location_description || moment(s.created_date).format('DD MMM YYYY')}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3 flex-shrink-0">
+                    <span className="text-sm font-medium text-slate-600 hidden sm:inline">{formatAED(s.total_revenue)}</span>
+                    <Badge className={isOnline ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}>
+                      {isOnline ? 'Online' : 'Offline'}
+                    </Badge>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3 flex-shrink-0">
-                  <span className="text-sm font-medium text-slate-600 hidden sm:inline">{formatAED(s.total_revenue)}</span>
-                  <Badge className={s.is_online ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}>
-                    {s.is_online ? 'Online' : 'Offline'}
-                  </Badge>
-                </div>
-              </div>
-            ))}
+              );
+            })}
             {hasMore && (
               <Button variant="outline" onClick={loadMore} disabled={loadingMore} className="w-full">
                 {loadingMore ? 'Loading…' : 'Load more'}
