@@ -6,6 +6,20 @@
       "type": "string",
       "description": "Email of venue owner"
     },
+    "org_id": {
+      "type": "string",
+      "description": "ID of the Organization that owns this screen"
+    },
+    "monetization_mode": {
+      "type": "string",
+      "enum": [
+        "marketplace",
+        "self_serve",
+        "hybrid"
+      ],
+      "default": "marketplace",
+      "description": "How this screen monetizes ad slots"
+    },
     "venue_id": {
       "type": "string",
       "description": "Associated venue ID"
