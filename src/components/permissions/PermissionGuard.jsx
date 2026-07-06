@@ -92,7 +92,7 @@ export default function PermissionGuard({
               Go Back
             </Button>
             <Button
-              onClick={() => navigate(createPageUrl("Dashboard"))}
+              onClick={() => navigate(createPageUrl("Workspace"))}
               className="bg-gradient-to-r from-violet-600 to-indigo-600"
             >
               Go to Dashboard

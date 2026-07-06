@@ -36,6 +36,7 @@ export default function AuthGuard({ children, requireAdmin = false, redirectTo }
         const isAdmin = userData?.user_role === "admin" || userData?.role === "admin";
         if (!isAdmin) {
           setStatus("unauthorized");
+          window.location.href = createPageUrl("Workspace");
           return;
         }
       }
@@ -74,8 +75,8 @@ export default function AuthGuard({ children, requireAdmin = false, redirectTo }
   }
 
   if (status === "unauthorized") {
-    // Redirect non-admin to user dashboard
-    window.location.href = createPageUrl("Dashboard");
+    // Redirect non-admin to workspace
+    window.location.href = createPageUrl("Workspace");
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
@@ -125,7 +126,7 @@ export function useAuthGuard(requireAdmin = false) {
         const isAdmin = userData?.user_role === "admin" || userData?.role === "admin";
         setAuthorized(isAdmin);
         if (!isAdmin) {
-          window.location.href = createPageUrl("Dashboard");
+          window.location.href = createPageUrl("Workspace");
         }
       } else {
         setAuthorized(true);

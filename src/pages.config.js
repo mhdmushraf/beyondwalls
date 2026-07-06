@@ -30,6 +30,7 @@ import Sitemap from './pages/Sitemap';
 import SitemapPage from './pages/SitemapPage';
 import SitemapXML from './pages/SitemapXML';
 import Terms from './pages/Terms';
+import Workspace from './pages/Workspace';
 import __Layout from './Layout.jsx';
 
 export const PAGES = {
@@ -65,6 +66,7 @@ export const PAGES = {
     "SitemapPage": SitemapPage,
     "SitemapXML": SitemapXML,
     "Terms": Terms,
+    "Workspace": Workspace,
 };
 
 export const pagesConfig = {

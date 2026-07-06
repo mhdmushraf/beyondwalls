@@ -30,11 +30,7 @@ export default function PublicNav() {
   };
 
   const handleDashboardClick = () => {
-    if (user?.user_role === "admin" || user?.role === "admin") {
-      navigate(createPageUrl("AdminDashboard"));
-    } else {
-      navigate(createPageUrl("Dashboard"));
-    }
+    navigate(createPageUrl("Workspace"));
   };
 
   const navLinks = [
@@ -97,7 +93,7 @@ export default function PublicNav() {
                 variant="ghost" 
                 size="sm"
                 className="hidden sm:flex"
-                onClick={() => base44.auth.redirectToLogin(createPageUrl("Dashboard"))}
+                onClick={() => base44.auth.redirectToLogin(createPageUrl("Workspace"))}
               >
                 Sign In
               </Button>

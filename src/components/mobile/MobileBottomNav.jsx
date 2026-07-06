@@ -1,14 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, Wallet, Settings } from 'lucide-react';
-import { createPageUrl } from '@/utils';
+import { ShoppingCart } from 'lucide-react';
 
 // Tab scroll position storage
 const tabScrollPositions = {
-  '/Dashboard': 0,
-  '/MyBookings': 0,
-  '/Wallet': 0,
-  '/Settings': 0
+  '/MyBookings': 0
 };
 
 export default function MobileBottomNav() {
@@ -17,10 +13,7 @@ export default function MobileBottomNav() {
   const mainRef = useRef(null);
   
   const navItems = [
-    { path: '/Dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { path: '/MyBookings', icon: ShoppingCart, label: 'Bookings' },
-    { path: '/Wallet', icon: Wallet, label: 'Wallet' },
-    { path: '/Settings', icon: Settings, label: 'Settings' }
+    { path: '/MyBookings', icon: ShoppingCart, label: 'Bookings' }
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -43,7 +36,7 @@ export default function MobileBottomNav() {
       }, 0);
     }
   }, [location.pathname]);
-  
+   
   const handleTabClick = (path) => {
     if (isActive(path)) {
       // Double-tap resets to top and tab root

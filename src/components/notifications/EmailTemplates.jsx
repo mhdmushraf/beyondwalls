@@ -280,8 +280,8 @@ ${this.header()}
     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-top: 32px;">
       <tr>
         <td align="center">
-          <a href="https://beyondwalls.ae/MyBookings" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 15px; margin-right: 12px;">View Campaign</a>
-          <a href="https://beyondwalls.ae/AnalyticsDashboard" style="display: inline-block; background-color: #f1f5f9; color: #475569; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 15px;">Track Analytics</a>
+          <a href="https://beyondwalls.ae/workspace" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 15px; margin-right: 12px;">View Campaign</a>
+          <a href="https://beyondwalls.ae/workspace" style="display: inline-block; background-color: #f1f5f9; color: #475569; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 15px;">Track Analytics</a>
         </td>
       </tr>
     </table>
@@ -529,7 +529,7 @@ ${this.footer()}
         </table>
       </div>
       <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-        <tr><td align="center"><a href="https://beyondwalls.ae/MyVenues" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">Go to My Venues →</a></td></tr>
+        <tr><td align="center"><a href="https://beyondwalls.ae/workspace" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">Go to My Venues →</a></td></tr>
       </table>
     `;
     return this.notification("Venue Approved! 🏢", "✅", "linear-gradient(135deg, #059669 0%, #10b981 100%)", body);
@@ -554,7 +554,7 @@ ${this.footer()}
         <p style="margin: 0; color: #065f46; font-size: 14px; line-height: 1.7;">✓ You earn <strong>70%</strong> of every booking automatically added to your wallet.</p>
       </div>
       <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-        <tr><td align="center"><a href="https://beyondwalls.ae/MyScreens" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">View My Screens →</a></td></tr>
+        <tr><td align="center"><a href="https://beyondwalls.ae/workspace" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">View My Screens →</a></td></tr>
       </table>
     `;
     return this.notification("Screen Approved! 📺", "📺", "linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)", body);
@@ -578,7 +578,7 @@ ${this.footer()}
         </table>
       </div>
       <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-        <tr><td align="center"><a href="https://beyondwalls.ae/VenueEarnings" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">View Earnings →</a></td></tr>
+        <tr><td align="center"><a href="https://beyondwalls.ae/workspace" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">View Earnings →</a></td></tr>
       </table>
     `;
     return this.notification("New Ad Booking! 💰", "💰", "linear-gradient(135deg, #d97706 0%, #f59e0b 100%)", body);
@@ -601,7 +601,7 @@ ${this.footer()}
         </table>
       </div>
       <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-        <tr><td align="center"><a href="https://beyondwalls.ae/MyCampaigns" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">Track Campaign →</a></td></tr>
+        <tr><td align="center"><a href="https://beyondwalls.ae/workspace" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">Track Campaign →</a></td></tr>
       </table>
     `;
     return this.notification("Booking Confirmed! 🎯", "🎯", "linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)", body);
@@ -620,7 +620,7 @@ ${this.footer()}
         <p style="margin: 12px 0 0; color: #94a3b8; font-size: 13px;">Please allow 1-3 business days to reflect in your bank account</p>
       </div>
       <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-        <tr><td align="center"><a href="https://beyondwalls.ae/VenueEarnings" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">View Earnings →</a></td></tr>
+        <tr><td align="center"><a href="https://beyondwalls.ae/workspace" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">View Earnings →</a></td></tr>
       </table>
     `;
     return this.notification("Payout Processed! 💸", "💸", "linear-gradient(135deg, #059669 0%, #10b981 100%)", body);
@@ -638,7 +638,7 @@ ${this.footer()}
         <p style="margin: 0; color: #f59e0b; font-size: 40px; font-weight: 700;">AED ${currentBalance}</p>
       </div>
       <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-        <tr><td align="center"><a href="https://beyondwalls.ae/Wallet" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">Top Up Wallet →</a></td></tr>
+        <tr><td align="center"><a href="https://beyondwalls.ae/workspace" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">Top Up Wallet →</a></td></tr>
       </table>
     `;
     return this.notification("Low Balance Alert ⚠️", "⚠️", "linear-gradient(135deg, #d97706 0%, #f59e0b 100%)", body);
@@ -657,7 +657,7 @@ ${this.footer()}
         <p style="margin: 12px 0 0; color: #94a3b8; font-size: 13px;">Your wallet is ready — launch your next campaign now!</p>
       </div>
       <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-        <tr><td align="center"><a href="https://beyondwalls.ae/CreateCampaign" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">Create Campaign →</a></td></tr>
+        <tr><td align="center"><a href="https://beyondwalls.ae/workspace" style="display:inline-block;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">Create Campaign →</a></td></tr>
       </table>
     `;
     return this.notification("Wallet Topped Up! ✅", "💳", "linear-gradient(135deg, #059669 0%, #10b981 100%)", body);
@@ -736,7 +736,7 @@ ${this.footer()}
     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
       <tr>
         <td align="center">
-          <a href="https://beyondwalls.ae/AdminUserApprovals" style="display: inline-block; background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 10px; font-weight: 600; font-size: 16px;">Review & Approve Now</a>
+          <a href="https://beyondwalls.ae/workspace" style="display: inline-block; background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 10px; font-weight: 600; font-size: 16px;">Review & Approve Now</a>
         </td>
       </tr>
     </table>

@@ -25,6 +25,7 @@ import WhatIsDOOHAdvertisingGuide from './pages/WhatIsDOOHAdvertisingGuide';
 import EarnMoneyVenueScreensDubai from './pages/EarnMoneyVenueScreensDubai';
 import DOOHAdvertisingMarketplaceDubai from './pages/DOOHAdvertisingMarketplaceDubai';
 import ScreensOverview from './pages/ScreensOverview';
+import Workspace from './pages/Workspace';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -105,6 +106,15 @@ const AuthenticatedApp = () => {
              }
            />
          ))}
+         <Route path="/workspace" element={
+           <LayoutWrapper currentPageName="Workspace">
+             <MobileRouteTransition>
+               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+                 <Workspace />
+               </Suspense>
+             </MobileRouteTransition>
+           </LayoutWrapper>
+         } />
          <Route path="/ScreensOverview" element={
            <LayoutWrapper currentPageName="ScreensOverview">
              <MobileRouteTransition>
