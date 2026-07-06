@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { MonitorPlay, DollarSign, CreditCard, Megaphone } from 'lucide-react';
 import KpiCard from './KpiCard';
+import EnterpriseFinance from './EnterpriseFinance';
 import { ListSkeleton } from './Skeletons';
 import EmptyState from './EmptyState';
 import { formatAED, formatNumber } from './format';
@@ -94,6 +95,8 @@ export default function EnterpriseDashboard({ user, org }) {
           </div>
         )}
       </div>
+
+      <EnterpriseFinance user={user} org={org} />
     </div>
   );
 }

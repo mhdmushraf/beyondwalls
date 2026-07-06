@@ -1,0 +1,88 @@
+{
+  "name": "Contract",
+  "type": "object",
+  "properties": {
+    "org_id": {
+      "type": "string",
+      "description": "ID of the Organization this contract belongs to"
+    },
+    "price_per_screen": {
+      "type": "number",
+      "description": "Per-screen SaaS fee (AED)"
+    },
+    "screen_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of screens covered by this contract (denormalized from org)"
+    },
+    "billing_cycle": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "annual"
+      ],
+      "default": "monthly",
+      "description": "How often invoices are generated"
+    },
+    "term_start": {
+      "type": "string",
+      "format": "date",
+      "description": "Contract term start date"
+    },
+    "term_end": {
+      "type": "string",
+      "format": "date",
+      "description": "Contract term end date"
+    },
+    "invoice_based": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether billing is invoice-based (no card gateway)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "expired",
+        "cancelled"
+      ],
+      "default": "draft",
+      "description": "Contract lifecycle status"
+    }
+  },
+  "required": [
+    "org_id"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.org_id": "{{user.current_org_id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.org_id": "{{user.current_org_id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
