@@ -29,11 +29,11 @@ export default function MobileBottomNav({ navItems = [] }) {
             className="flex flex-col items-center justify-center gap-1 flex-1 min-h-[56px] min-w-[44px] py-2"
           >
             <item.icon
-              className={`w-5 h-5 ${isActive(item.path) ? 'text-[#6366f1]' : 'text-slate-400'}`}
+              className={`w-5 h-5 ${isActive(item.path) ? 'text-primary' : 'text-slate-400'}`}
             />
             <span
               className={`text-[10px] leading-tight truncate max-w-full px-1 ${
-                isActive(item.path) ? 'text-[#6366f1] font-medium' : 'text-slate-400'
+                isActive(item.path) ? 'text-primary font-medium' : 'text-slate-400'
               }`}
             >
               {item.label}
@@ -65,11 +65,11 @@ export default function MobileBottomNav({ navItems = [] }) {
                 className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl hover:bg-slate-50 min-h-[44px]"
               >
                 <item.icon
-                  className={`w-6 h-6 ${isActive(item.path) ? 'text-[#6366f1]' : 'text-slate-500'}`}
+                  className={`w-6 h-6 ${isActive(item.path) ? 'text-primary' : 'text-slate-500'}`}
                 />
                 <span
                   className={`text-xs ${
-                    isActive(item.path) ? 'text-[#6366f1] font-medium' : 'text-slate-500'
+                    isActive(item.path) ? 'text-primary font-medium' : 'text-slate-500'
                   }`}
                 >
                   {item.label}

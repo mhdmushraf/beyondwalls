@@ -33,7 +33,7 @@ export default function WorkspaceHeader({ org, user }) {
   return (
     <div className="flex items-center justify-between gap-4">
       <div className="flex items-center gap-3 min-w-0">
-        <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-[#6366f1] to-[#6366f1] flex items-center justify-center flex-shrink-0 overflow-hidden shadow-lg shadow-indigo-500/20">
+        <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center flex-shrink-0 overflow-hidden shadow-lg shadow-primary/20">
           {org.logo_url ? (
             <img src={org.logo_url} alt={org.name} className="w-full h-full object-cover" />
           ) : (

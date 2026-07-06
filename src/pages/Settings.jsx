@@ -11,7 +11,7 @@ function NoOrgState() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
-        <div className="w-14 h-14 bg-gradient-to-br from-[#6366f1] to-[#6366f1] rounded-xl flex items-center justify-center mx-auto mb-5">
+        <div className="w-14 h-14 bg-gradient-to-br from-primary to-primary rounded-xl flex items-center justify-center mx-auto mb-5">
           <Building2 className="w-7 h-7 text-white" />
         </div>
         <h1 className="text-xl font-bold text-slate-900 mb-2">No organization found</h1>

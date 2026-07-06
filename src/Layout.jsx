@@ -128,7 +128,7 @@ const publicPages = [
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#6366f1] to-[#6366f1] rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+          <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
             <MonitorPlay className="w-6 h-6 text-white" />
           </div>
           <p className="text-slate-500">Loading...</p>
@@ -143,7 +143,7 @@ const publicPages = [
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#6366f1] to-[#6366f1] rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+          <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
             <MonitorPlay className="w-6 h-6 text-white" />
           </div>
           <p className="text-slate-500">Redirecting to login...</p>
@@ -159,7 +159,7 @@ const publicPages = [
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#6366f1] to-[#6366f1] rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+          <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
             <MonitorPlay className="w-6 h-6 text-white" />
           </div>
           <p className="text-slate-500">Completing profile...</p>
@@ -174,7 +174,7 @@ const publicPages = [
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#6366f1] to-[#6366f1] rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+          <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
             <MonitorPlay className="w-6 h-6 text-white" />
           </div>
           <p className="text-slate-500">Checking approval status...</p>
@@ -200,7 +200,7 @@ const publicPages = [
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#6366f1] to-[#6366f1] rounded-xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary rounded-xl flex items-center justify-center mx-auto mb-4">
             <Shield className="w-6 h-6 text-white" />
           </div>
           <p className="text-slate-500">Access denied. Redirecting...</p>
@@ -226,10 +226,10 @@ const publicPages = [
           <div className="w-10" />
         )}
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-[#6366f1] to-[#6366f1] rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary rounded-lg flex items-center justify-center">
             <MonitorPlay className="w-4 h-4 text-white" />
           </div>
-          <span className="font-bold text-lg font-heading bg-gradient-to-r from-[#6366f1] to-[#6366f1] bg-clip-text text-transparent select-none">
+          <span className="font-bold text-lg font-heading bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent select-none">
             Beyond Walls
           </span>
         </div>
@@ -244,10 +244,10 @@ const publicPages = [
           {/* Logo */}
           <div className="h-16 px-6 flex items-center justify-between border-b border-slate-100">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#6366f1] to-[#6366f1] rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/25">
+              <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/25">
                 <MonitorPlay className="w-5 h-5 text-white" />
               </div>
-              <span className="font-bold text-xl font-heading bg-gradient-to-r from-[#6366f1] to-[#6366f1] bg-clip-text text-transparent">
+              <span className="font-bold text-xl font-heading bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent">
                 Beyond Walls
               </span>
             </div>
@@ -262,7 +262,7 @@ const publicPages = [
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`select-none flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-sm sm:text-base font-medium transition-all duration-200 ${isActive ? 'bg-gradient-to-r from-[#6366f1] to-[#6366f1] text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
+                  className={`select-none flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-sm sm:text-base font-medium transition-all duration-200 ${isActive ? 'bg-gradient-to-r from-primary to-primary text-white shadow-lg shadow-primary/25' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
                 >
                   <item.icon className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 ${isActive ? 'text-white' : 'text-slate-500'}`} />
                   <span className="truncate">{item.label}</span>

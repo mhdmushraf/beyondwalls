@@ -13,7 +13,7 @@ export default function MarketplaceCard({ screen, venue }) {
       <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
         <div className="aspect-video bg-slate-100 relative">
           {screen.screen_image_url ? (
-            <img src={screen.screen_image_url} alt={screen.name} className="w-full h-full object-cover" />
+            <img src={screen.screen_image_url} alt={screen.name} loading="lazy" className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
               <Maximize className="w-8 h-8 text-slate-300" />
