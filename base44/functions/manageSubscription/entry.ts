@@ -105,16 +105,26 @@ Deno.serve(async (req) => {
     //   For revenue_share orgs, no charge.
     // =================================================================
     if (action === 'add_screen') {
-      const { screen_name, venue_id } = body;
+      const { screen_name, venue_id, location_description, width_px, height_px, monetization_mode } = body;
       if (!screen_name || !venue_id) {
         return Response.json({ error: 'Missing required fields: screen_name, venue_id' }, { status: 400 });
       }
+
+      // Generate a unique setup code (BW-XXXXXXXX format, ambiguity-free chars)
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let code = 'BW-';
+      for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];
 
       const screen = await base44.asServiceRole.entities.Screen.create({
         name: screen_name,
         venue_id,
         org_id,
         org_member_user_ids: org.member_user_ids || [],
+        location_description: location_description || null,
+        width_px: width_px || null,
+        height_px: height_px || null,
+        monetization_mode: monetization_mode || 'marketplace',
+        setup_code: code,
         status: 'pending',
         approval_status: 'pending',
       });
@@ -135,6 +145,7 @@ Deno.serve(async (req) => {
 
       return Response.json({
         screen_id: screen.id,
+        setup_code: screen.setup_code,
         subscription_updated: subscriptionUpdated,
       });
     }
