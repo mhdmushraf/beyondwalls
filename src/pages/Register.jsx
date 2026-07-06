@@ -1,190 +1,326 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { createPageUrl } from "@/utils";
+import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import BrandPanel from "@/components/auth/BrandPanel";
 import {
   ArrowRight,
   ArrowLeft,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
   User,
-  Building2,
   Megaphone,
-  CheckCircle2,
-  MonitorPlay,
+  Building2,
+  Briefcase,
+  Users,
+  Check,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
-import AuthCardLayout from "@/components/auth/AuthCardLayout";
+
+const ACCOUNT_TYPES = [
+  { key: "advertiser", label: "Advertiser", subtitle: "Run ads on screens", icon: Megaphone },
+  { key: "venue", label: "Venue owner", subtitle: "Earn from your screens", icon: Building2 },
+  { key: "enterprise", label: "Enterprise", subtitle: "Manage many screens", icon: Briefcase },
+  { key: "agency", label: "Agency", subtitle: "Manage clients", icon: Users },
+];
+
+const STEP2_BRAND = {
+  advertiser: { title: "You're joining as an Advertiser.", body: "One step and you're in — no approval wait." },
+  venue: { title: "You're joining as a Venue Owner.", body: "One step and you're in — no approval wait." },
+  enterprise: { title: "You're joining as an Enterprise.", body: "One step and you're in — no approval wait." },
+  agency: { title: "You're joining as an Agency.", body: "One step and you're in — no approval wait." },
+};
+
+const inputClass =
+  "w-full h-[48px] pl-11 pr-4 rounded-xl border bg-[#F7F8FC] border-[#E3E6F1] text-[16px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#6D3BF5] focus:border-transparent transition-all";
 
 export default function Register() {
   const [step, setStep] = useState(1);
-  const [accountType, setAccountType] = useState("individual");
-  const [userRole, setUserRole] = useState("advertiser");
+  const [accountType, setAccountType] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleContinue = async () => {
-    // Store selections in sessionStorage for after auth
-    sessionStorage.setItem("registration_account_type", accountType);
-    sessionStorage.setItem("registration_user_role", userRole);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
 
-    // Use Base44's built-in auth redirect which handles both login and signup
-    base44.auth.redirectToLogin(createPageUrl("CompleteProfile") + "?signup=true");
+    if (password.length < 8) {
+      setError("Use at least 8 characters.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await base44.auth.register({ email, password });
+      await base44.auth.loginViaEmailPassword(email, password);
+      try {
+        await base44.auth.updateMe({ full_name: fullName, account_type: accountType });
+      } catch (e) {
+        console.warn("Could not set profile fields:", e);
+      }
+      navigate("/Workspace");
+    } catch (err) {
+      const msg = (err.response?.data?.detail || err.message || "").toString();
+      if (/already|exists|registered|in use/i.test(msg)) {
+        setError("An account with this email already exists — sign in instead.");
+      } else if (/weak|short|8 character|password/i.test(msg)) {
+        setError("Use at least 8 characters.");
+      } else {
+        setError("Something went wrong — please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
+  const brandContent =
+    step === 1
+      ? {
+          title: "Join the UAE's screen advertising marketplace.",
+          body: "Advertisers, venue owners, malls and agencies — one platform, built for how you work.",
+        }
+      : STEP2_BRAND[accountType] || STEP2_BRAND.advertiser;
+
   return (
-    <>
-      <SEOHead {...PAGE_SEO.register} />
-      <AuthCardLayout>
-        {/* Progress */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className={`flex-1 h-1.5 rounded-full ${step >= 1 ? "bg-violet-600" : "bg-slate-200"}`} />
-          <div className={`flex-1 h-1.5 rounded-full ${step >= 2 ? "bg-violet-600" : "bg-slate-200"}`} />
-        </div>
-
-        {step === 1 && (
-          <div>
-            <div className="text-center mb-6">
-              <h1 className="text-2xl font-bold text-slate-900">Get your screens earning</h1>
-              <p className="text-sm text-slate-500 mt-1">Choose your account type to continue</p>
-            </div>
-
-            <RadioGroup value={accountType} onValueChange={setAccountType} className="space-y-3">
-              <Label
-                htmlFor="individual"
-                className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  accountType === "individual"
-                    ? "border-violet-600 bg-violet-50"
-                    : "border-slate-200 hover:border-slate-300"
-                }`}
-              >
-                <RadioGroupItem value="individual" id="individual" className="sr-only" />
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                  accountType === "individual" ? "bg-violet-600" : "bg-slate-100"
-                }`}>
-                  <User className={`w-5 h-5 ${accountType === "individual" ? "text-white" : "text-slate-500"}`} />
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-slate-900 text-sm">Individual</p>
-                  <p className="text-xs text-slate-500">Personal account with Emirates ID</p>
-                </div>
-                {accountType === "individual" && <CheckCircle2 className="w-5 h-5 text-violet-600" />}
-              </Label>
-
-              <Label
-                htmlFor="company"
-                className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  accountType === "company"
-                    ? "border-violet-600 bg-violet-50"
-                    : "border-slate-200 hover:border-slate-300"
-                }`}
-              >
-                <RadioGroupItem value="company" id="company" className="sr-only" />
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                  accountType === "company" ? "bg-violet-600" : "bg-slate-100"
-                }`}>
-                  <Building2 className={`w-5 h-5 ${accountType === "company" ? "text-white" : "text-slate-500"}`} />
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-slate-900 text-sm">Company</p>
-                  <p className="text-xs text-slate-500">Business account with trade license</p>
-                </div>
-                {accountType === "company" && <CheckCircle2 className="w-5 h-5 text-violet-600" />}
-              </Label>
-            </RadioGroup>
-
-            <Button
-              onClick={() => setStep(2)}
-              className="w-full h-12 mt-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700"
-            >
-              Continue
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
+    <div className="bw-auth-shell">
+      <BrandPanel title={brandContent.title} body={brandContent.body} />
+      <div className="bw-form-panel">
+        <div className="bw-grab-handle" />
+        <div className="bw-form-inner">
+          {/* Progress */}
+          <div className="flex items-center gap-3 mb-6">
+            <div
+              className={`flex-1 h-1.5 rounded-full transition-colors ${
+                step >= 1 ? "bg-[#6D3BF5]" : "bg-slate-200"
+              }`}
+            />
+            <div
+              className={`flex-1 h-1.5 rounded-full transition-colors ${
+                step >= 2 ? "bg-[#6D3BF5]" : "bg-slate-200"
+              }`}
+            />
           </div>
-        )}
 
-        {step === 2 && (
-          <div>
-            <div className="text-center mb-6">
-              <h1 className="text-2xl font-bold text-slate-900">Get your screens earning</h1>
-              <p className="text-sm text-slate-500 mt-1">Choose how you want to use BeyondWalls</p>
-            </div>
+          {step === 1 && (
+            <>
+              <div className="mb-6">
+                <h1
+                  className="text-[26px] font-semibold text-slate-900 tracking-tight"
+                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                >
+                  Create your account
+                </h1>
+                <p className="text-sm text-slate-500 mt-1.5">How will you use Beyond Walls?</p>
+              </div>
 
-            <RadioGroup value={userRole} onValueChange={setUserRole} className="space-y-3">
-              <Label
-                htmlFor="advertiser"
-                className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  userRole === "advertiser"
-                    ? "border-violet-600 bg-violet-50"
-                    : "border-slate-200 hover:border-slate-300"
-                }`}
-              >
-                <RadioGroupItem value="advertiser" id="advertiser" className="sr-only" />
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                  userRole === "advertiser" ? "bg-violet-600" : "bg-slate-100"
-                }`}>
-                  <Megaphone className={`w-5 h-5 ${userRole === "advertiser" ? "text-white" : "text-slate-500"}`} />
+              {error && (
+                <div className="mb-5 px-4 py-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm">
+                  {error}
                 </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-slate-900 text-sm">Advertiser</p>
-                  <p className="text-xs text-slate-500">Run ads on screens across venues</p>
-                </div>
-                {userRole === "advertiser" && <CheckCircle2 className="w-5 h-5 text-violet-600" />}
-              </Label>
+              )}
 
-              <Label
-                htmlFor="venue_owner"
-                className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  userRole === "venue_owner"
-                    ? "border-violet-600 bg-violet-50"
-                    : "border-slate-200 hover:border-slate-300"
-                }`}
-              >
-                <RadioGroupItem value="venue_owner" id="venue_owner" className="sr-only" />
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                  userRole === "venue_owner" ? "bg-violet-600" : "bg-slate-100"
-                }`}>
-                  <Building2 className={`w-5 h-5 ${userRole === "venue_owner" ? "text-white" : "text-slate-500"}`} />
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-slate-900 text-sm">Venue Owner</p>
-                  <p className="text-xs text-slate-500">Monetize screens at your venue</p>
-                </div>
-                {userRole === "venue_owner" && <CheckCircle2 className="w-5 h-5 text-violet-600" />}
-              </Label>
-            </RadioGroup>
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                {ACCOUNT_TYPES.map(({ key, label, subtitle, icon: Icon }) => {
+                  const selected = accountType === key;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setAccountType(key)}
+                      className={`relative p-4 rounded-xl border-2 text-left transition-all min-h-[110px] ${
+                        selected
+                          ? "border-[#6D3BF5] bg-violet-50"
+                          : "border-[#E3E6F1] bg-[#F7F8FC] hover:border-slate-300"
+                      }`}
+                    >
+                      {selected && (
+                        <span className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-[#6D3BF5] flex items-center justify-center">
+                          <Check className="w-3 h-3 text-white" />
+                        </span>
+                      )}
+                      <Icon
+                        className={`w-6 h-6 mb-3 ${selected ? "text-[#6D3BF5]" : "text-slate-400"}`}
+                      />
+                      <p className="font-semibold text-slate-900 text-sm">{label}</p>
+                      <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>
+                    </button>
+                  );
+                })}
+              </div>
 
-            <Button
-              onClick={handleContinue}
-              className="w-full h-12 mt-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700"
-            >
-              Create Account
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
+              <p className="text-xs text-slate-400 mb-6 leading-relaxed">
+                Enterprise &amp; agencies: 0% commission on a per-screen plan. Venue owners join free
+                and keep 70%.
+              </p>
 
-            <button
-              onClick={() => setStep(1)}
-              className="w-full inline-flex items-center justify-center text-sm text-slate-500 hover:text-slate-700 mt-3"
-            >
-              <ArrowLeft className="w-4 h-4 mr-1" />
-              Back
-            </button>
-
-            <p className="text-center text-sm text-slate-500 mt-4">
-              Already have an account?{" "}
               <button
-                onClick={() => base44.auth.redirectToLogin(createPageUrl("Dashboard"))}
-                className="text-violet-600 font-medium hover:underline"
+                type="button"
+                onClick={() => setStep(2)}
+                disabled={!accountType}
+                className="w-full h-[52px] rounded-xl bg-[#6D3BF5] text-white font-semibold text-[16px] hover:bg-[#5b2de0] active:bg-[#4a24c0] disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
-                Sign in
+                Continue
+                <ArrowRight className="w-[18px] h-[18px]" />
               </button>
-            </p>
-          </div>
-        )}
 
-        <p className="text-center text-xs text-slate-400 mt-6">
-          🔒 Your data is secure with us. We never share your information.
-        </p>
-      </AuthCardLayout>
-    </>
+              <p className="text-center text-sm text-slate-500 mt-6">
+                Already have an account?{" "}
+                <Link to="/login" className="text-[#6D3BF5] font-semibold hover:underline">
+                  Sign in
+                </Link>
+              </p>
+            </>
+          )}
+
+          {step === 2 && (
+            <>
+              <div className="mb-6">
+                <h1
+                  className="text-[26px] font-semibold text-slate-900 tracking-tight"
+                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                >
+                  Your details
+                </h1>
+                <p className="text-sm text-slate-500 mt-1.5">Create your login to get started.</p>
+              </div>
+
+              {error && (
+                <div className="mb-5 px-4 py-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm">
+                  {error}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label
+                    htmlFor="reg-name"
+                    className="block text-sm font-medium text-slate-700 mb-1.5"
+                  >
+                    Full name
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-slate-400" />
+                    <input
+                      id="reg-name"
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="Jane Doe"
+                      className={inputClass}
+                      required
+                      disabled={loading}
+                      autoComplete="name"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="reg-email"
+                    className="block text-sm font-medium text-slate-700 mb-1.5"
+                  >
+                    Work email
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-slate-400" />
+                    <input
+                      id="reg-email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@company.com"
+                      className={inputClass}
+                      required
+                      disabled={loading}
+                      autoComplete="email"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="reg-password"
+                    className="block text-sm font-medium text-slate-700 mb-1.5"
+                  >
+                    Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-slate-400" />
+                    <input
+                      id="reg-password"
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Min. 8 characters"
+                      className={`${inputClass} pr-12`}
+                      required
+                      disabled={loading}
+                      autoComplete="new-password"
+                      minLength={8}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="w-[18px] h-[18px]" />
+                      ) : (
+                        <Eye className="w-[18px] h-[18px]" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full h-[52px] rounded-xl bg-[#6D3BF5] text-white font-semibold text-[16px] hover:bg-[#5b2de0] active:bg-[#4a24c0] disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                >
+                  {loading ? (
+                    <>
+                      <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Creating account…
+                    </>
+                  ) : (
+                    <>
+                      Create account &amp; enter
+                      <ArrowRight className="w-[18px] h-[18px]" />
+                    </>
+                  )}
+                </button>
+              </form>
+
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                className="w-full flex items-center justify-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mt-4 h-[44px]"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back
+              </button>
+
+              <p className="text-center text-xs text-slate-400 mt-6 leading-relaxed">
+                By continuing you agree to our{" "}
+                <Link to="/Terms" className="text-[#6D3BF5] hover:underline">
+                  Terms
+                </Link>{" "}
+                and{" "}
+                <Link to="/Privacy" className="text-[#6D3BF5] hover:underline">
+                  Privacy Policy
+                </Link>
+                .
+              </p>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

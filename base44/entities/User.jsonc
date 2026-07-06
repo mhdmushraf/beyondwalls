@@ -6,7 +6,11 @@
       "type": "string",
       "enum": [
         "individual",
-        "company"
+        "company",
+        "advertiser",
+        "venue",
+        "enterprise",
+        "agency"
       ],
       "description": "Type of account"
     },
