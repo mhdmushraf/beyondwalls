@@ -32,6 +32,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getRoleNavItems } from "@/components/shell/navConfig";
+import MobileBottomNav from "@/components/shell/MobileBottomNav";
 
 const NOINDEX_PAGES = new Set([
   "ScreenPlayer"
@@ -42,9 +44,10 @@ export default function Layout({ children, currentPageName }) {
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [adminMenuOpen, setAdminMenuOpen] = useState(true);
+  const [org, setOrg] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const isRootRoute = location.pathname === '/';
 
   useEffect(() => {
@@ -55,6 +58,17 @@ export default function Layout({ children, currentPageName }) {
     try {
       const userData = await base44.auth.me();
       setUser(userData);
+      if (userData && userData.role !== "admin") {
+        try {
+          const orgId = userData.current_org_id;
+          if (orgId) {
+            const orgData = await base44.entities.Organization.get(orgId);
+            setOrg(orgData);
+          }
+        } catch (e) {
+          console.log("Could not load org");
+        }
+      }
     } catch (e) {
       console.log("User not logged in");
     } finally {
@@ -67,7 +81,7 @@ export default function Layout({ children, currentPageName }) {
   };
 
   const getNavItems = () => {
-    return [];
+    return getRoleNavItems(user, org);
   };
 
 // Public pages without sidebar - no auth required
@@ -195,6 +209,8 @@ const publicPages = [
     );
   }
 
+  const navItems = getNavItems();
+
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Mobile Header */}
@@ -207,9 +223,7 @@ const publicPages = [
             <ArrowLeft className="w-6 h-6 text-slate-700" />
           </button>
         ) : (
-          <button onClick={() => setSidebarOpen(true)} className="select-none p-2 -ml-2">
-            <Menu className="w-6 h-6 text-slate-700" />
-          </button>
+          <div className="w-10" />
         )}
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-gradient-to-br from-[#6366f1] to-[#6366f1] rounded-lg flex items-center justify-center">
@@ -224,21 +238,8 @@ const publicPages = [
 
 
 
-      {/* Mobile Sidebar Overlay */}
-      {sidebarOpen && (
-        <div 
-          className="lg:hidden fixed inset-0 bg-black/50 z-50"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
-      <aside className={`
-        fixed top-0 left-0 h-full w-[280px] sm:w-72 bg-white border-r border-slate-200 z-50
-        transform transition-transform duration-300 ease-in-out
-        lg:translate-x-0
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-      `}>
+      {/* Sidebar (desktop only) */}
+      <aside className="hidden lg:flex fixed top-0 left-0 h-full w-[280px] sm:w-72 bg-white border-r border-slate-200 z-50 flex-col">
         <div className="h-full flex flex-col">
           {/* Logo */}
           <div className="h-16 px-6 flex items-center justify-between border-b border-slate-100">
@@ -250,81 +251,21 @@ const publicPages = [
                 Beyond Walls
               </span>
             </div>
-            <button 
-              onClick={() => setSidebarOpen(false)}
-              className="lg:hidden p-1 hover:bg-slate-100 rounded-lg"
-            >
-              <X className="w-5 h-5 text-slate-500" />
-            </button>
+
           </div>
 
           {/* Navigation */}
           <nav className="flex-1 px-3 sm:px-4 py-4 sm:py-6 space-y-1 overflow-y-auto">
-            {getNavItems().map((item) => {
-              if (item.isGroup) {
-                const isChildActive = item.children?.some(child => currentPageName === child.page);
-                return (
-                  <div key={item.name}>
-                    <button
-                      onClick={() => setAdminMenuOpen(!adminMenuOpen)}
-                      className={`
-                        w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200
-                        ${isChildActive 
-                          ? 'bg-indigo-100 text-[#6366f1]' 
-                          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                        }
-                      `}
-                    >
-                      <div className="flex items-center gap-3">
-                        <item.icon className={`w-5 h-5 ${isChildActive ? 'text-[#6366f1]' : 'text-slate-500'}`} />
-                        {item.name}
-                      </div>
-                      <ChevronRight className={`w-4 h-4 transition-transform ${adminMenuOpen ? 'rotate-90' : ''}`} />
-                    </button>
-                    {adminMenuOpen && (
-                      <div className="ml-4 mt-1 space-y-1 border-l-2 border-slate-200 pl-4">
-                        {item.children.map((child) => {
-                          const isActive = currentPageName === child.page;
-                          return (
-                            <Link
-                              key={child.page}
-                              to={createPageUrl(child.page)}
-                              onClick={() => setSidebarOpen(false)}
-                              className={`
-                                flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200
-                                ${isActive 
-                                  ? 'bg-gradient-to-r from-[#6366f1] to-[#6366f1] text-white shadow-md' 
-                                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                                }
-                              `}
-                            >
-                              <child.icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-500'}`} />
-                              {child.name}
-                            </Link>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                );
-              }
-              
-              const isActive = currentPageName === item.page;
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.path;
               return (
                 <Link
-                  key={item.page}
-                  to={createPageUrl(item.page)}
-                  onClick={() => setSidebarOpen(false)}
-                  className={`
-                    select-none flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-sm sm:text-base font-medium transition-all duration-200
-                    ${isActive 
-                      ? 'bg-gradient-to-r from-[#6366f1] to-[#6366f1] text-white shadow-lg shadow-indigo-500/25' 
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                    }
-                  `}
+                  key={item.path}
+                  to={item.path}
+                  className={`select-none flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-sm sm:text-base font-medium transition-all duration-200 ${isActive ? 'bg-gradient-to-r from-[#6366f1] to-[#6366f1] text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
                 >
                   <item.icon className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 ${isActive ? 'text-white' : 'text-slate-500'}`} />
-                  <span className="truncate">{item.name}</span>
+                  <span className="truncate">{item.label}</span>
                 </Link>
               );
             })}
@@ -370,6 +311,8 @@ const publicPages = [
           {children}
         </div>
       </main>
+
+      <MobileBottomNav navItems={navItems} />
     </div>
   );
 }
