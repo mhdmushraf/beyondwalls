@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
   ArrowLeft, Wifi, WifiOff, Play, Pause, RotateCcw, RefreshCw,
-  MonitorPlay, Building2, Activity, Square, Eye
+  MonitorPlay, Building2, Activity, Square
 } from "lucide-react";
 
 function isOnline(screen) {
@@ -166,9 +166,6 @@ export default function ScreensOverview() {
                       {online
                         ? <Badge className="bg-emerald-100 text-emerald-700 border-0 text-xs">Online</Badge>
                         : <Badge className="bg-slate-100 text-slate-500 border-0 text-xs">Offline</Badge>}
-                      <Button size="icon" variant="ghost" onClick={() => navigate(`/LiveScreenMonitorPage?id=${screen.id}`)} className="w-7 h-7 text-slate-400 hover:text-violet-600">
-                        <Eye className="w-3.5 h-3.5" />
-                      </Button>
                       <Button size="icon" variant="ghost" onClick={() => sendCommand([screen.id], "resume", "Play")} disabled={!!commandLoading} className="w-7 h-7 text-slate-400 hover:text-emerald-600">
                         <Play className="w-3.5 h-3.5" />
                       </Button>
@@ -198,9 +195,6 @@ export default function ScreensOverview() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-slate-800 truncate">{screen.name}</p>
                     </div>
-                    <Button size="sm" variant="ghost" onClick={() => navigate(`/LiveScreenMonitorPage?id=${screen.id}`)} className="text-violet-600 text-xs">
-                      <Eye className="w-3.5 h-3.5 mr-1" /> Monitor
-                    </Button>
                   </div>
                 );
               })}

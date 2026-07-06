@@ -97,7 +97,7 @@ export default function NotificationMonitor({ user }) {
               type: "low_balance",
               title: "Low Wallet Balance",
               message: `Your wallet balance (AED ${balance}) is below AED ${threshold}. Please top up to continue advertising.`,
-              action_url: createPageUrl("Wallet")
+              action_url: createPageUrl("Workspace")
             });
             
             queryClient.invalidateQueries({ queryKey: ["realtime-notifications"] });

@@ -92,13 +92,13 @@ export default function UserNotifications({ user }) {
       case "campaign_rejected":
         return createPageUrl("MyBookings");
       case "new_booking":
-        return createPageUrl("MyScreens");
+        return createPageUrl("Workspace");
       case "low_balance":
       case "payout_completed":
       case "withdrawal_processed":
-        return createPageUrl("Wallet");
+        return createPageUrl("Workspace");
       case "screen_offline":
-        return createPageUrl("MyScreens");
+        return createPageUrl("Workspace");
       default:
         return null;
     }
