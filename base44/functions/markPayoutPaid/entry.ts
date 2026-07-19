@@ -26,30 +26,37 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Payout request not found' }, { status: 404 });
     }
 
-    if (!['pending', 'approved'].includes(pr.status)) {
-      return Response.json(
-        { error: `Payout request is not payable (status: ${pr.status})` },
-        { status: 409 }
-      );
-    }
-
     const reference = `payout_${pr.id}`;
 
     // --- Idempotency: if a payout Transaction already exists for this request, return early.
     // reference is deterministic (payout_<pr.id>), so we check it unconditionally — this also
     // covers the partial-failure case where the Transaction was created but the PR.reference_id
-    // update never landed.
+    // update never landed. If that happened, self-heal the request status here.
     const existing = await base44.asServiceRole.entities.Transaction.filter({
       reference_id: reference,
       type: 'payout',
     });
     if (existing.length > 0) {
+      if (pr.status !== 'paid') {
+        await base44.asServiceRole.entities.PayoutRequest.update(pr.id, {
+          status: 'paid',
+          reference_id: reference,
+          processed_date: pr.processed_date || new Date().toISOString(),
+        });
+      }
       return Response.json({
         payout_request_id: pr.id,
         transaction_id: existing[0].id,
         amount: pr.amount,
         already_paid: true,
       });
+    }
+
+    if (!['pending', 'approved'].includes(pr.status)) {
+      return Response.json(
+        { error: `Payout request is not payable (status: ${pr.status})` },
+        { status: 409 }
+      );
     }
 
     // --- Create the ledger row FIRST, before touching the request status ---
