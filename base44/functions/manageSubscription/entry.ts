@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+import { generateSetupCode } from '../../shared/screenCodes.ts';
 
 // =============================================================================
 // PAYMENTS CONFIG — mirrors createBookingCheckout. Single source of truth for
@@ -106,18 +107,15 @@ Deno.serve(async (req) => {
     // =================================================================
     if (action === 'add_screen') {
       const { screen_name, venue_id, location_description, width_px, height_px, monetization_mode } = body;
-      if (!screen_name || !venue_id) {
-        return Response.json({ error: 'Missing required fields: screen_name, venue_id' }, { status: 400 });
+      if (!screen_name) {
+        return Response.json({ error: 'Missing required field: screen_name' }, { status: 400 });
       }
 
-      // Generate a unique setup code (BW-XXXXXXXX format, ambiguity-free chars)
-      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-      let code = 'BW-';
-      for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];
+      const code = generateSetupCode();
 
       const screen = await base44.asServiceRole.entities.Screen.create({
         name: screen_name,
-        venue_id,
+        venue_id: venue_id || null,
         org_id,
         org_member_user_ids: org.member_user_ids || [],
         location_description: location_description || null,

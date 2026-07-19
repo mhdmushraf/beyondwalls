@@ -77,17 +77,11 @@ export default function AddScreenDialog({ open, onOpenChange, user, org, onScree
         venueId = venue.id;
       }
 
-      if (!venueId) {
-        toast.error('Please select or create a venue');
-        setSubmitting(false);
-        return;
-      }
-
       const res = await base44.functions.invoke('manageSubscription', {
         action: 'add_screen',
         org_id: org.id,
         screen_name: screenName.trim(),
-        venue_id: venueId,
+        venue_id: venueId || null,
       });
 
       toast.success('Screen added', {

@@ -13,6 +13,10 @@
       },
       "description": "Denormalized from parent Organization.member_user_ids \u2014 drives RLS on this screen. Updated when the screen is created or when org membership changes."
     },
+    "site_id": {
+      "type": "string",
+      "description": "ID of the Site this screen belongs to (enterprise grouping). Optional \u2014 screens may belong to a Venue, a Site, or neither."
+    },
     "monetization_mode": {
       "type": "string",
       "enum": [
@@ -25,7 +29,7 @@
     },
     "venue_id": {
       "type": "string",
-      "description": "Associated venue ID"
+      "description": "Associated venue ID (optional \u2014 enterprise screens may use site_id instead)"
     },
     "name": {
       "type": "string",
@@ -214,8 +218,7 @@
     }
   },
   "required": [
-    "name",
-    "venue_id"
+    "name"
   ],
   "rls": {
     "read": {

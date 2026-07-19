@@ -77,13 +77,11 @@ export default function AddScreen() {
         venueId = venue.id;
       } catch { toast.error('Failed to create venue'); return; }
     }
-    if (!venueId) { toast.error('Please select or create a venue'); return; }
-
     setSubmitting(true);
     try {
       const preset = SIZE_PRESETS[selectedSize];
       const res = await base44.functions.invoke('manageSubscription', {
-        action: 'add_screen', org_id: org.id, screen_name: name.trim(), venue_id: venueId,
+        action: 'add_screen', org_id: org.id,         screen_name: name.trim(), venue_id: venueId || null,
         location_description: location.trim() || null,
         width_px: preset.width, height_px: preset.height, monetization_mode: monetizationMode,
       });
@@ -129,7 +127,7 @@ export default function AddScreen() {
         </div>
 
         <div className="space-y-2">
-          <Label>Venue</Label>
+          <Label>Venue (optional)</Label>
           {venues.length > 0 && selectedVenueId !== '' ? (
             <>
               <select value={selectedVenueId} onChange={(e) => setSelectedVenueId(e.target.value)}
