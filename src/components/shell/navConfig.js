@@ -60,13 +60,11 @@ const AGENCY_NAV = [
 ];
 
 const ADMIN_NAV = [
-  { label: 'Overview', icon: LayoutDashboard, path: '/workspace' },
   { label: 'Organizations', icon: Building2, path: '/organizations' },
   { label: 'Users', icon: Users, path: '/users' },
   { label: 'Approvals', icon: ClipboardCheck, path: '/approvals' },
   { label: 'Finance', icon: DollarSign, path: '/finance' },
   { label: 'Network', icon: Network, path: '/network' },
-  SETTINGS,
 ];
 
 const NAV_BY_TYPE = {
@@ -78,7 +76,11 @@ const NAV_BY_TYPE = {
 
 export function getRoleNavItems(user, org) {
   if (!user) return [];
-  if (user.role === 'admin') return ADMIN_NAV;
+  const isAdmin = user.role === 'admin' || user.user_role === 'admin';
   const type = org?.type || user.account_type;
-  return NAV_BY_TYPE[type] || ADVERTISER_NAV;
+  const base = NAV_BY_TYPE[type] || ADVERTISER_NAV;
+  if (!isAdmin) return base;
+  // Admin: segment nav, then admin tools, with Settings kept last.
+  const withoutSettings = base.filter(i => i.path !== '/settings');
+  return [...withoutSettings, { type: 'divider', label: 'Admin' }, ...ADMIN_NAV, SETTINGS];
 }

@@ -9,11 +9,13 @@ export default function MobileBottomNav({ navItems = [] }) {
   const [moreOpen, setMoreOpen] = useState(false);
   const location = useLocation();
 
-  if (navItems.length === 0) return null;
+  // Filter out non-link entries (e.g. divider headings) — desktop-only visual separators
+  const linkItems = navItems.filter(i => i.type !== 'divider');
+  if (linkItems.length === 0) return null;
 
-  const hasMore = navItems.length > MAX_ITEMS;
-  const visible = hasMore ? navItems.slice(0, MAX_ITEMS - 1) : navItems;
-  const overflow = hasMore ? navItems.slice(MAX_ITEMS - 1) : [];
+  const hasMore = linkItems.length > MAX_ITEMS;
+  const visible = hasMore ? linkItems.slice(0, MAX_ITEMS - 1) : linkItems;
+  const overflow = hasMore ? linkItems.slice(MAX_ITEMS - 1) : [];
 
   const isActive = (path) => location.pathname === path;
 

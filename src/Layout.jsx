@@ -256,7 +256,15 @@ const publicPages = [
 
           {/* Navigation */}
           <nav className="flex-1 px-3 sm:px-4 py-4 sm:py-6 space-y-1 overflow-y-auto">
-            {navItems.map((item) => {
+            {navItems.map((item, idx) => {
+              if (item.type === 'divider') {
+                return (
+                  <div key={`divider-${idx}`} className="px-3 sm:px-4 pt-5 pb-1">
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">{item.label}</p>
+                    <div className="mt-2 border-t border-slate-100" />
+                  </div>
+                );
+              }
               const isActive = location.pathname === item.path;
               return (
                 <Link
