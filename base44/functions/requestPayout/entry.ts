@@ -93,9 +93,10 @@ Deno.serve(async (req) => {
 
     // --- Fetch banking details ---
     const fullUser = await base44.asServiceRole.entities.User.get(user.id);
-    if (!fullUser.iban || fullUser.iban.trim() === '') {
+    const iban = (fullUser.iban || '').replace(/\s/g, '').toUpperCase();
+    if (!/^AE\d{21}$/.test(iban)) {
       return Response.json(
-        { error: 'No bank details on file. Please add your IBAN in Settings before requesting a payout.' },
+        { error: 'A valid UAE IBAN (AE + 21 digits) is required before requesting a payout. Please update it in Settings.' },
         { status: 400 }
       );
     }
@@ -108,7 +109,7 @@ Deno.serve(async (req) => {
       status: 'pending',
       bank_name: fullUser.bank_name || '',
       account_holder_name: fullUser.account_holder_name || '',
-      iban: fullUser.iban,
+      iban: iban,
       swift_code: fullUser.swift_code || '',
       description: `Payout request — ${new Date().toISOString().slice(0, 10)}`,
     });
