@@ -5,6 +5,14 @@
     "advertiser_email": {
       "type": "string"
     },
+    "org_id": {
+      "type": "string",
+      "description": "ID of the organization this campaign belongs to"
+    },
+    "client_id": {
+      "type": "string",
+      "description": "ID of the client this campaign is for (agency context)"
+    },
     "name": {
       "type": "string"
     },
@@ -119,6 +127,9 @@
   "rls": {
     "read": {
       "$or": [
+        {
+          "data.org_id": "{{user.current_org_id}}"
+        },
         {
           "data.advertiser_email": "{{user.email}}"
         },
