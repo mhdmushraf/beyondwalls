@@ -312,6 +312,8 @@ export default function ScreenPlayer() {
   const totalPlaytimeRef = useRef(totalPlaytime);
   const adsPlayedRef = useRef(adsPlayed);
   const uptimeSecondsRef = useRef(uptimeSeconds);
+  const playsAccumulatorRef = useRef({});
+  const currentAdBookingIdRef = useRef(currentAd?.booking_id);
 
   useEffect(() => { currentAdIndexRef.current = currentAdIndex; }, [currentAdIndex]);
   useEffect(() => { allAdsLengthRef.current = allAds.length; }, [allAds.length]);
@@ -320,6 +322,7 @@ export default function ScreenPlayer() {
   useEffect(() => { totalPlaytimeRef.current = totalPlaytime; }, [totalPlaytime]);
   useEffect(() => { adsPlayedRef.current = adsPlayed; }, [adsPlayed]);
   useEffect(() => { uptimeSecondsRef.current = uptimeSeconds; }, [uptimeSeconds]);
+  useEffect(() => { currentAdBookingIdRef.current = currentAd?.booking_id; }, [currentAd]);
 
   // Heartbeat — sets is_online: true every 15s, clears on unmount
   // CRITICAL: deps are ONLY [authenticated, screen?.id] so the interval is stable
@@ -367,6 +370,45 @@ export default function ScreenPlayer() {
     };
   }, [authenticated, screen?.id]); // stable deps — no restarts on every ad change
 
+  // --- Impression tracking: accumulate plays per booking, flush every 60s ---
+  const recordPlay = useCallback((bookingId) => {
+    if (!bookingId) return;
+    const acc = playsAccumulatorRef.current;
+    acc[bookingId] = (acc[bookingId] || 0) + 1;
+  }, []);
+
+  const flushPlays = useCallback(async () => {
+    if (!screen?.id) return;
+    const snapshot = { ...playsAccumulatorRef.current };
+    const events = Object.entries(snapshot).map(([booking_id, plays]) => ({ booking_id, plays }));
+    if (events.length === 0) return;
+    // Clear accumulator — new plays accumulate fresh; on failure we merge back
+    playsAccumulatorRef.current = {};
+    try {
+      await base44.functions.invoke('recordPlays', {
+        screen_id: screen.id,
+        device_token: screen.device_token || screen.setup_code,
+        events,
+      });
+    } catch (e) {
+      // Merge snapshot back for retry — do not drop counts, do not double-count
+      const current = playsAccumulatorRef.current;
+      for (const [booking_id, plays] of Object.entries(snapshot)) {
+        current[booking_id] = (current[booking_id] || 0) + plays;
+      }
+      playsAccumulatorRef.current = current;
+    }
+  }, [screen]);
+
+  useEffect(() => {
+    if (!authenticated || !screen?.id) return;
+    const interval = setInterval(() => { flushPlays(); }, 60000);
+    return () => {
+      clearInterval(interval);
+      flushPlays();
+    };
+  }, [authenticated, screen?.id, flushPlays]);
+
   // Network status
   useEffect(() => {
     const handleOnline = () => setConnectionStatus("connected");
@@ -381,13 +423,14 @@ export default function ScreenPlayer() {
     setAnimationType(animations[Math.floor(Math.random() * animations.length)]);
     setTransitioning(true);
     setAdsPlayed(prev => prev + 1);
+    recordPlay(currentAdBookingIdRef.current);
     setTimeout(() => {
       setCurrentAdIndex(prev => (prev + 1) % allAds.length);
       setAdStartTime(Date.now());
       setAdProgress(0);
       setTimeout(() => setTransitioning(false), 50);
     }, 400);
-  }, [allAds.length]);
+  }, [allAds.length, recordPlay]);
 
   const goToPrevAd = () => {
     setMediaError(null);
@@ -405,6 +448,7 @@ export default function ScreenPlayer() {
     setAnimationType(animations[Math.floor(Math.random() * animations.length)]);
     setTransitioning(true);
     setAdsPlayed(prev => prev + 1);
+    recordPlay(currentAdBookingIdRef.current);
     setTimeout(() => {
       setCurrentAdIndex(prev => (prev + 1) % allAds.length);
       setAdStartTime(Date.now());
