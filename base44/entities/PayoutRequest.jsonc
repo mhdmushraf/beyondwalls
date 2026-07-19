@@ -45,5 +45,29 @@
   "required": [
     "venue_owner_email",
     "amount"
-  ]
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.venue_owner_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
 }
