@@ -29,6 +29,8 @@ export default function Campaigns() {
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [expandedId, setExpandedId] = useState(null);
+  const [clientsById, setClientsById] = useState({});
+  const isAgency = org?.type === 'agency';
 
   useEffect(() => {
     (async () => {
@@ -59,6 +61,24 @@ export default function Campaigns() {
   useEffect(() => {
     if (org?.id) refresh();
   }, [org?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Batch-fetch client names for agency orgs
+  useEffect(() => {
+    if (!isAgency || items.length === 0) { setClientsById({}); return; }
+    let cancelled = false;
+    (async () => {
+      const clientIds = [...new Set(items.map((c) => c.client_id).filter(Boolean))];
+      if (clientIds.length === 0) return;
+      try {
+        const clients = await base44.entities.Client.filter({ id: { $in: clientIds } });
+        if (cancelled) return;
+        const map = {};
+        clients.forEach((cl) => { map[cl.id] = cl; });
+        setClientsById(map);
+      } catch { /* silent */ }
+    })();
+    return () => { cancelled = true; };
+  }, [items, isAgency]);
 
   if (loading) return <WorkspaceSkeleton />;
   if (!user || !org) {
@@ -100,6 +120,7 @@ export default function Campaigns() {
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-slate-900 truncate">{c.name}</p>
                   <p className="text-xs text-slate-400 truncate">
+                    {isAgency && c.client_id && clientsById[c.client_id]?.name ? `${clientsById[c.client_id].name} · ` : ''}
                     {c.goal?.replace(/_/g, ' ')} · {formatAED(c.total_budget)} · {formatAED(c.spent_budget)} spent
                     {c.start_date && ` · ${moment(c.start_date).format('DD MMM')} – ${moment(c.end_date).format('DD MMM YYYY')}`}
                   </p>

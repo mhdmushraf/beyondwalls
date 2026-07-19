@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -26,9 +26,26 @@ export default function CampaignFormDialog({ open, onOpenChange, org, user, onCr
   const [creativeUrls, setCreativeUrls] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [clientId, setClientId] = useState('');
+  const [clients, setClients] = useState([]);
+
+  const isAgency = org?.type === 'agency';
+
+  useEffect(() => {
+    if (!open || !isAgency) return;
+    (async () => {
+      try {
+        const list = await base44.entities.Client.filter(
+          { agency_org_id: org.id, status: 'active' },
+          '-created_date', 100, 0
+        );
+        setClients(list);
+      } catch { /* silent */ }
+    })();
+  }, [open, isAgency, org?.id]);
 
   const reset = () => {
-    setName(''); setGoal('brand_awareness'); setTotalBudget('');
+    setName(''); setGoal('brand_awareness'); setTotalBudget(''); setClientId('');
     setStartDate(''); setEndDate(''); setCreativeType('image'); setCreativeUrls([]);
   };
 
@@ -61,6 +78,10 @@ export default function CampaignFormDialog({ open, onOpenChange, org, user, onCr
       toast.error('Name and budget are required');
       return;
     }
+    if (isAgency && !clientId) {
+      toast.error('Please select a client');
+      return;
+    }
     setSaving(true);
     try {
       const campaign = await base44.entities.Campaign.create({
@@ -73,6 +94,7 @@ export default function CampaignFormDialog({ open, onOpenChange, org, user, onCr
         creative_urls: creativeUrls,
         status: 'draft',
         org_id: org.id,
+        client_id: isAgency ? clientId : undefined,
         advertiser_email: user.email,
       });
       toast.success('Campaign created');
@@ -93,6 +115,17 @@ export default function CampaignFormDialog({ open, onOpenChange, org, user, onCr
           <DialogTitle>New campaign</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
+          {isAgency && (
+            <div className="space-y-2">
+              <Label>Client</Label>
+              <Select value={clientId} onValueChange={setClientId}>
+                <SelectTrigger className="w-full"><SelectValue placeholder="Select a client" /></SelectTrigger>
+                <SelectContent>
+                  {clients.map((cl) => <SelectItem key={cl.id} value={cl.id}>{cl.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           <div className="space-y-2">
             <Label>Campaign name</Label>
             <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Summer Sale 2026" />
