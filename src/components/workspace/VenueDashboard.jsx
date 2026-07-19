@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Wallet, Clock, MonitorPlay, CalendarCheck } from 'lucide-react';
+import { Wallet, Clock, MonitorPlay, CalendarCheck, ClipboardCheck } from 'lucide-react';
 import moment from 'moment';
 import KpiCard from './KpiCard';
 import VenueEarnings from './VenueEarnings';
+import CreativeReviewQueue from './CreativeReviewQueue';
 import { ListSkeleton } from './Skeletons';
 import EmptyState from './EmptyState';
 import { usePaginatedList } from '@/hooks/usePaginatedList';
@@ -17,6 +18,7 @@ export default function VenueDashboard({ user, org }) {
   const [kpis, setKpis] = useState(null);
   const [kpisLoading, setKpisLoading] = useState(true);
   const [telemetryMap, setTelemetryMap] = useState({});
+  const [pendingReviewCount, setPendingReviewCount] = useState(null);
 
   useEffect(() => {
     const now = new Date();
@@ -76,7 +78,10 @@ export default function VenueDashboard({ user, org }) {
           loading={kpisLoading}
         />
         <KpiCard icon={CalendarCheck} label="Bookings (week)" value={formatNumber(kpis?.bookings)} loading={kpisLoading} />
+        <KpiCard icon={ClipboardCheck} label="Creative to review" value={pendingReviewCount} loading={pendingReviewCount === null} />
       </div>
+
+      <CreativeReviewQueue org={org} onPendingCount={setPendingReviewCount} />
 
       <div>
         <h2 className="font-heading font-semibold text-base sm:text-lg text-slate-900 mb-3">My screens</h2>

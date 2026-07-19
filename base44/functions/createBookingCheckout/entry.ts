@@ -175,6 +175,7 @@ Deno.serve(async (req) => {
       platform_fee: platformFee,
       venue_earnings: venueEarnings,
       status: 'pending_payment',
+      creative_status: org.auto_approve_creative === true ? 'approved' : 'pending_review',
     });
 
     // --- Create checkout via the swappable payment abstraction ---

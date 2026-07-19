@@ -18,6 +18,10 @@
       "description": "Percent taken from marketplace earnings. 30 for revenue_share, 0 for saas.",
       "type": "number"
     },
+    "auto_approve_creative": {
+      "type": "boolean",
+      "default": false
+    },
     "logo_url": {
       "description": "Organization logo",
       "type": "string"

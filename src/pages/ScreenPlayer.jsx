@@ -140,11 +140,11 @@ export default function ScreenPlayer() {
     setConnecting(false);
   };
 
-  // Fetch ad bookings
+  // Fetch active bookings — only approved creative reaches the player
   const { data: bookings = [], refetch: refetchBookings } = useQuery({
     queryKey: ["player-bookings", screen?.id],
     queryFn: async () => {
-      const allBookings = await base44.entities.AdBooking.filter({ screen_id: screen?.id, status: "active" });
+      const allBookings = await base44.entities.AdBooking.filter({ screen_id: screen?.id, status: "active", creative_status: "approved" });
       const today = new Date().toISOString().split('T')[0];
       return allBookings.filter(b => b.start_date <= today && b.end_date >= today);
     },
@@ -153,15 +153,19 @@ export default function ScreenPlayer() {
     staleTime: 0
   });
 
-  // Fetch campaigns
-  const { data: campaigns = [], refetch: refetchCampaigns } = useQuery({
-    queryKey: ["player-campaigns", screen?.id],
+  // Resolve parent campaigns for those bookings (single batched query)
+  const bookingCampaignIds = bookings.map(b => b.campaign_id).filter(Boolean);
+  const { data: campaignsById = {} } = useQuery({
+    queryKey: ["player-campaigns-by-booking", bookingCampaignIds.join(',') || 'none'],
     queryFn: async () => {
-      const allCampaigns = await base44.entities.Campaign.filter({ status: "active" });
-      return allCampaigns.filter(c => c.selected_screens?.includes(screen?.id));
+      const ids = [...new Set(bookingCampaignIds)];
+      if (ids.length === 0) return {};
+      const campaigns = await base44.entities.Campaign.filter({ id: { $in: ids } });
+      const map = {};
+      campaigns.forEach(c => { map[c.id] = c; });
+      return map;
     },
-    enabled: authenticated && !!screen?.id,
-    refetchInterval: 10000,
+    enabled: bookingCampaignIds.length > 0,
     staleTime: 0
   });
 
@@ -187,7 +191,7 @@ export default function ScreenPlayer() {
       if (command === "skip") goToNextAd();
       else if (command === "pause") { setIsPaused(true); logActivity(screen.id, "paused", sessionId); }
       else if (command === "resume") { setIsPaused(false); setIsStopped(false); logActivity(screen.id, "resumed", sessionId); }
-      else if (command === "refresh") { refetchBookings(); refetchCampaigns(); }
+      else if (command === "refresh") { refetchBookings(); }
       else if (command === "restart") window.location.reload();
       else if (command === "restart_playlist") {
         setIsStopped(false);
@@ -227,11 +231,19 @@ export default function ScreenPlayer() {
     }
   }
 
-  // Build advertiser ads
-  const advertiserAds = [
-    ...bookings.map(b => ({ id: b.id, name: b.campaign_name || "Ad Slot", creative_url: b.creative_url, creative_type: b.creative_type, type: "booking" })),
-    ...campaigns.map(c => ({ id: c.id, name: c.name, creative_url: c.creative_url, creative_type: c.creative_type, type: "campaign" }))
-  ].filter(ad => ad.creative_url);
+  // Build advertiser ads — one playlist entry per creative URL in the parent campaign
+  const advertiserAds = bookings.flatMap(b => {
+    const c = campaignsById[b.campaign_id];
+    if (!c) return [];
+    return (c.creative_urls || []).map((url, i) => ({
+      id: `${b.id}_${i}`,
+      booking_id: b.id,
+      name: c.name || 'Ad Slot',
+      creative_url: url,
+      creative_type: c.creative_type || 'image',
+      type: 'booking',
+    }));
+  }).filter(ad => ad.creative_url);
 
   // Build interleaved playlist
   const buildPlaylist = () => {

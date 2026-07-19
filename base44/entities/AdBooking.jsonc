@@ -68,6 +68,24 @@
       ],
       "default": "pending_payment"
     },
+    "creative_status": {
+      "type": "string",
+      "enum": [
+        "pending_review",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending_review"
+    },
+    "creative_reviewed_at": {
+      "type": "string"
+    },
+    "creative_reviewed_by": {
+      "type": "string"
+    },
+    "creative_rejection_reason": {
+      "type": "string"
+    },
     "checkout_url": {
       "type": "string",
       "description": "Gateway checkout URL returned by the payment provider"
