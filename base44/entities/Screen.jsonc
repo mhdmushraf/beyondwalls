@@ -221,6 +221,16 @@
     "read": {
       "$or": [
         {
+          "$and": [
+            {
+              "data.approval_status": "approved"
+            },
+            {
+              "data.status": "active"
+            }
+          ]
+        },
+        {
           "data.org_member_user_ids": "{{user.id}}"
         },
         {
