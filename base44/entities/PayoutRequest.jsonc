@@ -5,8 +5,20 @@
     "venue_owner_email": {
       "type": "string"
     },
+    "org_id": {
+      "type": "string",
+      "description": "ID of the organization whose earnings this payout draws down"
+    },
     "amount": {
       "type": "number"
+    },
+    "eligible_snapshot": {
+      "type": "number",
+      "description": "Eligible balance at request time, for audit"
+    },
+    "reference_id": {
+      "type": "string",
+      "description": "Ties the request to the payout Transaction created when marked paid"
     },
     "description": {
       "type": "string",
