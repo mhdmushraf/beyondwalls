@@ -35,20 +35,21 @@ Deno.serve(async (req) => {
 
     const reference = `payout_${pr.id}`;
 
-    // --- Idempotency: if already paid, return early ---
-    if (pr.reference_id) {
-      const existing = await base44.asServiceRole.entities.Transaction.filter({
-        reference_id: pr.reference_id,
-        type: 'payout',
+    // --- Idempotency: if a payout Transaction already exists for this request, return early.
+    // reference is deterministic (payout_<pr.id>), so we check it unconditionally — this also
+    // covers the partial-failure case where the Transaction was created but the PR.reference_id
+    // update never landed.
+    const existing = await base44.asServiceRole.entities.Transaction.filter({
+      reference_id: reference,
+      type: 'payout',
+    });
+    if (existing.length > 0) {
+      return Response.json({
+        payout_request_id: pr.id,
+        transaction_id: existing[0].id,
+        amount: pr.amount,
+        already_paid: true,
       });
-      if (existing.length > 0) {
-        return Response.json({
-          payout_request_id: pr.id,
-          transaction_id: existing[0].id,
-          amount: pr.amount,
-          already_paid: true,
-        });
-      }
     }
 
     // --- Create the ledger row FIRST, before touching the request status ---
