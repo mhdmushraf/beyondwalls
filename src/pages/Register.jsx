@@ -65,10 +65,12 @@ export default function Register() {
       }
       // Provision org + membership in backend (service role). Non-blocking —
       // user still lands in Workspace even if this fails.
+      // If provisioning fails, nothing retries here — Workspace.jsx will attempt
+      // recovery on the next load using the bw_provision_retry key written below.
       try {
         await base44.functions.invoke("provisionOrg", { account_type: accountType });
       } catch (e) {
-        console.warn("Org provisioning failed, will retry in background:", e);
+        console.warn("Org provisioning failed:", e);
         sessionStorage.setItem("bw_provision_retry", JSON.stringify({ account_type: accountType, ts: Date.now() }));
       }
       navigate("/Workspace");
