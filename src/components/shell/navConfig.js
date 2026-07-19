@@ -25,6 +25,7 @@ const ADVERTISER_NAV = [
   { label: 'Dashboard', icon: LayoutDashboard, path: '/workspace' },
   { label: 'Marketplace', icon: Store, path: '/marketplace' },
   { label: 'Campaigns', icon: Megaphone, path: '/campaigns' },
+  { label: 'Bookings', icon: CalendarCheck, path: '/bookings' },
   { label: 'Media', icon: ImageIcon, path: '/media' },
   { label: 'Analytics', icon: BarChart3, path: '/analytics' },
   SETTINGS,
@@ -33,7 +34,6 @@ const ADVERTISER_NAV = [
 const VENUE_NAV = [
   { label: 'Dashboard', icon: LayoutDashboard, path: '/workspace' },
   { label: 'My Screens', icon: MonitorPlay, path: '/my-screens' },
-  { label: 'Bookings', icon: CalendarCheck, path: '/bookings' },
   { label: 'Playlists', icon: ListVideo, path: '/playlists' },
   { label: 'Revenue', icon: Wallet, path: '/revenue' },
   SETTINGS,
@@ -53,6 +53,7 @@ const AGENCY_NAV = [
   { label: 'Dashboard', icon: LayoutDashboard, path: '/workspace' },
   { label: 'Clients', icon: Users, path: '/clients' },
   { label: 'Campaigns', icon: Megaphone, path: '/campaigns' },
+  { label: 'Bookings', icon: CalendarCheck, path: '/bookings' },
   { label: 'Marketplace', icon: Store, path: '/marketplace' },
   { label: 'Reports', icon: FileBarChart, path: '/reports' },
   SETTINGS,

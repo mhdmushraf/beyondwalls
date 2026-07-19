@@ -1,0 +1,94 @@
+{
+  "description": "A physical location grouping screens under one organisation. Used by enterprise operators to roll up many screens per branch/store.",
+  "name": "Site",
+  "properties": {
+    "address": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "emirate": {
+      "type": "string"
+    },
+    "name": {
+      "description": "Site / branch name, e.g. 'Nesto Al Nahda'",
+      "type": "string"
+    },
+    "org_id": {
+      "description": "ID of the Organization that owns this site",
+      "type": "string"
+    },
+    "org_member_user_ids": {
+      "description": "Denormalized member user ids of the owning org, for row-level access control. Mirrors Screen.org_member_user_ids.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "screen_count": {
+      "default": 0,
+      "description": "Denormalized count of screens at this site",
+      "type": "number"
+    },
+    "site_code": {
+      "description": "Operator's own internal branch code, used for bulk import matching",
+      "type": "string"
+    },
+    "status": {
+      "default": "active",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "type": "string"
+    },
+    "venue_id": {
+      "description": "Optional link to a Venue record if this site is listed on the marketplace",
+      "type": "string"
+    }
+  },
+  "required": [
+    "org_id",
+    "name"
+  ],
+  "rls": {
+    "delete": {
+      "$or": [
+        {
+          "data.org_member_user_ids": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "data.org_member_user_ids": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.org_member_user_ids": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  },
+  "type": "object"
+}

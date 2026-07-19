@@ -1,0 +1,97 @@
+{
+  "description": "A client managed by an agency organisation. Campaigns are attributed to a Client so an agency can report per-client spend and separate approvals.",
+  "name": "Client",
+  "properties": {
+    "agency_org_id": {
+      "description": "ID of the agency Organization that owns this client record",
+      "type": "string"
+    },
+    "agency_org_member_user_ids": {
+      "description": "Denormalized member user ids of the agency org, for row-level access control. Mirrors Screen.org_member_user_ids.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "contact_email": {
+      "type": "string"
+    },
+    "contact_name": {
+      "type": "string"
+    },
+    "contact_phone": {
+      "type": "string"
+    },
+    "industry": {
+      "type": "string"
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "name": {
+      "description": "Client / brand name",
+      "type": "string"
+    },
+    "notes": {
+      "maxLength": 1000,
+      "type": "string"
+    },
+    "status": {
+      "default": "active",
+      "enum": [
+        "active",
+        "paused",
+        "archived"
+      ],
+      "type": "string"
+    },
+    "total_managed_spend": {
+      "default": 0,
+      "description": "Denormalized running total of confirmed spend across this client's campaigns",
+      "type": "number"
+    }
+  },
+  "required": [
+    "agency_org_id",
+    "name"
+  ],
+  "rls": {
+    "delete": {
+      "$or": [
+        {
+          "data.agency_org_member_user_ids": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "data.agency_org_member_user_ids": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.agency_org_member_user_ids": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  },
+  "type": "object"
+}
