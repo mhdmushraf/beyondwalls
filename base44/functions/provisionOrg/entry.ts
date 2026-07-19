@@ -75,9 +75,9 @@ Deno.serve(async (req) => {
       user_name: user.full_name || '',
     });
 
-    // Set account_type and current_org_id on the User profile
+    // Set account_type and current_org_id on the User profile (service role — User.update is admin-only)
     try {
-      await base44.auth.updateMe({
+      await base44.asServiceRole.entities.User.update(user.id, {
         account_type,
         current_org_id: org.id,
       });

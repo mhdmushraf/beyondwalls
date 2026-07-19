@@ -59,7 +59,7 @@ export default function Register() {
       await base44.auth.register({ email, password });
       await base44.auth.loginViaEmailPassword(email, password);
       try {
-        await base44.auth.updateMe({ full_name: fullName });
+        await base44.functions.invoke("updateMyProfile", { full_name: fullName });
       } catch (e) {
         console.warn("Could not set profile fields:", e);
       }
