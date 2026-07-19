@@ -12,7 +12,7 @@ export default function Revenue() {
   const [org, setOrg] = useState(null);
   const [loading, setLoading] = useState(true);
   const [transactions, setTransactions] = useState([]);
-  const [eligible, setEligible] = useState(0);
+  const [payoutData, setPayoutData] = useState({ total_earnings: 0, total_paid_out: 0, eligible_payout: 0 });
   const [dataLoading, setDataLoading] = useState(true);
 
   useEffect(() => {
@@ -60,7 +60,11 @@ export default function Revenue() {
 
         try {
           const res = await base44.functions.invoke('computeEligiblePayout', { org_id: org.id });
-          if (!cancelled) setEligible(res.data?.eligible_payout || 0);
+          if (!cancelled) setPayoutData({
+            total_earnings: res.data?.total_earnings || 0,
+            total_paid_out: res.data?.total_paid_out || 0,
+            eligible_payout: res.data?.eligible_payout || 0,
+          });
         } catch (e) { /* silent */ }
       } catch (e) {
         // silent
@@ -83,7 +87,7 @@ export default function Revenue() {
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
       <h1 className="font-heading text-xl sm:text-2xl font-bold text-slate-900">Revenue</h1>
-      <RevenueKpis transactions={transactions} eligible={eligible} loading={dataLoading} />
+      <RevenueKpis transactions={transactions} payoutData={payoutData} loading={dataLoading} />
       <EarningsChart transactions={transactions} />
       <PerScreenTable orgId={org.id} />
       <LedgerTable orgId={org.id} />
