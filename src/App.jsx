@@ -1,5 +1,5 @@
 import './App.css'
-import React, { useEffect, Suspense } from 'react'
+import React, { Suspense } from 'react'
 import { Toaster } from "@/components/ui/sonner"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -291,28 +291,10 @@ const AuthenticatedApp = () => {
 
 
 function App() {
-  // Detect and apply system dark mode
-  useEffect(() => {
-    const applyDarkMode = () => {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (prefersDark) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    };
-
-    applyDarkMode();
-
-    // Listen for changes
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = () => applyDarkMode();
-    
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
-    }
-  }, []);
+  // Dark mode is intentionally not supported. The marketing and app pages
+  // use hardcoded light Tailwind classes; applying the .dark token set
+  // produces dark surfaces with dark text. Do not re-add without auditing
+  // every page.
 
   return (
     <AuthProvider>
