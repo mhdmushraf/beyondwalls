@@ -16,6 +16,7 @@ import {
   Users,
   Check,
 } from "lucide-react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 const ACCOUNT_TYPES = [
   { key: "advertiser", label: "Advertiser", subtitle: "Run ads on screens", icon: Megaphone },
@@ -32,7 +33,7 @@ const STEP2_BRAND = {
 };
 
 const inputClass =
-  "w-full h-[48px] pl-11 pr-4 rounded-xl border bg-[#F7F8FC] border-[#E3E6F1] text-[16px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#6366f1] focus:border-transparent transition-all";
+  "w-full h-[48px] pl-11 pr-4 rounded-xl border bg-[#F7F8FC] border-[#E3E6F1] text-[16px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#6366f1] focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] transition-all duration-150";
 
 export default function Register() {
   const [step, setStep] = useState(1);
@@ -44,6 +45,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const reduceMotion = useReducedMotion();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -96,10 +98,20 @@ export default function Register() {
         }
       : STEP2_BRAND[accountType] || STEP2_BRAND.advertiser;
 
+  const stepTransition = {
+    duration: reduceMotion ? 0 : 0.25,
+    ease: "easeOut",
+  };
+
   return (
     <div className="bw-auth-shell">
       <BrandPanel title={brandContent.title} body={brandContent.body} />
-      <div className="bw-form-panel">
+      <motion.div
+        className="bw-form-panel"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: reduceMotion ? 0 : 0.4 }}
+      >
         <div className="bw-grab-handle" />
         <div className="bw-form-inner">
           {/* Progress */}
@@ -116,221 +128,236 @@ export default function Register() {
             />
           </div>
 
-          {step === 1 && (
-            <>
-              <div className="mb-6">
-                <h1
-                  className="text-[26px] font-semibold text-slate-900 tracking-tight"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-                >
-                  Create your account
-                </h1>
-                <p className="text-sm text-slate-500 mt-1.5">How will you use Beyond Walls?</p>
-              </div>
-
-              {error && (
-                <div className="mb-5 px-4 py-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm">
-                  {error}
-                </div>
-              )}
-
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                {ACCOUNT_TYPES.map(({ key, label, subtitle, icon: Icon }) => {
-                  const selected = accountType === key;
-                  return (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => setAccountType(key)}
-                      className={`relative p-4 rounded-xl border-2 text-left transition-all min-h-[110px] ${
-                        selected
-                          ? "border-[#6366f1] bg-violet-50"
-                          : "border-[#E3E6F1] bg-[#F7F8FC] hover:border-slate-300"
-                      }`}
-                    >
-                      {selected && (
-                        <span className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-[#6366f1] flex items-center justify-center">
-                          <Check className="w-3 h-3 text-white" />
-                        </span>
-                      )}
-                      <Icon
-                        className={`w-6 h-6 mb-3 ${selected ? "text-[#6366f1]" : "text-slate-400"}`}
-                      />
-                      <p className="font-semibold text-slate-900 text-sm">{label}</p>
-                      <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <p className="text-xs text-slate-400 mb-6 leading-relaxed">
-                Enterprise &amp; agencies: 0% commission on a per-screen plan. Venue owners join free
-                and keep 70%.
-              </p>
-
-              <button
-                type="button"
-                onClick={() => setStep(2)}
-                disabled={!accountType}
-                className="w-full h-[52px] rounded-xl bg-[#6366f1] text-white font-semibold text-[16px] hover:bg-[#4f46e5] active:bg-[#4338ca] disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+          <AnimatePresence mode="wait">
+            {step === 1 && (
+              <motion.div
+                key="step1"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={stepTransition}
               >
-                Continue
-                <ArrowRight className="w-[18px] h-[18px]" />
-              </button>
-
-              <p className="text-center text-sm text-slate-500 mt-6">
-                Already have an account?{" "}
-                <Link to="/login" className="text-[#6366f1] font-semibold hover:underline">
-                  Sign in
-                </Link>
-              </p>
-            </>
-          )}
-
-          {step === 2 && (
-            <>
-              <div className="mb-6">
-                <h1
-                  className="text-[26px] font-semibold text-slate-900 tracking-tight"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-                >
-                  Your details
-                </h1>
-                <p className="text-sm text-slate-500 mt-1.5">Create your login to get started.</p>
-              </div>
-
-              {error && (
-                <div className="mb-5 px-4 py-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm">
-                  {error}
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                  <label
-                    htmlFor="reg-name"
-                    className="block text-sm font-medium text-slate-700 mb-1.5"
+                <div className="mb-6">
+                  <h1
+                    className="text-[26px] font-semibold text-slate-900 tracking-tight"
+                    style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                   >
-                    Full name
-                  </label>
-                  <div className="relative">
-                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-slate-400" />
-                    <input
-                      id="reg-name"
-                      type="text"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      placeholder="Jane Doe"
-                      className={inputClass}
-                      required
-                      disabled={loading}
-                      autoComplete="name"
-                    />
-                  </div>
+                    Create your account
+                  </h1>
+                  <p className="text-sm text-slate-500 mt-1.5">How will you use Beyond Walls?</p>
                 </div>
 
-                <div>
-                  <label
-                    htmlFor="reg-email"
-                    className="block text-sm font-medium text-slate-700 mb-1.5"
-                  >
-                    Work email
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-slate-400" />
-                    <input
-                      id="reg-email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="you@company.com"
-                      className={inputClass}
-                      required
-                      disabled={loading}
-                      autoComplete="email"
-                    />
+                {error && (
+                  <div className="mb-5 px-4 py-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm">
+                    {error}
                   </div>
+                )}
+
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  {ACCOUNT_TYPES.map(({ key, label, subtitle, icon: Icon }) => {
+                    const selected = accountType === key;
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => setAccountType(key)}
+                        className={`relative p-4 rounded-xl border-2 text-left transition-all min-h-[110px] ${
+                          selected
+                            ? "border-[#6366f1] bg-violet-50"
+                            : "border-[#E3E6F1] bg-[#F7F8FC] hover:border-slate-300"
+                        }`}
+                      >
+                        {selected && (
+                          <span className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-[#6366f1] flex items-center justify-center">
+                            <Check className="w-3 h-3 text-white" />
+                          </span>
+                        )}
+                        <Icon
+                          className={`w-6 h-6 mb-3 ${selected ? "text-[#6366f1]" : "text-slate-400"}`}
+                        />
+                        <p className="font-semibold text-slate-900 text-sm">{label}</p>
+                        <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>
+                      </button>
+                    );
+                  })}
                 </div>
 
-                <div>
-                  <label
-                    htmlFor="reg-password"
-                    className="block text-sm font-medium text-slate-700 mb-1.5"
-                  >
-                    Password
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-slate-400" />
-                    <input
-                      id="reg-password"
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Min. 8 characters"
-                      className={`${inputClass} pr-12`}
-                      required
-                      disabled={loading}
-                      autoComplete="new-password"
-                      minLength={8}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      aria-label={showPassword ? "Hide password" : "Show password"}
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
-                    >
-                      {showPassword ? (
-                        <EyeOff className="w-[18px] h-[18px]" />
-                      ) : (
-                        <Eye className="w-[18px] h-[18px]" />
-                      )}
-                    </button>
-                  </div>
-                </div>
+                <p className="text-xs text-slate-400 mb-6 leading-relaxed">
+                  Enterprise &amp; agencies: 0% commission on a per-screen plan. Venue owners join free
+                  and keep 70%.
+                </p>
 
                 <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full h-[52px] rounded-xl bg-[#6366f1] text-white font-semibold text-[16px] hover:bg-[#4f46e5] active:bg-[#4338ca] disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                  type="button"
+                  onClick={() => setStep(2)}
+                  disabled={!accountType}
+                  className="w-full h-[52px] rounded-xl bg-[#6366f1] text-white font-semibold text-[16px] hover:bg-[#4f46e5] active:bg-[#4338ca] disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
                 >
-                  {loading ? (
-                    <>
-                      <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Creating account…
-                    </>
-                  ) : (
-                    <>
-                      Create account &amp; enter
-                      <ArrowRight className="w-[18px] h-[18px]" />
-                    </>
-                  )}
+                  Continue
+                  <ArrowRight className="w-[18px] h-[18px]" />
                 </button>
-              </form>
 
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="w-full flex items-center justify-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mt-4 h-[44px]"
+                <p className="text-center text-sm text-slate-500 mt-6">
+                  Already have an account?{" "}
+                  <Link to="/login" className="text-[#6366f1] font-semibold hover:underline">
+                    Sign in
+                  </Link>
+                </p>
+              </motion.div>
+            )}
+
+            {step === 2 && (
+              <motion.div
+                key="step2"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={stepTransition}
               >
-                <ArrowLeft className="w-4 h-4" />
-                Back
-              </button>
+                <div className="mb-6">
+                  <h1
+                    className="text-[26px] font-semibold text-slate-900 tracking-tight"
+                    style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    Your details
+                  </h1>
+                  <p className="text-sm text-slate-500 mt-1.5">Create your login to get started.</p>
+                </div>
 
-              <p className="text-center text-xs text-slate-400 mt-6 leading-relaxed">
-                By continuing you agree to our{" "}
-                <Link to="/Terms" className="text-[#6366f1] hover:underline">
-                  Terms
-                </Link>{" "}
-                and{" "}
-                <Link to="/Privacy" className="text-[#6366f1] hover:underline">
-                  Privacy Policy
-                </Link>
-                .
-              </p>
-            </>
-          )}
+                {error && (
+                  <div className="mb-5 px-4 py-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm">
+                    {error}
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div>
+                    <label
+                      htmlFor="reg-name"
+                      className="block text-sm font-medium text-slate-700 mb-1.5"
+                    >
+                      Full name
+                    </label>
+                    <div className="relative">
+                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-slate-400" />
+                      <input
+                        id="reg-name"
+                        type="text"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder="Jane Doe"
+                        className={inputClass}
+                        required
+                        disabled={loading}
+                        autoComplete="name"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="reg-email"
+                      className="block text-sm font-medium text-slate-700 mb-1.5"
+                    >
+                      Work email
+                    </label>
+                    <div className="relative">
+                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-slate-400" />
+                      <input
+                        id="reg-email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="you@company.com"
+                        className={inputClass}
+                        required
+                        disabled={loading}
+                        autoComplete="email"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="reg-password"
+                      className="block text-sm font-medium text-slate-700 mb-1.5"
+                    >
+                      Password
+                    </label>
+                    <div className="relative">
+                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-slate-400" />
+                      <input
+                        id="reg-password"
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Min. 8 characters"
+                        className={`${inputClass} pr-12`}
+                        required
+                        disabled={loading}
+                        autoComplete="new-password"
+                        minLength={8}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="w-[18px] h-[18px]" />
+                        ) : (
+                          <Eye className="w-[18px] h-[18px]" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  <motion.button
+                    type="submit"
+                    disabled={loading}
+                    whileTap={{ scale: reduceMotion ? 1 : 0.98 }}
+                    className="w-full h-[52px] rounded-xl bg-[#6366f1] text-white font-semibold text-[16px] hover:bg-[#4f46e5] active:bg-[#4338ca] disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Creating account…
+                      </>
+                    ) : (
+                      <>
+                        Create account &amp; enter
+                        <ArrowRight className="w-[18px] h-[18px]" />
+                      </>
+                    )}
+                  </motion.button>
+                </form>
+
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="w-full flex items-center justify-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mt-4 h-[44px]"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Back
+                </button>
+
+                <p className="text-center text-xs text-slate-400 mt-6 leading-relaxed">
+                  By continuing you agree to our{" "}
+                  <Link to="/Terms" className="text-[#6366f1] hover:underline">
+                    Terms
+                  </Link>{" "}
+                  and{" "}
+                  <Link to="/Privacy" className="text-[#6366f1] hover:underline">
+                    Privacy Policy
+                  </Link>
+                  .
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

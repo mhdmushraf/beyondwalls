@@ -316,6 +316,49 @@ button:focus-visible {
   flex-shrink: 0;
 }
 
+/* ===== BrandPanel: WebGL canvas + static fallback + scrim ===== */
+.bw-brand-logo,
+.bw-brand-content,
+.bw-brand-status {
+  z-index: 10;
+}
+
+.bw-brand-static-fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(circle at 30% 20%, #1E1B4B 0%, #070B18 70%);
+}
+
+.bw-brand-static-fallback::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 52px 52px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 80%);
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 80%);
+}
+
+.bw-brand-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to bottom, rgba(7, 11, 24, 0.15) 0%, rgba(7, 11, 24, 0.85) 100%);
+  pointer-events: none;
+}
+
+.bw-brand-trust {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  color: rgba(170, 176, 212, 0.6);
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
 .bw-form-panel {
   width: 470px;
   flex-shrink: 0;

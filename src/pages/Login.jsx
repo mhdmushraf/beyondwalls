@@ -3,9 +3,10 @@ import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import BrandPanel from "@/components/auth/BrandPanel";
 import { ArrowRight, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 
 const inputClass =
-  "w-full h-[48px] pl-11 pr-4 rounded-xl border bg-[#F7F8FC] border-[#E3E6F1] text-[16px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#6366f1] focus:border-transparent transition-all";
+  "w-full h-[48px] pl-11 pr-4 rounded-xl border bg-[#F7F8FC] border-[#E3E6F1] text-[16px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#6366f1] focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] transition-all duration-150";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -17,6 +18,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const nextUrl = searchParams.get("next") || "/Workspace";
+  const reduceMotion = useReducedMotion();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,7 +45,12 @@ export default function Login() {
         title="The operating system for Digital Out-of-Home."
         body="Manage your screens, launch campaigns, and track performance — all in one place."
       />
-      <div className="bw-form-panel">
+      <motion.div
+        className="bw-form-panel"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: reduceMotion ? 0 : 0.4 }}
+      >
         <div className="bw-grab-handle" />
         <div className="bw-form-inner">
           <div className="mb-8">
@@ -135,9 +142,10 @@ export default function Login() {
               </Link>
             </div>
 
-            <button
+            <motion.button
               type="submit"
               disabled={loading}
+              whileTap={{ scale: reduceMotion ? 1 : 0.98 }}
               className="w-full h-[52px] rounded-xl bg-[#6366f1] text-white font-semibold text-[16px] hover:bg-[#4f46e5] active:bg-[#4338ca] disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
             >
               {loading ? (
@@ -151,7 +159,7 @@ export default function Login() {
                   <ArrowRight className="w-[18px] h-[18px]" />
                 </>
               )}
-            </button>
+            </motion.button>
           </form>
 
           <p className="text-center text-sm text-slate-500 mt-8">
@@ -161,7 +169,7 @@ export default function Login() {
             </Link>
           </p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

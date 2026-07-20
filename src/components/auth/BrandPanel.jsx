@@ -1,39 +1,29 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 
-const SCREEN_PANELS = [
-  { top: "7%", left: "8%", w: 52, h: 30, glow: false },
-  { top: "12%", left: "68%", w: 44, h: 26, glow: true },
-  { top: "20%", left: "84%", w: 38, h: 22, glow: false },
-  { top: "34%", left: "5%", w: 48, h: 28, glow: true },
-  { top: "40%", left: "90%", w: 42, h: 24, glow: false },
-  { top: "52%", left: "10%", w: 50, h: 30, glow: false },
-  { top: "60%", left: "78%", w: 46, h: 26, glow: true },
-  { top: "68%", left: "18%", w: 40, h: 24, glow: false },
-  { top: "76%", left: "62%", w: 44, h: 26, glow: false },
-  { top: "84%", left: "6%", w: 36, h: 22, glow: true },
-  { top: "87%", left: "82%", w: 48, h: 28, glow: false },
-  { top: "28%", left: "44%", w: 42, h: 24, glow: false },
-];
+// 2.7 — lazy-load so three.js is not in the initial bundle
+const ScreenFieldCanvas = lazy(() => import("./ScreenFieldCanvas"));
+
+const TRUST_MARKERS = ["Dubai-based", "Pay only for what runs", "No hardware required"];
 
 export default function BrandPanel({ title, body }) {
+  const reduceMotion = useReducedMotion();
+  const dur = reduceMotion ? 0 : 0.5;
+
   return (
     <div className="bw-brand-panel">
-      <div className="bw-brand-grid" />
-      <div className="bw-brand-glow" />
-      {SCREEN_PANELS.map((p, i) => (
-        <div
-          key={i}
-          className={`bw-screen-panel${p.glow ? " bw-screen-panel--glow" : ""}`}
-          style={{
-            top: p.top,
-            left: p.left,
-            width: `${p.w}px`,
-            height: `${p.h}px`,
-            animationDelay: p.glow ? `${(i % 4) * 1.5}s` : undefined,
-          }}
-        />
-      ))}
+      {/* 3.3 — static fallback (visible when WebGL is not active) */}
+      <div className="bw-brand-static-fallback" />
 
+      {/* WebGL canvas — covers fallback when active */}
+      <Suspense fallback={null}>
+        <ScreenFieldCanvas />
+      </Suspense>
+
+      {/* 3.2 — scrim for text legibility */}
+      <div className="bw-brand-scrim" />
+
+      {/* Content */}
       <div className="bw-brand-logo">
         <div className="bw-brand-logo-mark">
           <div className="bw-brand-logo-mark-inner" />
@@ -42,8 +32,34 @@ export default function BrandPanel({ title, body }) {
       </div>
 
       <div className="bw-brand-content">
-        <h2>{title}</h2>
-        {body && <p className="bw-brand-subtext">{body}</p>}
+        <motion.h2
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: dur, delay: reduceMotion ? 0 : 0.08 }}
+        >
+          {title}
+        </motion.h2>
+        {body && (
+          <motion.p
+            className="bw-brand-subtext"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: dur, delay: reduceMotion ? 0 : 0.16 }}
+          >
+            {body}
+          </motion.p>
+        )}
+        {/* 3.5 — trust markers */}
+        <motion.div
+          className="bw-brand-trust"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: dur, delay: reduceMotion ? 0 : 0.24 }}
+        >
+          {TRUST_MARKERS.map((m) => (
+            <span key={m}>{m}</span>
+          ))}
+        </motion.div>
       </div>
 
       <div className="bw-brand-status">
