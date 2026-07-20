@@ -361,11 +361,14 @@ export default function ARFeatureSection() {
                 Join Premium Waitlist
                 <Crown className="w-5 h-5 ml-2" />
               </Button>
-              <Link to={createPageUrl("ARPremium")}>
-                <Button size="lg" className="h-14 px-8 text-lg border-2 border-white bg-transparent text-white hover:bg-white hover:text-violet-600">
-                  Learn More About Premium
-                </Button>
-              </Link>
+              <Button
+                size="lg"
+                variant="outline"
+                className="h-14 px-8 text-lg border-2 border-white bg-transparent text-white hover:bg-white hover:text-violet-600"
+                onClick={() => setShowWaitlistModal(true)}
+              >
+                Learn More About Premium
+              </Button>
             </div>
           </div>
         </div>
