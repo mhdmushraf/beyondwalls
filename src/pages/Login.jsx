@@ -42,7 +42,8 @@ export default function Login() {
   return (
     <div className="bw-auth-shell">
       <BrandPanel
-        title="The operating system for Digital Out-of-Home."
+        title="The operating system for"
+        titleAccent="Digital Out-of-Home."
         body="Manage your screens, launch campaigns, and track performance — all in one place."
       />
       <motion.div
@@ -87,6 +88,7 @@ export default function Login() {
                   className={inputClass}
                   required
                   disabled={loading}
+                  inputMode="email"
                   autoComplete="email"
                 />
               </div>
@@ -145,8 +147,8 @@ export default function Login() {
             <motion.button
               type="submit"
               disabled={loading}
-              whileTap={{ scale: reduceMotion ? 1 : 0.98 }}
-              className="w-full h-[52px] rounded-xl bg-[#6366f1] text-white font-semibold text-[16px] hover:bg-[#4f46e5] active:bg-[#4338ca] disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+              whileTap={{ scale: reduceMotion ? 1 : 0.985 }}
+              className="w-full h-[52px] rounded-[11px] bg-gradient-to-b from-[#6D6FF5] to-[#6366F1] text-white font-semibold text-[16px] hover:from-[#5B5EE8] hover:to-[#595BE3] disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>

@@ -9,7 +9,7 @@ import { Mail, ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
 const inputFocusClass =
-  "focus-visible:ring-0 focus-visible:border-[#6366f1] focus-visible:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] transition-all duration-150";
+  "text-[16px] min-h-[46px] focus-visible:ring-0 focus-visible:border-[#6366f1] focus-visible:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] transition-all duration-150";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -35,7 +35,8 @@ export default function ForgotPassword() {
   return (
     <div className="bw-auth-shell">
       <BrandPanel
-        title="Reset your password."
+        title="Reset your"
+        titleAccent="password."
         body="Enter your email and we'll send you a secure link to get back into your account."
       />
       <motion.div
@@ -100,16 +101,17 @@ export default function ForgotPassword() {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@example.com"
                       className={`pl-10 ${inputFocusClass}`}
+                      inputMode="email"
                       required
                     />
                   </div>
                 </div>
 
-                <motion.div whileTap={{ scale: reduceMotion ? 1 : 0.98 }} className="w-full">
+                <motion.div whileTap={{ scale: reduceMotion ? 1 : 0.985 }} className="w-full">
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="w-full h-12 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700"
+                    className="w-full h-12 rounded-[11px] bg-gradient-to-b from-[#6D6FF5] to-[#6366F1] hover:from-[#5B5EE8] hover:to-[#595BE3]"
                   >
                     {loading ? "Sending…" : "Send reset link"}
                     {!loading && <ArrowRight className="w-4 h-4 ml-2" />}

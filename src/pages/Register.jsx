@@ -26,10 +26,10 @@ const ACCOUNT_TYPES = [
 ];
 
 const STEP2_BRAND = {
-  advertiser: { title: "You're joining as an Advertiser.", body: "One step and you're in — no approval wait." },
-  venue: { title: "You're joining as a Venue Owner.", body: "One step and you're in — no approval wait." },
-  enterprise: { title: "You're joining as an Enterprise.", body: "One step and you're in — no approval wait." },
-  agency: { title: "You're joining as an Agency.", body: "One step and you're in — no approval wait." },
+  advertiser: { title: "You're joining as an", titleAccent: "Advertiser.", body: "One step and you're in — no approval wait." },
+  venue: { title: "You're joining as a", titleAccent: "Venue Owner.", body: "One step and you're in — no approval wait." },
+  enterprise: { title: "You're joining as an", titleAccent: "Enterprise.", body: "One step and you're in — no approval wait." },
+  agency: { title: "You're joining as an", titleAccent: "Agency.", body: "One step and you're in — no approval wait." },
 };
 
 const inputClass =
@@ -93,7 +93,8 @@ export default function Register() {
   const brandContent =
     step === 1
       ? {
-          title: "Join the UAE's screen advertising marketplace.",
+          title: "Join the UAE's",
+          titleAccent: "screen advertising marketplace.",
           body: "Advertisers, venue owners, malls and agencies — one platform, built for how you work.",
         }
       : STEP2_BRAND[accountType] || STEP2_BRAND.advertiser;
@@ -105,7 +106,7 @@ export default function Register() {
 
   return (
     <div className="bw-auth-shell">
-      <BrandPanel title={brandContent.title} body={brandContent.body} />
+      <BrandPanel title={brandContent.title} titleAccent={brandContent.titleAccent} body={brandContent.body} />
       <motion.div
         className="bw-form-panel"
         initial={{ opacity: 0, y: 12 }}
@@ -153,7 +154,7 @@ export default function Register() {
                   </div>
                 )}
 
-                <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="grid grid-cols-2 max-[359px]:grid-cols-1 gap-3 mb-4">
                   {ACCOUNT_TYPES.map(({ key, label, subtitle, icon: Icon }) => {
                     const selected = accountType === key;
                     return (
@@ -272,6 +273,7 @@ export default function Register() {
                         className={inputClass}
                         required
                         disabled={loading}
+                        inputMode="email"
                         autoComplete="email"
                       />
                     </div>
@@ -316,8 +318,8 @@ export default function Register() {
                   <motion.button
                     type="submit"
                     disabled={loading}
-                    whileTap={{ scale: reduceMotion ? 1 : 0.98 }}
-                    className="w-full h-[52px] rounded-xl bg-[#6366f1] text-white font-semibold text-[16px] hover:bg-[#4f46e5] active:bg-[#4338ca] disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                    whileTap={{ scale: reduceMotion ? 1 : 0.985 }}
+                    className="w-full h-[52px] rounded-[11px] bg-gradient-to-b from-[#6D6FF5] to-[#6366F1] text-white font-semibold text-[16px] hover:from-[#5B5EE8] hover:to-[#595BE3] disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
                   >
                     {loading ? (
                       <>

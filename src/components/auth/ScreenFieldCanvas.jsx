@@ -1,135 +1,189 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import * as THREE from "three";
 
-const PANEL_COUNT = 60;
-const BG_COLOR = 0x070b18;
-const PALETTE = [
-  new THREE.Color(0x6366f1), // indigo
-  new THREE.Color(0x8b5cf6), // violet
-  new THREE.Color(0xe0e7ff), // near-white (≈1 in 8)
-];
+const GRID_COLS = 6;
+const GRID_ROWS = 4;
+const INSTANCE_COUNT = GRID_COLS * GRID_ROWS;
+const TINTS = [0x5b62f0, 0x7c6bf2, 0x9c7df5, 0xb9a6ff];
 
-export default function ScreenFieldCanvas() {
+/**
+ * 1.1 — Generated soft sprite: a radial bloom + rounded-rect panel face,
+ * feathered so there are no hard edges under additive blending.
+ */
+function createSpriteTexture() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 256;
+  canvas.height = 256;
+  const ctx = canvas.getContext("2d");
+
+  // a. Radial bloom
+  const bloom = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
+  bloom.addColorStop(0, "rgba(255,255,255,0.42)");
+  bloom.addColorStop(0.42, "rgba(255,255,255,0.10)");
+  bloom.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = bloom;
+  ctx.fillRect(0, 0, 256, 256);
+
+  // b. Rounded-rect panel face
+  const pw = 256 * 0.72;
+  const ph = 256 * 0.40;
+  const px = (256 - pw) / 2;
+  const py = (256 - ph) / 2;
+  const r = 10;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(px + r, py);
+  ctx.lineTo(px + pw - r, py);
+  ctx.quadraticCurveTo(px + pw, py, px + pw, py + r);
+  ctx.lineTo(px + pw, py + ph - r);
+  ctx.quadraticCurveTo(px + pw, py + ph, px + pw - r, py + ph);
+  ctx.lineTo(px + r, py + ph);
+  ctx.quadraticCurveTo(px, py + ph, px, py + ph - r);
+  ctx.lineTo(px, py + r);
+  ctx.quadraticCurveTo(px, py, px + r, py);
+  ctx.closePath();
+  ctx.clip();
+
+  const face = ctx.createLinearGradient(px, py, px + pw, py + ph);
+  face.addColorStop(0, "rgba(255,255,255,0.95)");
+  face.addColorStop(0.5, "rgba(255,255,255,0.62)");
+  face.addColorStop(1, "rgba(255,255,255,0.88)");
+  ctx.fillStyle = face;
+  ctx.fillRect(px, py, pw, ph);
+  ctx.restore();
+
+  // c. Feather — removes every hard edge
+  ctx.globalCompositeOperation = "destination-in";
+  const feather = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
+  feather.addColorStop(0, "rgba(0,0,0,1)");
+  feather.addColorStop(0.16, "rgba(0,0,0,1)");
+  feather.addColorStop(0.82, "rgba(0,0,0,0.92)");
+  feather.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = feather;
+  ctx.fillRect(0, 0, 256, 256);
+  ctx.globalCompositeOperation = "source-over";
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.minFilter = THREE.LinearFilter;
+  texture.generateMipmaps = false;
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
+export default function ScreenFieldCanvas({ sweepTrigger = 0, onActive }) {
   const containerRef = useRef(null);
+  const sweepState = useRef({ position: -10, active: false });
+
+  // 2.1 + 2.2 — WebGL only at >= 1024px and without reduced motion
+  const [isDesktop, setIsDesktop] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth >= 1024 : false
+  );
+  const [reducedMotion] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      : false
+  );
 
   useEffect(() => {
+    const onResize = () => setIsDesktop(window.innerWidth >= 1024);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const shouldInit = isDesktop && !reducedMotion;
+
+  // 1.4 — React to sweep trigger from the HUD
+  useEffect(() => {
+    if (sweepTrigger > 0 && shouldInit) {
+      sweepState.current.active = true;
+      sweepState.current.position = -2;
+    }
+  }, [sweepTrigger, shouldInit]);
+
+  // Main WebGL lifecycle
+  useEffect(() => {
+    if (!shouldInit) return;
+
     const container = containerRef.current;
-    if (!container) return;
+    if (!container || container.clientWidth === 0 || container.clientHeight === 0) return;
 
-    // 2.3 — skip if reduced motion
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    // 2.4 — skip below 768px (brand panel not visible)
-    if (window.innerWidth < 768) return;
-    // Guard against zero-size container
-    if (container.clientWidth === 0 || container.clientHeight === 0) return;
-
-    let renderer, scene, camera;
+    let renderer, scene, camera, mesh, geometry, material, texture;
     let animationId = null;
     let isVisible = true;
     const cleanups = [];
 
     try {
-      renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      renderer.setClearColor(BG_COLOR, 1);
-      container.appendChild(renderer.domElement);
-
-      scene = new THREE.Scene();
-      scene.background = new THREE.Color(BG_COLOR);
-      // 1.7 — fog so far panels dissolve
-      scene.fog = new THREE.FogExp2(BG_COLOR, 0.055);
-
-      // 1.8 — camera
-      camera = new THREE.PerspectiveCamera(
-        55,
-        container.clientWidth / container.clientHeight,
-        0.1,
-        100
-      );
-      camera.position.z = 8;
-
-      // 1.1 — single PlaneGeometry, InstancedMesh
-      const panelGeo = new THREE.PlaneGeometry(1, 0.5625); // 16:9
-      const glowGeo = new THREE.PlaneGeometry(1.6, 0.9); // 1.6x, preserving ratio
-
-      // 1.3 — MeshBasicMaterial, additive, no lights
-      const panelMat = new THREE.MeshBasicMaterial({
+      texture = createSpriteTexture();
+      geometry = new THREE.PlaneGeometry(2.5, 2.5);
+      material = new THREE.MeshBasicMaterial({
+        map: texture,
         transparent: true,
-        blending: THREE.AdditiveBlending,
         depthWrite: false,
-      });
-      const glowMat = new THREE.MeshBasicMaterial({
-        transparent: true,
         blending: THREE.AdditiveBlending,
-        depthWrite: false,
       });
 
-      const panelMesh = new THREE.InstancedMesh(panelGeo, panelMat, PANEL_COUNT);
-      const glowMesh = new THREE.InstancedMesh(glowGeo, glowMat, PANEL_COUNT);
-      panelMesh.frustumCulled = false;
-      glowMesh.frustumCulled = false;
+      mesh = new THREE.InstancedMesh(geometry, material, INSTANCE_COUNT);
+      mesh.frustumCulled = false;
 
       const dummy = new THREE.Object3D();
-      const tmpColor = new THREE.Color();
+      const colour = new THREE.Color();
       const instances = [];
 
-      for (let i = 0; i < PANEL_COUNT; i++) {
-        const x = (Math.random() - 0.5) * 28; // x[-14,14]
-        const y = (Math.random() - 0.5) * 16; // y[-8,8]
-        const z = -22 + Math.random() * 24; // z[-22,2]
-        const rotY = (Math.random() - 0.5) * 0.7; // ±0.35
-        const rotZ = (Math.random() - 0.5) * 0.16; // ±0.08
-        const scale = 0.6 + Math.random() * 1.0; // 0.6–1.6
+      for (let i = 0; i < INSTANCE_COUNT; i++) {
+        const col = i % GRID_COLS;
+        const row = Math.floor(i / GRID_COLS);
 
-        const isWhite = Math.random() < 0.125;
-        const baseColor = (
-          isWhite ? PALETTE[2] : Math.random() < 0.5 ? PALETTE[0] : PALETTE[1]
-        ).clone();
+        const x = (col - 2.5) * 4.4 + (Math.random() - 0.5) * 0.7;
+        const y = (row - 1.5) * 3.5 + (Math.random() - 0.5) * 0.6;
+        const z = -16 + ((i * 7) % 5) * 3.2 + (Math.random() - 0.5) * 1.4;
+        const ry = (Math.random() - 0.5) * 0.3;
+        const rz = (Math.random() - 0.5) * 0.05;
+        const scale = 0.8 + Math.random() * 0.45;
+        const spin = 0.008 + Math.random() * 0.016;
+        const idle = 0.18 + Math.random() * 0.16;
+        const phase = Math.random() * Math.PI * 2;
+        const tint = TINTS[i % TINTS.length];
 
-        // Opacity by depth: near (z→2) = 0.85, far (z→-22) = 0.15
-        const depthFactor = (z + 22) / 24;
-        const opacity = 0.15 + depthFactor * 0.7;
-
-        instances.push({
-          x, y, z, rotY, rotZ, scale, baseColor, opacity,
-          rotSpeed: 0.02 + Math.random() * 0.06, // 0.02–0.08 rad/sec
-          pulsing: false,
-          pulseStart: 0,
-        });
+        instances.push({ col, x, y, z, ry, rz, scale, spin, idle, phase, tint, flash: 0 });
 
         dummy.position.set(x, y, z);
-        dummy.rotation.set(0, rotY, rotZ);
+        dummy.rotation.set(0, ry, rz);
         dummy.scale.set(scale, scale, 1);
         dummy.updateMatrix();
-        panelMesh.setMatrixAt(i, dummy.matrix);
-        glowMesh.setMatrixAt(i, dummy.matrix);
+        mesh.setMatrixAt(i, dummy.matrix);
 
-        // With additive blending, brightness encodes opacity
-        tmpColor.copy(baseColor).multiplyScalar(opacity);
-        panelMesh.setColorAt(i, tmpColor);
-        tmpColor.copy(baseColor).multiplyScalar(0.12);
-        glowMesh.setColorAt(i, tmpColor);
+        colour.setHex(tint).multiplyScalar(idle);
+        mesh.setColorAt(i, colour);
       }
 
-      panelMesh.instanceMatrix.needsUpdate = true;
-      glowMesh.instanceMatrix.needsUpdate = true;
-      if (panelMesh.instanceColor) panelMesh.instanceColor.needsUpdate = true;
-      if (glowMesh.instanceColor) glowMesh.instanceColor.needsUpdate = true;
+      mesh.instanceMatrix.needsUpdate = true;
+      if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
 
-      scene.add(glowMesh);
-      scene.add(panelMesh);
+      // 2.3 — renderer with alpha, no antialias, sRGB output
+      renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      container.appendChild(renderer.domElement);
+
+      // 1.5 — scene + camera
+      scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x05070f, 0.03);
+
+      camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 120);
+      camera.position.set(0, 0, 9);
+      camera.lookAt(0, 0, -7);
+
+      scene.add(mesh);
 
       const clock = new THREE.Clock();
-      let driftY = 0;
-      let lastPulseTime = 0;
-      let pointerX = 0,
-        pointerY = 0;
+      let pointerX = 0, pointerY = 0;
 
-      // 1.6 — pointer parallax (skip on touch)
-      const isTouchDevice =
-        "ontouchstart" in window || navigator.maxTouchPoints > 0;
+      // 1.6 — pointer parallax, skip on touch
+      const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
       const onPointerMove = (e) => {
+        if (e.pointerType === "touch") return;
         pointerX = (e.clientX / window.innerWidth) * 2 - 1;
         pointerY = -(e.clientY / window.innerHeight) * 2 + 1;
       };
@@ -143,67 +197,51 @@ export default function ScreenFieldCanvas() {
         if (!isVisible) return;
 
         const delta = Math.min(clock.getDelta(), 0.1);
-        const elapsed = clock.getElapsedTime();
+        const t = clock.elapsedTime;
 
-        // Camera parallax — lerp toward pointer, max 1.2 units
-        camera.position.x += (pointerX * 1.2 - camera.position.x) * 0.04;
-        camera.position.y += (pointerY * 1.2 - camera.position.y) * 0.04;
-        camera.lookAt(0, 0, 0);
+        // Camera parallax — lerp toward pointer, max 0.9 x / 0.55 y
+        camera.position.x += (pointerX * 0.9 - camera.position.x) * 0.04;
+        camera.position.y += (pointerY * 0.55 - camera.position.y) * 0.04;
+        camera.lookAt(0, 0, -7);
 
-        // 1.5 — whole field drifts +Y at 0.12 u/s
-        driftY += delta * 0.12;
-
-        // 1.5 — pulse one panel every ~3s over 900ms
-        if (elapsed - lastPulseTime > 3) {
-          lastPulseTime = elapsed;
-          const idx = Math.floor(Math.random() * PANEL_COUNT);
-          instances[idx].pulsing = true;
-          instances[idx].pulseStart = elapsed;
+        // 1.4 — advance column sweep
+        if (sweepState.current.active) {
+          sweepState.current.position += delta * 3.2;
+          if (sweepState.current.position > GRID_COLS + 2) {
+            sweepState.current.active = false;
+          }
         }
 
-        for (let i = 0; i < PANEL_COUNT; i++) {
+        // 1.3 — brightness: idle breathing + sweep flash
+        for (let i = 0; i < INSTANCE_COUNT; i++) {
           const inst = instances[i];
+          inst.ry += inst.spin * delta;
 
-          // Per-panel Y rotation
-          inst.rotY += inst.rotSpeed * delta;
+          const distance = sweepState.current.active
+            ? Math.abs(inst.col - sweepState.current.position)
+            : Infinity;
+          const hit = distance < 1.3 ? 1 - distance / 1.3 : 0;
+          inst.flash += (hit - inst.flash) * (hit > inst.flash ? 0.22 : 0.045);
 
-          // Wrap Y from top back to bottom
-          let y = inst.y + driftY;
-          y = (((y + 8) % 16) + 16) % 16 - 8;
+          const k = inst.idle * (0.86 + Math.sin(t * 0.5 + inst.phase) * 0.14) + inst.flash * 0.95;
 
-          // Pulse opacity multiplier
-          let opacityMul = 1;
-          if (inst.pulsing) {
-            const pe = elapsed - inst.pulseStart;
-            if (pe >= 0.9) {
-              inst.pulsing = false;
-            } else {
-              opacityMul = 1 + Math.sin(Math.PI * (pe / 0.9)) * 0.8;
-            }
-          }
-
-          dummy.position.set(inst.x, y, inst.z);
-          dummy.rotation.set(0, inst.rotY, inst.rotZ);
+          dummy.position.set(inst.x, inst.y, inst.z);
+          dummy.rotation.set(0, inst.ry, inst.rz);
           dummy.scale.set(inst.scale, inst.scale, 1);
           dummy.updateMatrix();
-          panelMesh.setMatrixAt(i, dummy.matrix);
-          glowMesh.setMatrixAt(i, dummy.matrix);
+          mesh.setMatrixAt(i, dummy.matrix);
 
-          tmpColor.copy(inst.baseColor).multiplyScalar(inst.opacity * opacityMul);
-          panelMesh.setColorAt(i, tmpColor);
-          tmpColor.copy(inst.baseColor).multiplyScalar(0.12 * opacityMul);
-          glowMesh.setColorAt(i, tmpColor);
+          colour.setHex(inst.tint).multiplyScalar(k);
+          mesh.setColorAt(i, colour);
         }
 
-        panelMesh.instanceMatrix.needsUpdate = true;
-        glowMesh.instanceMatrix.needsUpdate = true;
-        if (panelMesh.instanceColor) panelMesh.instanceColor.needsUpdate = true;
-        if (glowMesh.instanceColor) glowMesh.instanceColor.needsUpdate = true;
+        mesh.instanceMatrix.needsUpdate = true;
+        if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
 
         renderer.render(scene, camera);
       }
 
-      // 2.2 — pause render loop when tab hidden
+      // 2.4 — pause on tab hidden
       const onVisibilityChange = () => {
         if (document.hidden) {
           isVisible = false;
@@ -213,22 +251,15 @@ export default function ScreenFieldCanvas() {
           }
         } else if (!isVisible) {
           isVisible = true;
-          clock.getDelta(); // reset to avoid jump
+          clock.getDelta();
           if (!animationId) animationId = requestAnimationFrame(animate);
         }
       };
       document.addEventListener("visibilitychange", onVisibilityChange);
       cleanups.push(() => document.removeEventListener("visibilitychange", onVisibilityChange));
 
-      // 2.4 — stop rendering below 768px on resize
+      // Resize — update camera aspect + renderer size
       const onResize = () => {
-        if (window.innerWidth < 768) {
-          if (animationId) {
-            cancelAnimationFrame(animationId);
-            animationId = null;
-          }
-          return;
-        }
         const w = container.clientWidth;
         const h = container.clientHeight;
         if (w === 0 || h === 0) return;
@@ -240,32 +271,44 @@ export default function ScreenFieldCanvas() {
       cleanups.push(() => window.removeEventListener("resize", onResize));
 
       animate();
+      onActive?.(true);
 
-      // 2.5 — full cleanup on unmount
+      // 2.6 — full cleanup on unmount
       return () => {
         if (animationId) cancelAnimationFrame(animationId);
+        sweepState.current.active = false;
+        sweepState.current.position = -10;
         cleanups.forEach((fn) => fn());
-        panelGeo.dispose();
-        glowGeo.dispose();
-        panelMat.dispose();
-        glowMat.dispose();
-        panelMesh.dispose();
-        glowMesh.dispose();
+        geometry?.dispose();
+        material?.dispose();
+        texture?.dispose();
+        mesh?.dispose();
         if (renderer) {
+          renderer.forceContextLoss();
           renderer.dispose();
-          if (renderer.domElement && renderer.domElement.parentNode) {
+          if (renderer.domElement?.parentNode) {
             renderer.domElement.parentNode.removeChild(renderer.domElement);
           }
         }
+        onActive?.(false);
       };
     } catch (e) {
-      // 2.6 — WebGL unavailable, fall back silently
-      console.warn("ScreenFieldCanvas: WebGL unavailable, using CSS fallback");
-      return () => {
-        cleanups.forEach((fn) => fn());
-      };
+      // 2.7 — fall back silently
+      console.warn("ScreenFieldCanvas: WebGL unavailable", e);
+      geometry?.dispose();
+      material?.dispose();
+      texture?.dispose();
+      mesh?.dispose();
+      if (renderer) {
+        renderer.forceContextLoss();
+        renderer.dispose();
+        if (renderer.domElement?.parentNode) {
+          renderer.domElement.parentNode.removeChild(renderer.domElement);
+        }
+      }
+      onActive?.(false);
     }
-  }, []);
+  }, [shouldInit]);
 
   return <div ref={containerRef} className="absolute inset-0" style={{ zIndex: 0 }} />;
 }
