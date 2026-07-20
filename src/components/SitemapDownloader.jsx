@@ -61,11 +61,6 @@ export default function SitemapDownloader() {
     <priority>0.5</priority>
     <changefreq>monthly</changefreq>
   </url>
-  <url>
-    <loc>https://beyondwalls.ae/ARPremium</loc>
-    <priority>0.7</priority>
-    <changefreq>weekly</changefreq>
-  </url>
 </urlset>`;
 
     const blob = new Blob([sitemapXML], { type: 'application/xml' });
