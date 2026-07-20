@@ -43,7 +43,6 @@ export default function PublicNav() {
     { name: "Blog", page: "Blog" },
     { name: "Help Center", page: "HelpCenter" },
     { name: "Contact", page: "Contact" },
-    { name: "AR Engage", page: "ARPremium", isNew: true },
     { name: "Connect", page: "Connect", highlight: true },
   ];
 
