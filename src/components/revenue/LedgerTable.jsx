@@ -22,7 +22,7 @@ const TYPE_STYLES = {
 
 export default function LedgerTable({ orgId }) {
   const { items, loading, loadingMore, hasMore, loadMore } = usePaginatedList(
-    (skip) => base44.entities.Transaction.filter({ org_id: orgId }, '-created_date', PAGE_SIZE, skip),
+    (skip) => base44.entities.Transaction.filter({ org_id: orgId, type: { $nin: ['platform_fee', 'booking_payment'] } }, '-created_date', PAGE_SIZE, skip),
     PAGE_SIZE
   );
 

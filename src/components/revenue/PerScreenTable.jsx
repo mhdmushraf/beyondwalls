@@ -39,19 +39,18 @@ export default function PerScreenTable({ orgId }) {
         allBookings.forEach((b) => {
           if (!b.screen_id) return;
           if (!byScreen[b.screen_id]) {
-            byScreen[b.screen_id] = { screen_id: b.screen_id, bookings: 0, impressions: 0, gross: 0, net: 0 };
+            byScreen[b.screen_id] = { screen_id: b.screen_id, bookings: 0, impressions: 0, earnings: 0 };
           }
           byScreen[b.screen_id].bookings++;
           byScreen[b.screen_id].impressions += b.impressions || 0;
-          byScreen[b.screen_id].gross += b.total_amount || 0;
-          byScreen[b.screen_id].net += b.venue_earnings || 0;
+          byScreen[b.screen_id].earnings += b.venue_earnings || 0;
         });
 
         if (cancelled) return;
         setRows(
           Object.values(byScreen)
             .map((r) => ({ ...r, screen_name: screensById[r.screen_id]?.name || 'Unknown' }))
-            .sort((a, b) => b.gross - a.gross)
+            .sort((a, b) => b.earnings - a.earnings)
         );
       } catch (e) {
         // silent
@@ -77,8 +76,7 @@ export default function PerScreenTable({ orgId }) {
               <th className="p-3 font-medium">Screen</th>
               <th className="p-3 font-medium text-right">Bookings</th>
               <th className="p-3 font-medium text-right">Impressions</th>
-              <th className="p-3 font-medium text-right">Gross</th>
-              <th className="p-3 font-medium text-right">Net</th>
+              <th className="p-3 font-medium text-right">Earnings</th>
             </tr>
           </thead>
           <tbody>
@@ -87,8 +85,7 @@ export default function PerScreenTable({ orgId }) {
                 <td className="p-3 font-medium text-slate-900">{r.screen_name}</td>
                 <td className="p-3 text-right text-slate-600">{r.bookings}</td>
                 <td className="p-3 text-right text-slate-600">{formatNumber(r.impressions)}</td>
-                <td className="p-3 text-right text-slate-600">{formatAED(r.gross)}</td>
-                <td className="p-3 text-right font-medium text-slate-900">{formatAED(r.net)}</td>
+                <td className="p-3 text-right font-medium text-slate-900">{formatAED(r.earnings)}</td>
               </tr>
             ))}
           </tbody>

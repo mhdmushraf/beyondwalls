@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, Upload, Loader2, MapPin, Maximize, Users, Calendar } from 'lucide-react';
+import { ArrowLeft, Upload, Loader2, MapPin, Maximize, Users } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function ScreenDetail() {
@@ -19,6 +19,7 @@ export default function ScreenDetail() {
   const [creativeFile, setCreativeFile] = useState(null);
   const [creativePreview, setCreativePreview] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [commissionRate, setCommissionRate] = useState(30);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -28,6 +29,12 @@ export default function ScreenDetail() {
       try {
         const s = await base44.entities.Screen.get(screenId);
         setScreen(s);
+        if (s.org_id) {
+          try {
+            const orgData = await base44.entities.Organization.get(s.org_id);
+            if (orgData?.commission_rate != null) setCommissionRate(orgData.commission_rate);
+          } catch { /* default 30% */ }
+        }
         if (s.venue_id) {
           try {
             const v = await base44.entities.Venue.get(s.venue_id);
@@ -95,7 +102,7 @@ export default function ScreenDetail() {
         goal: 'brand_awareness',
         status: 'pending_approval',
         approval_status: 'pending',
-        total_budget: computeTotal(),
+        total_budget: totalAmount,
         start_date: startDate,
         end_date: endDate,
         selected_screens: [screen.id],
@@ -137,7 +144,9 @@ export default function ScreenDetail() {
   }
 
   if (!screen) return null;
-  const total = computeTotal();
+  const baseAmount = computeTotal();
+  const serviceFee = baseAmount > 0 ? +(baseAmount * commissionRate / 100).toFixed(2) : 0;
+  const totalAmount = +(baseAmount + serviceFee).toFixed(2);
   const audience = [venue?.audience_age_group, venue?.audience_gender]
     .filter(Boolean).map(s => s.replace(/_/g, ' '));
 
@@ -213,10 +222,20 @@ export default function ScreenDetail() {
             <Input id="creative" type="file" accept="image/*,video/*" onChange={handleFileChange} className="hidden" />
           </div>
 
-          {total > 0 && (
-            <div className="flex items-center justify-between bg-slate-50 rounded-lg p-3">
-              <span className="text-sm text-slate-600 flex items-center gap-2"><Calendar className="w-4 h-4" />Estimated total</span>
-              <span className="text-lg font-bold text-slate-900">AED {total.toFixed(2)}</span>
+          {baseAmount > 0 && (
+            <div className="bg-slate-50 rounded-lg p-3 space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-slate-600">Screen rate</span>
+                <span className="font-medium text-slate-900">AED {baseAmount.toFixed(2)}</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-slate-600">Service fee ({commissionRate}%)</span>
+                <span className="font-medium text-slate-900">AED {serviceFee.toFixed(2)}</span>
+              </div>
+              <div className="border-t border-slate-200 pt-2 flex items-center justify-between">
+                <span className="text-sm font-semibold text-slate-900">Total</span>
+                <span className="text-lg font-bold text-slate-900">AED {totalAmount.toFixed(2)}</span>
+              </div>
             </div>
           )}
 

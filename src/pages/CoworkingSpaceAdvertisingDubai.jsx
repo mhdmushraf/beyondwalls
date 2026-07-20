@@ -30,7 +30,7 @@ export default function CoworkingSpaceAdvertisingDubai() {
     },
     {
       question: "Can co-working space owners earn from their screens?",
-      answer: "Yes. Co-working space operators can list their screens on Beyond Walls for free and earn passive income. Venues keep 70% of all ad revenue and maintain full control over which ads appear on their screens."
+      answer: "Yes. Co-working space operators can list their screens on Beyond Walls for free and earn passive income. Venues keep 100% of their screen rate and maintain full control over which ads appear on their screens."
     }
   ];
 

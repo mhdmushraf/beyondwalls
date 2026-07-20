@@ -138,7 +138,7 @@ Goals: ${formData.goals || "Not specified"}
   ];
 
   const stats = [
-    { value: "85%", label: "Revenue Share" },
+    { value: "100%", label: "Revenue Share" },
     { value: "500+", label: "Active Advertisers" },
     { value: "Weekly", label: "Payouts" },
     { value: "<7 Days", label: "Onboarding" }
@@ -170,7 +170,7 @@ Goals: ${formData.goals || "Not specified"}
           </h1>
           
           <p className="text-xl text-slate-300 max-w-3xl mb-8">
-            Unlock the power of our marketplace. Connect your screens to thousands of ready-to-advertise businesses and earn <span className="text-white font-bold">85% revenue share</span> on all new sales we generate for you.
+            Unlock the power of our marketplace. Connect your screens to thousands of ready-to-advertise businesses and keep <span className="text-white font-bold">100% of your screen rate</span> on all new sales we generate for you.
           </p>
 
           <div className="flex flex-wrap gap-4 mb-12">

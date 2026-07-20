@@ -181,7 +181,7 @@ export default function HowItWorks() {
     },
     {
       question: "How is revenue calculated for venue owners?",
-      answer: "Revenue is based on your hourly rate multiplied by the ad duration and number of plays. You receive 70% of the ad spend for campaigns displayed on your screens. Payments are made weekly or monthly."
+      answer: "Revenue is based on your hourly rate multiplied by the ad duration and number of plays. You keep 100% of your screen rate for campaigns displayed on your screens. Payments are made weekly or monthly."
     },
     {
       question: "What are the screen requirements?",
@@ -632,7 +632,7 @@ export default function HowItWorks() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center py-3 border-b border-slate-100">
                     <span className="text-slate-600">Revenue Share</span>
-                    <span className="font-medium text-emerald-600">70% to Venue</span>
+                    <span className="font-medium text-emerald-600">100% to Venue</span>
                   </div>
                   <div className="flex justify-between items-center py-3 border-b border-slate-100">
                     <span className="text-slate-600">Payout Frequency</span>

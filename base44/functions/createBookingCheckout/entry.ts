@@ -144,10 +144,16 @@ Deno.serve(async (req) => {
 
     const msPerWeek = 7 * 24 * 60 * 60 * 1000;
     const weeks = Math.max(1, Math.ceil((end.getTime() - start.getTime()) / msPerWeek));
-    const totalAmount = +(pricePerWeek * weeks * slotsBooked).toFixed(2);
 
-    const platformFee = +(totalAmount * commissionRate / 100).toFixed(2);
-    const venueEarnings = +(totalAmount - platformFee).toFixed(2);
+    // --- BUYER-PAYS-FEE MODEL ---
+    //   base_amount    = price_per_week × weeks × slots  (the screen rate)
+    //   platform_fee   = base_amount × commission_rate_snapshot / 100  (paid by advertiser on top)
+    //   total_amount   = base_amount + platform_fee  (what the advertiser pays)
+    //   venue_earnings = base_amount  (venue keeps 100% of their screen rate)
+    const baseAmount = +(pricePerWeek * weeks * slotsBooked).toFixed(2);
+    const platformFee = +(baseAmount * commissionRate / 100).toFixed(2);
+    const totalAmount = +(baseAmount + platformFee).toFixed(2);
+    const venueEarnings = baseAmount;
 
     // --- Resolve campaign for advertiser_email denormalization (best-effort) ---
     let advertiserEmail = user.email;
@@ -170,6 +176,7 @@ Deno.serve(async (req) => {
       slots_booked: slotsBooked,
       price_per_week: pricePerWeek,
       weeks,
+      base_amount: baseAmount,
       total_amount: totalAmount,
       commission_rate_snapshot: commissionRate,
       platform_fee: platformFee,
@@ -205,6 +212,7 @@ Deno.serve(async (req) => {
       booking_id: booking.id,
       checkout_url: checkout.checkoutUrl,
       provider: checkout.provider,
+      base_amount: baseAmount,
       total_amount: totalAmount,
       commission_rate_snapshot: commissionRate,
       platform_fee: platformFee,

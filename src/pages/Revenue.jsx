@@ -11,7 +11,6 @@ export default function Revenue() {
   const [user, setUser] = useState(null);
   const [org, setOrg] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [transactions, setTransactions] = useState([]);
   const [payoutData, setPayoutData] = useState({ total_earnings: 0, total_paid_out: 0, eligible_payout: 0 });
   const [dataLoading, setDataLoading] = useState(true);
 
@@ -40,32 +39,12 @@ export default function Revenue() {
     (async () => {
       setDataLoading(true);
       try {
-        const types = ['earnings', 'platform_fee', 'payout'];
-        const allTxns = [];
-        for (const type of types) {
-          let skip = 0;
-          const pageSize = 200;
-          let hasMore = true;
-          while (hasMore) {
-            const batch = await base44.entities.Transaction.filter(
-              { org_id: org.id, type }, '-created_date', pageSize, skip
-            );
-            allTxns.push(...batch);
-            hasMore = batch.length === pageSize;
-            skip += batch.length;
-          }
-        }
-        if (cancelled) return;
-        setTransactions(allTxns);
-
-        try {
-          const res = await base44.functions.invoke('computeEligiblePayout', { org_id: org.id });
-          if (!cancelled) setPayoutData({
-            total_earnings: res.data?.total_earnings || 0,
-            total_paid_out: res.data?.total_paid_out || 0,
-            eligible_payout: res.data?.eligible_payout || 0,
-          });
-        } catch (e) { /* silent */ }
+        const res = await base44.functions.invoke('computeEligiblePayout', { org_id: org.id });
+        if (!cancelled) setPayoutData({
+          total_earnings: res.data?.total_earnings || 0,
+          total_paid_out: res.data?.total_paid_out || 0,
+          eligible_payout: res.data?.eligible_payout || 0,
+        });
       } catch (e) {
         // silent
       } finally {
@@ -87,8 +66,8 @@ export default function Revenue() {
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
       <h1 className="font-heading text-xl sm:text-2xl font-bold text-slate-900">Revenue</h1>
-      <RevenueKpis transactions={transactions} payoutData={payoutData} loading={dataLoading} />
-      <EarningsChart transactions={transactions} />
+      <RevenueKpis payoutData={payoutData} loading={dataLoading} />
+      <EarningsChart orgId={org.id} />
       <PerScreenTable orgId={org.id} />
       <LedgerTable orgId={org.id} />
     </div>

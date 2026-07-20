@@ -423,7 +423,7 @@ export default function About() {
                   <DollarSign className="w-7 h-7 text-amber-600" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-3">Recurring Revenue</h3>
-                <p className="text-slate-600">30% platform commission on every transaction. Weekly recurring campaigns drive predictable revenue.</p>
+                <p className="text-slate-600">Service fee charged to advertisers on every booking. Weekly recurring campaigns drive predictable revenue.</p>
               </CardContent>
             </Card>
           </div>

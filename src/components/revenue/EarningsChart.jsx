@@ -1,8 +1,37 @@
-import React, { useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { base44 } from '@/api/base44Client';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import moment from 'moment';
 
-export default function EarningsChart({ transactions }) {
+export default function EarningsChart({ orgId }) {
+  const [bookings, setBookings] = useState([]);
+
+  useEffect(() => {
+    if (!orgId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        let allBookings = [];
+        let skip = 0;
+        const pageSize = 200;
+        let hasMore = true;
+        while (hasMore) {
+          const batch = await base44.entities.AdBooking.filter(
+            { org_id: orgId, status: { $in: ['active', 'completed'] } },
+            '-created_date', pageSize, skip
+          );
+          allBookings = allBookings.concat(batch);
+          hasMore = batch.length === pageSize;
+          skip += batch.length;
+        }
+        if (!cancelled) setBookings(allBookings);
+      } catch {
+        // silent
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [orgId]);
+
   const data = useMemo(() => {
     const months = [];
     for (let i = 11; i >= 0; i--) {
@@ -13,22 +42,20 @@ export default function EarningsChart({ transactions }) {
     const monthMap = {};
     months.forEach((m) => { monthMap[m.key] = m; });
 
-    transactions
-      .filter((t) => t.type === 'earnings')
-      .forEach((t) => {
-        if (!t.created_date) return;
-        const key = moment(t.created_date).format('YYYY-MM');
-        if (monthMap[key]) {
-          monthMap[key].amount += t.amount || 0;
-        }
-      });
+    bookings.forEach((b) => {
+      if (!b.created_date) return;
+      const key = moment(b.created_date).format('YYYY-MM');
+      if (monthMap[key]) {
+        monthMap[key].amount += b.venue_earnings || 0;
+      }
+    });
 
     return months;
-  }, [transactions]);
+  }, [bookings]);
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 p-4">
-      <h2 className="font-medium text-slate-900 mb-4">Net earnings (last 12 months)</h2>
+      <h2 className="font-medium text-slate-900 mb-4">Earnings (last 12 months)</h2>
       <ResponsiveContainer width="100%" height={280}>
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />

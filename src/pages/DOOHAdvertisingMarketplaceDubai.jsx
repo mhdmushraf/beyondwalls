@@ -26,7 +26,7 @@ export default function DOOHAdvertisingMarketplaceDubai() {
     },
     {
       question: "Can venue owners list their screens?",
-      answer: "Yes. If you own or operate a venue in the UAE with digital screens — whether it's a café, gym, clinic, co-working space, hotel, or retail store — you can list them on Beyond Walls for free. Venue owners keep 70% of all advertising revenue and maintain full control over which ads appear on their screens. It's a simple way to turn idle screens into passive income."
+      answer: "Yes. If you own or operate a venue in the UAE with digital screens — whether it's a café, gym, clinic, co-working space, hotel, or retail store — you can list them on Beyond Walls for free. Venue owners keep 100% of their screen rate and maintain full control over which ads appear on their screens. It's a simple way to turn idle screens into passive income."
     },
     {
       question: "How fast can a campaign go live?",

@@ -171,7 +171,7 @@ function NoOrgState({ message, deadEnd, user, onRecovered }) {
 
         <p className="text-xs text-slate-400 mb-5 leading-relaxed text-center">
           Enterprise &amp; agencies: 0% commission on a per-screen plan. Venue owners join free
-          and keep 70%.
+          and keep 100%.
         </p>
 
         <button

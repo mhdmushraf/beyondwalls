@@ -30,7 +30,7 @@ export default function CafeScreenAdvertisingDubai() {
     },
     {
       question: "Can café owners earn from their screens?",
-      answer: "Yes. If you own or operate a café in Dubai, you can list your screens on Beyond Walls for free and earn passive income. Venue owners keep 70% of all ad revenue and maintain full control over which ads appear."
+      answer: "Yes. If you own or operate a café in Dubai, you can list your screens on Beyond Walls for free and earn passive income. Venue owners keep 100% of their screen rate and maintain full control over which ads appear."
     }
   ];
 

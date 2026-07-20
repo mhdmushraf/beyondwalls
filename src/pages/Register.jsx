@@ -185,7 +185,7 @@ export default function Register() {
 
                 <p className="text-xs text-slate-400 mb-6 leading-relaxed">
                   Enterprise &amp; agencies: 0% commission on a per-screen plan. Venue owners join free
-                  and keep 70%.
+                  and keep 100%.
                 </p>
 
                 <button

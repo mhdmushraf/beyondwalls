@@ -18,7 +18,7 @@ export default function MonetizeYourScreensDubai() {
     },
     {
       question: "Does it cost anything to list?",
-      answer: "No. Listing your screens on Beyond Walls is completely free. There are no setup fees, no monthly charges, and no hidden costs. You only earn — we make our revenue from the 30% platform commission on advertiser bookings. You keep 70% of every booking, the highest revenue share in the UAE DOOH industry."
+      answer: "No. Listing your screens on Beyond Walls is completely free. There are no setup fees, no monthly charges, and no hidden costs. You only earn — we make our revenue from a service fee charged to advertisers on top of your screen rate. You keep 100% of every booking, the highest revenue share in the UAE DOOH industry."
     },
     {
       question: "Do I control what plays?",
@@ -35,7 +35,7 @@ export default function MonetizeYourScreensDubai() {
   ];
 
   const benefits = [
-    { icon: DollarSign, title: "70% Revenue Share", desc: "The highest payout in the DOOH industry" },
+    { icon: DollarSign, title: "100% of Your Rate", desc: "The highest payout in the DOOH industry" },
     { icon: Shield, title: "Full Content Control", desc: "Approve every ad before it appears" },
     { icon: Wifi, title: "Zero Upfront Cost", desc: "Free to join, no equipment needed" },
     { icon: Wallet, title: "Weekly Payouts", desc: "Get paid every week, directly to your bank" },
@@ -96,7 +96,7 @@ export default function MonetizeYourScreensDubai() {
       {/* Stats */}
       <section className="py-12 px-6 bg-slate-900 text-white">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          <div><p className="text-4xl font-bold text-violet-400">70%</p><p className="text-slate-400">Revenue Share</p></div>
+          <div><p className="text-4xl font-bold text-violet-400">100%</p><p className="text-slate-400">Revenue Share</p></div>
           <div><p className="text-4xl font-bold text-violet-400">AED 4K+</p><p className="text-slate-400">Monthly Potential</p></div>
           <div><p className="text-4xl font-bold text-violet-400">AED 0</p><p className="text-slate-400">Upfront Cost</p></div>
           <div><p className="text-4xl font-bold text-violet-400">Weekly</p><p className="text-slate-400">Payouts</p></div>
@@ -138,7 +138,7 @@ export default function MonetizeYourScreensDubai() {
             uses. That screen is in front of your customers for hours every day — and right now, it's not generating a
             single dirham in revenue. Beyond Walls changes that. By listing your screens on our platform, you connect
             them to a marketplace of advertisers who are actively looking to reach audiences in venues exactly like
-            yours. You keep 70% of every booking. We handle the rest.
+            yours. You keep 100% of every booking. We handle the rest.
           </p>
 
           <h2 className="text-3xl font-bold text-slate-900 mb-6 mt-12">How Venues Earn: Zero Upfront Cost</h2>
@@ -150,8 +150,8 @@ export default function MonetizeYourScreensDubai() {
           </p>
           <p className="text-slate-600 mb-6 leading-relaxed">
             Advertisers browse available screens on the Beyond Walls platform, select the ones that match their target
-            audience, and book them by the week. When a booking is made on your screen, you receive 70% of the payment.
-            The remaining 30% covers platform operations, payment processing, and advertiser support. This is the
+            audience, and book them by the week. When a booking is made on your screen, you receive 100% of your screen rate.
+            Advertisers pay a service fee on top, which covers platform operations, payment processing, and advertiser support. This is the
             highest revenue share offered by any DOOH platform in the UAE — most traditional networks keep 50% or more.
           </p>
 
@@ -267,7 +267,7 @@ export default function MonetizeYourScreensDubai() {
             Your Screens Are Ready to Earn. Are You?
           </h2>
           <p className="text-xl text-white/80 mb-8">
-            Join Dubai's leading DOOH marketplace — free to join, 70% revenue share, weekly payouts
+            Join Dubai's leading DOOH marketplace — free to join, keep 100% of your rate, weekly payouts
           </p>
           <Link to={createPageUrl("Register")}>
             <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8">

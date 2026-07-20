@@ -30,7 +30,7 @@ export default function ClinicScreenAdvertisingDubai() {
     },
     {
       question: "Can clinic owners earn from their waiting room screens?",
-      answer: "Yes. Clinic and healthcare facility owners can list their waiting room screens on Beyond Walls for free and earn passive income. Venues keep 70% of all ad revenue and maintain full control over which ad categories appear."
+      answer: "Yes. Clinic and healthcare facility owners can list their waiting room screens on Beyond Walls for free and earn passive income. Venues keep 100% of their screen rate and maintain full control over which ad categories appear."
     }
   ];
 

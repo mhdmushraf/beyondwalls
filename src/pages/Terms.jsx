@@ -70,7 +70,7 @@ export default function Terms() {
           </p>
           <h3>5.2 Revenue Share</h3>
           <p>
-            Venue owners receive 70% of advertising revenue generated from their screens. 
+            Venue owners keep 100% of their screen rate. Advertisers pay a service fee on top. 
             Payments are processed weekly or monthly based on your preference.
           </p>
 

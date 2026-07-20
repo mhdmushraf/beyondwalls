@@ -30,7 +30,7 @@ export default function GymScreenAdvertisingDubai() {
     },
     {
       question: "Can gym owners earn from their screens?",
-      answer: "Yes. Gym and fitness studio owners can list their screens on Beyond Walls for free and earn passive income. Venues keep 70% of all ad revenue and maintain full control over which categories of ads appear."
+      answer: "Yes. Gym and fitness studio owners can list their screens on Beyond Walls for free and earn passive income. Venues keep 100% of their screen rate and maintain full control over which categories of ads appear."
     }
   ];
 

@@ -73,7 +73,7 @@ export default function Services() {
   const venueServices = [
     {
       icon: DollarSign,
-      title: "70% Revenue Share",
+      title: "100% of Your Rate",
       description: "Industry-leading payout - earn AED 2,000-4,000+ per screen monthly"
     },
     {

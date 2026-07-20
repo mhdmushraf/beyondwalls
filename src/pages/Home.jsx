@@ -96,7 +96,7 @@ export default function Home() {
   ];
 
   const venueBenefits = [
-    { icon: Wallet, title: "70% Revenue Share", desc: "Highest in the industry" },
+    { icon: Wallet, title: "100% of Your Rate", desc: "Advertisers pay the service fee" },
     { icon: MonitorPlay, title: "Easy Setup", desc: "Works on any smart TV" },
     { icon: PieChart, title: "Earnings Dashboard", desc: "Track revenue in real-time" },
     { icon: Shield, title: "Full Control", desc: "Approve ads before they run" }
@@ -190,7 +190,7 @@ export default function Home() {
     },
     {
       question: "Can venue owners earn from their screens?",
-      answer: "Yes. If you own a venue with digital screens, you can list them on Beyond Walls for free and earn passive income. Venue owners keep 70% of all ad revenue and maintain full control over which ads appear."
+      answer: "Yes. If you own a venue with digital screens, you can list them on Beyond Walls for free and earn passive income. Venue owners keep 100% of their screen rate and maintain full control over which ads appear."
     }
   ];
 
@@ -398,7 +398,7 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="font-semibold text-slate-900">For Venue Owners</p>
-                    <p className="text-slate-600">Monetize your screens, earn 70% revenue share, fully automated management</p>
+                    <p className="text-slate-600">Monetize your screens, keep 100% of your rate, fully automated management</p>
                   </div>
                 </div>
               </div>
@@ -680,7 +680,7 @@ export default function Home() {
                     <BarChart3 className="w-5 h-5 text-emerald-600" />
                   </div>
                   <div>
-                    <p className="font-semibold text-slate-900">30% Commission Model</p>
+                    <p className="font-semibold text-slate-900">Service Fee Model</p>
                     <p className="text-slate-500 text-sm">High-margin recurring revenue</p>
                   </div>
                 </div>

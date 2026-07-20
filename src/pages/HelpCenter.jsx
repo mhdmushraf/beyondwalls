@@ -74,7 +74,7 @@ export default function HelpCenter() {
     {
       category: "venue",
       question: "How much can I earn from my screens?",
-      answer: "Earnings depend on your screen's hourly rate and how often ads are displayed. You receive 70% of all ad revenue. Most venues earn AED 500-3000 per screen per month depending on location and foot traffic."
+      answer: "Earnings depend on your screen's hourly rate and how often ads are displayed. You keep 100% of your screen rate. Most venues earn AED 500-3000 per screen per month depending on location and foot traffic."
     },
     {
       category: "billing",

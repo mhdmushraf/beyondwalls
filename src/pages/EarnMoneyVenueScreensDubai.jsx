@@ -14,7 +14,7 @@ export default function EarnMoneyVenueScreensDubai() {
       readTime={7}
       coverImage="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&h=400&fit=crop"
       ctaTitle="Your Screens Are Ready to Earn. Are You?"
-      ctaText="List your screens on Beyond Walls for free — 70% revenue share, weekly payouts, full content control. Join Dubai's leading DOOH marketplace today."
+      ctaText="List your screens on Beyond Walls for free — keep 100% of your screen rate, weekly payouts, full content control. Join Dubai's leading DOOH marketplace today."
       ctaLink="Register"
       ctaLabel="List Your Screens Free"
     >
@@ -42,7 +42,7 @@ export default function EarnMoneyVenueScreensDubai() {
       </p>
       <p>
         The concept is simple: you provide the screen and the audience, advertisers provide the content and the
-        budget, and Beyond Walls handles the matching, booking, payment, and scheduling. You keep 70% of every
+        budget, and Beyond Walls handles the matching, booking, payment, and scheduling. You keep 100% of every
         booking.
       </p>
 
@@ -55,7 +55,7 @@ export default function EarnMoneyVenueScreensDubai() {
       <p>
         When an advertiser books your screen, you receive a notification. You review the ad creative, approve or
         reject it, and once approved, the ad goes live on your screen at the scheduled time. The booking fee is
-        automatically split — 70% to you, 30% to Beyond Walls for platform operations, payment processing, and
+        paid directly to you — you keep 100% of your screen rate. Advertisers pay a service fee on top for platform operations, payment processing, and
         advertiser support. You don't have to chase payments, negotiate rates, or manage advertising sales. The
         platform handles it all.
       </p>
@@ -152,7 +152,7 @@ export default function EarnMoneyVenueScreensDubai() {
         </li>
         <li>
           <strong>Get paid weekly:</strong> Earnings are tracked in real time and paid out weekly directly to your
-          bank account. You keep 70% of every booking.
+          bank account. You keep 100% of every booking.
         </li>
       </ol>
 
@@ -161,7 +161,7 @@ export default function EarnMoneyVenueScreensDubai() {
         There are several reasons Beyond Walls stands out as the DOOH monetisation platform for Dubai venue owners:
       </p>
       <ul>
-        <li><strong>Highest revenue share:</strong> 70% is the best payout in the DOOH industry — most platforms keep 50% or more</li>
+        <li><strong>Keep 100% of your rate:</strong> you set the price, advertisers pay a service fee on top — most platforms take 30% or more</li>
         <li><strong>Zero upfront cost:</strong> Free to join, no equipment to buy, no subscription fees</li>
         <li><strong>Full content control:</strong> You approve every ad before it appears — your screens, your rules</li>
         <li><strong>Weekly payouts:</strong> No waiting months for payment — earnings hit your bank every week</li>
