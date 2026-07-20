@@ -47,7 +47,7 @@ export default function CafeScreenAdvertisingDubai() {
         title="Café Screen Advertising Dubai | Reach Customers In-Venue | Beyond Walls"
         description="Advertise on digital screens inside Dubai cafés. High dwell time, targeted local audiences, self-serve booking. Launch a café DOOH campaign with Beyond Walls."
         keywords="cafe advertising dubai, coffee shop screen advertising, cafe DOOH dubai, restaurant digital signage advertising, cafe tv advertising uae"
-        canonical="https://www.beyondwalls.ae/CafeScreenAdvertisingDubai"
+        canonical="https://beyondwalls.ae/CafeScreenAdvertisingDubai"
         structuredData={buildFAQSchema(faqs)}
       />
       <PublicNav />

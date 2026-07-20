@@ -137,7 +137,7 @@ export default function Plans() {
         title="Plans & Account Types | Beyond Walls — Advertiser, Venue, Enterprise, Agency"
         description="Compare the four ways to use Beyond Walls: Advertiser, Venue Owner, Enterprise, and Agency. See how pricing works — venues keep 100% of their rate, advertisers pay a 30% service fee on top."
         keywords="beyond walls plans, account types, dooh pricing, advertiser rates, venue owner earnings, enterprise screen management, agency advertising platform"
-        canonical="https://www.beyondwalls.ae/plans"
+        canonical="https://beyondwalls.ae/plans"
         structuredData={faqSchema}
       />
       <PublicNav />

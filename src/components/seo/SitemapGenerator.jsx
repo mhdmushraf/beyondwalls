@@ -5,7 +5,7 @@ import { SITEMAP_PAGES } from "@/components/SEOHead";
 // The actual sitemap.xml should be generated server-side or statically
 
 export const generateSitemapXML = () => {
-  const baseUrl = "https://www.beyondwalls.ae";
+  const baseUrl = "https://beyondwalls.ae";
   const today = new Date().toISOString().split('T')[0];
   
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -30,7 +30,7 @@ export const generateSitemapXML = () => {
 
 export const generateRobotsTxt = () => {
   return `# robots.txt for BeyondWalls
-# https://www.beyondwalls.ae
+# https://beyondwalls.ae
 
 User-agent: *
 Allow: /
@@ -60,7 +60,7 @@ Allow: /privacy
 Allow: /help
 
 # Sitemap location
-Sitemap: https://www.beyondwalls.ae/sitemap.xml
+Sitemap: https://beyondwalls.ae/sitemap.xml
 
 # Crawl-delay for politeness
 Crawl-delay: 1

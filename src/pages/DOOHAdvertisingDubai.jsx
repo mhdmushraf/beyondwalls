@@ -21,7 +21,7 @@ export default function DOOHAdvertisingDubai() {
     "provider": {
       "@type": "Organization",
       "name": "BeyondWalls",
-      "url": "https://www.beyondwalls.ae"
+      "url": "https://beyondwalls.ae"
     },
     "areaServed": "Dubai, UAE",
     "description": "Digital Out-of-Home advertising platform in Dubai with 500+ screens across premium venues."
@@ -70,7 +70,7 @@ export default function DOOHAdvertisingDubai() {
         title="DOOH Advertising in Dubai | Digital Out-of-Home Ads | Beyond Walls"
         description="Run DOOH campaigns on premium digital screens across Dubai. Compare venues, book instantly, and track live performance with Beyond Walls."
         keywords="DOOH advertising Dubai, digital out of home Dubai, DOOH screens Dubai, digital billboard Dubai, OOH advertising UAE, programmatic DOOH Dubai"
-        canonical="https://www.beyondwalls.ae/DOOHAdvertisingDubai"
+        canonical="https://beyondwalls.ae/DOOHAdvertisingDubai"
         structuredData={structuredData}
       />
       <PublicNav />

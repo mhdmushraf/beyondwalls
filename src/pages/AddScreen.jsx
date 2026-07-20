@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SEOHead from "@/components/SEOHead";
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -105,6 +106,7 @@ export default function AddScreen() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-2xl mx-auto space-y-6">
+      <SEOHead noIndex title="AddScreen | Beyond Walls" />
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-5 h-5" />

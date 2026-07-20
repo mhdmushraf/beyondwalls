@@ -1,4 +1,10 @@
+import SEOHead from "@/components/SEOHead";
 import PlaceholderPage from "@/components/shell/PlaceholderPage";
 export default function Media() {
-  return <PlaceholderPage title="Media Library" />;
+  return (
+    <>
+      <SEOHead noIndex title="Media | Beyond Walls" />
+      <PlaceholderPage title="Media" />
+    </>
+  );
 }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SEOHead from "@/components/SEOHead";
 import { base44 } from '@/api/base44Client';
 import { WorkspaceSkeleton } from '@/components/workspace/Skeletons';
 import BillingSection from '@/components/workspace/BillingSection';
@@ -57,6 +58,7 @@ export default function Settings() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
+      <SEOHead noIndex title="Settings | Beyond Walls" />
       <div>
         <h1 className="font-heading font-bold text-lg sm:text-xl text-slate-900">Settings</h1>
         <p className="text-sm text-slate-500">Manage your account and billing.</p>

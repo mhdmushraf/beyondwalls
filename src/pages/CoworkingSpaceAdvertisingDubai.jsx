@@ -47,7 +47,7 @@ export default function CoworkingSpaceAdvertisingDubai() {
         title="Co-Working Space Advertising Dubai | Office DOOH | Beyond Walls"
         description="Reach founders, freelancers and professionals on screens inside Dubai co-working spaces. Targeted B2B DOOH advertising, self-serve, via Beyond Walls."
         keywords="coworking advertising dubai, office screen advertising, coworking DOOH dubai, b2b advertising uae, business center digital signage, professional audience advertising"
-        canonical="https://www.beyondwalls.ae/CoworkingSpaceAdvertisingDubai"
+        canonical="https://beyondwalls.ae/CoworkingSpaceAdvertisingDubai"
         structuredData={buildFAQSchema(faqs)}
       />
       <PublicNav />

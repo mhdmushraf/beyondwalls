@@ -59,7 +59,7 @@ const SITEMAP_PAGES = [
 ];
 
 export default function SitemapPage() {
-  const baseUrl = "https://www.beyondwalls.ae";
+  const baseUrl = "https://beyondwalls.ae";
   const today = new Date().toISOString().split('T')[0];
 
   const generateXML = () => {

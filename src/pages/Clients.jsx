@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SEOHead from "@/components/SEOHead";
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -117,6 +118,7 @@ export default function Clients() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
+      <SEOHead noIndex title="Clients | Beyond Walls" />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-heading text-xl sm:text-2xl font-bold text-slate-900">Clients</h1>

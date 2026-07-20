@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import SEOHead from "@/components/SEOHead";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -85,6 +86,7 @@ export default function ScreensOverview() {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      <SEOHead noIndex title="ScreensOverview | Beyond Walls" />
       {/* Header */}
       <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-4 sticky top-0 z-10">
         <div className="max-w-5xl mx-auto flex items-center gap-3">

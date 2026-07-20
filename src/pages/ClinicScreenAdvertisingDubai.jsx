@@ -47,7 +47,7 @@ export default function ClinicScreenAdvertisingDubai() {
         title="Clinic Waiting Room Advertising Dubai | Healthcare DOOH | Beyond Walls"
         description="Advertise on clinic and waiting-room screens in Dubai — 15–45 minutes of captive attention per viewer. Book healthcare-adjacent DOOH with Beyond Walls."
         keywords="clinic advertising dubai, waiting room screen advertising, healthcare DOOH dubai, medical center digital signage, pharmacy advertising uae, health screen advertising"
-        canonical="https://www.beyondwalls.ae/ClinicScreenAdvertisingDubai"
+        canonical="https://beyondwalls.ae/ClinicScreenAdvertisingDubai"
         structuredData={buildFAQSchema(faqs)}
       />
       <PublicNav />

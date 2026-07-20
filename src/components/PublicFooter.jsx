@@ -97,7 +97,7 @@ export default function PublicFooter() {
               © {new Date().getFullYear()} BeyondWalls UAE. All rights reserved.
             </p>
             <p className="text-slate-500 text-xs mt-1">
-              🇦🇪 Based in Dubai, UAE | in5 Tech, Dubai Internet City | <a href="https://www.beyondwalls.ae" className="hover:text-white">www.beyondwalls.ae</a>
+              🇦🇪 Based in Dubai, UAE | in5 Tech, Dubai Internet City | <a href="https://beyondwalls.ae" className="hover:text-white">beyondwalls.ae</a>
             </p>
           </div>
           <div className="flex gap-6 text-sm">

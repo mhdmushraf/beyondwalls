@@ -87,11 +87,11 @@ export default function Contact() {
           "@graph": [
             {
               "@type": "WebPage",
-              "@id": "https://www.beyondwalls.ae/Contact#webpage",
-              "url": "https://www.beyondwalls.ae/Contact",
+              "@id": "https://beyondwalls.ae/Contact#webpage",
+              "url": "https://beyondwalls.ae/Contact",
               "name": "Contact BeyondWalls - Advertising Inquiries Dubai",
               "isPartOf": {
-                "@id": "https://www.beyondwalls.ae/#website"
+                "@id": "https://beyondwalls.ae/#website"
               },
               "breadcrumb": {
                 "@type": "BreadcrumbList",
@@ -100,13 +100,13 @@ export default function Contact() {
                     "@type": "ListItem",
                     "position": 1,
                     "name": "Home",
-                    "item": "https://www.beyondwalls.ae"
+                    "item": "https://beyondwalls.ae"
                   },
                   {
                     "@type": "ListItem",
                     "position": 2,
                     "name": "Contact",
-                    "item": "https://www.beyondwalls.ae/Contact"
+                    "item": "https://beyondwalls.ae/Contact"
                   }
                 ]
               }
@@ -118,8 +118,8 @@ export default function Contact() {
           "mainEntity": {
             "@type": "Organization",
             "name": "BeyondWalls",
-            "url": "https://www.beyondwalls.ae",
-            "logo": "https://www.beyondwalls.ae/logo.png",
+            "url": "https://beyondwalls.ae",
+            "logo": "https://beyondwalls.ae/logo.png",
             "telephone": "+971-55-614-0067",
             "email": "hello@beyondwalls.ae",
             "address": {

@@ -166,7 +166,7 @@ export default function ScreenLocations() {
           "@type": "ItemList",
           "name": "BeyondWalls Digital Advertising Screen Locations",
           "description": "500+ digital advertising screens in premium venues across Dubai, Abu Dhabi, and Sharjah",
-          "url": "https://www.beyondwalls.ae/screen-locations",
+          "url": "https://beyondwalls.ae/screen-locations",
           "numberOfItems": venues.length || 500,
           "itemListElement": filteredVenues.slice(0, 20).map((venue, index) => ({
             "@type": "ListItem",

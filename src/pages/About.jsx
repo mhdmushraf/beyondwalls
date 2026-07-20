@@ -77,12 +77,12 @@ export default function About() {
           "@graph": [
             {
               "@type": "WebPage",
-              "@id": "https://www.beyondwalls.ae/About#webpage",
-              "url": "https://www.beyondwalls.ae/About",
+              "@id": "https://beyondwalls.ae/About#webpage",
+              "url": "https://beyondwalls.ae/About",
               "name": "About BeyondWalls - Award-Winning DOOH Advertising Startup Dubai",
               "description": "Learn about BeyondWalls, UAE's first self-serve DOOH advertising marketplace",
               "isPartOf": {
-                "@id": "https://www.beyondwalls.ae/#website"
+                "@id": "https://beyondwalls.ae/#website"
               },
               "breadcrumb": {
                 "@type": "BreadcrumbList",
@@ -91,13 +91,13 @@ export default function About() {
                     "@type": "ListItem",
                     "position": 1,
                     "name": "Home",
-                    "item": "https://www.beyondwalls.ae"
+                    "item": "https://beyondwalls.ae"
                   },
                   {
                     "@type": "ListItem",
                     "position": 2,
                     "name": "About Us",
-                    "item": "https://www.beyondwalls.ae/About"
+                    "item": "https://beyondwalls.ae/About"
                   }
                 ]
               }
@@ -109,8 +109,8 @@ export default function About() {
           "mainEntity": {
             "@type": "Organization",
             "name": "BeyondWalls",
-            "url": "https://www.beyondwalls.ae",
-            "logo": "https://www.beyondwalls.ae/logo.png",
+            "url": "https://beyondwalls.ae",
+            "logo": "https://beyondwalls.ae/logo.png",
             "foundingDate": "2025-06",
             "founder": {
               "@type": "Person",

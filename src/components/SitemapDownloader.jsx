@@ -7,62 +7,62 @@ export default function SitemapDownloader() {
     const sitemapXML = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.beyondwalls.ae/Home</loc>
+    <loc>https://beyondwalls.ae/Home</loc>
     <priority>1.0</priority>
     <changefreq>daily</changefreq>
   </url>
   <url>
-    <loc>https://www.beyondwalls.ae/About</loc>
+    <loc>https://beyondwalls.ae/About</loc>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.beyondwalls.ae/Services</loc>
+    <loc>https://beyondwalls.ae/Services</loc>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.beyondwalls.ae/Contact</loc>
+    <loc>https://beyondwalls.ae/Contact</loc>
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://www.beyondwalls.ae/Blog</loc>
+    <loc>https://beyondwalls.ae/Blog</loc>
     <priority>0.8</priority>
     <changefreq>daily</changefreq>
   </url>
   <url>
-    <loc>https://www.beyondwalls.ae/ScreenLocations</loc>
+    <loc>https://beyondwalls.ae/ScreenLocations</loc>
     <priority>0.9</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.beyondwalls.ae/HowItWorks</loc>
+    <loc>https://beyondwalls.ae/HowItWorks</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://www.beyondwalls.ae/Register</loc>
+    <loc>https://beyondwalls.ae/Register</loc>
     <priority>0.9</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://www.beyondwalls.ae/HelpCenter</loc>
+    <loc>https://beyondwalls.ae/HelpCenter</loc>
     <priority>0.6</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://www.beyondwalls.ae/Terms</loc>
+    <loc>https://beyondwalls.ae/Terms</loc>
     <priority>0.5</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://www.beyondwalls.ae/Privacy</loc>
+    <loc>https://beyondwalls.ae/Privacy</loc>
     <priority>0.5</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://www.beyondwalls.ae/ARPremium</loc>
+    <loc>https://beyondwalls.ae/ARPremium</loc>
     <priority>0.7</priority>
     <changefreq>weekly</changefreq>
   </url>

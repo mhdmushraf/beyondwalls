@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SEOHead from "@/components/SEOHead";
 import { base44 } from '@/api/base44Client';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -63,6 +64,7 @@ export default function Approvals() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
+      <SEOHead noIndex title="Approvals | Beyond Walls" />
       <h1 className="font-heading text-xl sm:text-2xl font-bold text-slate-900">Approvals</h1>
       <Tabs defaultValue="screens">
         <TabsList className="grid grid-cols-2 lg:grid-cols-4 w-full">

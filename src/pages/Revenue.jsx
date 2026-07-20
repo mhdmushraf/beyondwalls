@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SEOHead from "@/components/SEOHead";
 import { base44 } from '@/api/base44Client';
 import { WorkspaceSkeleton } from '@/components/workspace/Skeletons';
 import EmptyState from '@/components/workspace/EmptyState';
@@ -65,6 +66,7 @@ export default function Revenue() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
+      <SEOHead noIndex title="Revenue | Beyond Walls" />
       <h1 className="font-heading text-xl sm:text-2xl font-bold text-slate-900">Revenue</h1>
       <RevenueKpis payoutData={payoutData} loading={dataLoading} />
       <EarningsChart orgId={org.id} />

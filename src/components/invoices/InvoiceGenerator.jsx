@@ -160,7 +160,7 @@ export function generateInvoiceHTML(type, data) {
 
     <div class="footer">
       <p><strong>BeyondWalls</strong> - Advertise Beyond Boundaries</p>
-      <p>www.beyondwalls.ae • info@beyondwalls.ae • +971 55 614 0067</p>
+      <p>beyondwalls.ae • info@beyondwalls.ae • +971 55 614 0067</p>
       <p style="margin-top: 10px;">This is a computer-generated document. No signature required.</p>
     </div>
   </div>

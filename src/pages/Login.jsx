@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import SEOHead from "@/components/SEOHead";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import BrandPanel from "@/components/auth/BrandPanel";
@@ -41,6 +42,7 @@ export default function Login() {
 
   return (
     <div className="bw-auth-shell">
+      <SEOHead noIndex title="Login | Beyond Walls" />
       <BrandPanel
         title="The operating system for"
         titleAccent="Digital Out-of-Home."

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import SEOHead from "@/components/SEOHead";
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -85,6 +86,7 @@ export default function MyScreens() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
+      <SEOHead noIndex title="MyScreens | Beyond Walls" />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-heading text-xl sm:text-2xl font-bold text-slate-900">My Screens</h1>

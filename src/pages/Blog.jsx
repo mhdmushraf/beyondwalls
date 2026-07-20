@@ -115,13 +115,13 @@ export default function Blog() {
           "@type": "Blog",
           "name": "BeyondWalls Blog - DOOH Advertising Insights",
           "description": "Expert insights on digital out-of-home advertising, marketing tips, case studies, and industry trends in Dubai & UAE",
-          "url": "https://www.beyondwalls.ae/blog",
+          "url": "https://beyondwalls.ae/blog",
           "publisher": {
             "@type": "Organization",
             "name": "BeyondWalls",
             "logo": {
               "@type": "ImageObject",
-              "url": "https://www.beyondwalls.ae/logo.png"
+              "url": "https://beyondwalls.ae/logo.png"
             }
           },
           "inLanguage": "en-AE",
@@ -129,7 +129,7 @@ export default function Blog() {
             "@type": "BlogPosting",
             "headline": post.title,
             "description": post.excerpt,
-            "url": `https://www.beyondwalls.ae/blog/${post.slug || post.id}`,
+            "url": `https://beyondwalls.ae/blog/${post.slug || post.id}`,
             "datePublished": post.published_at
           }))
         }}

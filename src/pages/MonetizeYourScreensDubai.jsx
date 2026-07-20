@@ -47,7 +47,7 @@ export default function MonetizeYourScreensDubai() {
         title="Monetize Venue Screens Dubai | Earn From Idle TVs | Beyond Walls"
         description="Own a café, gym, salon or clinic in Dubai? Earn passive income from your idle screens. List them free on Beyond Walls and get matched with advertisers."
         keywords="monetize screens dubai, earn from venue tv, passive income screens, venue screen revenue, list your screen dubai, earn from digital signage, tv advertising revenue uae"
-        canonical="https://www.beyondwalls.ae/MonetizeYourScreensDubai"
+        canonical="https://beyondwalls.ae/MonetizeYourScreensDubai"
         structuredData={buildFAQSchema(faqs)}
       />
       <PublicNav />

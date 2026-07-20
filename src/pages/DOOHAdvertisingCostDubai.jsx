@@ -8,7 +8,7 @@ export default function DOOHAdvertisingCostDubai() {
     <ArticleLayout
       title="How Much Does DOOH Advertising Cost in Dubai? (2026 Pricing Guide) | Beyond Walls"
       description="A clear breakdown of digital out-of-home advertising costs in Dubai — what drives pricing, typical ranges by venue type, and how self-serve booking saves money."
-      canonical="https://www.beyondwalls.ae/DOOHAdvertisingCostDubai"
+      canonical="https://beyondwalls.ae/DOOHAdvertisingCostDubai"
       publishedDate="2026-01-15"
       category="DOOH Advertising"
       readTime={7}

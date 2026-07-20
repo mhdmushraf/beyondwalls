@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SEOHead from "@/components/SEOHead";
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -58,6 +59,7 @@ export default function Organizations() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-2xl mx-auto space-y-6">
+      <SEOHead noIndex title="Organizations | Beyond Walls" />
       <h1 className="font-heading text-xl sm:text-2xl font-bold text-slate-900">Organization Settings</h1>
 
       <Card className="p-5 sm:p-6 space-y-5">

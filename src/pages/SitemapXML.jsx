@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-const baseUrl = "https://www.beyondwalls.ae";
+const baseUrl = "https://beyondwalls.ae";
 const today = new Date().toISOString().split('T')[0];
 
 const pages = [
@@ -89,7 +89,7 @@ ${pages.map(page => `  <url>
           <ol className="text-left space-y-2 text-slate-600">
             <li>1. Upload sitemap.xml to your website root directory</li>
             <li>2. Submit to Google Search Console at search.google.com/search-console</li>
-            <li>3. Add to robots.txt: <code className="bg-slate-200 px-2 py-1 rounded text-sm">Sitemap: https://www.beyondwalls.ae/sitemap.xml</code></li>
+            <li>3. Add to robots.txt: <code className="bg-slate-200 px-2 py-1 rounded text-sm">Sitemap: https://beyondwalls.ae/sitemap.xml</code></li>
           </ol>
         </div>
         <div className="text-sm text-slate-500">

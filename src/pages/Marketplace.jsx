@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SEOHead from "@/components/SEOHead";
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
@@ -49,6 +50,7 @@ export default function Marketplace() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
+      <SEOHead noIndex title="Marketplace | Beyond Walls" />
       <div>
         <h1 className="font-heading text-xl sm:text-2xl font-bold text-slate-900">Marketplace</h1>
         <p className="text-sm text-slate-500">Browse available advertising screens.</p>

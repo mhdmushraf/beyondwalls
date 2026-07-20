@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SEOHead from "@/components/SEOHead";
 import { base44 } from '@/api/base44Client';
 import { WorkspaceSkeleton } from '@/components/workspace/Skeletons';
 import WorkspaceHeader from '@/components/workspace/WorkspaceHeader';
@@ -237,6 +238,7 @@ export default function Workspace() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
+      <SEOHead noIndex title="Workspace | Beyond Walls" />
       <WorkspaceHeader org={org} user={user} />
       <Dashboard user={user} org={org} />
     </div>

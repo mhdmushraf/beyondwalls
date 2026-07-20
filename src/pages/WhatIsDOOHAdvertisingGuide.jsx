@@ -8,7 +8,7 @@ export default function WhatIsDOOHAdvertisingGuide() {
     <ArticleLayout
       title="What Is DOOH Advertising? A Simple Guide for Dubai Businesses | Beyond Walls"
       description="DOOH explained in plain English — what digital out-of-home advertising is, the main formats in Dubai, how campaigns work, and how to launch one without an agency."
-      canonical="https://www.beyondwalls.ae/WhatIsDOOHAdvertisingGuide"
+      canonical="https://beyondwalls.ae/WhatIsDOOHAdvertisingGuide"
       publishedDate="2026-01-10"
       category="Guides"
       readTime={8}

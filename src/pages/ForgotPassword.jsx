@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import SEOHead from "@/components/SEOHead";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import BrandPanel from "@/components/auth/BrandPanel";
@@ -34,6 +35,7 @@ export default function ForgotPassword() {
 
   return (
     <div className="bw-auth-shell">
+      <SEOHead noIndex title="ForgotPassword | Beyond Walls" />
       <BrandPanel
         title="Reset your"
         titleAccent="password."

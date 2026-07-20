@@ -8,7 +8,7 @@ export default function IndoorVenueDOOHvsBillboardsDubai() {
     <ArticleLayout
       title="Indoor Venue DOOH vs Billboards: Which Wins for Small Brands in Dubai? | Beyond Walls"
       description="Billboards get 2 seconds of attention; a gym or clinic screen gets 15–45 minutes. Here's why indoor venue DOOH outperforms billboards for Dubai's small and mid-size brands."
-      canonical="https://www.beyondwalls.ae/IndoorVenueDOOHvsBillboardsDubai"
+      canonical="https://beyondwalls.ae/IndoorVenueDOOHvsBillboardsDubai"
       publishedDate="2026-01-20"
       category="DOOH Advertising"
       readTime={8}

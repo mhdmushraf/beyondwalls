@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SEOHead from "@/components/SEOHead";
 import { base44 } from '@/api/base44Client';
 import { Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -100,6 +101,7 @@ export default function Bookings() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
+      <SEOHead noIndex title="Bookings | Beyond Walls" />
       <h1 className="font-heading text-xl sm:text-2xl font-bold text-slate-900">Bookings</h1>
 
       {showCheckoutBanner && (
