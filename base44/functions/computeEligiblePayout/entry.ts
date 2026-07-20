@@ -24,23 +24,23 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Forbidden: not a member of this organization' }, { status: 403 });
     }
 
-    // --- Sum venue_earnings from all paid bookings (active + completed) ---
-    // Paginate to handle large datasets.
+    // --- Sum earnings from the ledger (Transaction rows of type 'earnings') ---
+    // The ledger is the source of truth once confirmBooking writes the rows.
     let totalEarnings = 0;
     let skip = 0;
     const pageSize = 200;
-    let hasMoreBookings = true;
-    while (hasMoreBookings) {
-      const batch = await base44.asServiceRole.entities.AdBooking.filter(
-        { org_id, status: { $in: ['active', 'completed'] } },
+    let hasMoreEarnings = true;
+    while (hasMoreEarnings) {
+      const batch = await base44.asServiceRole.entities.Transaction.filter(
+        { org_id, type: 'earnings', status: 'completed' },
         null,
         pageSize,
         skip
       );
-      for (const b of batch) {
-        totalEarnings += b.venue_earnings || 0;
+      for (const t of batch) {
+        totalEarnings += t.amount || 0;
       }
-      hasMoreBookings = batch.length === pageSize;
+      hasMoreEarnings = batch.length === pageSize;
       skip += batch.length;
     }
 

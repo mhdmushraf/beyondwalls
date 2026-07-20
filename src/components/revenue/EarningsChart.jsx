@@ -16,8 +16,8 @@ export default function EarningsChart({ orgId }) {
         const pageSize = 200;
         let hasMore = true;
         while (hasMore) {
-          const batch = await base44.entities.AdBooking.filter(
-            { org_id: orgId, status: { $in: ['active', 'completed'] } },
+          const batch = await base44.entities.Transaction.filter(
+            { org_id: orgId, type: 'earnings', status: 'completed' },
             '-created_date', pageSize, skip
           );
           allBookings = allBookings.concat(batch);
@@ -42,11 +42,11 @@ export default function EarningsChart({ orgId }) {
     const monthMap = {};
     months.forEach((m) => { monthMap[m.key] = m; });
 
-    bookings.forEach((b) => {
-      if (!b.created_date) return;
-      const key = moment(b.created_date).format('YYYY-MM');
+    bookings.forEach((t) => {
+      if (!t.created_date) return;
+      const key = moment(t.created_date).format('YYYY-MM');
       if (monthMap[key]) {
-        monthMap[key].amount += b.venue_earnings || 0;
+        monthMap[key].amount += t.amount || 0;
       }
     });
 
