@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import SEOHead from "@/components/SEOHead";
@@ -14,6 +14,7 @@ import {
   Users,
   ArrowRight,
   CheckCircle2,
+  ChevronDown,
 } from "lucide-react";
 
 const ACCOUNT_TYPES = [
@@ -25,8 +26,7 @@ const ACCOUNT_TYPES = [
     youDo: "Browse screens, book slots by the week, upload creative, track campaigns.",
     youPay: "The screen's rate plus a 30% service fee. Nothing to join.",
     example: "A AED 100/week screen costs AED 130 for one week, all in.",
-    iconBg: "bg-violet-100",
-    iconColor: "text-violet-600",
+    accent: "#6366F1",
   },
   {
     key: "venue",
@@ -36,8 +36,7 @@ const ACCOUNT_TYPES = [
     youDo: "List your screens, set your own weekly rate, approve every ad before it runs, get paid.",
     youPay: "Nothing. You keep 100% of your rate — the fee is charged to the advertiser, not deducted from you.",
     example: "Set AED 100/week, receive AED 100/week.",
-    iconBg: "bg-emerald-100",
-    iconColor: "text-emerald-600",
+    accent: "#10B981",
   },
   {
     key: "enterprise",
@@ -47,8 +46,7 @@ const ACCOUNT_TYPES = [
     youDo: "Bulk-onboard screens, group them by site, run your own campaigns, optionally list spare inventory on the marketplace.",
     youPay: "A monthly software fee. No commission on anything you sell yourself.",
     example: "Contact us for pricing.",
-    iconBg: "bg-indigo-100",
-    iconColor: "text-indigo-600",
+    accent: "#3B82F6",
   },
   {
     key: "agency",
@@ -58,16 +56,15 @@ const ACCOUNT_TYPES = [
     youDo: "Manage multiple clients in one workspace, book across clients, report per client.",
     youPay: "Nothing to join. Same rates as advertisers.",
     example: "Same advertiser rates, multi-client workspace.",
-    iconBg: "bg-amber-100",
-    iconColor: "text-amber-600",
+    accent: "#F59E0B",
   },
 ];
 
 const COMPARISON_ROWS = [
-  { type: "Advertiser", join: "Free", pay: "Screen rate + 30% fee", earn: "—", bestFor: "Brands & SMBs" },
-  { type: "Venue Owner", join: "Free", pay: "Nothing", earn: "100% of your rate", bestFor: "Cafés, gyms, clinics" },
-  { type: "Enterprise", join: "Contact us", pay: "Monthly software fee", earn: "No commission on self-sold", bestFor: "Multi-site operators" },
-  { type: "Agency", join: "Free", pay: "Same as advertiser", earn: "—", bestFor: "Media agencies" },
+  { type: "Advertiser", join: "Free", pay: "Screen rate + 30% fee", earn: "Campaign results", bestFor: "Brands & SMBs", accent: "#6366F1" },
+  { type: "Venue Owner", join: "Free", pay: "Nothing", earn: "100% of your rate", bestFor: "Cafés, gyms, clinics", accent: "#10B981" },
+  { type: "Enterprise", join: "Contact us", pay: "Monthly software fee", earn: "No commission on self-sold", bestFor: "Multi-site operators", accent: "#3B82F6" },
+  { type: "Agency", join: "Free", pay: "Same as advertiser", earn: "Your client margin", bestFor: "Media agencies", accent: "#F59E0B" },
 ];
 
 const FAQS = [
@@ -103,6 +100,36 @@ const faqSchema = {
   })),
 };
 
+function FAQItem({ faq, defaultOpen }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <Card
+      className="bg-white overflow-hidden"
+      style={{
+        borderRadius: "16px",
+        border: "1px solid #E2E8F0",
+        backgroundColor: "#FFFFFF",
+        boxShadow: "0 1px 2px rgba(15,23,42,.04), 0 8px 24px -12px rgba(15,23,42,.10)",
+      }}
+    >
+      <CardContent className="p-5">
+        <button
+          onClick={() => setOpen(!open)}
+          className="flex items-center justify-between w-full text-left"
+        >
+          <h3 className="font-semibold text-slate-900">{faq.question}</h3>
+          <ChevronDown
+            className={`w-5 h-5 text-slate-400 flex-shrink-0 ml-2 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          />
+        </button>
+        {open && (
+          <p className="text-slate-600 text-sm leading-relaxed mt-3">{faq.answer}</p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function Plans() {
   return (
     <div className="min-h-screen bg-white">
@@ -132,11 +159,24 @@ export default function Plans() {
       <section className="py-16 px-6 bg-white">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-6">
           {ACCOUNT_TYPES.map((t) => (
-            <Card key={t.key} className="border-slate-200 shadow-lg hover:shadow-xl transition-shadow">
+            <Card
+              key={t.key}
+              className="bg-white overflow-hidden"
+              style={{
+                borderRadius: "16px",
+                border: "1px solid #E2E8F0",
+                borderTop: `3px solid ${t.accent}`,
+                backgroundColor: "#FFFFFF",
+                boxShadow: "0 1px 2px rgba(15,23,42,.04), 0 8px 24px -12px rgba(15,23,42,.10)",
+              }}
+            >
               <CardContent className="p-6 space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className={`w-12 h-12 ${t.iconBg} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                    <t.icon className={`w-6 h-6 ${t.iconColor}`} />
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{ backgroundColor: `${t.accent}1A` }}
+                  >
+                    <t.icon className="w-6 h-6" style={{ color: t.accent }} />
                   </div>
                   <h3 className="text-xl font-bold text-slate-900">{t.label}</h3>
                 </div>
@@ -152,11 +192,19 @@ export default function Plans() {
                   <p className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-1">What it costs</p>
                   <p className="text-slate-600">{t.youPay}</p>
                 </div>
-                <div className="bg-slate-50 rounded-lg p-3">
-                  <p className="text-sm text-slate-600"><span className="font-semibold">Example:</span> {t.example}</p>
+                <div
+                  className="rounded-lg p-3"
+                  style={{ backgroundColor: `${t.accent}0F` }}
+                >
+                  <p className="text-sm text-slate-700">
+                    <span className="font-semibold">Example:</span> {t.example}
+                  </p>
                 </div>
                 <Link to={createPageUrl("Register")} className="block">
-                  <Button className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700">
+                  <Button
+                    className="w-full text-white hover:opacity-90"
+                    style={{ backgroundColor: t.accent }}
+                  >
                     Start as {t.label}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
@@ -175,37 +223,70 @@ export default function Plans() {
             <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">One worked example, end to end</h2>
           </div>
 
-          <Card className="shadow-lg mb-8">
+          {/* Worked example — the signature dark block */}
+          <Card
+            className="overflow-hidden mb-8"
+            style={{
+              backgroundColor: "#0F172A",
+              borderRadius: "16px",
+              border: "none",
+            }}
+          >
             <CardContent className="p-6 md:p-8">
-              <p className="text-slate-600 mb-6 leading-relaxed">
-                An advertiser books <strong>2 slots</strong> for <strong>2 weeks</strong> on a screen priced at{" "}
-                <strong>AED 100/week</strong>.
+              <p className="mb-6 leading-relaxed" style={{ color: "#94A3B8" }}>
+                An advertiser books <strong className="text-white">2 slots</strong> for{" "}
+                <strong className="text-white">2 weeks</strong> on a screen priced at{" "}
+                <strong className="text-white">AED 100/week</strong>.
               </p>
-              <div className="space-y-3 font-mono text-sm md:text-base">
-                <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                  <span className="text-slate-600">Screen rate</span>
-                  <span className="text-slate-500">100 × 2 slots × 2 weeks</span>
-                  <span className="font-semibold text-slate-900">AED 400</span>
+
+              {/* Derivation rows */}
+              <div className="space-y-3 font-mono text-sm md:text-base mb-2">
+                <div
+                  className="flex justify-between items-center py-2"
+                  style={{ borderBottom: "1px solid rgba(148,163,184,.2)" }}
+                >
+                  <span style={{ color: "#94A3B8" }}>Screen rate</span>
+                  <span style={{ color: "#E2E8F0" }}>100 × 2 slots × 2 weeks</span>
+                  <span className="font-semibold" style={{ color: "#E2E8F0" }}>AED 400</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                  <span className="text-slate-600">Service fee (30%)</span>
+                <div
+                  className="flex justify-between items-center py-2"
+                  style={{ borderBottom: "1px solid rgba(148,163,184,.2)" }}
+                >
+                  <span style={{ color: "#94A3B8" }}>Service fee (30%)</span>
                   <span></span>
-                  <span className="font-semibold text-slate-900">AED 120</span>
+                  <span className="font-semibold" style={{ color: "#E2E8F0" }}>AED 120</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b-2 border-slate-300">
-                  <span className="font-semibold text-slate-900">Advertiser pays</span>
-                  <span></span>
-                  <span className="font-bold text-violet-700">AED 520</span>
+              </div>
+
+              {/* Split: advertiser pays on top, venue + platform below */}
+              <div
+                className="py-4"
+                style={{ borderTop: "1px solid rgba(148,163,184,.25)", borderBottom: "1px solid rgba(148,163,184,.25)" }}
+              >
+                <div className="flex justify-between items-center pb-4">
+                  <span className="text-base font-semibold text-white">Advertiser pays</span>
+                  <span className="text-2xl font-bold text-white">AED 520</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                  <span className="text-slate-600">Venue receives</span>
-                  <span></span>
-                  <span className="font-semibold text-emerald-600">AED 400</span>
-                </div>
-                <div className="flex justify-between items-center py-2">
-                  <span className="text-slate-600">Beyond Walls keeps</span>
-                  <span></span>
-                  <span className="font-semibold text-slate-500">AED 120</span>
+                <div style={{ borderTop: "1px solid rgba(148,163,184,.15)" }}>
+                  <div className="grid grid-cols-2 gap-4 pt-4">
+                    <div>
+                      <p className="text-sm mb-1" style={{ color: "#94A3B8" }}>
+                        Venue receives
+                      </p>
+                      <p className="text-xl font-bold" style={{ color: "#34D399" }}>
+                        AED 400
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm mb-1" style={{ color: "#94A3B8" }}>
+                        Beyond Walls
+                      </p>
+                      <p className="text-xl font-bold" style={{ color: "#A78BFA" }}>
+                        AED 120
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -249,7 +330,12 @@ export default function Plans() {
               <tbody>
                 {COMPARISON_ROWS.map((row) => (
                   <tr key={row.type} className="border-b border-slate-100 hover:bg-slate-50">
-                    <td className="py-3 px-4 font-semibold text-slate-900">{row.type}</td>
+                    <td
+                      className="py-3 px-4 font-semibold text-slate-900"
+                      style={{ borderLeft: `3px solid ${row.accent}` }}
+                    >
+                      {row.type}
+                    </td>
                     <td className="py-3 px-4 text-slate-600">{row.join}</td>
                     <td className="py-3 px-4 text-slate-600">{row.pay}</td>
                     <td className="py-3 px-4 text-slate-600">{row.earn}</td>
@@ -270,13 +356,8 @@ export default function Plans() {
             <h2 className="text-2xl md:text-3xl font-bold text-slate-900">Common questions</h2>
           </div>
           <div className="space-y-4">
-            {FAQS.map((faq) => (
-              <Card key={faq.question} className="border-slate-200">
-                <CardContent className="p-5">
-                  <h3 className="font-semibold text-slate-900 mb-2">{faq.question}</h3>
-                  <p className="text-slate-600 text-sm leading-relaxed">{faq.answer}</p>
-                </CardContent>
-              </Card>
+            {FAQS.map((faq, i) => (
+              <FAQItem key={faq.question} faq={faq} defaultOpen={i === 0} />
             ))}
           </div>
         </div>
