@@ -90,14 +90,15 @@ export default function PublicNav() {
               </Button>
             ) : (
             <>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                className="hidden sm:flex"
-                onClick={() => base44.auth.redirectToLogin(createPageUrl("Workspace"))}
-              >
-                Sign In
-              </Button>
+              <Link to={createPageUrl("Login")}>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="hidden sm:flex"
+                >
+                  Sign In
+                </Button>
+              </Link>
               <Link to={createPageUrl("Register")}>
                 <Button size="sm" className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700">
                   Get Started
