@@ -51,6 +51,7 @@ import Network from './pages/Network';
 import AddScreen from './pages/AddScreen';
 import ScreenPairing from './pages/ScreenPairing';
 import ScreenDetail from './pages/ScreenDetail';
+import Plans from './pages/Plans';
 
 // Lazy load pages for code splitting
 const LazyPageLoader = ({ Page }) => (
@@ -232,6 +233,15 @@ const AuthenticatedApp = () => {
              <MobileRouteTransition>
                <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
                  <DOOHAdvertisingMarketplaceDubai />
+               </Suspense>
+             </MobileRouteTransition>
+           </LayoutWrapper>
+         } />
+         <Route path="/plans" element={
+           <LayoutWrapper currentPageName="Plans">
+             <MobileRouteTransition>
+               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+                 <Plans />
                </Suspense>
              </MobileRouteTransition>
            </LayoutWrapper>

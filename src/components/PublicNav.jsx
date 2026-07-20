@@ -36,6 +36,7 @@ export default function PublicNav() {
   const navLinks = [
     { name: "Home", page: "Home" },
     { name: "About", page: "About" },
+    { name: "Plans", page: "Plans" },
     { name: "Services", page: "Services" },
     { name: "Screen Locations", page: "ScreenLocations" },
     { name: "Blog", page: "Blog" },

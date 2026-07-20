@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import BrandPanel from "@/components/auth/BrandPanel";
 import {
@@ -183,10 +184,16 @@ export default function Register() {
                   })}
                 </div>
 
-                <p className="text-xs text-slate-400 mb-6 leading-relaxed">
+                <p className="text-xs text-slate-400 mb-3 leading-relaxed">
                   Enterprise &amp; agencies: 0% commission on a per-screen plan. Venue owners join free
                   and keep 100%.
                 </p>
+
+                <div className="text-center mb-6">
+                  <Link to={createPageUrl("Plans")} target="_blank" rel="noopener noreferrer" className="text-xs text-violet-600 hover:text-violet-700 underline">
+                    Not sure which to pick? Compare account types
+                  </Link>
+                </div>
 
                 <button
                   type="button"

@@ -17,6 +17,7 @@ const pages = [
   { loc: `${baseUrl}/HelpCenter`, priority: "0.6", changefreq: "weekly", lastmod: today },
   { loc: `${baseUrl}/ARPremium`, priority: "0.7", changefreq: "weekly", lastmod: today },
   { loc: `${baseUrl}/Connect`, priority: "0.6", changefreq: "monthly", lastmod: today },
+  { loc: `${baseUrl}/plans`, priority: "0.9", changefreq: "monthly", lastmod: today },
 
   // SEO Landing Pages
   { loc: `${baseUrl}/DOOHAdvertisingDubai`, priority: "0.9", changefreq: "weekly", lastmod: today },

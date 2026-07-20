@@ -467,6 +467,25 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Plans CTA */}
+      <section className="py-16 px-6 bg-gradient-to-r from-violet-50 to-indigo-50">
+        <div className="max-w-4xl mx-auto text-center">
+          <Badge className="bg-violet-100 text-violet-700 border-0 mb-4">Account Types</Badge>
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
+            Not sure which account type is right for you?
+          </h2>
+          <p className="text-lg text-slate-600 mb-8">
+            Compare all four ways to use Beyond Walls — advertiser, venue owner, enterprise, or agency — and see exactly how the pricing works.
+          </p>
+          <Link to={createPageUrl("Plans")}>
+            <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700">
+              Compare Account Types
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </Link>
+        </div>
+      </section>
+
       {/* For Advertisers */}
       <section className="py-20 px-6 bg-gradient-to-br from-violet-600 to-indigo-700 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">

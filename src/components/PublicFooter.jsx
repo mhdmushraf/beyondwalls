@@ -30,6 +30,7 @@ export default function PublicFooter() {
             <h4 className="font-semibold text-white mb-4">Company</h4>
             <div className="space-y-2 text-sm">
               <Link to={createPageUrl("About")} className="block text-slate-400 hover:text-white">About Us</Link>
+              <Link to={createPageUrl("Plans")} className="block text-slate-400 hover:text-white">Plans & Account Types</Link>
               <Link to={createPageUrl("Services")} className="block text-slate-400 hover:text-white">Services</Link>
               <Link to={createPageUrl("Blog")} className="block text-slate-400 hover:text-white">Blog</Link>
               <Link to={createPageUrl("Contact")} className="block text-slate-400 hover:text-white">Contact</Link>
