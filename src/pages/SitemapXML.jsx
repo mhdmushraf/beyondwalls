@@ -15,7 +15,6 @@ const pages = [
   { loc: `${baseUrl}/Terms`, priority: "0.3", changefreq: "yearly", lastmod: today },
   { loc: `${baseUrl}/Privacy`, priority: "0.3", changefreq: "yearly", lastmod: today },
   { loc: `${baseUrl}/HelpCenter`, priority: "0.6", changefreq: "weekly", lastmod: today },
-  { loc: `${baseUrl}/ARPremium`, priority: "0.7", changefreq: "weekly", lastmod: today },
   { loc: `${baseUrl}/Connect`, priority: "0.6", changefreq: "monthly", lastmod: today },
   { loc: `${baseUrl}/plans`, priority: "0.9", changefreq: "monthly", lastmod: today },
 
