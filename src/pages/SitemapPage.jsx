@@ -14,7 +14,6 @@ const SITEMAP_PAGES = [
   { url: "/Terms", priority: "0.3", changefreq: "yearly" },
   { url: "/Privacy", priority: "0.3", changefreq: "yearly" },
   { url: "/HelpCenter", priority: "0.6", changefreq: "weekly" },
-  { url: "/ARPremium", priority: "0.7", changefreq: "weekly" },
   { url: "/Connect", priority: "0.6", changefreq: "monthly" },
   { url: "/Sitemap", priority: "0.3", changefreq: "monthly" },
   // SEO Landing Pages
