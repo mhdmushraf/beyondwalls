@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, useState, useEffect, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import BrandLogo from "@/components/BrandLogo";
 
 // 2.8 — lazy-load so three.js stays out of the initial bundle
 const ScreenFieldCanvas = lazy(() => import("./ScreenFieldCanvas"));
@@ -84,12 +85,7 @@ export default function BrandPanel({ title, titleAccent, body }) {
       <div className="bw-brand-vignette" />
 
       {/* 4.3 — Logo lockup (top) */}
-      <div className="bw-brand-logo">
-        <div className="bw-brand-logo-mark">
-          <div className="bw-brand-logo-mark-inner" />
-        </div>
-        <span className="bw-brand-logo-text">Beyond Walls</span>
-      </div>
+      <BrandLogo onDark className="relative z-10" />
 
       {/* 4.3 + 4.5 + 4.6 — Pitch (middle) */}
       <motion.div

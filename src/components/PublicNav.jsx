@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import { MonitorPlay, ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import BrandLogo from "@/components/BrandLogo";
 import NavSolutionsDropdown from "@/components/marketing/NavSolutionsDropdown";
 
 export default function PublicNav() {
@@ -49,13 +50,8 @@ export default function PublicNav() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-6">
-        <Link to={createPageUrl("Home")} className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/25">
-            <MonitorPlay className="w-5 h-5 text-white" />
-          </div>
-          <span className="font-bold text-xl bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
-            BeyondWalls
-          </span>
+        <Link to={createPageUrl("Home")}>
+          <BrandLogo />
         </Link>
 
         <div className="hidden lg:block w-px h-5 bg-slate-200" />

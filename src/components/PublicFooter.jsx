@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { MonitorPlay, Twitter, Instagram, Youtube, Facebook, Linkedin } from "lucide-react";
+import { Twitter, Instagram, Youtube, Facebook, Linkedin } from "lucide-react";
+import BrandLogo from "@/components/BrandLogo";
 import NewsletterSignup from "./NewsletterSignup";
 
 const SOCIAL_LINKS = [
@@ -18,12 +19,7 @@ export default function PublicFooter() {
       <div className="max-w-7xl mx-auto">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-indigo-500 rounded-xl flex items-center justify-center">
-                <MonitorPlay className="w-5 h-5 text-white" />
-              </div>
-              <span className="font-bold text-xl text-white">BeyondWalls</span>
-            </div>
+            <BrandLogo onDark className="mb-4" />
             <p className="text-slate-400 text-sm">The #1 self-serve DOOH advertising platform in the UAE.</p>
           </div>
           <div>

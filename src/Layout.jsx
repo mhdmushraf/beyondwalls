@@ -24,6 +24,7 @@ import {
   Settings as Settings2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import BrandLogo from "@/components/BrandLogo";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -226,14 +227,7 @@ const publicPages = [
         ) : (
           <div className="w-10" />
         )}
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary rounded-lg flex items-center justify-center">
-            <MonitorPlay className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-bold text-lg font-heading bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent select-none">
-            Beyond Walls
-          </span>
-        </div>
+        <BrandLogo size="sm" />
         <Bell className="w-5 h-5 text-slate-400" />
       </div>
 
@@ -244,14 +238,7 @@ const publicPages = [
         <div className="h-full flex flex-col">
           {/* Logo */}
           <div className="h-16 px-6 flex items-center justify-between border-b border-slate-100">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/25">
-                <MonitorPlay className="w-5 h-5 text-white" />
-              </div>
-              <span className="font-bold text-xl font-heading bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent">
-                Beyond Walls
-              </span>
-            </div>
+            <BrandLogo />
 
           </div>
 
