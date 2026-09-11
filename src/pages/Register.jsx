@@ -201,6 +201,11 @@ export default function Register() {
                 step >= 2 ? "bg-[#6366f1]" : "bg-slate-200"
               }`}
             />
+            <div
+              className={`flex-1 h-1.5 rounded-full transition-colors ${
+                step >= 3 ? "bg-[#6366f1]" : "bg-slate-200"
+              }`}
+            />
           </div>
 
           <AnimatePresence mode="wait">
