@@ -442,6 +442,100 @@ export default function Register() {
                 </p>
               </motion.div>
             )}
+
+            {step === 3 && (
+              <motion.div
+                key="step3"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={stepTransition}
+              >
+                <div className="mb-6">
+                  <h1
+                    className="text-[26px] font-semibold text-slate-900 tracking-tight"
+                    style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    Verify your email
+                  </h1>
+                  <p className="text-sm text-slate-500 mt-1.5">
+                    We sent a 6-digit code to <span className="font-medium text-slate-700">{email}</span>.
+                  </p>
+                </div>
+
+                {otpError && (
+                  <div className="mb-5 px-4 py-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm">
+                    {otpError}
+                  </div>
+                )}
+                {!otpError && otpInfo && (
+                  <div className="mb-5 px-4 py-3 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-700 text-sm">
+                    {otpInfo}
+                  </div>
+                )}
+
+                <form onSubmit={handleVerifyOtp} className="space-y-6">
+                  <div className="flex justify-center">
+                    <InputOTP
+                      maxLength={6}
+                      value={otpCode}
+                      onChange={(value) => setOtpCode(value.replace(/\D/g, ""))}
+                      disabled={otpLoading}
+                      autoFocus
+                    >
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                        <InputOTPSlot index={3} />
+                        <InputOTPSlot index={4} />
+                        <InputOTPSlot index={5} />
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </div>
+
+                  <motion.button
+                    type="submit"
+                    disabled={otpLoading || otpCode.length !== 6}
+                    whileTap={{ scale: reduceMotion ? 1 : 0.985 }}
+                    className="w-full h-[52px] rounded-[11px] bg-gradient-to-b from-[#6D6FF5] to-[#6366F1] text-white font-semibold text-[16px] hover:from-[#5B5EE8] hover:to-[#595BE3] disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                  >
+                    {otpLoading ? (
+                      <>
+                        <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Verifying…
+                      </>
+                    ) : (
+                      <>
+                        Verify &amp; continue
+                        <ArrowRight className="w-[18px] h-[18px]" />
+                      </>
+                    )}
+                  </motion.button>
+                </form>
+
+                <p className="text-center text-sm text-slate-500 mt-6">
+                  Didn't get a code?{" "}
+                  <button
+                    type="button"
+                    onClick={handleResendOtp}
+                    disabled={resendCooldown > 0}
+                    className="text-[#6366f1] font-semibold hover:underline disabled:text-slate-400 disabled:no-underline disabled:cursor-not-allowed"
+                  >
+                    {resendCooldown > 0 ? `Resend code (${resendCooldown}s)` : "Resend code"}
+                  </button>
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => setStep(2)}
+                  className="w-full flex items-center justify-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mt-4 h-[44px]"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Back
+                </button>
+              </motion.div>
+            )}
           </AnimatePresence>
         </div>
       </motion.div>
