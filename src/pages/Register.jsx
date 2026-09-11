@@ -18,6 +18,7 @@ import {
   Check,
 } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
 const ACCOUNT_TYPES = [
   { key: "advertiser", label: "Advertiser", subtitle: "Run ads on screens", icon: Megaphone },
@@ -45,21 +46,19 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [otpCode, setOtpCode] = useState("");
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [otpError, setOtpError] = useState("");
+  const [otpInfo, setOtpInfo] = useState("");
+  const [resendCooldown, setResendCooldown] = useState(0);
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-
-    if (password.length < 8) {
-      setError("Use at least 8 characters.");
-      return;
-    }
-
-    setLoading(true);
+  // Runs after the OTP is confirmed: logs the now-verified user in, sets up
+  // their profile + org, then drops them into the Workspace. Split out from
+  // handleVerifyOtp so it can't fire before verification succeeds.
+  const finishAfterVerification = async () => {
     try {
-      await base44.auth.register({ email, password });
       await base44.auth.loginViaEmailPassword(email, password);
       try {
         await base44.functions.invoke("updateMyProfile", { full_name: fullName });
@@ -78,6 +77,30 @@ export default function Register() {
       }
       navigate("/Workspace");
     } catch (err) {
+      console.warn("Auto-login after verification failed:", err);
+      setOtpError("Your email is verified — please sign in.");
+      setTimeout(() => navigate("/login"), 1500);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (password.length < 8) {
+      setError("Use at least 8 characters.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Registration only creates the account and triggers an OTP email —
+      // it does NOT log the user in yet. verifyOtp() must succeed first
+      // (see handleVerifyOtp) or every login attempt 400s with "please verify
+      // your email", even though the account and password are perfectly valid.
+      await base44.auth.register({ email, password });
+      setStep(3);
+    } catch (err) {
       const msg = (err.response?.data?.detail || err.message || "").toString();
       if (/already|exists|registered|in use/i.test(msg)) {
         setError("An account with this email already exists — sign in instead.");
@@ -88,6 +111,56 @@ export default function Register() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+    setOtpError("");
+    setOtpInfo("");
+
+    if (otpCode.length !== 6) {
+      setOtpError("Enter the 6-digit code from your email.");
+      return;
+    }
+
+    setOtpLoading(true);
+    try {
+      await base44.auth.verifyOtp({ email, otpCode });
+      await finishAfterVerification();
+    } catch (err) {
+      const msg = (err.response?.data?.detail || err.message || "").toString();
+      if (/expired/i.test(msg)) {
+        setOtpError("That code expired — tap \"Resend code\" for a new one.");
+      } else if (/invalid|incorrect|not found/i.test(msg)) {
+        setOtpError("Incorrect code — check your email and try again.");
+      } else {
+        setOtpError("Something went wrong verifying that code — please try again.");
+      }
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    if (resendCooldown > 0) return;
+    setOtpError("");
+    setOtpInfo("");
+    try {
+      await base44.auth.resendOtp(email);
+      setOtpInfo("New code sent — check your email.");
+      setResendCooldown(30);
+      const timer = setInterval(() => {
+        setResendCooldown((c) => {
+          if (c <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return c - 1;
+        });
+      }, 1000);
+    } catch (err) {
+      setOtpError("Couldn't resend the code — please try again in a moment.");
     }
   };
 
