@@ -43,27 +43,28 @@ import VenueOwnerBenefits from "@/components/home/VenueOwnerBenefits";
 
 export default function Home() {
   const [showInvestorModal, setShowInvestorModal] = useState(false);
-  const [checkingAuth, setCheckingAuth] = useState(true);
   const navigate = useNavigate();
 
+  // Redirect already-logged-in visitors to their dashboard — but NEVER block
+  // rendering the homepage on it. The page is public: crawlers and first-time
+  // visitors must see content immediately, not a spinner waiting on an auth
+  // round-trip (which previously hung the whole page when the call stalled).
   useEffect(() => {
-    checkAuthAndRedirect();
-  }, []);
-
-  const checkAuthAndRedirect = async () => {
-    try {
-      const isAuth = await base44.auth.isAuthenticated();
-      if (isAuth) {
-        const user = await base44.auth.me();
-        // Redirect logged-in users to their appropriate dashboard
-        navigate(createPageUrl("Workspace"), { replace: true });
-        return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const isAuth = await base44.auth.isAuthenticated();
+        if (isAuth && !cancelled) {
+          navigate(createPageUrl("Workspace"), { replace: true });
+        }
+      } catch (e) {
+        // Not logged in — stay on the homepage.
       }
-    } catch (e) {
-      // Not logged in, show home page
-    }
-    setCheckingAuth(false);
-  };
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [navigate]);
 
   // Show loading while checking auth
   if (checkingAuth) {
