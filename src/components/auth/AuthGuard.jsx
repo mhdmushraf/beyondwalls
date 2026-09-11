@@ -3,6 +3,14 @@ import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { MonitorPlay, Shield, Loader2 } from "lucide-react";
 
+// Send unauthenticated users to our own /login page (with a next param so they
+// return where they were headed), NOT base44.auth.redirectToLogin() which lands
+// on Base44's generic hosted login form.
+function goToOurLogin(redirectTo) {
+  const next = redirectTo || window.location.pathname;
+  window.location.href = `/login?next=${encodeURIComponent(next)}`;
+}
+
 /**
  * AuthGuard - Protects pages requiring authentication
  * @param {Object} props
