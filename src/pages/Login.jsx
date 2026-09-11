@@ -3,8 +3,9 @@ import SEOHead from "@/components/SEOHead";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import BrandPanel from "@/components/auth/BrandPanel";
-import { ArrowRight, Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
+import { ArrowRight, ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
 const inputClass =
   "w-full h-[48px] pl-11 pr-4 rounded-xl border bg-[#F7F8FC] border-[#E3E6F1] text-[16px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#6366f1] focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] transition-all duration-150";
@@ -16,10 +17,29 @@ export default function Login() {
   const [keepSignedIn, setKeepSignedIn] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [needsVerification, setNeedsVerification] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [otpError, setOtpError] = useState("");
+  const [otpInfo, setOtpInfo] = useState("");
+  const [resendCooldown, setResendCooldown] = useState(0);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const nextUrl = searchParams.get("next") || "/Workspace";
   const reduceMotion = useReducedMotion();
+
+  const startResendCooldown = () => {
+    setResendCooldown(30);
+    const timer = setInterval(() => {
+      setResendCooldown((c) => {
+        if (c <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return c - 1;
+      });
+    }, 1000);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,13 +50,67 @@ export default function Login() {
       navigate(nextUrl);
     } catch (err) {
       const msg = (err.response?.data?.detail || err.message || "").toString();
-      if (/invalid|incorrect|unauthorized|wrong|not found|401|credential/i.test(msg)) {
+      if (/verify your email|verification code/i.test(msg)) {
+        // Account exists and the password is correct, but the OTP sent at
+        // signup was never confirmed — Base44 blocks login until verifyOtp()
+        // succeeds. Send a fresh code (the original may be long expired) and
+        // let them verify right here instead of dead-ending on a generic error.
+        setNeedsVerification(true);
+        try {
+          await base44.auth.resendOtp(email);
+          setOtpInfo("We sent a fresh code to " + email + ".");
+        } catch (resendErr) {
+          setOtpError("Couldn't send a verification code — please try again in a moment.");
+        }
+        startResendCooldown();
+      } else if (/invalid|incorrect|unauthorized|wrong|not found|401|credential/i.test(msg)) {
         setError("Incorrect email or password.");
       } else {
         setError("Something went wrong — please try again.");
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+    setOtpError("");
+
+    if (otpCode.length !== 6) {
+      setOtpError("Enter the 6-digit code from your email.");
+      return;
+    }
+
+    setOtpLoading(true);
+    try {
+      await base44.auth.verifyOtp({ email, otpCode });
+      await base44.auth.loginViaEmailPassword(email, password);
+      navigate(nextUrl);
+    } catch (err) {
+      const msg = (err.response?.data?.detail || err.message || "").toString();
+      if (/expired/i.test(msg)) {
+        setOtpError("That code expired — tap \"Resend code\" for a new one.");
+      } else if (/invalid|incorrect|not found/i.test(msg)) {
+        setOtpError("Incorrect code — check your email and try again.");
+      } else {
+        setOtpError("Something went wrong — please try again.");
+      }
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    if (resendCooldown > 0) return;
+    setOtpError("");
+    setOtpInfo("");
+    try {
+      await base44.auth.resendOtp(email);
+      setOtpInfo("New code sent — check your email.");
+      startResendCooldown();
+    } catch (err) {
+      setOtpError("Couldn't resend the code — please try again in a moment.");
     }
   };
 
