@@ -101,9 +101,18 @@ const publicPages = [
         "Plans"
       ];
 
+  // Case-insensitive public-page check. Base44 derives currentPageName from the
+  // URL segment, so /home yields "home" while the list holds "Home" — a direct
+  // .includes() would miss it and treat the public page as authenticated,
+  // hanging on the auth check. Normalise both sides. Applies to every public
+  // route reached with non-canonical casing (/plans, /about, /blog, …).
+  const isPublicPage = publicPages.some(
+    (p) => p.toLowerCase() === (currentPageName || "").toLowerCase()
+  );
+
   // Scroll to top when navigating to public pages
   useEffect(() => {
-    if (publicPages.includes(currentPageName)) {
+    if (isPublicPage) {
       window.scrollTo(0, 0);
     }
   }, [currentPageName]);
@@ -121,7 +130,7 @@ const publicPages = [
     }
   }, [currentPageName]);
 
-  if (publicPages.includes(currentPageName)) {
+  if (isPublicPage) {
     return <>{children}</>;
   }
 
