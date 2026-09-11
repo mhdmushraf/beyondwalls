@@ -75,11 +75,16 @@ export default function Register() {
         console.warn("Org provisioning failed:", e);
         sessionStorage.setItem("bw_provision_retry", JSON.stringify({ account_type: accountType, ts: Date.now() }));
       }
-      navigate("/Workspace");
+      // Hard navigation (not client-side navigate) so Workspace loads fresh and
+      // its auth guard reads the just-written session token from storage rather
+      // than a stale in-memory value.
+      window.location.href = "/Workspace";
     } catch (err) {
       console.warn("Auto-login after verification failed:", err);
       setOtpError("Your email is verified — please sign in.");
-      setTimeout(() => navigate("/login"), 1500);
+      setTimeout(() => {
+        window.location.href = "/login?next=%2FWorkspace";
+      }, 1500);
     }
   };
 
