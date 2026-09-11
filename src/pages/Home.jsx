@@ -66,20 +66,6 @@ export default function Home() {
     };
   }, [navigate]);
 
-  // Show loading while checking auth
-  if (checkingAuth) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
-            <MonitorPlay className="w-6 h-6 text-white" />
-          </div>
-          <p className="text-slate-500">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
   const stats = [
     { value: "500+", label: "Active Screens", icon: MonitorPlay },
     { value: "9,000+", label: "Daily Audience Reach", icon: TrendingUp },
