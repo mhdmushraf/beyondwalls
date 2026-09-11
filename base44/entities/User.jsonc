@@ -136,24 +136,7 @@
       "description": "Municipal inspector specific permissions"
     }
   },
-  "required": [
-    "account_type",
-    "company_name",
-    "phone",
-    "country",
-    "city",
-    "address",
-    "trade_license_url",
-    "emirates_id_url",
-    "profile_image",
-    "avatar_url",
-    "rejection_reason",
-    "bank_name",
-    "account_holder_name",
-    "iban",
-    "swift_code",
-    "municipal_inspector_zone"
-  ],
+  "required": [],
   "rls": {
     "read": {
       "$or": [
