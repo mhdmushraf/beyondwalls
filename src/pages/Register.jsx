@@ -101,6 +101,10 @@ export default function Register() {
       await base44.auth.register({ email, password });
       setStep(3);
     } catch (err) {
+      // TEMP DIAGNOSTIC — remove after debugging the register/OTP flow.
+      console.error("[register] raw error:", err);
+      console.error("[register] response data:", err?.response?.data);
+      console.error("[register] status:", err?.response?.status);
       const msg = (err.response?.data?.detail || err.message || "").toString();
       if (/already|exists|registered|in use/i.test(msg)) {
         setError("An account with this email already exists — sign in instead.");
