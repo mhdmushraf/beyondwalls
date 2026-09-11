@@ -139,9 +139,9 @@ const publicPages = [
     );
   }
 
-  // SECURITY: Redirect to login if not authenticated for protected pages
+  // SECURITY: Redirect to OUR login if not authenticated for protected pages
   if (!user) {
-    base44.auth.redirectToLogin(window.location.pathname);
+    window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
