@@ -99,13 +99,17 @@ export const AuthProvider = ({ children }) => {
       console.error('User auth check failed:', error);
       setIsLoadingAuth(false);
       setIsAuthenticated(false);
-      
-      // If user auth fails, it might be an expired token
+
+      // A 401/403 here means the stored token is stale or expired. Clear it and
+      // treat the visitor as logged out rather than raising auth_required, which
+      // on a public page would otherwise loop. Only genuinely protected routes
+      // decide to send the user to login (see App.jsx and the auth guards).
       if (error.status === 401 || error.status === 403) {
-        setAuthError({
-          type: 'auth_required',
-          message: 'Authentication required'
-        });
+        try {
+          base44.auth.setToken(null);
+        } catch (e) {
+          /* ignore — best effort token clear */
+        }
       }
     }
   };
