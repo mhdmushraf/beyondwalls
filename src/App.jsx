@@ -86,9 +86,30 @@ const AuthenticatedApp = () => {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
-      navigateToLogin();
-      return null;
+      // Only force login on genuinely protected routes. On PUBLIC routes
+      // (home, marketing, login/register themselves), an auth_required error —
+      // e.g. from a stale/expired token — must NOT redirect, or it creates an
+      // infinite reload loop that shows as a permanent spinner. Just fall
+      // through and render the public page.
+      const PUBLIC_PATH_PREFIXES = [
+        '/', '/home', '/login', '/register', '/about', '/services', '/contact',
+        '/screenlocations', '/blog', '/blogpost', '/authorprofile', '/helpcenter',
+        '/terms', '/privacy', '/howitworks', '/connect', '/plans', '/sitemap',
+        '/screenplayer', '/screensoverview', '/forgotpassword', '/resetpassword',
+        '/doohadvertisingdubai', '/digitalsignageuae', '/cafescreenadvertisingdubai',
+        '/gymscreenadvertisingdubai', '/coworkingspaceadvertisingdubai',
+        '/clinicscreenadvertisingdubai', '/monetizeyourscreensdubai',
+        '/doohadvertisingcostdubai', '/indoorvenuedoohvsbillboardsdubai',
+        '/whatisdoohadvertisingguide', '/earnmoneyvenuescreensdubai',
+        '/doohadvertisingmarketplacedubai', '/robotstxt', '/sitemapxml', '/notfound',
+      ];
+      const currentPath = window.location.pathname.toLowerCase().replace(/\/$/, '') || '/';
+      const onPublicRoute = PUBLIC_PATH_PREFIXES.includes(currentPath);
+      if (!onPublicRoute) {
+        navigateToLogin();
+        return null;
+      }
+      // On a public route: ignore the auth error and render the page.
     }
   }
 
