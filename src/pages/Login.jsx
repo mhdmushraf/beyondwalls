@@ -47,7 +47,7 @@ export default function Login() {
     setLoading(true);
     try {
       await base44.auth.loginViaEmailPassword(email, password);
-      navigate(nextUrl);
+      window.location.href = nextUrl;
     } catch (err) {
       const msg = (err.response?.data?.detail || err.message || "").toString();
       if (/verify your email|verification code/i.test(msg)) {
@@ -86,7 +86,7 @@ export default function Login() {
     try {
       await base44.auth.verifyOtp({ email, otpCode });
       await base44.auth.loginViaEmailPassword(email, password);
-      navigate(nextUrl);
+      window.location.href = nextUrl;
     } catch (err) {
       const msg = (err.response?.data?.detail || err.message || "").toString();
       if (/expired/i.test(msg)) {
