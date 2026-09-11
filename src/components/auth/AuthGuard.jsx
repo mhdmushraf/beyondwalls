@@ -32,7 +32,7 @@ export default function AuthGuard({ children, requireAdmin = false, redirectTo }
       
       if (!isAuth) {
         setStatus("unauthenticated");
-        base44.auth.redirectToLogin(redirectTo || window.location.pathname);
+        goToOurLogin(redirectTo);
         return;
       }
 
@@ -52,7 +52,7 @@ export default function AuthGuard({ children, requireAdmin = false, redirectTo }
       setStatus("authenticated");
     } catch (e) {
       setStatus("unauthenticated");
-      base44.auth.redirectToLogin(redirectTo || window.location.pathname);
+      goToOurLogin(redirectTo);
     }
   };
 
@@ -123,7 +123,7 @@ export function useAuthGuard(requireAdmin = false) {
       const isAuth = await base44.auth.isAuthenticated();
       
       if (!isAuth) {
-        base44.auth.redirectToLogin(window.location.pathname);
+        goToOurLogin(window.location.pathname);
         return;
       }
 
@@ -140,7 +140,7 @@ export function useAuthGuard(requireAdmin = false) {
         setAuthorized(true);
       }
     } catch (e) {
-      base44.auth.redirectToLogin(window.location.pathname);
+      goToOurLogin(window.location.pathname);
     } finally {
       setLoading(false);
     }
