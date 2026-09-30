@@ -212,7 +212,7 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
             <div>
               <Badge className="bg-gradient-to-r from-violet-100 to-indigo-100 text-violet-700 border-0 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold mb-4 sm:mb-6">
-                🚀 UAE's #1 Self-Serve DOOH Platform
+                🚀 Self-Serve DOOH Platform for the UAE
               </Badge>
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight mb-4 sm:mb-6">
                 Advertise on
