@@ -83,7 +83,7 @@ export const generateManifest = () => {
   return {
     name: "BeyondWalls - Digital Advertising Platform",
     short_name: "BeyondWalls",
-    description: "UAE's #1 Digital Out-of-Home Advertising Platform",
+    description: "Self-Serve Digital Out-of-Home Advertising Platform for the UAE",
     start_url: "/",
     display: "standalone",
     background_color: "#ffffff",
