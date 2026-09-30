@@ -127,7 +127,7 @@ ${this.header()}
               <td width="40" valign="top" style="padding-right: 12px;">
                 <div style="background-color: #ddd6fe; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px;">📺</div>
               </td>
-              <td style="color: #475569; font-size: 15px; line-height: 1.5;">Explore 500+ premium screens across UAE</td>
+              <td style="color: #475569; font-size: 15px; line-height: 1.5;">Explore premium screens across UAE</td>
             </tr>
           </table>
         </td>

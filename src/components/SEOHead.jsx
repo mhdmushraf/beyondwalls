@@ -35,7 +35,7 @@ export const PAGE_SEO = {
   },
   screenLocations: {
     title: "Digital Screen Locations UAE | Find Advertising Screens Near You | BeyondWalls",
-    description: "Browse 500+ digital advertising screens across Dubai, Abu Dhabi, Sharjah. Filter by venue type, location, and price. Book your ad space today.",
+    description: "Browse digital advertising screens across Dubai, Abu Dhabi, Sharjah. Filter by venue type, location, and price. Book your ad space today.",
     keywords: "screen locations dubai, digital billboards uae, advertising screens near me, dooh locations",
     canonical: "https://beyondwalls.ae/ScreenLocations"
   },
@@ -47,7 +47,7 @@ export const PAGE_SEO = {
   },
   register: {
     title: "Sign Up | Start Advertising on Digital Screens | BeyondWalls UAE",
-    description: "Create your free BeyondWalls account. Start advertising on 500+ digital screens across UAE or monetize your venue screens. No setup fees.",
+    description: "Create your free BeyondWalls account. Start advertising on digital screens across UAE or monetize your venue screens. No setup fees.",
     keywords: "sign up beyondwalls, register advertising account, dooh platform signup",
     canonical: "https://beyondwalls.ae/Register"
   },
@@ -75,7 +75,7 @@ export const PRIMARY_SITELINKS = [
   { name: "Services", url: "/Services", description: "Digital advertising services for businesses and venue owners" },
   { name: "Contact", url: "/Contact", description: "Get in touch with our team in Dubai" },
   { name: "How It Works", url: "/HowItWorks", description: "Launch your campaign in 4 easy steps" },
-  { name: "Screen Locations", url: "/ScreenLocations", description: "Browse 500+ digital screens across UAE" },
+  { name: "Screen Locations", url: "/ScreenLocations", description: "Browse digital screens across UAE" },
   { name: "Register", url: "/Register", description: "Start advertising today - Free signup" }
 ];
 

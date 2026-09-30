@@ -8,7 +8,7 @@ export default function MobileAppIntro3() {
   const features = [
     {
       icon: MonitorPlay,
-      title: '500+ Screens',
+      title: 'Screen Network',
       desc: 'Across all major venues in UAE'
     },
     {

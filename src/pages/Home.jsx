@@ -67,10 +67,10 @@ export default function Home() {
   }, [navigate]);
 
   const stats = [
-    { value: "500+", label: "Active Screens", icon: MonitorPlay },
-    { value: "9,000+", label: "Daily Audience Reach", icon: TrendingUp },
-    { value: "200+", label: "Premium Venues", icon: Building2 },
-    { value: "72%", label: "Recall Rate", icon: Zap }
+    { value: "Self-serve", label: "Booking & checkout", icon: Zap },
+    { value: "From AED 99", label: "Per screen / week", icon: DollarSign },
+    { value: "Proof of play", label: "On every ad", icon: Play },
+    { value: "24/7", label: "Screen monitoring", icon: Clock }
   ];
 
   const advertiserBenefits = [
@@ -92,44 +92,38 @@ export default function Home() {
   const venueTypes = [
     { 
       name: "Restaurants & Cafés", 
-      count: "80+", 
       image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=400&fit=crop&q=80",
       description: "Reach diners during meals"
     },
     { 
       name: "Shopping Malls", 
-      count: "25+", 
       image: "https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=600&h=400&fit=crop&q=80",
       description: "High-traffic retail zones"
     },
     { 
       name: "Fitness Centers", 
-      count: "45+", 
       image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&h=400&fit=crop&q=80",
       description: "Health-conscious audience"
     },
     { 
       name: "Coworking Spaces", 
-      count: "50+", 
       image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop&q=80",
       description: "Business professionals"
     },
     { 
       name: "Hotels & Lobbies", 
-      count: "30+", 
       image: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600&h=400&fit=crop&q=80",
       description: "Tourists & travelers"
     },
     { 
       name: "Clinics & Hospitals", 
-      count: "20+", 
       image: "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=600&h=400&fit=crop&q=80",
       description: "Healthcare sector"
     }
   ];
 
   const howItWorks = [
-    { step: "1", title: "Choose Screens", desc: "Browse 500+ screens across UAE and select locations that match your target audience" },
+    { step: "1", title: "Choose Screens", desc: "Browse available screens across UAE and select locations that match your target audience" },
     { step: "2", title: "Upload Creative", desc: "Upload your image or video ad. Our AI can help you create one if needed" },
     { step: "3", title: "Set Budget & Duration", desc: "Pay per screen per week. No minimums, no long-term commitments" },
     { step: "4", title: "Go Live & Track", desc: "Your ad goes live within 30 minutes. Track performance in real-time" }
@@ -161,7 +155,7 @@ export default function Home() {
   const homeFaqs = [
     {
       question: "What is Beyond Walls?",
-      answer: "Beyond Walls is Dubai's leading self-serve digital out-of-home (DOOH) advertising platform. We connect advertisers with 500+ digital screens in cafés, gyms, malls, clinics, and co-working spaces across the UAE, with campaigns starting from AED 99 per week."
+      answer: "Beyond Walls is Dubai's leading self-serve digital out-of-home (DOOH) advertising platform. We connect advertisers with digital screens in cafés, gyms, malls, clinics, and co-working spaces across the UAE, with campaigns starting from AED 99 per week."
     },
     {
       question: "How much does digital screen advertising cost in Dubai?",
@@ -173,7 +167,7 @@ export default function Home() {
     },
     {
       question: "Where are Beyond Walls screens located?",
-      answer: "Beyond Walls has 500+ screens across Dubai, Abu Dhabi, Sharjah, Ajman, and RAK. Screens are located in cafés, gyms, malls, clinics, co-working spaces, hotels, and retail stores throughout the UAE."
+      answer: "Beyond Walls screens are located across Dubai, Abu Dhabi, Sharjah, Ajman, and RAK, in cafés, gyms, malls, clinics, co-working spaces, hotels, and retail stores throughout the UAE."
     },
     {
       question: "Can venue owners earn from their screens?",
@@ -246,13 +240,7 @@ export default function Home() {
               </div>
 
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 text-xs sm:text-sm text-slate-500">
-                <div className="flex -space-x-2">
-                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop" className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-white" alt="" />
-                  <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop" className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-white" alt="" />
-                  <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop" className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-white" alt="" />
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-white bg-violet-100 flex items-center justify-center text-xs font-bold text-violet-600">+99</div>
-                </div>
-                <span>Trusted by <span className="font-semibold text-slate-700">100+ advertisers</span> in UAE</span>
+                <span>Now onboarding launch venues across Dubai</span>
               </div>
             </div>
 
@@ -565,7 +553,6 @@ export default function Home() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <Badge className="bg-white/20 text-white border-0 mb-2">{venue.count} venues</Badge>
                   <p className="text-white font-bold text-xl">{venue.name}</p>
                   <p className="text-white/80 text-sm">{venue.description}</p>
                 </div>

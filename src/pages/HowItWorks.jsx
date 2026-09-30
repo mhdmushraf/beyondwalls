@@ -210,10 +210,10 @@ export default function HowItWorks() {
   ];
 
   const stats = [
-    { value: "500+", label: "Active Screens" },
-    { value: "50M+", label: "Monthly Impressions" },
-    { value: "200+", label: "Premium Venues" },
-    { value: "98%", label: "Uptime" }
+    { value: "Self-serve", label: "Booking" },
+    { value: "From AED 99", label: "Per screen / week" },
+    { value: "Proof of play", label: "On every ad" },
+    { value: "24/7", label: "Screen monitoring" }
   ];
 
   return (
@@ -248,7 +248,7 @@ export default function HowItWorks() {
               "@type": "HowToStep",
               "position": 3,
               "name": "Choose Screens",
-              "text": "Browse 500+ screens across Dubai, Abu Dhabi, and Sharjah. Filter by location, venue type, and price."
+              "text": "Browse available screens across the UAE. Filter by location, venue type, and price."
             },
             {
               "@type": "HowToStep",

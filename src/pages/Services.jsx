@@ -171,7 +171,7 @@ export default function Services() {
             "url": "https://beyondwalls.ae"
           },
           "areaServed": ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "RAK", "UAE"],
-          "description": "Premium DOOH advertising services with performance scoring, campaign bundles, gamification, sustainability tracking and local business support. AI-powered platform with 500+ screens across UAE.",
+          "description": "Premium DOOH advertising services with performance scoring, campaign bundles, gamification, sustainability tracking and local business support. AI-powered platform with screens across UAE.",
           "offers": {
             "@type": "AggregateOffer",
             "priceCurrency": "AED",
@@ -274,8 +274,8 @@ export default function Services() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             <div className="text-center">
-              <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-1">9,000+</p>
-              <p className="text-slate-400 text-xs sm:text-sm lg:text-base">Daily Audience Reach</p>
+              <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-1">Self-serve</p>
+              <p className="text-slate-400 text-xs sm:text-sm lg:text-base">Booking platform</p>
             </div>
             <div className="text-center">
               <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-1">72%</p>
@@ -355,7 +355,7 @@ export default function Services() {
           <div className="grid md:grid-cols-4 gap-6">
             {[
               { step: "1", title: "Sign Up", desc: "Create your account in 2 minutes", icon: Users },
-              { step: "2", title: "Choose Screens", desc: "Select from 500+ locations", icon: MonitorPlay },
+              { step: "2", title: "Choose Screens", desc: "Select from available locations", icon: MonitorPlay },
               { step: "3", title: "Upload Creative", desc: "Add your image or video", icon: Upload },
               { step: "4", title: "Go Live", desc: "Your ad runs within 30 min", icon: Zap }
             ].map((item, i) => (
@@ -707,7 +707,7 @@ export default function Services() {
             Ready to Advertise Smarter?
           </h2>
           <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
-            Join 100+ businesses already reaching millions of customers through BeyondWalls screens
+            Start reaching customers through BeyondWalls screens
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to={createPageUrl("Register")}>

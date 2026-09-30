@@ -27,7 +27,7 @@ export default function DigitalSignageUAE() {
   };
 
   const features = [
-    { icon: MonitorPlay, title: "500+ Screens", desc: "Premium digital displays across UAE" },
+    { icon: MonitorPlay, title: "Screen Network", desc: "Premium digital displays across UAE" },
     { icon: Wifi, title: "Cloud Connected", desc: "Remote content management" },
     { icon: BarChart3, title: "Analytics Dashboard", desc: "Track performance in real-time" },
     { icon: Settings, title: "Easy Management", desc: "Self-serve booking platform" },
@@ -36,10 +36,10 @@ export default function DigitalSignageUAE() {
   ];
 
   const cities = [
-    { name: "Dubai", screens: "300+" },
-    { name: "Abu Dhabi", screens: "100+" },
-    { name: "Sharjah", screens: "50+" },
-    { name: "Ajman", screens: "25+" },
+    { name: "Dubai", screens: "Coming soon" },
+    { name: "Abu Dhabi", screens: "Coming soon" },
+    { name: "Sharjah", screens: "Coming soon" },
+    { name: "Ajman", screens: "Coming soon" },
   ];
 
   return (
@@ -63,7 +63,7 @@ export default function DigitalSignageUAE() {
             Digital Signage Advertising in UAE
           </h1>
           <p className="text-xl text-white/80 mb-8 max-w-3xl mx-auto">
-            Advertise on <strong>500+ digital screens</strong> across the UAE. 
+            Advertise on <strong>digital screens</strong> across the UAE. 
             From Dubai to Abu Dhabi, reach your audience where they shop, dine, and relax.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
@@ -129,7 +129,7 @@ export default function DigitalSignageUAE() {
           </h2>
           <div className="space-y-6">
             {[
-              { step: 1, title: "Choose Your Screens", desc: "Browse 500+ screens across UAE and select your locations" },
+              { step: 1, title: "Choose Your Screens", desc: "Browse available screens across UAE and select your locations" },
               { step: 2, title: "Upload Your Ad", desc: "Upload your image or video creative" },
               { step: 3, title: "Set Your Budget", desc: "Starting from just AED 99/week per screen" },
               { step: 4, title: "Go Live", desc: "Your ad goes live within 30 minutes" },
@@ -155,7 +155,7 @@ export default function DigitalSignageUAE() {
             Ready to Advertise on Digital Signage in UAE?
           </h2>
           <p className="text-xl text-white/80 mb-8">
-            Start reaching millions of consumers across the Emirates today
+            Start reaching customers across the Emirates today
           </p>
           <Link to={createPageUrl("Register")}>
             <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8">

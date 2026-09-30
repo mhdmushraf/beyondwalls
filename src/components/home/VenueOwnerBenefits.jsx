@@ -43,7 +43,7 @@ export default function VenueOwnerBenefits() {
             Turn Your Screens Into <span className="text-emerald-600">Revenue Machines</span>
           </h2>
           <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-            Join 200+ venues earning passive income. No investment needed - use your existing screens.
+            Earn passive income from your screens. No investment needed - use your existing screens.
           </p>
         </div>
 

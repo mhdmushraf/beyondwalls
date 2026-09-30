@@ -11,10 +11,10 @@ import { Badge } from "@/components/ui/badge";
 
 export default function RestaurantDOOHStats() {
   const liveStats = [
-    { icon: Users, value: "50,000+", label: "Daily Audience Reach", sublabel: "Across all screens" },
-    { icon: Eye, value: "25,000+", label: "Unique Viewers Daily", sublabel: "Individual reach" },
+    { icon: Sparkles, value: "Self-serve", label: "Booking platform", sublabel: "No contracts" },
+    { icon: Eye, value: "Proof of play", label: "On every ad", sublabel: "Verified playback" },
     { icon: Play, value: "200+", label: "Ad Plays Per Day", sublabel: "Per screen" },
-    { icon: MapPin, value: "200+", label: "Premium Locations", sublabel: "High-traffic venues" },
+    { icon: Clock, value: "24/7", label: "Screen monitoring", sublabel: "Always on" },
   ];
 
   const screenSpecs = [
@@ -53,7 +53,7 @@ export default function RestaurantDOOHStats() {
             Real Results Across <span className="text-violet-400">All Venue Types</span>
           </h2>
           <p className="text-xl text-slate-400 max-w-3xl mx-auto">
-            Verified performance data from our active campaigns across UAE's premium venues
+            What screen advertising can deliver for restaurants and cafés
           </p>
         </div>
 

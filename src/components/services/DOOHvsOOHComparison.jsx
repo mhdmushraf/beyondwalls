@@ -105,7 +105,7 @@ export default function DOOHvsOOHComparison() {
         <div className="bg-gradient-to-r from-violet-600/30 to-indigo-600/30 rounded-3xl p-8 border border-white/10 text-center">
           <h3 className="text-2xl font-bold text-white mb-3">Ready to Advertise Smarter?</h3>
           <p className="text-slate-400 mb-6 max-w-xl mx-auto">
-            Join 100+ brands who've already made the switch. No contracts, no hidden fees, just results.
+            Make the switch. No contracts, no hidden fees, just results.
           </p>
           <Link to={createPageUrl("Register")}>
             <Button size="lg" className="bg-gradient-to-r from-violet-500 to-indigo-500 hover:from-violet-600 hover:to-indigo-600 h-14 px-8 text-lg">

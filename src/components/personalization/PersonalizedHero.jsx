@@ -34,10 +34,10 @@ export default function PersonalizedHero() {
   const content = {
     advertiser: {
       badge: "🎯 For Advertisers",
-      title: "Reach Thousands of Customers Daily",
-      subtitle: "Launch your campaign on 500+ premium screens across Dubai in minutes",
+      title: "Reach Customers Across the UAE",
+      subtitle: "Launch your campaign on premium screens across Dubai in minutes",
       stats: [
-        { icon: Users, label: "9,000+", desc: "Daily Reach" },
+        { icon: Users, label: "Self-serve", desc: "Booking" },
         { icon: TrendingUp, label: "72%", desc: "Brand Recall" },
         { icon: Sparkles, label: "90%", desc: "Cost Savings" }
       ],
@@ -50,7 +50,7 @@ export default function PersonalizedHero() {
       subtitle: "Earn AED 2,000-4,000+ monthly per screen with zero equipment cost",
       stats: [
         { icon: DollarSign, label: "70%", desc: "Revenue Share" },
-        { icon: Building2, label: "8+", desc: "Partner Venues" },
+        { icon: Building2, label: "Self-serve", desc: "Booking" },
         { icon: Sparkles, label: "Weekly", desc: "Payouts" }
       ],
       cta: { text: "List Your Venue", icon: Building2, page: "Register" },

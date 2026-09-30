@@ -59,7 +59,7 @@ export default function About() {
     { year: "Jun 2025", title: "The Idea is Born", description: "BeyondWalls concept was created with a vision to revolutionize DOOH advertising in the UAE" },
     { year: "Nov 2025", title: "Global Recognition Award", description: "Received 2025 Global Recognition Award for innovation in the DOOH advertising sector" },
     { year: "Dec 2025", title: "in5 Dubai Incubator", description: "Officially incorporated under in5 Dubai incubator program, part of TECOM Group ecosystem" },
-    { year: "Dec 2025", title: "Soft Launch", description: "Platform soft launch with 8+ venue partners and 25+ advertisers on waitlist" },
+    { year: "Dec 2025", title: "Soft Launch", description: "Platform soft launch with initial venue partners and advertisers on waitlist" },
     { year: "Jan 2026", title: "Official Launch", description: "Grand official launch of BeyondWalls platform across UAE" }
   ];
 
@@ -197,8 +197,8 @@ export default function About() {
           </div>
           <div className="grid md:grid-cols-4 gap-6">
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 text-center">
-              <p className="text-4xl font-bold text-violet-400 mb-2">9,000+</p>
-              <p className="text-slate-400">Daily Audience Reach</p>
+              <p className="text-4xl font-bold text-violet-400 mb-2">Self-serve</p>
+              <p className="text-slate-400">Booking platform</p>
             </div>
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 text-center">
               <p className="text-4xl font-bold text-emerald-400 mb-2">72%</p>
@@ -254,10 +254,6 @@ export default function About() {
                 alt="Office" 
                 className="rounded-2xl shadow-xl"
               />
-              <div className="absolute -bottom-6 -left-6 bg-violet-100 rounded-2xl p-6 shadow-lg">
-                <p className="text-3xl font-bold text-slate-900">500+</p>
-                <p className="text-slate-900">Active Screens</p>
-              </div>
             </div>
           </div>
         </div>
@@ -370,12 +366,12 @@ export default function About() {
               <h3 className="text-xl font-bold text-slate-900 mb-4 text-center">Platform Highlights</h3>
               <div className="space-y-4">
                 <div className="bg-white rounded-xl p-4">
-                  <p className="text-2xl font-bold text-violet-600">8+</p>
-                  <p className="text-slate-600">Venue Partners</p>
+                  <p className="text-2xl font-bold text-violet-600">Self-serve</p>
+                  <p className="text-slate-600">Booking platform</p>
                 </div>
                 <div className="bg-white rounded-xl p-4">
-                  <p className="text-2xl font-bold text-violet-600">25+</p>
-                  <p className="text-slate-600">Advertisers on Waitlist</p>
+                  <p className="text-2xl font-bold text-violet-600">Proof of play</p>
+                  <p className="text-slate-600">On every ad</p>
                 </div>
                 <div className="bg-white rounded-xl p-4">
                   <p className="text-2xl font-bold text-violet-600">$25,000+</p>
@@ -502,20 +498,20 @@ export default function About() {
           </div>
           <div className="grid md:grid-cols-4 gap-6">
             <div className="bg-white rounded-2xl p-6 shadow-lg text-center">
-              <p className="text-4xl font-bold text-violet-600 mb-2">8+</p>
-              <p className="text-slate-600">Venue Partners Onboarded</p>
+              <p className="text-4xl font-bold text-violet-600 mb-2">Self-serve</p>
+              <p className="text-slate-600">Booking platform</p>
             </div>
             <div className="bg-white rounded-2xl p-6 shadow-lg text-center">
-              <p className="text-4xl font-bold text-emerald-600 mb-2">25+</p>
-              <p className="text-slate-600">Advertisers on Waitlist</p>
+              <p className="text-4xl font-bold text-emerald-600 mb-2">From AED 99</p>
+              <p className="text-slate-600">Per screen / week</p>
             </div>
             <div className="bg-white rounded-2xl p-6 shadow-lg text-center">
               <p className="text-4xl font-bold text-amber-600 mb-2">$25K+</p>
               <p className="text-slate-600">Pending Booking Value</p>
             </div>
             <div className="bg-white rounded-2xl p-6 shadow-lg text-center">
-              <p className="text-4xl font-bold text-rose-600 mb-2">50+</p>
-              <p className="text-slate-600">Screen Capacity</p>
+              <p className="text-4xl font-bold text-rose-600 mb-2">Proof of play</p>
+              <p className="text-slate-600">On every ad</p>
             </div>
           </div>
         </div>

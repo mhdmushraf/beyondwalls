@@ -24,7 +24,7 @@ export default function DOOHAdvertisingDubai() {
       "url": "https://beyondwalls.ae"
     },
     "areaServed": "Dubai, UAE",
-    "description": "Digital Out-of-Home advertising platform in Dubai with 500+ screens across premium venues."
+    "description": "Digital Out-of-Home advertising platform connecting advertisers with screens in premium venues across Dubai."
   };
 
   const faqs = [
@@ -38,7 +38,7 @@ export default function DOOHAdvertisingDubai() {
     },
     {
       question: "What audience does DOOH advertising reach in Dubai?",
-      answer: "Beyond Walls screens reach a combined daily audience of 9,000+ across Dubai's premium venues, including cafés, gyms, malls, clinics, and co-working spaces. You can target by venue type, location, and audience demographics."
+      answer: "Beyond Walls screens are placed in cafés, gyms, malls, clinics, and co-working spaces across Dubai. You can target by venue type, location, and audience demographics."
     },
     {
       question: "How do I book a DOOH campaign?",
@@ -87,7 +87,7 @@ export default function DOOHAdvertisingDubai() {
                 DOOH Advertising in Dubai
               </h1>
               <p className="text-xl text-white/80 mb-8">
-                Reach millions of consumers on <strong>500+ digital screens</strong> across Dubai's premium venues. 
+                Reach customers on <strong>digital screens</strong> in Dubai's cafés, gyms, clinics and co-working spaces. 
                 Self-serve booking, real-time analytics, no long-term contracts.
               </p>
               <div className="flex flex-wrap gap-4">
@@ -119,12 +119,12 @@ export default function DOOHAdvertisingDubai() {
       <section className="py-12 px-6 bg-slate-900 text-white">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div>
-            <p className="text-4xl font-bold text-violet-400">500+</p>
-            <p className="text-slate-400">Screens in Dubai</p>
+            <p className="text-4xl font-bold text-violet-400">Self-serve</p>
+            <p className="text-slate-400">Booking platform</p>
           </div>
           <div>
-            <p className="text-4xl font-bold text-violet-400">2M+</p>
-            <p className="text-slate-400">Daily Impressions</p>
+            <p className="text-4xl font-bold text-violet-400">Proof of play</p>
+            <p className="text-slate-400">On every ad</p>
           </div>
           <div>
             <p className="text-4xl font-bold text-violet-400">AED 99</p>
@@ -195,7 +195,7 @@ export default function DOOHAdvertisingDubai() {
             Ready to Launch Your DOOH Campaign in Dubai?
           </h2>
           <p className="text-xl text-white/80 mb-8">
-            Join 100+ businesses already advertising with BeyondWalls
+            Start advertising with BeyondWalls today
           </p>
           <Link to={createPageUrl("Register")}>
             <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8">

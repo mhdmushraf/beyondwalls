@@ -58,7 +58,7 @@ export default function PublicAIChatWidget() {
 
 About BeyondWalls:
 - Self-serve DOOH advertising platform
-- 500+ screens across cafés, malls, gyms, and coworking spaces in UAE
+- Screens across cafés, malls, gyms, and coworking spaces in UAE
 - Advertisers can book screens starting from AED 50/week per slot
 - Venues earn 70% revenue share
 - Real-time analytics and reporting

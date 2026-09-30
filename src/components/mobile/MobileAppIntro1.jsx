@@ -24,7 +24,7 @@ export default function MobileAppIntro1({ onNext }) {
             Advertise on Digital Screens
           </h2>
           <p className="text-lg text-white/80 leading-relaxed">
-            Reach thousands of people with your ads on premium screens across UAE's top venues
+            Reach customers with your ads on premium screens across UAE's top venues
           </p>
         </div>
 
