@@ -259,8 +259,8 @@ export default function Home() {
                   <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-slate-500">Live Campaign Performance</p>
-                        <p className="text-2xl font-bold text-slate-900">12,847 <span className="text-sm text-emerald-600">impressions today</span></p>
+                        <p className="text-sm text-slate-500">Every ad tracked</p>
+                        <p className="text-2xl font-bold text-slate-900">Proof of play <span className="text-sm text-emerald-600">in real time</span></p>
                       </div>
                       <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
                         <TrendingUp className="w-6 h-6 text-emerald-600" />
@@ -289,8 +289,8 @@ export default function Home() {
                     <Star className="w-5 h-5 text-amber-600 fill-amber-600" />
                   </div>
                   <div>
-                    <p className="font-bold text-slate-900">4.9/5</p>
-                    <p className="text-xs text-slate-500">User Rating</p>
+                    <p className="font-bold text-slate-900">AED 99</p>
+                    <p className="text-xs text-slate-500">From / week</p>
                   </div>
                 </div>
               </div>
