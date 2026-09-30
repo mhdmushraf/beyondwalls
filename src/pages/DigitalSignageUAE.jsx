@@ -57,7 +57,7 @@ export default function DigitalSignageUAE() {
       <section className="pt-28 pb-20 px-6 bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 text-white">
         <div className="max-w-6xl mx-auto text-center">
           <Badge className="bg-white/20 text-white border-0 mb-4">
-            🇦🇪 UAE's #1 Digital Signage Network
+            🇦🇪 Digital Signage Network for the UAE
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
             Digital Signage Advertising in UAE
