@@ -95,7 +95,7 @@ export default function GymScreenAdvertisingDubai() {
       {/* Stats */}
       <section className="py-12 px-6 bg-slate-900 text-white">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          <div><p className="text-4xl font-bold text-emerald-400">45+</p><p className="text-slate-400">Gym Screens</p></div>
+          <div><p className="text-4xl font-bold text-emerald-400">Now</p><p className="text-slate-400">Onboarding gyms</p></div>
           <div><p className="text-4xl font-bold text-emerald-400">90 min</p><p className="text-slate-400">Avg. Session Length</p></div>
           <div><p className="text-4xl font-bold text-emerald-400">4x/week</p><p className="text-slate-400">Member Return Rate</p></div>
           <div><p className="text-4xl font-bold text-emerald-400">18x</p><p className="text-slate-400">Ad Views Per Session</p></div>
