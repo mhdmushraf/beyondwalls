@@ -96,7 +96,7 @@ export default function ClinicScreenAdvertisingDubai() {
       {/* Stats */}
       <section className="py-12 px-6 bg-slate-900 text-white">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          <div><p className="text-4xl font-bold text-sky-400">20+</p><p className="text-slate-400">Clinic Screens</p></div>
+          <div><p className="text-4xl font-bold text-sky-400">Now</p><p className="text-slate-400">Onboarding clinics</p></div>
           <div><p className="text-4xl font-bold text-sky-400">45 min</p><p className="text-slate-400">Avg. Wait Time</p></div>
           <div><p className="text-4xl font-bold text-sky-400">9x</p><p className="text-slate-400">Ad Views Per Visit</p></div>
           <div><p className="text-4xl font-bold text-sky-400">AED 99</p><p className="text-slate-400">Starting Price/Week</p></div>
