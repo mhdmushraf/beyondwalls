@@ -20,7 +20,7 @@ export default function PublicFooter() {
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
             <BrandLogo onDark className="mb-4" />
-            <p className="text-slate-400 text-sm">The #1 self-serve DOOH advertising platform in the UAE.</p>
+            <p className="text-slate-400 text-sm">Self-serve DOOH advertising platform for the UAE.</p>
           </div>
           <div>
             <h4 className="font-semibold text-white mb-4">Company</h4>
