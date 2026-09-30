@@ -81,7 +81,7 @@ export default function DOOHAdvertisingDubai() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <Badge className="bg-white/20 text-white border-0 mb-4">
-                🇦🇪 #1 DOOH Platform in Dubai
+                🇦🇪 Self-Serve DOOH in Dubai
               </Badge>
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
                 DOOH Advertising in Dubai
