@@ -23,7 +23,7 @@ export const PAGE_SEO = {
   },
   contact: {
     title: "Contact BeyondWalls | Dubai Digital Advertising Experts | Get in Touch",
-    description: "Contact BeyondWalls for digital advertising solutions in UAE. Located in in5 Tech, Dubai Internet City. Phone: +971 55 614 0067. Email: hello@beyondwalls.ae",
+    description: "Contact BeyondWalls for digital advertising solutions in UAE. Located in in5 Tech, Dubai Internet City. Phone: +971 55 614 0067. Email: hello@linkzoneglobal.com",
     keywords: "contact beyondwalls, advertising agency contact dubai, dooh advertising inquiry",
     canonical: "https://beyondwalls.ae/Contact"
   },
