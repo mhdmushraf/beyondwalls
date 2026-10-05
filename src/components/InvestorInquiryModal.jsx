@@ -30,7 +30,7 @@ export default function InvestorInquiryModal({ open, onClose }) {
     try {
       // Send email notification
       await base44.integrations.Core.SendEmail({
-        to: "partnership@beyondwalls.ae",
+        to: "hello@linkzoneglobal.com",
         subject: `Investor Inquiry from ${formData.name}`,
         body: `
 New Investor Inquiry:
