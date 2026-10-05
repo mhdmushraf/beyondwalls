@@ -233,7 +233,7 @@ export const NotificationService = {
 
   // User registration notification - send to admins and welcome email to user
   async newUserRegistration(user) {
-    // Send notification to admin at hello@beyondwalls.ae
+    // Send notification to admin at hello@linkzoneglobal.com
     try {
       const adminEmail = EmailTemplates.adminNewUser(
         user.full_name || "N/A",
@@ -245,7 +245,7 @@ export const NotificationService = {
       );
       
       await base44.integrations.Core.SendEmail({
-        to: "hello@beyondwalls.ae",
+        to: "hello@linkzoneglobal.com",
         subject: `🆕 New User Registration: ${user.full_name} | BeyondWalls`,
         body: adminEmail
       });
