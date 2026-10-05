@@ -69,7 +69,7 @@ export function generateInvoiceHTML(type, data) {
       <div class="info-box">
         <div class="section-title">From</div>
         <h3>BeyondWalls FZ-LLC</h3>
-        <p>Dubai Media City<br>Dubai, UAE<br>TRN: 100XXXXXXX<br>info@beyondwalls.ae</p>
+        <p>Dubai Media City<br>Dubai, UAE<br>TRN: 100XXXXXXX<br>info@linkzoneglobal.com</p>
       </div>
       <div class="info-box">
         <div class="section-title">${isAdvertiser ? "Bill To" : "Earnings For"}</div>
@@ -160,7 +160,7 @@ export function generateInvoiceHTML(type, data) {
 
     <div class="footer">
       <p><strong>BeyondWalls</strong> - Advertise Beyond Boundaries</p>
-      <p>beyondwalls.ae • info@beyondwalls.ae • +971 55 614 0067</p>
+      <p>beyondwalls.ae • info@linkzoneglobal.com • +971 55 614 0067</p>
       <p style="margin-top: 10px;">This is a computer-generated document. No signature required.</p>
     </div>
   </div>
