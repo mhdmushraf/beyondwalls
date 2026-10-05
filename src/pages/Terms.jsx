@@ -119,7 +119,7 @@ export default function Terms() {
           <h2>12. Contact</h2>
           <p>
             For questions about these Terms, contact us at:<br />
-            Email: info@beyondwalls.ae<br />
+            Email: info@linkzoneglobal.com<br />
             Phone: +971 55 614 0067
           </p>
         </div>
