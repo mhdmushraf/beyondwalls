@@ -191,7 +191,7 @@ export default function Home() {
           "foundingLocation": { "@type": "Place", "name": "Dubai, United Arab Emirates" },
           "address": { "@type": "PostalAddress", "addressLocality": "Dubai", "addressCountry": "AE" },
           "areaServed": { "@type": "Country", "name": "United Arab Emirates" },
-          "email": "hello@beyondwalls.ae",
+          "email": "hello@linkzoneglobal.com",
           "sameAs": [
             "https://www.linkedin.com/company/beyondwallsae",
             "https://www.instagram.com/beyondwallsae/"
