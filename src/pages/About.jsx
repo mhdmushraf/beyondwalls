@@ -549,7 +549,7 @@ export default function About() {
             </Button>
           </div>
           <p className="text-white/60 mt-8 text-sm">
-            Contact: partnership@beyondwalls.ae | +971 55 614 0067
+            Contact: hello@linkzoneglobal.com | +971 55 614 0067
           </p>
         </div>
       </section>
