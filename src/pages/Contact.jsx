@@ -55,8 +55,8 @@ export default function Contact() {
     {
       icon: Mail,
       title: "Email",
-      value: "hello@beyondwalls.ae",
-      link: "mailto:hello@beyondwalls.ae"
+      value: "hello@linkzoneglobal.com",
+      link: "mailto:hello@linkzoneglobal.com"
     },
     {
       icon: Phone,
@@ -121,7 +121,7 @@ export default function Contact() {
             "url": "https://beyondwalls.ae",
             "logo": "https://beyondwalls.ae/logo.png",
             "telephone": "+971-55-614-0067",
-            "email": "hello@beyondwalls.ae",
+            "email": "hello@linkzoneglobal.com",
             "address": {
               "@type": "PostalAddress",
               "streetAddress": "in5 Tech, Dubai Internet City",
@@ -146,14 +146,14 @@ export default function Contact() {
                 "@type": "ContactPoint",
                 "telephone": "+971-55-614-0067",
                 "contactType": "customer service",
-                "email": "hello@beyondwalls.ae",
+                "email": "hello@linkzoneglobal.com",
                 "availableLanguage": ["English", "Arabic"]
               },
               {
                 "@type": "ContactPoint",
                 "telephone": "+971-55-614-0067",
                 "contactType": "sales",
-                "email": "partnership@beyondwalls.ae"
+                "email": "hello@linkzoneglobal.com"
               }
             ]
           }
@@ -190,8 +190,8 @@ export default function Contact() {
               </div>
               <h3 className="font-bold text-slate-900 mb-1">Advertisers</h3>
               <p className="text-slate-500 text-sm mb-3">Start your campaign today</p>
-              <a href="mailto:hello@beyondwalls.ae" className="text-violet-600 font-medium text-sm hover:underline">
-                hello@beyondwalls.ae
+              <a href="mailto:hello@linkzoneglobal.com" className="text-violet-600 font-medium text-sm hover:underline">
+                hello@linkzoneglobal.com
               </a>
             </div>
             <div className="bg-white rounded-2xl p-6 shadow-xl text-center">
@@ -200,8 +200,8 @@ export default function Contact() {
               </div>
               <h3 className="font-bold text-slate-900 mb-1">Venue Partners</h3>
               <p className="text-slate-500 text-sm mb-3">Monetize your screens</p>
-              <a href="mailto:partnership@beyondwalls.ae" className="text-emerald-600 font-medium text-sm hover:underline">
-                partnership@beyondwalls.ae
+              <a href="mailto:hello@linkzoneglobal.com" className="text-emerald-600 font-medium text-sm hover:underline">
+                hello@linkzoneglobal.com
               </a>
             </div>
             <div className="bg-white rounded-2xl p-6 shadow-xl text-center">
@@ -210,8 +210,8 @@ export default function Contact() {
               </div>
               <h3 className="font-bold text-slate-900 mb-1">Technical Support</h3>
               <p className="text-slate-500 text-sm mb-3">Need help? We're here</p>
-              <a href="mailto:support@beyondwalls.ae" className="text-amber-600 font-medium text-sm hover:underline">
-                support@beyondwalls.ae
+              <a href="mailto:support@linkzoneglobal.com" className="text-amber-600 font-medium text-sm hover:underline">
+                support@linkzoneglobal.com
               </a>
             </div>
           </div>
