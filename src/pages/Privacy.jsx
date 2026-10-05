@@ -99,7 +99,7 @@ export default function Privacy() {
             <li>Object to certain processing activities</li>
             <li>Export your data in a portable format</li>
           </ul>
-          <p>To exercise these rights, contact us at info@beyondwalls.ae.</p>
+          <p>To exercise these rights, contact us at info@linkzoneglobal.com.</p>
 
           <h2>8. Cookies and Tracking</h2>
           <p>
@@ -135,7 +135,7 @@ export default function Privacy() {
           <h2>13. Contact Us</h2>
           <p>
             For questions about this Privacy Policy or our data practices, contact us at:<br />
-            Email: info@beyondwalls.ae<br />
+            Email: info@linkzoneglobal.com<br />
             Phone: +971 55 614 0067<br />
             Address: Dubai, United Arab Emirates
           </p>
