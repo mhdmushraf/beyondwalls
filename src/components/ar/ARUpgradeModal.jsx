@@ -114,7 +114,7 @@ export default function ARUpgradeModal({ open, onClose, currentSubscription }) {
 
       // Send notification email
       await base44.integrations.Core.SendEmail({
-        to: "partnership@beyondwalls.ae",
+        to: "hello@linkzoneglobal.com",
         subject: `🎯 New AR Premium Waitlist: ${formData.name}`,
         body: `
 New AR Premium Waitlist Registration:
