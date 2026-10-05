@@ -183,7 +183,7 @@ export default function HelpCenter() {
               <Building2 className="w-6 h-6 text-amber-400 mx-auto mb-2" />
               <p className="text-white font-medium text-sm">Our Services</p>
             </Link>
-            <a href="mailto:support@beyondwalls.ae" className="bg-white/5 hover:bg-white/10 rounded-xl p-4 text-center transition-colors">
+            <a href="mailto:support@linkzoneglobal.com" className="bg-white/5 hover:bg-white/10 rounded-xl p-4 text-center transition-colors">
               <Shield className="w-6 h-6 text-rose-400 mx-auto mb-2" />
               <p className="text-white font-medium text-sm">Email Support</p>
             </a>
@@ -275,9 +275,9 @@ export default function HelpCenter() {
                 Contact Support
               </Button>
             </Link>
-            <a href="mailto:support@beyondwalls.ae">
+            <a href="mailto:support@linkzoneglobal.com">
               <Button size="lg" className="border-2 border-white bg-transparent text-white hover:bg-white hover:text-violet-600 h-14 px-8">
-                support@beyondwalls.ae
+                support@linkzoneglobal.com
               </Button>
             </a>
           </div>
