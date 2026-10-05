@@ -68,7 +68,7 @@ export const EmailTemplates = {
       <tr>
         <td style="padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
           <p style="margin: 0; color: #94a3b8; font-size: 14px; line-height: 1.6;">
-            📧 <a href="mailto:info@beyondwalls.ae" style="color: #a78bfa; text-decoration: none;">info@beyondwalls.ae</a><br>
+            📧 <a href="mailto:info@linkzoneglobal.com" style="color: #a78bfa; text-decoration: none;">info@linkzoneglobal.com</a><br>
             📞 <a href="tel:+971556140067" style="color: #a78bfa; text-decoration: none;">+971 55 614 0067</a><br>
             💬 <a href="https://wa.me/971556140067" style="color: #a78bfa; text-decoration: none;">WhatsApp Support</a>
           </p>
@@ -468,7 +468,7 @@ ${this.header()}
     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-top: 32px;">
       <tr>
         <td align="center">
-          <a href="mailto:hello@beyondwalls.ae" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 10px; font-weight: 600; font-size: 16px;">Contact Support</a>
+          <a href="mailto:hello@linkzoneglobal.com" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 10px; font-weight: 600; font-size: 16px;">Contact Support</a>
         </td>
       </tr>
     </table>
