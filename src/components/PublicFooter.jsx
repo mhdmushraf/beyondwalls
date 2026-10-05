@@ -60,7 +60,7 @@ export default function PublicFooter() {
           <div>
             <h4 className="font-semibold text-white mb-4">Contact</h4>
             <div className="space-y-2 text-sm text-slate-400">
-              <a href="mailto:hello@beyondwalls.ae" className="block hover:text-white">hello@beyondwalls.ae</a>
+              <a href="mailto:hello@linkzoneglobal.com" className="block hover:text-white">hello@linkzoneglobal.com</a>
               <a href="tel:+971556140067" className="block hover:text-white">+971 55 614 0067</a>
               <p>Dubai, UAE</p>
             </div>
