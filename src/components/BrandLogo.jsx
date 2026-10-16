@@ -39,7 +39,7 @@ export default function BrandLogo({
       {showText && (
         <span
           className={cn(
-            "font-bold font-heading tracking-tight select-none",
+            "font-bold font-heading tracking-tight whitespace-nowrap select-none",
             s.text,
             onDark ? "text-white" : "text-[#141E3E]"
           )}
