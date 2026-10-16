@@ -14,6 +14,11 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+  			/* Linkzone Global palette: purple-family scales remapped to coral, indigo to navy */
+  			violet: {50:'#FDF4F0',100:'#F8E5DE',200:'#F3CBBC',300:'#EEA990',400:'#EB8463',500:'#E96F4C',600:'#E8603C',700:'#C94E2E',800:'#A33F26',900:'#7F3220',950:'#451A10'},
+  			purple: {50:'#FDF4F0',100:'#F8E5DE',200:'#F3CBBC',300:'#EEA990',400:'#EB8463',500:'#E96F4C',600:'#E8603C',700:'#C94E2E',800:'#A33F26',900:'#7F3220',950:'#451A10'},
+  			fuchsia: {50:'#FDF4F0',100:'#F8E5DE',200:'#F3CBBC',300:'#EEA990',400:'#EB8463',500:'#E96F4C',600:'#E8603C',700:'#C94E2E',800:'#A33F26',900:'#7F3220',950:'#451A10'},
+  			indigo: {50:'#F4F5F9',100:'#E7E9EE',200:'#C9CEDD',300:'#9AA4C0',400:'#5F6B90',500:'#2E3A63',600:'#141E3E',700:'#0C1329',800:'#0A1024',900:'#070C1B',950:'#04070F'},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			navy: {
