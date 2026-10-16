@@ -190,8 +190,8 @@ button:focus-visible {
   justify-content: space-between;
   padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) 24px max(24px, env(safe-area-inset-left));
   background:
-    radial-gradient(105% 85% at 22% 18%, #241c5e 0%, transparent 58%),
-    radial-gradient(85% 70% at 88% 72%, #2a1b57 0%, transparent 62%),
+    radial-gradient(105% 85% at 22% 18%, #1F2A52 0%, transparent 58%),
+    radial-gradient(85% 70% at 88% 72%, #3A1E1A 0%, transparent 62%),
     #05070f;
   color: #ffffff;
 }
@@ -209,8 +209,8 @@ button:focus-visible {
 .bw-css-screen {
   position: absolute;
   border-radius: 6px;
-  background: linear-gradient(135deg, #8e7bff 0%, #5b62f0 55%, #7c6bf2 100%);
-  box-shadow: 0 0 42px 14px rgba(124, 107, 242, 0.55);
+  background: linear-gradient(135deg, #EB8463 0%, #E8603C 55%, #C94E2E 100%);
+  box-shadow: 0 0 42px 14px rgba(232, 96, 60, 0.55);
   opacity: 0.34;
   animation: bw-breathe 7s ease-in-out infinite;
 }
@@ -260,7 +260,7 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 4px 20px rgba(109, 59, 245, 0.4);
+  box-shadow: 0 4px 20px rgba(232, 96, 60, 0.4);
 }
 
 .bw-brand-logo-mark-inner {
@@ -284,7 +284,7 @@ button:focus-visible {
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #9b8cf0;
+  color: #EEA990;
   display: flex;
   align-items: center;
   gap: 8px;

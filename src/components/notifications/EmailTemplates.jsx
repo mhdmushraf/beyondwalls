@@ -298,7 +298,7 @@ ${this.footer()}
 ${this.header()}
 <tr>
   <td style="padding: 50px 40px; text-align: center;">
-    <div style="background: linear-gradient(135deg, #E8603C 0%, #0C1329 100%); width: 100px; height: 100px; border-radius: 24px; margin: 0 auto 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 20px 40px rgba(124, 58, 237, 0.25);">
+    <div style="background: linear-gradient(135deg, #E8603C 0%, #0C1329 100%); width: 100px; height: 100px; border-radius: 24px; margin: 0 auto 32px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 20px 40px rgba(232, 96, 60, 0.25);">
       <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
         <polyline points="22 4 12 14.01 9 11.01"></polyline>
@@ -316,7 +316,7 @@ ${this.header()}
     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 32px;">
       <tr>
         <td align="center">
-          <a href="${verificationLink}" style="display: inline-block; background: linear-gradient(135deg, #E8603C 0%, #0C1329 100%); color: white; text-decoration: none; padding: 18px 48px; border-radius: 12px; font-weight: 600; font-size: 17px; box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3); transition: all 0.3s;">
+          <a href="${verificationLink}" style="display: inline-block; background: linear-gradient(135deg, #E8603C 0%, #0C1329 100%); color: white; text-decoration: none; padding: 18px 48px; border-radius: 12px; font-weight: 600; font-size: 17px; box-shadow: 0 8px 20px rgba(232, 96, 60, 0.3); transition: all 0.3s;">
             ✓ Verify Your Email
           </a>
         </td>
@@ -422,7 +422,7 @@ ${this.header()}
     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-top: 32px;">
       <tr>
         <td align="center">
-          <a href="https://beyondwalls.ae" style="display: inline-block; background: linear-gradient(135deg, #E8603C 0%, #141E3E 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 10px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">Go to Dashboard →</a>
+          <a href="https://beyondwalls.ae" style="display: inline-block; background: linear-gradient(135deg, #E8603C 0%, #141E3E 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 10px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(232, 96, 60, 0.3);">Go to Dashboard →</a>
         </td>
       </tr>
     </table>
@@ -589,7 +589,7 @@ ${this.footer()}
     const body = `
       <p style="margin: 0 0 20px; color: #475569; font-size: 16px; line-height: 1.6;">Dear <strong>${advertiserName}</strong>,</p>
       <div style="background: linear-gradient(135deg, #F3CBBC 0%, #F3CBBC 100%); border-left: 4px solid #E8603C; border-radius: 12px; padding: 20px; margin-bottom: 28px;">
-        <p style="margin: 0; color: #4c1d95; font-size: 15px; font-weight: 600;">🎯 Your booking is confirmed and pending admin review. We'll notify you once it goes live!</p>
+        <p style="margin: 0; color: #7F3220; font-size: 15px; font-weight: 600;">🎯 Your booking is confirmed and pending admin review. We'll notify you once it goes live!</p>
       </div>
       <div style="background-color: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 28px;">
         <h3 style="margin: 0 0 16px; color: #0f172a; font-size: 16px; font-weight: 600;">📋 Booking Details</h3>

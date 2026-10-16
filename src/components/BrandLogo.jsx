@@ -28,7 +28,7 @@ export default function BrandLogo({
       <div
         className={cn(
           s.box,
-          "bg-gradient-to-br from-[#6F3FFD] to-[#E8603C] flex items-center justify-center shadow-lg shadow-violet-500/25 flex-shrink-0"
+          "bg-gradient-to-br from-[#141E3E] to-[#E8603C] flex items-center justify-center shadow-lg shadow-violet-500/25 flex-shrink-0"
         )}
       >
         <MonitorPlay className={cn(s.icon, "text-white")} />
@@ -38,7 +38,7 @@ export default function BrandLogo({
           className={cn(
             "font-bold font-heading tracking-tight select-none",
             s.text,
-            onDark ? "text-white" : "text-[#E8603C]"
+            onDark ? "text-white" : "text-[#141E3E]"
           )}
         >
           BeyondWalls

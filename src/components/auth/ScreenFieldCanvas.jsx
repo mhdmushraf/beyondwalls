@@ -4,7 +4,7 @@ import * as THREE from "three";
 const GRID_COLS = 6;
 const GRID_ROWS = 4;
 const INSTANCE_COUNT = GRID_COLS * GRID_ROWS;
-const TINTS = [0x5b62f0, 0x7c6bf2, 0x9c7df5, 0xb9a6ff];
+const TINTS = [0xe8603c, 0xc94e2e, 0xeb8463, 0xf3cbbc];
 
 /**
  * 1.1 — Generated soft sprite: a radial bloom + rounded-rect panel face,

@@ -10,7 +10,7 @@ import { Mail, ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
 const inputFocusClass =
-  "text-[16px] min-h-[46px] focus-visible:ring-0 focus-visible:border-[#141E3E] focus-visible:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] transition-all duration-150";
+  "text-[16px] min-h-[46px] focus-visible:ring-0 focus-visible:border-[#141E3E] focus-visible:shadow-[0_0_0_3px_rgba(20,30,62,0.12)] transition-all duration-150";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");

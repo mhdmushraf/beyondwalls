@@ -8,7 +8,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
 const inputClass =
-  "w-full h-[48px] pl-11 pr-4 rounded-xl border bg-[#F7F8FC] border-[#E3E6F1] text-[16px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#141E3E] focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] transition-all duration-150";
+  "w-full h-[48px] pl-11 pr-4 rounded-xl border bg-[#F7F8FC] border-[#E3E6F1] text-[16px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#141E3E] focus:shadow-[0_0_0_3px_rgba(20,30,62,0.12)] transition-all duration-150";
 
 export default function Login() {
   const [email, setEmail] = useState("");

@@ -227,7 +227,7 @@ export default function SEOHead({
     setMetaTag("geo.placename", "Dubai");
     setMetaTag("geo.position", "25.0957;55.1548");
     setMetaTag("ICBM", "25.0957, 55.1548");
-    setMetaTag("theme-color", "#E8603C");
+    setMetaTag("theme-color", "#141E3E");
 
   }, [title, description, keywords, canonical, ogImage, structuredData, noIndex, article]);
 
