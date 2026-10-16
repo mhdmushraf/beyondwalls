@@ -36,7 +36,7 @@ export default function VenueSuitabilityCalculator() {
     setLoading(true);
     try {
       const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are a venue monetization expert for BeyondWalls DOOH platform.
+        prompt: `You are a venue monetization expert for Beyond Walls DOOH platform.
 
 Analyze this venue's suitability for digital advertising:
 - Venue Type: ${venueType}
@@ -103,7 +103,7 @@ Be realistic and based on UAE DOOH market rates.`,
           Venue Suitability Calculator
         </CardTitle>
         <p className="text-sm text-slate-600 mt-1">
-          Discover your venue's revenue potential with BeyondWalls
+          Discover your venue's revenue potential with Beyond Walls
         </p>
       </CardHeader>
       <CardContent className="p-6 space-y-4">

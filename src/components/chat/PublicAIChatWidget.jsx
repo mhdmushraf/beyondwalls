@@ -22,7 +22,7 @@ export default function PublicAIChatWidget() {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: "Hi there! 👋 I'm BeyondWalls AI assistant. I can help you with:\n\n• Understanding our advertising platform\n• Pricing and packages\n• How to get started\n• Venue partnerships\n• Technical questions\n\nHow can I help you today?"
+      content: "Hi there! 👋 I'm Beyond Walls AI assistant. I can help you with:\n\n• Understanding our advertising platform\n• Pricing and packages\n• How to get started\n• Venue partnerships\n• Technical questions\n\nHow can I help you today?"
     }
   ]);
   const [input, setInput] = useState("");
@@ -54,9 +54,9 @@ export default function PublicAIChatWidget() {
 
     try {
       const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are BeyondWalls AI Assistant, a helpful and friendly assistant for BeyondWalls - UAE's leading Digital Out-of-Home (DOOH) advertising platform.
+        prompt: `You are Beyond Walls AI Assistant, a helpful and friendly assistant for Beyond Walls - UAE's leading Digital Out-of-Home (DOOH) advertising platform.
 
-About BeyondWalls:
+About Beyond Walls:
 - Self-serve DOOH advertising platform
 - Screens across cafés, malls, gyms, and coworking spaces in UAE
 - Advertisers can book screens starting from AED 50/week per slot
@@ -144,7 +144,7 @@ Provide a helpful, concise, and friendly response. If they ask about pricing, me
               </div>
               {!isMinimized && (
                 <div>
-                  <h3 className="font-semibold text-white">BeyondWalls AI</h3>
+                  <h3 className="font-semibold text-white">Beyond Walls AI</h3>
                   <p className="text-xs text-violet-200">Always here to help</p>
                 </div>
               )}
@@ -284,7 +284,7 @@ Provide a helpful, concise, and friendly response. If they ask about pricing, me
                   </Button>
                 </div>
                 <p className="text-xs text-slate-400 text-center mt-2">
-                  Powered by BeyondWalls AI
+                  Powered by Beyond Walls AI
                 </p>
               </div>
             </>

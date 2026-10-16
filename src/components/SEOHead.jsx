@@ -10,8 +10,8 @@ export const PAGE_SEO = {
     ogImage: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&h=630&fit=crop&q=80"
   },
   about: {
-    title: "About BeyondWalls - UAE's Leading DOOH Advertising Platform | Our Story",
-    description: "Learn about BeyondWalls, UAE's first self-serve Digital Out-of-Home advertising marketplace. Founded in Dubai, we're transforming how businesses advertise on digital screens.",
+    title: "About Beyond Walls - UAE's Leading DOOH Advertising Platform | Our Story",
+    description: "Learn about Beyond Walls, UAE's first self-serve Digital Out-of-Home advertising marketplace. Founded in Dubai, we're transforming how businesses advertise on digital screens.",
     keywords: "about beyondwalls, dooh company dubai, digital advertising startup uae, advertising technology dubai",
     canonical: "https://beyondwalls.ae/About"
   },
@@ -22,48 +22,48 @@ export const PAGE_SEO = {
     canonical: "https://beyondwalls.ae/Services"
   },
   contact: {
-    title: "Contact BeyondWalls | Dubai Digital Advertising Experts | Get in Touch",
-    description: "Contact BeyondWalls for digital advertising solutions in UAE. Located in in5 Tech, Dubai Internet City. Phone: +971 55 614 0067. Email: hello@linkzoneglobal.com",
+    title: "Contact Beyond Walls | Dubai Digital Advertising Experts | Get in Touch",
+    description: "Contact Beyond Walls for digital advertising solutions in UAE. Located in in5 Tech, Dubai Internet City. Phone: +971 55 614 0067. Email: hello@linkzoneglobal.com",
     keywords: "contact beyondwalls, advertising agency contact dubai, dooh advertising inquiry",
     canonical: "https://beyondwalls.ae/Contact"
   },
   blog: {
-    title: "BeyondWalls Blog | Digital Advertising Insights & Tips | DOOH News UAE",
-    description: "Latest insights on digital out-of-home advertising, marketing tips, case studies, and industry news from BeyondWalls - UAE's leading DOOH platform.",
+    title: "Beyond Walls Blog | Digital Advertising Insights & Tips | DOOH News UAE",
+    description: "Latest insights on digital out-of-home advertising, marketing tips, case studies, and industry news from Beyond Walls - UAE's leading DOOH platform.",
     keywords: "digital advertising blog, dooh news, advertising tips dubai, marketing insights uae",
     canonical: "https://beyondwalls.ae/Blog"
   },
   screenLocations: {
-    title: "Digital Screen Locations UAE | Find Advertising Screens Near You | BeyondWalls",
+    title: "Digital Screen Locations UAE | Find Advertising Screens Near You | Beyond Walls",
     description: "Browse digital advertising screens across Dubai, Abu Dhabi, Sharjah. Filter by venue type, location, and price. Book your ad space today.",
     keywords: "screen locations dubai, digital billboards uae, advertising screens near me, dooh locations",
     canonical: "https://beyondwalls.ae/ScreenLocations"
   },
   howItWorks: {
-    title: "How BeyondWalls Works | Book Digital Ads in 4 Easy Steps | DOOH Guide",
-    description: "Learn how to advertise on digital screens with BeyondWalls. Choose screens, upload creative, set budget, go live in 30 minutes. Simple self-serve platform.",
+    title: "How Beyond Walls Works | Book Digital Ads in 4 Easy Steps | DOOH Guide",
+    description: "Learn how to advertise on digital screens with Beyond Walls. Choose screens, upload creative, set budget, go live in 30 minutes. Simple self-serve platform.",
     keywords: "how to advertise digitally, dooh advertising guide, digital billboard booking, screen advertising how to",
     canonical: "https://beyondwalls.ae/HowItWorks"
   },
   register: {
-    title: "Sign Up | Start Advertising on Digital Screens | BeyondWalls UAE",
-    description: "Create your free BeyondWalls account. Start advertising on digital screens across UAE or monetize your venue screens. No setup fees.",
+    title: "Sign Up | Start Advertising on Digital Screens | Beyond Walls UAE",
+    description: "Create your free Beyond Walls account. Start advertising on digital screens across UAE or monetize your venue screens. No setup fees.",
     keywords: "sign up beyondwalls, register advertising account, dooh platform signup",
     canonical: "https://beyondwalls.ae/Register"
   },
   terms: {
-    title: "Terms of Service | BeyondWalls UAE",
-    description: "Read BeyondWalls Terms of Service. Understand your rights and obligations when using our digital advertising platform.",
+    title: "Terms of Service | Beyond Walls UAE",
+    description: "Read Beyond Walls Terms of Service. Understand your rights and obligations when using our digital advertising platform.",
     canonical: "https://beyondwalls.ae/Terms"
   },
   privacy: {
-    title: "Privacy Policy | BeyondWalls UAE",
-    description: "BeyondWalls Privacy Policy. Learn how we collect, use, and protect your personal information on our DOOH advertising platform.",
+    title: "Privacy Policy | Beyond Walls UAE",
+    description: "Beyond Walls Privacy Policy. Learn how we collect, use, and protect your personal information on our DOOH advertising platform.",
     canonical: "https://beyondwalls.ae/Privacy"
   },
   helpCenter: {
-    title: "Help Center | FAQs & Support | BeyondWalls",
-    description: "Get help with BeyondWalls. FAQs, tutorials, and support for advertisers and venue owners using our digital advertising platform.",
+    title: "Help Center | FAQs & Support | Beyond Walls",
+    description: "Get help with Beyond Walls. FAQs, tutorials, and support for advertisers and venue owners using our digital advertising platform.",
     canonical: "https://beyondwalls.ae/HelpCenter"
   }
 };
@@ -71,7 +71,7 @@ export const PAGE_SEO = {
 // Sitemap data for generation
 // Primary navigation pages for Google Sitelinks
 export const PRIMARY_SITELINKS = [
-  { name: "About Us", url: "/About", description: "Learn about BeyondWalls - UAE's leading DOOH advertising platform" },
+  { name: "About Us", url: "/About", description: "Learn about Beyond Walls - UAE's leading DOOH advertising platform" },
   { name: "Services", url: "/Services", description: "Digital advertising services for businesses and venue owners" },
   { name: "Contact", url: "/Contact", description: "Get in touch with our team in Dubai" },
   { name: "How It Works", url: "/HowItWorks", description: "Launch your campaign in 4 easy steps" },
@@ -125,11 +125,11 @@ export default function SEOHead({
 
   React.useEffect(() => {
       // Update document title
-      document.title = title || "BeyondWalls - Digital Advertising Platform UAE";
+      document.title = title || "Beyond Walls - Digital Advertising Platform UAE";
 
-      // Set BeyondWalls favicon (only once)
+      // Set Beyond Walls favicon (only once)
       if (!document.querySelector('link[rel="icon"][data-beyondwalls]')) {
-        const faviconSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#E8603C;stop-opacity:1"/><stop offset="100%" style="stop-color:#141E3E;stop-opacity:1"/></linearGradient></defs><rect width="48" height="48" rx="10" fill="url(#grad)"/><path d="M14 14h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H14a2 2 0 0 1-2-2V16a2 2 0 0 1 2-2z" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 34h12M24 28v6" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>`;
+        const faviconSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#141E3E;stop-opacity:1"/><stop offset="100%" style="stop-color:#141E3E;stop-opacity:1"/></linearGradient></defs><rect width="48" height="48" rx="10" fill="url(#grad)"/><path d="M14 14h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H14a2 2 0 0 1-2-2V16a2 2 0 0 1 2-2z" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 34h12M24 28v6" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>`;
         const faviconHref = 'data:image/svg+xml;base64,' + btoa(faviconSVG);
 
         // Remove all existing favicons
@@ -177,7 +177,7 @@ export default function SEOHead({
     setMetaTag("og:url", finalCanonical, true);
     setMetaTag("og:image", finalOgImage, true);
     setMetaTag("og:type", article ? "article" : "website", true);
-    setMetaTag("og:site_name", "BeyondWalls", true);
+    setMetaTag("og:site_name", "Beyond Walls", true);
     setMetaTag("og:locale", "en_AE", true);
 
     // Twitter Card tags
@@ -221,8 +221,8 @@ export default function SEOHead({
     }
 
     // Additional meta tags for better SEO
-    setMetaTag("author", "BeyondWalls");
-    setMetaTag("publisher", "BeyondWalls");
+    setMetaTag("author", "Beyond Walls");
+    setMetaTag("publisher", "Beyond Walls");
     setMetaTag("geo.region", "AE-DU");
     setMetaTag("geo.placename", "Dubai");
     setMetaTag("geo.position", "25.0957;55.1548");

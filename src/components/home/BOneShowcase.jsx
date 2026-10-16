@@ -26,7 +26,7 @@ export default function BOneShowcase() {
     {
       icon: Wifi,
       title: "Connect",
-      description: "The B.One automatically syncs with the BeyondWalls platform via secure Wi-Fi.",
+      description: "The B.One automatically syncs with the Beyond Walls platform via secure Wi-Fi.",
       color: "indigo"
     },
     {
@@ -79,7 +79,7 @@ export default function BOneShowcase() {
                     {/* Logo on device */}
                     <div className="text-center">
                       <span className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">B.One</span>
-                      <p className="text-xs text-slate-500 mt-1">by BeyondWalls</p>
+                      <p className="text-xs text-slate-500 mt-1">by Beyond Walls</p>
                     </div>
                     
                     {/* LED Status Light */}

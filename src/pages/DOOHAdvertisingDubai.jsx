@@ -20,7 +20,7 @@ export default function DOOHAdvertisingDubai() {
     "name": "DOOH Advertising Dubai",
     "provider": {
       "@type": "Organization",
-      "name": "BeyondWalls",
+      "name": "Beyond Walls",
       "url": "https://beyondwalls.ae"
     },
     "areaServed": "Dubai, UAE",
@@ -142,7 +142,7 @@ export default function DOOHAdvertisingDubai() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-slate-900 mb-4">
-              Why Choose BeyondWalls for DOOH in Dubai?
+              Why Choose Beyond Walls for DOOH in Dubai?
             </h2>
             <p className="text-lg text-slate-600 max-w-2xl mx-auto">
               The most advanced digital out-of-home advertising platform in the UAE
@@ -195,7 +195,7 @@ export default function DOOHAdvertisingDubai() {
             Ready to Launch Your DOOH Campaign in Dubai?
           </h2>
           <p className="text-xl text-white/80 mb-8">
-            Start advertising with BeyondWalls today
+            Start advertising with Beyond Walls today
           </p>
           <Link to={createPageUrl("Register")}>
             <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8">

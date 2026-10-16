@@ -58,7 +58,7 @@ export default function LocationPicker({ onLocationSelect, initialLat, initialLn
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery + ", UAE")}&limit=1`,
         {
           headers: {
-            'User-Agent': 'BeyondWalls Venue Onboarding'
+            'User-Agent': 'Beyond Walls Venue Onboarding'
           }
         }
       );

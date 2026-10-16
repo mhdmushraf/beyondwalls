@@ -56,11 +56,11 @@ export default function About() {
   ];
 
   const milestones = [
-    { year: "Jun 2025", title: "The Idea is Born", description: "BeyondWalls concept was created with a vision to revolutionize DOOH advertising in the UAE" },
+    { year: "Jun 2025", title: "The Idea is Born", description: "Beyond Walls concept was created with a vision to revolutionize DOOH advertising in the UAE" },
     { year: "Nov 2025", title: "Global Recognition Award", description: "Received 2025 Global Recognition Award for innovation in the DOOH advertising sector" },
     { year: "Dec 2025", title: "in5 Dubai Incubator", description: "Officially incorporated under in5 Dubai incubator program, part of TECOM Group ecosystem" },
     { year: "Dec 2025", title: "Soft Launch", description: "Platform soft launch with initial venue partners and advertisers on waitlist" },
-    { year: "Jan 2026", title: "Official Launch", description: "Grand official launch of BeyondWalls platform across UAE" }
+    { year: "Jan 2026", title: "Official Launch", description: "Grand official launch of Beyond Walls platform across UAE" }
   ];
 
   const team = [
@@ -79,8 +79,8 @@ export default function About() {
               "@type": "WebPage",
               "@id": "https://beyondwalls.ae/About#webpage",
               "url": "https://beyondwalls.ae/About",
-              "name": "About BeyondWalls - Award-Winning DOOH Advertising Startup Dubai",
-              "description": "Learn about BeyondWalls, UAE's first self-serve DOOH advertising marketplace",
+              "name": "About Beyond Walls - Award-Winning DOOH Advertising Startup Dubai",
+              "description": "Learn about Beyond Walls, UAE's first self-serve DOOH advertising marketplace",
               "isPartOf": {
                 "@id": "https://beyondwalls.ae/#website"
               },
@@ -104,11 +104,11 @@ export default function About() {
             },
             {
           "@type": "AboutPage",
-          "name": "About BeyondWalls - Award-Winning DOOH Advertising Startup Dubai",
-          "description": "BeyondWalls is an award-winning DOOH advertising startup incubated by in5 Dubai. Global Recognition Award 2025 winner. Founded by Muhammed Musharaf.",
+          "name": "About Beyond Walls - Award-Winning DOOH Advertising Startup Dubai",
+          "description": "Beyond Walls is an award-winning DOOH advertising startup incubated by in5 Dubai. Global Recognition Award 2025 winner. Founded by Muhammed Musharaf.",
           "mainEntity": {
             "@type": "Organization",
-            "name": "BeyondWalls",
+            "name": "Beyond Walls",
             "url": "https://beyondwalls.ae",
             "logo": "https://beyondwalls.ae/logo.png",
             "foundingDate": "2025-06",
@@ -168,7 +168,7 @@ export default function About() {
             is Here
           </h1>
           <p className="text-base sm:text-lg lg:text-xl text-slate-600 max-w-3xl mx-auto mb-6 sm:mb-8">
-            BeyondWalls is UAE's first self-serve marketplace for Digital Out-of-Home (DOOH) advertising. 
+            Beyond Walls is UAE's first self-serve marketplace for Digital Out-of-Home (DOOH) advertising. 
             We're democratizing access to premium screen advertising while creating passive income streams for venues.
           </p>
           <div className="flex flex-wrap justify-center gap-6 text-sm">
@@ -216,7 +216,7 @@ export default function About() {
           <div className="mt-8 text-center">
             <p className="text-slate-400 max-w-2xl mx-auto">
               Traditional DOOH requires minimum budgets of $10,000+ and weeks of planning. 
-              BeyondWalls reduces entry costs by 90% and launch times from weeks to 30 minutes.
+              Beyond Walls reduces entry costs by 90% and launch times from weeks to 30 minutes.
             </p>
           </div>
         </div>
@@ -232,7 +232,7 @@ export default function About() {
                 Democratizing Outdoor Advertising
               </h2>
               <p className="text-slate-600 mb-4">
-                BeyondWalls was born in June 2025 with a simple belief: every business deserves access to 
+                Beyond Walls was born in June 2025 with a simple belief: every business deserves access to 
                 premium advertising spaces, and every venue should be able to monetize their screens effortlessly.
               </p>
               <p className="text-slate-600 mb-6">
@@ -318,7 +318,7 @@ export default function About() {
                 Award-Winning Innovation in DOOH Advertising
               </h2>
               <p className="text-slate-600 mb-4">
-                In November 2025, BeyondWalls received the prestigious Global Recognition Award for its innovative 
+                In November 2025, Beyond Walls received the prestigious Global Recognition Award for its innovative 
                 approach to restructuring the out-of-home advertising sector through technology and an accessible 
                 business model.
               </p>
@@ -349,7 +349,7 @@ export default function About() {
                 Incubated by in5 Dubai
               </h2>
               <p className="text-slate-600 mb-4">
-                As of December 2025, BeyondWalls is officially incorporated under the in5 Dubai incubator program, 
+                As of December 2025, Beyond Walls is officially incorporated under the in5 Dubai incubator program, 
                 part of the prestigious TECOM Group ecosystem. in5 is Dubai's leading innovation hub that enables 
                 tech, media, and design entrepreneurs to transform their ideas into successful businesses.
               </p>
@@ -392,7 +392,7 @@ export default function About() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <Badge className="bg-violet-100 text-violet-600 mb-4">Competitive Advantage</Badge>
-            <h2 className="text-3xl font-bold text-slate-900">Why BeyondWalls Wins</h2>
+            <h2 className="text-3xl font-bold text-slate-900">Why Beyond Walls Wins</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             <Card className="border-0 shadow-xl bg-white">
@@ -528,7 +528,7 @@ export default function About() {
             Ready to Be Part of the Future?
           </h2>
           <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
-            Whether you're an advertiser, venue owner, or investor - there's a place for you in the BeyondWalls ecosystem.
+            Whether you're an advertiser, venue owner, or investor - there's a place for you in the Beyond Walls ecosystem.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to={createPageUrl("Register")}>

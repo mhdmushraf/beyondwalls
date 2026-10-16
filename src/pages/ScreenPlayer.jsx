@@ -258,7 +258,7 @@ export default function ScreenPlayer() {
       if (ownerIdx < availableOwnerSlots.length) playlist.push(availableOwnerSlots[ownerIdx++]);
     }
     if (playlist.length === 0) {
-      return [{ id: "default-beyondwalls", name: "BeyondWalls Default", creative_url: defaultContentUrl, creative_type: defaultContentType || "image", type: "default" }];
+      return [{ id: "default-beyondwalls", name: "Beyond Walls Default", creative_url: defaultContentUrl, creative_type: defaultContentType || "image", type: "default" }];
     }
     return playlist;
   };
@@ -708,7 +708,7 @@ export default function ScreenPlayer() {
             <img key={currentAd.id} src={currentAd.creative_url} alt={currentAd.name} className={`w-full h-full ${objectFitClass}`} onError={handleMediaError} />
           )
         ) : (
-          <img src="https://media.base44.com/images/public/69b31183956b052c51ee3a67/da849c98b_generated_image.png" alt="BeyondWalls" className={`w-full h-full ${objectFitClass}`} />
+          <img src="https://media.base44.com/images/public/69b31183956b052c51ee3a67/da849c98b_generated_image.png" alt="Beyond Walls" className={`w-full h-full ${objectFitClass}`} />
           )}
           </div>
           </div>

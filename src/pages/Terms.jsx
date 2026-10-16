@@ -26,14 +26,14 @@ export default function Terms() {
         <div className="max-w-3xl mx-auto prose prose-slate prose-lg">
           <h2>1. Acceptance of Terms</h2>
           <p>
-            By accessing or using BeyondWalls' digital out-of-home advertising platform ("Service"), 
+            By accessing or using Beyond Walls' digital out-of-home advertising platform ("Service"), 
             you agree to be bound by these Terms of Service. If you do not agree to these terms, 
             please do not use our Service.
           </p>
 
           <h2>2. Description of Service</h2>
           <p>
-            BeyondWalls provides a self-serve marketplace connecting advertisers with venue owners 
+            Beyond Walls provides a self-serve marketplace connecting advertisers with venue owners 
             for digital out-of-home advertising. Our platform enables:
           </p>
           <ul>
@@ -86,14 +86,14 @@ export default function Terms() {
 
           <h2>7. Intellectual Property</h2>
           <p>
-            The BeyondWalls platform, including its design, features, and content, is owned by 
-            BeyondWalls and protected by intellectual property laws. You retain ownership of 
+            The Beyond Walls platform, including its design, features, and content, is owned by 
+            Beyond Walls and protected by intellectual property laws. You retain ownership of 
             content you upload but grant us a license to display it on our network.
           </p>
 
           <h2>8. Limitation of Liability</h2>
           <p>
-            BeyondWalls is not liable for any indirect, incidental, or consequential damages 
+            Beyond Walls is not liable for any indirect, incidental, or consequential damages 
             arising from your use of the Service. Our total liability shall not exceed the 
             amount paid by you in the 12 months preceding the claim.
           </p>

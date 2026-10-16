@@ -57,9 +57,9 @@ export default function BlogPost() {
   const post = posts[0];
 
   const blogSEO = post ? {
-    title: `${post.title} | BeyondWalls Blog`,
+    title: `${post.title} | Beyond Walls Blog`,
     description: post.excerpt || (post.content ? post.content.substring(0, 157).replace(/\s+\S*$/, "") + "…" : ""),
-    keywords: `${post.title}, DOOH advertising, digital advertising Dubai, ${categoryLabels[post.category] || post.category}, BeyondWalls blog, ${(post.tags || []).join(", ")}`,
+    keywords: `${post.title}, DOOH advertising, digital advertising Dubai, ${categoryLabels[post.category] || post.category}, Beyond Walls blog, ${(post.tags || []).join(", ")}`,
     image: post.cover_image || "https://beyondwalls.ae/og-blog.jpg",
     url: `/blog/${post.slug || post.id}`,
     type: "article",
@@ -82,11 +82,11 @@ export default function BlogPost() {
       "image": post.cover_image || "https://beyondwalls.ae/og-blog.jpg",
       "author": {
         "@type": "Person",
-        "name": post.author_name || "BeyondWalls Team"
+        "name": post.author_name || "Beyond Walls Team"
       },
       "publisher": {
         "@type": "Organization",
-        "name": "BeyondWalls",
+        "name": "Beyond Walls",
         "logo": {
           "@type": "ImageObject",
           "url": "https://beyondwalls.ae/logo.png",

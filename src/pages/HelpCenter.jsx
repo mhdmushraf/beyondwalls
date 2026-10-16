@@ -69,7 +69,7 @@ export default function HelpCenter() {
     {
       category: "venue",
       question: "How do I set up my screen?",
-      answer: "1. Add the screen in your dashboard (name, size, location, rate). 2. Get your Screen ID and PIN. 3. Open the BeyondWalls Player URL on your TV. 4. Enter credentials and connect. That's it!"
+      answer: "1. Add the screen in your dashboard (name, size, location, rate). 2. Get your Screen ID and PIN. 3. Open the Beyond Walls Player URL on your TV. 4. Enter credentials and connect. That's it!"
     },
     {
       category: "venue",
@@ -127,8 +127,8 @@ export default function HelpCenter() {
         structuredData={{
           "@context": "https://schema.org",
           "@type": "FAQPage",
-          "name": "BeyondWalls Help Center & FAQs",
-          "description": "Frequently asked questions about DOOH advertising on BeyondWalls platform",
+          "name": "Beyond Walls Help Center & FAQs",
+          "description": "Frequently asked questions about DOOH advertising on Beyond Walls platform",
           "mainEntity": faqs.map(faq => ({
             "@type": "Question",
             "name": faq.question,

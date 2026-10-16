@@ -63,10 +63,10 @@ export default function CampaignControls({ booking, screen, venue, onUpdate }) {
       if (screen?.owner_id) {
         await base44.integrations.Core.SendEmail({
           to: screen.owner_id,
-          subject: `Campaign ${isPaused ? "Resumed" : "Paused"}: ${booking.campaign_name} | BeyondWalls`,
+          subject: `Campaign ${isPaused ? "Resumed" : "Paused"}: ${booking.campaign_name} | Beyond Walls`,
           body: `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        BEYONDWALLS
+        BEYOND WALLS
    Campaign Status Update
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -84,7 +84,7 @@ ${isPaused
   : "The ad will temporarily stop playing on your screen. Your earnings are not affected during the pause."}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-BeyondWalls - Advertise Beyond Boundaries
+Beyond Walls - Advertise Beyond Boundaries
           `.trim()
         });
       }
@@ -146,10 +146,10 @@ BeyondWalls - Advertise Beyond Boundaries
       if (screen?.owner_id && changes.length > 0) {
         await base44.integrations.Core.SendEmail({
           to: screen.owner_id,
-          subject: `Campaign Updated: ${booking.campaign_name} | BeyondWalls`,
+          subject: `Campaign Updated: ${booking.campaign_name} | Beyond Walls`,
           body: `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        BEYONDWALLS
+        BEYOND WALLS
    Campaign Update Notice
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -168,7 +168,7 @@ Updated Details:
 • Creative: ${editData.creative_url !== booking.creative_url ? "New creative uploaded" : "Unchanged"}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-BeyondWalls - Advertise Beyond Boundaries
+Beyond Walls - Advertise Beyond Boundaries
           `.trim()
         });
       }

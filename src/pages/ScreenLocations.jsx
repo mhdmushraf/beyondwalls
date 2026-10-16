@@ -164,7 +164,7 @@ export default function ScreenLocations() {
         structuredData={{
           "@context": "https://schema.org",
           "@type": "ItemList",
-          "name": "BeyondWalls Digital Advertising Screen Locations",
+          "name": "Beyond Walls Digital Advertising Screen Locations",
           "description": "Digital advertising screens in premium venues across the UAE",
           "url": "https://beyondwalls.ae/screen-locations",
           "numberOfItems": venues.length,
@@ -607,7 +607,7 @@ export default function ScreenLocations() {
             <Badge className="bg-emerald-100 text-emerald-700 mb-4">For Venue Owners</Badge>
             <h2 className="text-3xl font-bold text-slate-900 mb-4">Calculate Your Revenue Potential</h2>
             <p className="text-slate-600">
-              See how much you could earn by listing your venue on BeyondWalls
+              See how much you could earn by listing your venue on Beyond Walls
             </p>
           </div>
           <VenueSuitabilityCalculator />

@@ -249,7 +249,7 @@ export default function EarningsBreakdown({ transactions, screens, venues, booki
             <div>
               <p className="font-medium text-violet-900">Revenue Share: 70%</p>
               <p className="text-sm text-violet-600">
-                You receive 70% of all ad revenue from your screens. BeyondWalls retains 30% as platform commission.
+                You receive 70% of all ad revenue from your screens. Beyond Walls retains 30% as platform commission.
               </p>
             </div>
           </div>

@@ -139,7 +139,7 @@ const publicPages = [
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+          <div className="w-12 h-12 bg-[#141E3E] rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
             <MonitorPlay className="w-6 h-6 text-white" />
           </div>
           <p className="text-slate-500">Loading...</p>
@@ -154,7 +154,7 @@ const publicPages = [
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+          <div className="w-12 h-12 bg-[#141E3E] rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
             <MonitorPlay className="w-6 h-6 text-white" />
           </div>
           <p className="text-slate-500">Redirecting to login...</p>
@@ -170,7 +170,7 @@ const publicPages = [
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+          <div className="w-12 h-12 bg-[#141E3E] rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
             <MonitorPlay className="w-6 h-6 text-white" />
           </div>
           <p className="text-slate-500">Completing profile...</p>
@@ -185,7 +185,7 @@ const publicPages = [
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+          <div className="w-12 h-12 bg-[#141E3E] rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
             <MonitorPlay className="w-6 h-6 text-white" />
           </div>
           <p className="text-slate-500">Checking approval status...</p>
@@ -211,7 +211,7 @@ const publicPages = [
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary rounded-xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-12 h-12 bg-[#141E3E] rounded-xl flex items-center justify-center mx-auto mb-4">
             <Shield className="w-6 h-6 text-white" />
           </div>
           <p className="text-slate-500">Access denied. Redirecting...</p>

@@ -26,7 +26,7 @@ export default function Privacy() {
         <div className="max-w-3xl mx-auto prose prose-slate prose-lg">
           <h2>1. Introduction</h2>
           <p>
-            BeyondWalls ("we," "our," or "us") is committed to protecting your privacy. 
+            Beyond Walls ("we," "our," or "us") is committed to protecting your privacy. 
             This Privacy Policy explains how we collect, use, disclose, and safeguard your 
             information when you use our digital out-of-home advertising platform.
           </p>

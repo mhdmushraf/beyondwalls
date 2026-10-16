@@ -19,7 +19,7 @@ export default function DigitalSignageUAE() {
     "name": "Digital Signage UAE",
     "provider": {
       "@type": "Organization",
-      "name": "BeyondWalls",
+      "name": "Beyond Walls",
       "url": "https://beyondwalls.ae"
     },
     "areaServed": "United Arab Emirates",
@@ -99,7 +99,7 @@ export default function DigitalSignageUAE() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-slate-900 mb-4">
-              Why BeyondWalls Digital Signage?
+              Why Beyond Walls Digital Signage?
             </h2>
             <p className="text-lg text-slate-600 max-w-2xl mx-auto">
               The most comprehensive digital signage network in the UAE

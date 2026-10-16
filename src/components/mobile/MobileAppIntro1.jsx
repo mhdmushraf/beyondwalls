@@ -9,9 +9,9 @@ export default function MobileAppIntro1({ onNext }) {
         {/* Logo */}
         <div className="text-center mb-12">
           <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
-            <MonitorPlay className="w-10 h-10 text-violet-600" />
+            <MonitorPlay className="w-10 h-10 text-[#141E3E]" />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2">BeyondWalls</h1>
+          <h1 className="text-4xl font-bold text-white mb-2">Beyond Walls</h1>
           <p className="text-violet-100 text-sm font-medium">Digital Advertising for Everyone</p>
         </div>
 

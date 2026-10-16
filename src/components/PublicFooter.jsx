@@ -94,7 +94,7 @@ export default function PublicFooter() {
         <div className="border-t border-slate-700 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
             <p className="text-slate-400 text-sm">
-              © {new Date().getFullYear()} BeyondWalls UAE. All rights reserved.
+              © {new Date().getFullYear()} Beyond Walls UAE. All rights reserved.
             </p>
             <p className="text-slate-500 text-xs mt-1">
               🇦🇪 Based in Dubai, UAE | in5 Tech, Dubai Internet City | <a href="https://beyondwalls.ae" className="hover:text-white">beyondwalls.ae</a>

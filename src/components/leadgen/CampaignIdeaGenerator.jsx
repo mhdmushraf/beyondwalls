@@ -34,7 +34,7 @@ export default function CampaignIdeaGenerator() {
     setLoading(true);
     try {
       const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are a DOOH advertising strategist for BeyondWalls platform in UAE.
+        prompt: `You are a DOOH advertising strategist for Beyond Walls platform in UAE.
 
 Generate personalized campaign suggestions for:
 - Business Type: ${businessType}

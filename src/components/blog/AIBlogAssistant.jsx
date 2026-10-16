@@ -48,12 +48,12 @@ export default function AIBlogAssistant({ onApply }) {
     setLoading(true);
     try {
       const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are a creative content strategist for BeyondWalls, UAE's leading DOOH advertising platform.
+        prompt: `You are a creative content strategist for Beyond Walls, UAE's leading DOOH advertising platform.
 
 Generate 5 compelling blog post ideas about: ${ideaTopic}
 
 Context:
-- BeyondWalls provides digital out-of-home advertising in UAE (Dubai, Abu Dhabi, Sharjah)
+- Beyond Walls provides digital out-of-home advertising in UAE (Dubai, Abu Dhabi, Sharjah)
 - Target audience: business owners, marketers, venue owners
 - Focus on DOOH trends, marketing tips, UAE market insights, and case studies
 
@@ -97,7 +97,7 @@ For each idea, provide:
     setLoading(true);
     try {
       const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are a professional content writer for BeyondWalls, UAE's leading DOOH advertising platform.
+        prompt: `You are a professional content writer for Beyond Walls, UAE's leading DOOH advertising platform.
 
 Write a complete, high-quality blog post with the title or outline: "${postTitle}"
 

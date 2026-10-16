@@ -29,7 +29,7 @@ export const generateSitemapXML = () => {
 };
 
 export const generateRobotsTxt = () => {
-  return `# robots.txt for BeyondWalls
+  return `# robots.txt for Beyond Walls
 # https://beyondwalls.ae
 
 User-agent: *
@@ -81,8 +81,8 @@ Disallow: /dashboard*
 
 export const generateManifest = () => {
   return {
-    name: "BeyondWalls - Digital Advertising Platform",
-    short_name: "BeyondWalls",
+    name: "Beyond Walls - Digital Advertising Platform",
+    short_name: "Beyond Walls",
     description: "Self-Serve Digital Out-of-Home Advertising Platform for the UAE",
     start_url: "/",
     display: "standalone",

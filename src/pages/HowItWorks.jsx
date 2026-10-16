@@ -85,7 +85,7 @@ export default function HowItWorks() {
     {
       step: 3,
       title: "Connect Screen Player",
-      description: "Open the BeyondWalls Player on your TV, enter your Screen ID and PIN to connect and start displaying ads.",
+      description: "Open the Beyond Walls Player on your TV, enter your Screen ID and PIN to connect and start displaying ads.",
       icon: Wifi,
       color: "emerald"
     },
@@ -131,7 +131,7 @@ export default function HowItWorks() {
     {
       step: 3,
       title: "Open Player on Your TV",
-      description: "On your Smart TV or display device, open the web browser and navigate to the BeyondWalls Player URL. The player works on any device with a modern browser.",
+      description: "On your Smart TV or display device, open the web browser and navigate to the Beyond Walls Player URL. The player works on any device with a modern browser.",
       details: [
         "Compatible with Android TV, WebOS, Tizen",
         "Works on Fire TV and Chromecast",
@@ -176,7 +176,7 @@ export default function HowItWorks() {
 
   const faqs = [
     {
-      question: "What types of venues can join BeyondWalls?",
+      question: "What types of venues can join Beyond Walls?",
       answer: "We welcome all types of venues including restaurants, cafes, gyms, malls, hotels, hospitals, coworking spaces, and more. Any location with foot traffic and a digital screen can participate."
     },
     {
@@ -224,7 +224,7 @@ export default function HowItWorks() {
           "@context": "https://schema.org",
           "@type": "HowTo",
           "name": "How to Advertise on Digital Screens in Dubai & UAE",
-          "description": "Complete step-by-step guide to booking DOOH advertising on BeyondWalls platform",
+          "description": "Complete step-by-step guide to booking DOOH advertising on Beyond Walls platform",
           "totalTime": "PT30M",
           "estimatedCost": {
             "@type": "MonetaryAmount",
@@ -281,7 +281,7 @@ export default function HowItWorks() {
             in 30 Minutes
           </h1>
           <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8">
-            BeyondWalls makes digital out-of-home advertising accessible to everyone. 
+            Beyond Walls makes digital out-of-home advertising accessible to everyone. 
             Whether you're an advertiser or venue owner, here's everything you need to know.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
@@ -339,7 +339,7 @@ export default function HowItWorks() {
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-slate-900 mb-4">Platform Overview</h2>
             <p className="text-slate-600 max-w-2xl mx-auto">
-              BeyondWalls connects advertisers with venues, creating a seamless marketplace for digital out-of-home advertising.
+              Beyond Walls connects advertisers with venues, creating a seamless marketplace for digital out-of-home advertising.
             </p>
           </div>
 
@@ -499,7 +499,7 @@ export default function HowItWorks() {
             <Badge className="bg-emerald-500/20 text-emerald-400 mb-4">Technical Guide</Badge>
             <h2 className="text-3xl font-bold mb-4">Screen Player Setup Guide</h2>
             <p className="text-slate-400 max-w-2xl mx-auto">
-              Detailed step-by-step instructions to connect your screen to the BeyondWalls network.
+              Detailed step-by-step instructions to connect your screen to the Beyond Walls network.
             </p>
           </div>
 
@@ -545,7 +545,7 @@ export default function HowItWorks() {
                 <div className="w-16 h-16 bg-indigo-500/20 rounded-2xl flex items-center justify-center mx-auto mb-3">
                   <Shield className="w-8 h-8 text-indigo-400" />
                 </div>
-                <p className="text-sm font-medium">BeyondWalls Cloud</p>
+                <p className="text-sm font-medium">Beyond Walls Cloud</p>
                 <p className="text-xs text-slate-500">Authentication & Content</p>
               </div>
               <div className="text-center">

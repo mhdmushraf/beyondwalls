@@ -316,7 +316,7 @@ export default function ARFeatureSection() {
         <div className="mb-16">
           <div className="text-center mb-12">
             <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">AR Rollout Roadmap</h3>
-            <p className="text-slate-400">Our phased approach to bringing AR to BeyondWalls</p>
+            <p className="text-slate-400">Our phased approach to bringing AR to Beyond Walls</p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-6">

@@ -131,7 +131,7 @@ export default function Home() {
 
   const testimonials = [
     {
-      quote: "BeyondWalls helped us reach customers in premium cafés across Dubai. Our brand visibility increased by 300%!",
+      quote: "Beyond Walls helped us reach customers in premium cafés across Dubai. Our brand visibility increased by 300%!",
       author: "Ahmed K.",
       role: "Marketing Director, Food Brand",
       avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop"
@@ -184,7 +184,7 @@ export default function Home() {
           "@context": "https://schema.org",
           "@type": "Organization",
           "name": "Beyond Walls",
-          "alternateName": "BeyondWalls",
+          "alternateName": "Beyond Walls",
           "url": "https://beyondwalls.ae",
           "logo": "https://media.base44.com/images/public/69b31183956b052c51ee3a67/b64097b04_beyondwalls-icon.png",
           "description": "Beyond Walls is a Dubai-based digital out-of-home (DOOH) advertising marketplace connecting advertisers with venues across the UAE.",
@@ -344,17 +344,17 @@ export default function Home() {
         </div>
       </section>
 
-      {/* What is BeyondWalls */}
+      {/* What is Beyond Walls */}
       <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 bg-gradient-to-b from-slate-50 to-white">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
             <div>
-              <Badge className="bg-violet-100 text-violet-700 border-0 mb-3 sm:mb-4">What is BeyondWalls?</Badge>
+              <Badge className="bg-violet-100 text-violet-700 border-0 mb-3 sm:mb-4">What is Beyond Walls?</Badge>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-4 sm:mb-6">
                 The Airbnb of Outdoor Advertising
               </h2>
               <p className="text-base sm:text-lg text-slate-600 mb-4 sm:mb-6 leading-relaxed">
-                BeyondWalls is UAE's first <span className="font-semibold">self-serve marketplace</span> for Digital Out-of-Home (DOOH) advertising. 
+                Beyond Walls is UAE's first <span className="font-semibold">self-serve marketplace</span> for Digital Out-of-Home (DOOH) advertising. 
                 We connect businesses who want to advertise with venues that have digital screens.
               </p>
               <div className="space-y-4">
@@ -655,7 +655,7 @@ export default function Home() {
                 Disrupting a $45B Global Market
               </h2>
               <p className="text-lg text-slate-600 mb-6">
-                BeyondWalls is positioned to capture a significant share of the rapidly growing DOOH market 
+                Beyond Walls is positioned to capture a significant share of the rapidly growing DOOH market 
                 in the MENA region. Our asset-light, high-margin model creates sustainable value.
               </p>
               <div className="space-y-4 mb-8">

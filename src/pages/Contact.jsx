@@ -89,7 +89,7 @@ export default function Contact() {
               "@type": "WebPage",
               "@id": "https://beyondwalls.ae/Contact#webpage",
               "url": "https://beyondwalls.ae/Contact",
-              "name": "Contact BeyondWalls - Advertising Inquiries Dubai",
+              "name": "Contact Beyond Walls - Advertising Inquiries Dubai",
               "isPartOf": {
                 "@id": "https://beyondwalls.ae/#website"
               },
@@ -113,11 +113,11 @@ export default function Contact() {
             },
             {
           "@type": "ContactPage",
-          "name": "Contact BeyondWalls - Advertising Inquiries Dubai",
-          "description": "Contact BeyondWalls for DOOH advertising inquiries, venue partnerships, or support",
+          "name": "Contact Beyond Walls - Advertising Inquiries Dubai",
+          "description": "Contact Beyond Walls for DOOH advertising inquiries, venue partnerships, or support",
           "mainEntity": {
             "@type": "Organization",
-            "name": "BeyondWalls",
+            "name": "Beyond Walls",
             "url": "https://beyondwalls.ae",
             "logo": "https://beyondwalls.ae/logo.png",
             "telephone": "+971-55-614-0067",
@@ -389,7 +389,7 @@ export default function Contact() {
               allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="BeyondWalls Office Location - in5 Dubai Internet City"
+              title="Beyond Walls Office Location - in5 Dubai Internet City"
             />
           </div>
           <div className="mt-6 text-center">

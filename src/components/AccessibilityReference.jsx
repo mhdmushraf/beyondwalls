@@ -3,7 +3,7 @@
  * ============================================
  * 
  * This component documents all accessibility and performance improvements
- * implemented in the BeyondWalls app to meet Base44 Mobile Guidelines.
+ * implemented in the Beyond Walls app to meet Base44 Mobile Guidelines.
  * 
  * QUICK REFERENCE
  * ===============

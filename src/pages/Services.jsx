@@ -163,11 +163,11 @@ export default function Services() {
             },
             {
           "@type": "Service",
-          "name": "BeyondWalls DOOH Advertising Services",
+          "name": "Beyond Walls DOOH Advertising Services",
           "serviceType": "Digital Out-of-Home Advertising",
           "provider": {
             "@type": "Organization",
-            "name": "BeyondWalls",
+            "name": "Beyond Walls",
             "url": "https://beyondwalls.ae"
           },
           "areaServed": ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "RAK", "UAE"],
@@ -186,7 +186,7 @@ export default function Services() {
           },
           "hasOfferCatalog": {
             "@type": "OfferCatalog",
-            "name": "BeyondWalls Advertising Services",
+            "name": "Beyond Walls Advertising Services",
             "itemListElement": [
               {
                 "@type": "Offer",
@@ -249,7 +249,7 @@ export default function Services() {
             <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent"> Modern Advertising</span>
           </h1>
           <p className="text-base sm:text-lg lg:text-xl text-slate-600 max-w-3xl mx-auto mb-6 sm:mb-8">
-            From AI-powered campaign creation to real-time analytics, BeyondWalls provides everything 
+            From AI-powered campaign creation to real-time analytics, Beyond Walls provides everything 
             advertisers and venue owners need to succeed in digital out-of-home advertising.
           </p>
           <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4">
@@ -439,7 +439,7 @@ export default function Services() {
               ))}
             </div>
             <p className="text-xl md:text-2xl text-slate-700 mb-6 leading-relaxed">
-              "BeyondWalls transformed how we advertise. We launched our campaign across 15 screens in Dubai 
+              "Beyond Walls transformed how we advertise. We launched our campaign across 15 screens in Dubai 
               within an hour. The self-serve platform is incredibly intuitive, and the real-time analytics 
               helped us optimize on the fly. Our brand visibility increased by 300%!"
             </p>
@@ -484,7 +484,7 @@ export default function Services() {
             </Badge>
             <h2 className="text-3xl font-bold text-slate-900 mb-4">Industry-Leading Advertising Solutions</h2>
             <p className="text-slate-600 max-w-2xl mx-auto">
-              BeyondWalls offers unique features that transform how you advertise and measure success
+              Beyond Walls offers unique features that transform how you advertise and measure success
             </p>
           </div>
           
@@ -668,8 +668,8 @@ export default function Services() {
       <section className="py-20 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <Badge className="bg-emerald-100 text-emerald-700 mb-4">Why BeyondWalls</Badge>
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">The BeyondWalls Advantage</h2>
+            <Badge className="bg-emerald-100 text-emerald-700 mb-4">Why Beyond Walls</Badge>
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">The Beyond Walls Advantage</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
@@ -707,7 +707,7 @@ export default function Services() {
             Ready to Advertise Smarter?
           </h2>
           <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
-            Start reaching customers through BeyondWalls screens
+            Start reaching customers through Beyond Walls screens
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to={createPageUrl("Register")}>

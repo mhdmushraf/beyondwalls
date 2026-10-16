@@ -113,7 +113,7 @@ ${formData.message}
             <Label>Message *</Label>
             <Textarea
               required
-              placeholder="Tell us about your interest in BeyondWalls..."
+              placeholder="Tell us about your interest in Beyond Walls..."
               className="h-24"
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}

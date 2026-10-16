@@ -43,7 +43,7 @@ export const NotificationService = {
       try {
         await base44.integrations.Core.SendEmail({
           to: user.email,
-          subject: `✅ Campaign Approved: ${booking.campaign_name} | BeyondWalls`,
+          subject: `✅ Campaign Approved: ${booking.campaign_name} | Beyond Walls`,
           body: EmailTemplates.campaignApproved(
             user.full_name || "Valued Advertiser",
             booking.campaign_name,
@@ -83,7 +83,7 @@ export const NotificationService = {
       try {
         await base44.integrations.Core.SendEmail({
           to: user.email,
-          subject: `Campaign Review: ${booking.campaign_name} | BeyondWalls`,
+          subject: `Campaign Review: ${booking.campaign_name} | Beyond Walls`,
           body: EmailTemplates.accountRejected(user.full_name || "Valued Advertiser", reason || "The campaign does not meet our content guidelines.")
         });
       } catch (e) {
@@ -115,7 +115,7 @@ export const NotificationService = {
       try {
         await base44.integrations.Core.SendEmail({
           to: venueOwner.email,
-          subject: `💰 New Ad Booking on ${screen?.name} | BeyondWalls`,
+          subject: `💰 New Ad Booking on ${screen?.name} | Beyond Walls`,
           body: EmailTemplates.newBooking(
             venueOwner.full_name || "Venue Partner",
             screen?.name || "N/A",
@@ -165,7 +165,7 @@ export const NotificationService = {
       try {
         await base44.integrations.Core.SendEmail({
           to: user.email,
-          subject: `⚠️ Low Wallet Balance Alert | BeyondWalls`,
+          subject: `⚠️ Low Wallet Balance Alert | Beyond Walls`,
           body: EmailTemplates.lowBalance(user.full_name || "Valued User", currentBalance)
         });
       } catch (e) {
@@ -197,7 +197,7 @@ export const NotificationService = {
       try {
         await base44.integrations.Core.SendEmail({
           to: user.email,
-          subject: `✅ Withdrawal Processed: AED ${amount} | BeyondWalls`,
+          subject: `✅ Withdrawal Processed: AED ${amount} | Beyond Walls`,
           body: EmailTemplates.payoutProcessed(user.full_name || "Valued Partner", amount)
         });
       } catch (e) {
@@ -221,7 +221,7 @@ export const NotificationService = {
     try {
       await base44.integrations.Core.SendEmail({
         to: user.email,
-        subject: `✅ Wallet Top-up Approved: AED ${amount} | BeyondWalls`,
+        subject: `✅ Wallet Top-up Approved: AED ${amount} | Beyond Walls`,
         body: EmailTemplates.topUpApproved(user.full_name || "Valued Advertiser", amount)
       });
     } catch (e) {
@@ -246,7 +246,7 @@ export const NotificationService = {
       
       await base44.integrations.Core.SendEmail({
         to: "hello@linkzoneglobal.com",
-        subject: `🆕 New User Registration: ${user.full_name} | BeyondWalls`,
+        subject: `🆕 New User Registration: ${user.full_name} | Beyond Walls`,
         body: adminEmail
       });
     } catch (e) {
@@ -263,7 +263,7 @@ export const NotificationService = {
       
       await base44.integrations.Core.SendEmail({
         to: user.email,
-        subject: `🎉 Welcome to BeyondWalls!`,
+        subject: `🎉 Welcome to Beyond Walls!`,
         body: welcomeEmail
       });
     } catch (e) {
@@ -288,7 +288,7 @@ export const NotificationService = {
     try {
       await base44.integrations.Core.SendEmail({
         to: venueOwner.email,
-        subject: `✅ Venue Approved: ${venue.name} | BeyondWalls`,
+        subject: `✅ Venue Approved: ${venue.name} | Beyond Walls`,
         body: EmailTemplates.venueApproved(venueOwner.full_name || "Venue Partner", venue.name, venue.venue_type || venue.type || "N/A", venue.city)
       });
     } catch (e) {
@@ -314,7 +314,7 @@ export const NotificationService = {
     try {
       await base44.integrations.Core.SendEmail({
         to: screenOwner.email,
-        subject: `📺 Screen Approved: ${screen.name} | BeyondWalls`,
+        subject: `📺 Screen Approved: ${screen.name} | Beyond Walls`,
         body: EmailTemplates.screenApproved(screenOwner.full_name || "Venue Partner", screen.name, venue?.name, screen.price_per_week || screen.slot_price || "N/A")
       });
     } catch (e) {
@@ -341,7 +341,7 @@ export const NotificationService = {
     try {
       await base44.integrations.Core.SendEmail({
         to: advertiser.email,
-        subject: `✅ Booking Confirmed: ${booking.campaign_name} | BeyondWalls`,
+        subject: `✅ Booking Confirmed: ${booking.campaign_name} | Beyond Walls`,
         body: EmailTemplates.bookingConfirmed(
           advertiser.full_name || "Valued Advertiser",
           booking.campaign_name,

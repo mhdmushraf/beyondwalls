@@ -113,12 +113,12 @@ export default function Blog() {
         structuredData={{
           "@context": "https://schema.org",
           "@type": "Blog",
-          "name": "BeyondWalls Blog - DOOH Advertising Insights",
+          "name": "Beyond Walls Blog - DOOH Advertising Insights",
           "description": "Expert insights on digital out-of-home advertising, marketing tips, case studies, and industry trends in Dubai & UAE",
           "url": "https://beyondwalls.ae/blog",
           "publisher": {
             "@type": "Organization",
-            "name": "BeyondWalls",
+            "name": "Beyond Walls",
             "logo": {
               "@type": "ImageObject",
               "url": "https://beyondwalls.ae/logo.png"
@@ -144,7 +144,7 @@ export default function Blog() {
             Insights & Updates
           </h1>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-            Stay informed with the latest trends in DOOH advertising, tips for success, and BeyondWalls updates.
+            Stay informed with the latest trends in DOOH advertising, tips for success, and Beyond Walls updates.
           </p>
         </div>
       </section>

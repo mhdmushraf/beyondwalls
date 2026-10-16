@@ -23,8 +23,8 @@ export function generateInvoiceHTML(type, data) {
     .invoice { max-width: 800px; margin: 0 auto; padding: 40px; }
     .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; border-bottom: 3px solid #E8603C; padding-bottom: 20px; }
     .logo { display: flex; align-items: center; gap: 12px; }
-    .logo-icon { width: 50px; height: 50px; background: linear-gradient(135deg, #E8603C, #141E3E); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; }
-    .logo-text { font-size: 28px; font-weight: bold; background: linear-gradient(90deg, #E8603C, #141E3E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .logo-icon { width: 50px; height: 50px; background: #141E3E; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; }
+    .logo-text { font-size: 28px; font-weight: bold; color: #141E3E; }
     .invoice-title { text-align: right; }
     .invoice-title h1 { font-size: 32px; color: #E8603C; margin-bottom: 5px; }
     .invoice-title p { color: #64748b; }
@@ -54,7 +54,7 @@ export function generateInvoiceHTML(type, data) {
       <div class="logo">
         <div class="logo-icon">📺</div>
         <div>
-          <div class="logo-text">BeyondWalls</div>
+          <div class="logo-text">Beyond Walls</div>
           <p style="color: #64748b; font-size: 12px;">Digital Out-of-Home Advertising</p>
         </div>
       </div>
@@ -68,7 +68,7 @@ export function generateInvoiceHTML(type, data) {
     <div class="info-grid section">
       <div class="info-box">
         <div class="section-title">From</div>
-        <h3>BeyondWalls FZ-LLC</h3>
+        <h3>Linkzone Global FZ-LLC</h3>
         <p>Dubai Media City<br>Dubai, UAE<br>TRN: 100XXXXXXX<br>info@linkzoneglobal.com</p>
       </div>
       <div class="info-box">
@@ -153,13 +153,13 @@ export function generateInvoiceHTML(type, data) {
     <div style="margin-top: 30px; padding: 20px; background: ${isAdvertiser ? "#f0fdf4" : "#eff6ff"}; border-radius: 12px;">
       <p style="font-size: 14px; color: ${isAdvertiser ? "#166534" : "#1e40af"};">
         ${isAdvertiser 
-          ? "✅ Payment has been deducted from your BeyondWalls wallet. Thank you for advertising with us!" 
-          : "💰 This amount has been credited to your BeyondWalls wallet. You can withdraw anytime from your dashboard."}
+          ? "✅ Payment has been deducted from your Beyond Walls wallet. Thank you for advertising with us!" 
+          : "💰 This amount has been credited to your Beyond Walls wallet. You can withdraw anytime from your dashboard."}
       </p>
     </div>
 
     <div class="footer">
-      <p><strong>BeyondWalls</strong> - Advertise Beyond Boundaries</p>
+      <p><strong>Beyond Walls</strong> - Advertise Beyond Boundaries</p>
       <p>beyondwalls.ae • info@linkzoneglobal.com • +971 55 614 0067</p>
       <p style="margin-top: 10px;">This is a computer-generated document. No signature required.</p>
     </div>

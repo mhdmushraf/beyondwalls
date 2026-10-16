@@ -31,7 +31,7 @@ export default function MobileAppIntro2({ onNext }) {
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-white mb-3">
-            Why Choose BeyondWalls?
+            Why Choose Beyond Walls?
           </h2>
           <p className="text-white/80">
             The fastest and easiest way to advertise

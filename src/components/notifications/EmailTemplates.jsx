@@ -1,4 +1,4 @@
-// HTML Email Templates for BeyondWalls
+// HTML Email Templates for Beyond Walls
 // Modern, responsive email designs
 
 export const EmailTemplates = {
@@ -11,7 +11,7 @@ export const EmailTemplates = {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="x-apple-disable-message-reformatting">
-  <title>BeyondWalls</title>
+  <title>Beyond Walls</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     body { margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
@@ -49,7 +49,7 @@ export const EmailTemplates = {
               <path d="M2 7L12 13L22 7" stroke="white" stroke-width="2" stroke-linecap="round"/>
             </svg>
           </div>
-          <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">BeyondWalls</h1>
+          <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">Beyond Walls</h1>
           <p style="margin: 8px 0 0; color: rgba(255,255,255,0.9); font-size: 14px; font-weight: 500;">Advertise Beyond Boundaries</p>
         </td>
       </tr>
@@ -89,7 +89,7 @@ export const EmailTemplates = {
       <tr>
         <td style="padding-top: 20px;">
           <p style="margin: 0; color: #475569; font-size: 11px;">
-            © ${new Date().getFullYear()} BeyondWalls. All rights reserved.<br>
+            © ${new Date().getFullYear()} Beyond Walls. All rights reserved.<br>
             <a href="https://beyondwalls.ae/terms" style="color: #64748b; text-decoration: none;">Terms</a> • 
             <a href="https://beyondwalls.ae/privacy" style="color: #64748b; text-decoration: none;">Privacy</a>
           </p>
@@ -107,7 +107,7 @@ export const EmailTemplates = {
 ${this.header()}
 <tr>
   <td style="padding: 40px;">
-    <h2 style="margin: 0 0 16px; color: #0f172a; font-size: 24px; font-weight: 700;">Welcome to BeyondWalls! 🎉</h2>
+    <h2 style="margin: 0 0 16px; color: #0f172a; font-size: 24px; font-weight: 700;">Welcome to Beyond Walls! 🎉</h2>
     <p style="margin: 0 0 24px; color: #475569; font-size: 16px; line-height: 1.6;">Dear ${userName},</p>
     
     <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-left: 4px solid #0ea5e9; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
@@ -199,7 +199,7 @@ ${this.header()}
     `}
 
     <div style="background-color: #f8fafc; border-radius: 12px; padding: 24px; margin-top: 32px;">
-      <h3 style="margin: 0 0 16px; color: #0f172a; font-size: 18px; font-weight: 600;">🌟 Why BeyondWalls?</h3>
+      <h3 style="margin: 0 0 16px; color: #0f172a; font-size: 18px; font-weight: 600;">🌟 Why Beyond Walls?</h3>
       <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
         <tr>
           <td style="padding: 8px 0; color: #475569; font-size: 14px;">✓ Self-serve platform - Launch in 30 minutes</td>
@@ -230,7 +230,7 @@ ${this.header()}
 </tr>
 ${this.footer()}
     `;
-    return this.baseTemplate(content, "Welcome to BeyondWalls - Your account is being reviewed");
+    return this.baseTemplate(content, "Welcome to Beyond Walls - Your account is being reviewed");
   },
 
   // Campaign approved
@@ -306,7 +306,7 @@ ${this.header()}
     </div>
     
     <h2 style="color: #0f172a; font-size: 32px; font-weight: 700; margin: 0 0 16px; letter-spacing: -0.5px;">
-      Welcome to BeyondWalls! 🎉
+      Welcome to Beyond Walls! 🎉
     </h2>
     
     <p style="color: #64748b; font-size: 17px; line-height: 1.6; margin: 0 0 40px; max-width: 480px; margin-left: auto; margin-right: auto;">
@@ -376,7 +376,7 @@ ${this.header()}
 </tr>
 ${this.footer()}
     `;
-    return this.baseTemplate(content, `Verify your email to get started with BeyondWalls`);
+    return this.baseTemplate(content, `Verify your email to get started with Beyond Walls`);
   },
 
   // Account approved email to user
@@ -388,14 +388,14 @@ ${this.header()}
     <div style="text-align: center; margin-bottom: 32px;">
       <div style="display: inline-block; background: linear-gradient(135deg, #dcfce7 0%, #d1fae5 100%); width: 80px; height: 80px; border-radius: 50%; font-size: 40px; line-height: 80px; margin-bottom: 16px;">✅</div>
       <h2 style="margin: 0; color: #0f172a; font-size: 28px; font-weight: 700;">Account Approved!</h2>
-      <p style="margin: 8px 0 0; color: #64748b; font-size: 16px;">Welcome to the BeyondWalls network</p>
+      <p style="margin: 8px 0 0; color: #64748b; font-size: 16px;">Welcome to the Beyond Walls network</p>
     </div>
 
     <p style="margin: 0 0 24px; color: #475569; font-size: 16px; line-height: 1.6;">Dear <strong>${userName}</strong>,</p>
 
     <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-left: 4px solid #10b981; border-radius: 12px; padding: 24px; margin-bottom: 32px;">
       <p style="margin: 0; color: #065f46; font-size: 16px; font-weight: 600; line-height: 1.6;">
-        🎉 Your BeyondWalls account has been verified and approved!
+        🎉 Your Beyond Walls account has been verified and approved!
       </p>
       <p style="margin: 8px 0 0; color: #047857; font-size: 14px; line-height: 1.6;">
         You can now ${userRole === 'venue_owner' ? 'add venues, register screens, and start earning revenue' : 'create campaigns, book screens across UAE, and reach your target audience'}.
@@ -430,7 +430,7 @@ ${this.header()}
 </tr>
 ${this.footer()}
     `;
-    return this.baseTemplate(content, "Your BeyondWalls account is approved - Get started now!");
+    return this.baseTemplate(content, "Your Beyond Walls account is approved - Get started now!");
   },
 
   // Account rejected email to user
@@ -442,13 +442,13 @@ ${this.header()}
     <div style="text-align: center; margin-bottom: 32px;">
       <div style="display: inline-block; background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); width: 80px; height: 80px; border-radius: 50%; font-size: 40px; line-height: 80px; margin-bottom: 16px;">📋</div>
       <h2 style="margin: 0; color: #0f172a; font-size: 28px; font-weight: 700;">Application Update</h2>
-      <p style="margin: 8px 0 0; color: #64748b; font-size: 16px;">BeyondWalls Account Review</p>
+      <p style="margin: 8px 0 0; color: #64748b; font-size: 16px;">Beyond Walls Account Review</p>
     </div>
 
     <p style="margin: 0 0 24px; color: #475569; font-size: 16px; line-height: 1.6;">Dear <strong>${userName}</strong>,</p>
 
     <p style="margin: 0 0 24px; color: #475569; font-size: 15px; line-height: 1.7;">
-      Thank you for applying to join the BeyondWalls platform. After reviewing your application, we're unable to approve your account at this time.
+      Thank you for applying to join the Beyond Walls platform. After reviewing your application, we're unable to approve your account at this time.
     </p>
 
     <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-left: 4px solid #ef4444; border-radius: 12px; padding: 24px; margin-bottom: 32px;">
@@ -476,7 +476,7 @@ ${this.header()}
 </tr>
 ${this.footer()}
     `;
-    return this.baseTemplate(content, "Update on your BeyondWalls account application");
+    return this.baseTemplate(content, "Update on your Beyond Walls account application");
   },
 
   // Generic notification email (for venue approved, screen approved, bookings, payouts etc.)
@@ -489,7 +489,7 @@ ${this.footer()}
         <td align="center">
           <div style="background-color: rgba(255,255,255,0.2); width: 64px; height: 64px; border-radius: 16px; display: inline-block; margin-bottom: 12px; font-size: 32px; line-height: 64px;">${emoji}</div>
           <h1 style="margin: 0; color: #ffffff; font-size: 26px; font-weight: 700;">${title}</h1>
-          <p style="margin: 6px 0 0; color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 500;">BeyondWalls — Advertise Beyond Boundaries</p>
+          <p style="margin: 6px 0 0; color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 500;">Beyond Walls — Advertise Beyond Boundaries</p>
         </td>
       </tr>
     </table>
@@ -510,7 +510,7 @@ ${this.footer()}
     const body = `
       <p style="margin: 0 0 20px; color: #475569; font-size: 16px; line-height: 1.6;">Dear <strong>${ownerName}</strong>,</p>
       <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-left: 4px solid #10b981; border-radius: 12px; padding: 20px; margin-bottom: 28px;">
-        <p style="margin: 0; color: #065f46; font-size: 15px; font-weight: 600;">🎉 Your venue has been approved and is now live on the BeyondWalls network!</p>
+        <p style="margin: 0; color: #065f46; font-size: 15px; font-weight: 600;">🎉 Your venue has been approved and is now live on the Beyond Walls network!</p>
       </div>
       <div style="background-color: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 28px;">
         <h3 style="margin: 0 0 16px; color: #0f172a; font-size: 16px; font-weight: 600;">📋 Venue Details</h3>

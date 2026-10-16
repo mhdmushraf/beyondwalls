@@ -9,7 +9,9 @@ const SIZES = {
 };
 
 /**
- * BeyondWalls brand lockup — gradient icon + wordmark.
+ * Beyond Walls brand lockup — solid navy (#141E3E) icon + wordmark.
+ * Brand standard: always write the name as "Beyond Walls" (two words, capital B and W).
+ * Lowercase "beyondwalls" only in URLs, emails and handles.
  * Used across the nav, footer, sidebar, auth pages, and mobile header.
  *
  * @param {"sm"|"md"|"lg"} size
@@ -28,10 +30,11 @@ export default function BrandLogo({
       <div
         className={cn(
           s.box,
-          "bg-gradient-to-br from-[#141E3E] to-[#E8603C] flex items-center justify-center shadow-lg shadow-violet-500/25 flex-shrink-0"
+          onDark ? "bg-white shadow-lg shadow-black/20" : "bg-[#141E3E] shadow-lg shadow-[#141E3E]/25",
+          "flex items-center justify-center flex-shrink-0"
         )}
       >
-        <MonitorPlay className={cn(s.icon, "text-white")} />
+        <MonitorPlay className={cn(s.icon, onDark ? "text-[#141E3E]" : "text-white")} />
       </div>
       {showText && (
         <span
@@ -41,7 +44,7 @@ export default function BrandLogo({
             onDark ? "text-white" : "text-[#141E3E]"
           )}
         >
-          BeyondWalls
+          Beyond Walls
         </span>
       )}
     </div>
