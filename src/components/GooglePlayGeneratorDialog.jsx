@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function GooglePlayGeneratorDialog({ logoUrl, onClose }) {
-  const [primaryColor, setPrimaryColor] = useState("#8B5CF6");
+  const [primaryColor, setPrimaryColor] = useState("#E8603C");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [uploadedImage, setUploadedImage] = useState(null);
@@ -118,7 +118,7 @@ export default function GooglePlayGeneratorDialog({ logoUrl, onClose }) {
                 type="text"
                 value={primaryColor}
                 onChange={(e) => setPrimaryColor(e.target.value)}
-                placeholder="#8B5CF6"
+                placeholder="#E8603C"
                 className="flex-1"
               />
             </div>

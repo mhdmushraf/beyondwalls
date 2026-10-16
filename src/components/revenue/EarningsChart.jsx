@@ -65,7 +65,7 @@ export default function EarningsChart({ orgId }) {
             formatter={(value) => [`AED ${Number(value).toLocaleString()}`, 'Earnings']}
             contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '13px' }}
           />
-          <Bar dataKey="amount" fill="#6D3BF5" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="amount" fill="#E8603C" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

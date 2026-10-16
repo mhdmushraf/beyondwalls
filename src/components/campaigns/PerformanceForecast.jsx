@@ -250,7 +250,7 @@ Based on current market trends and seasonality, provide:
                         contentStyle={{ backgroundColor: "white", border: "1px solid #e2e8f0", borderRadius: "8px" }}
                         formatter={(value, name) => [value.toLocaleString(), name === "impressions" ? "Impressions" : "Engagement %"]}
                       />
-                      <Area type="monotone" dataKey="impressions" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.2} />
+                      <Area type="monotone" dataKey="impressions" stroke="#E8603C" fill="#E8603C" fillOpacity={0.2} />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>

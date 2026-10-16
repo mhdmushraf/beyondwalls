@@ -65,7 +65,7 @@ export default function PerformanceByTimeSlot({ bookings, screens }) {
       name: "Evening", 
       range: "5PM - 9PM", 
       icon: Sunset, 
-      color: "#8b5cf6",
+      color: "#E8603C",
       impressions: 3370,
       viewers: 2200,
       bestHour: "7PM",
@@ -75,7 +75,7 @@ export default function PerformanceByTimeSlot({ bookings, screens }) {
       name: "Night", 
       range: "9PM - 12AM", 
       icon: Moon, 
-      color: "#6366f1",
+      color: "#141E3E",
       impressions: 1360,
       viewers: 900,
       bestHour: "9PM",
@@ -171,7 +171,7 @@ export default function PerformanceByTimeSlot({ bookings, screens }) {
                   {hourlyData.map((entry, index) => (
                     <Cell 
                       key={`cell-${index}`} 
-                      fill={entry.hour === "7PM" ? "#8b5cf6" : "#c4b5fd"} 
+                      fill={entry.hour === "7PM" ? "#E8603C" : "#F3CBBC"} 
                     />
                   ))}
                 </Bar>
@@ -204,11 +204,11 @@ export default function PerformanceByTimeSlot({ bookings, screens }) {
                 <XAxis dataKey="day" stroke="#94a3b8" fontSize={12} />
                 <YAxis stroke="#94a3b8" fontSize={12} />
                 <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0" }} />
-                <Bar dataKey="impressions" fill="#6366f1" radius={[4, 4, 0, 0]} name="Impressions">
+                <Bar dataKey="impressions" fill="#141E3E" radius={[4, 4, 0, 0]} name="Impressions">
                   {dayOfWeekData.map((entry, index) => (
                     <Cell 
                       key={`cell-${index}`} 
-                      fill={["Fri", "Sat"].includes(entry.day) ? "#8b5cf6" : "#c4b5fd"} 
+                      fill={["Fri", "Sat"].includes(entry.day) ? "#E8603C" : "#F3CBBC"} 
                     />
                   ))}
                 </Bar>

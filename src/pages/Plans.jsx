@@ -26,7 +26,7 @@ const ACCOUNT_TYPES = [
     youDo: "Browse screens, book slots by the week, upload creative, track campaigns.",
     youPay: "The screen's rate plus a 30% service fee. Nothing to join.",
     example: "A AED 100/week screen costs AED 130 for one week, all in.",
-    accent: "#6366F1",
+    accent: "#141E3E",
   },
   {
     key: "venue",
@@ -61,7 +61,7 @@ const ACCOUNT_TYPES = [
 ];
 
 const COMPARISON_ROWS = [
-  { type: "Advertiser", join: "Free", pay: "Screen rate + 30% fee", earn: "Campaign results", bestFor: "Brands & SMBs", accent: "#6366F1" },
+  { type: "Advertiser", join: "Free", pay: "Screen rate + 30% fee", earn: "Campaign results", bestFor: "Brands & SMBs", accent: "#141E3E" },
   { type: "Venue Owner", join: "Free", pay: "Nothing", earn: "100% of your rate", bestFor: "Cafés, gyms, clinics", accent: "#10B981" },
   { type: "Enterprise", join: "Contact us", pay: "Monthly software fee", earn: "No commission on self-sold", bestFor: "Multi-site operators", accent: "#3B82F6" },
   { type: "Agency", join: "Free", pay: "Same as advertiser", earn: "Your client margin", bestFor: "Media agencies", accent: "#F59E0B" },
@@ -282,7 +282,7 @@ export default function Plans() {
                       <p className="text-sm mb-1" style={{ color: "#94A3B8" }}>
                         Beyond Walls
                       </p>
-                      <p className="text-xl font-bold" style={{ color: "#A78BFA" }}>
+                      <p className="text-xl font-bold" style={{ color: "#EEA990" }}>
                         AED 120
                       </p>
                     </div>

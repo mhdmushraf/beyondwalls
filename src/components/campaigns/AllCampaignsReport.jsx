@@ -48,7 +48,7 @@ export default function AllCampaignsReport({ bookings, screens, venues }) {
   const spendByStatus = [
     { name: "Active", value: bookings.filter(b => b.status === "active").reduce((s, b) => s + (b.total_cost || 0), 0), color: "#10b981" },
     { name: "Paused", value: bookings.filter(b => b.status === "paused").reduce((s, b) => s + (b.total_cost || 0), 0), color: "#f59e0b" },
-    { name: "Completed", value: bookings.filter(b => b.status === "completed").reduce((s, b) => s + (b.total_cost || 0), 0), color: "#6366f1" },
+    { name: "Completed", value: bookings.filter(b => b.status === "completed").reduce((s, b) => s + (b.total_cost || 0), 0), color: "#141E3E" },
     { name: "Pending", value: bookings.filter(b => b.status === "pending").reduce((s, b) => s + (b.total_cost || 0), 0), color: "#94a3b8" },
   ].filter(s => s.value > 0);
 
@@ -177,7 +177,7 @@ export default function AllCampaignsReport({ bookings, screens, venues }) {
                     <XAxis type="number" tickFormatter={(v) => `${v}`} />
                     <YAxis type="category" dataKey="name" width={100} />
                     <Tooltip formatter={(value) => `AED ${value.toLocaleString()}`} />
-                    <Bar dataKey="value" fill="#8b5cf6" radius={[0, 4, 4, 0]} />
+                    <Bar dataKey="value" fill="#E8603C" radius={[0, 4, 4, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

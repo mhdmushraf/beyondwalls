@@ -87,7 +87,7 @@ export const generateManifest = () => {
     start_url: "/",
     display: "standalone",
     background_color: "#ffffff",
-    theme_color: "#8B5CF6",
+    theme_color: "#E8603C",
     orientation: "portrait-primary",
     icons: [
       {
@@ -217,9 +217,9 @@ export default function SitemapGenerator() {
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#8B5CF6">
-<meta name="msapplication-TileColor" content="#8B5CF6">
-<meta name="theme-color" content="#8B5CF6">`, 'favicon')}
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#E8603C">
+<meta name="msapplication-TileColor" content="#E8603C">
+<meta name="theme-color" content="#E8603C">`, 'favicon')}
             className="text-sm text-violet-600 hover:text-violet-800"
           >
             {copied === 'favicon' ? '✓ Copied!' : 'Copy'}
@@ -230,9 +230,9 @@ export default function SitemapGenerator() {
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#8B5CF6">
-<meta name="msapplication-TileColor" content="#8B5CF6">
-<meta name="theme-color" content="#8B5CF6">`}</pre>
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#E8603C">
+<meta name="msapplication-TileColor" content="#E8603C">
+<meta name="theme-color" content="#E8603C">`}</pre>
       </div>
     </div>
   );

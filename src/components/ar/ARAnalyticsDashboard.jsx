@@ -39,7 +39,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const COLORS = ['#8b5cf6', '#6366f1', '#3b82f6', '#10b981', '#f59e0b'];
+const COLORS = ['#E8603C', '#141E3E', '#3b82f6', '#10b981', '#f59e0b'];
 
 export default function ARAnalyticsDashboard({ campaigns, analyticsEvents }) {
   const [timeRange, setTimeRange] = useState("7d");
@@ -73,8 +73,8 @@ export default function ARAnalyticsDashboard({ campaigns, analyticsEvents }) {
     const ctaClicks = filteredEvents.filter(e => e.event_type === "cta_click").length;
 
     return [
-      { name: "Scans", value: scans, fill: "#8b5cf6" },
-      { name: "AR Started", value: arStarts, fill: "#6366f1" },
+      { name: "Scans", value: scans, fill: "#E8603C" },
+      { name: "AR Started", value: arStarts, fill: "#141E3E" },
       { name: "Interactions", value: interactions, fill: "#3b82f6" },
       { name: "CTA Clicks", value: ctaClicks, fill: "#10b981" }
     ];
@@ -343,7 +343,7 @@ export default function ARAnalyticsDashboard({ campaigns, analyticsEvents }) {
                     <XAxis dataKey="location" tick={{ fontSize: 12 }} />
                     <YAxis />
                     <Tooltip />
-                    <Bar dataKey="scans" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="scans" fill="#E8603C" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -371,8 +371,8 @@ export default function ARAnalyticsDashboard({ campaigns, analyticsEvents }) {
                   />
                   <YAxis />
                   <Tooltip />
-                  <Area type="monotone" dataKey="scans" stackId="1" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.6} />
-                  <Area type="monotone" dataKey="interactions" stackId="1" stroke="#6366f1" fill="#6366f1" fillOpacity={0.6} />
+                  <Area type="monotone" dataKey="scans" stackId="1" stroke="#E8603C" fill="#E8603C" fillOpacity={0.6} />
+                  <Area type="monotone" dataKey="interactions" stackId="1" stroke="#141E3E" fill="#141E3E" fillOpacity={0.6} />
                   <Area type="monotone" dataKey="conversions" stackId="1" stroke="#10b981" fill="#10b981" fillOpacity={0.6} />
                 </AreaChart>
               </ResponsiveContainer>

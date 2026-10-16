@@ -10,7 +10,7 @@ import { Lock, Eye, EyeOff, ArrowRight, CheckCircle2 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
 const inputFocusClass =
-  "text-[16px] min-h-[46px] focus-visible:ring-0 focus-visible:border-[#6366f1] focus-visible:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] transition-all duration-150";
+  "text-[16px] min-h-[46px] focus-visible:ring-0 focus-visible:border-[#141E3E] focus-visible:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] transition-all duration-150";
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
@@ -73,7 +73,7 @@ export default function ResetPassword() {
                 This password reset link is missing a token. Please request a new reset link.
               </p>
               <Link to="/forgot-password">
-                <Button className="w-full h-12 rounded-[11px] bg-gradient-to-b from-[#6D6FF5] to-[#6366F1] hover:from-[#5B5EE8] hover:to-[#595BE3]">
+                <Button className="w-full h-12 rounded-[11px] bg-gradient-to-b from-[#141E3E] to-[#141E3E] hover:from-[#141E3E] hover:to-[#141E3E]">
                   Request new link
                 </Button>
               </Link>
@@ -114,7 +114,7 @@ export default function ResetPassword() {
                 Your password has been reset successfully. You can now sign in with your new password.
               </p>
               <Link to="/login">
-                <Button className="w-full h-12 rounded-[11px] bg-gradient-to-b from-[#6D6FF5] to-[#6366F1] hover:from-[#5B5EE8] hover:to-[#595BE3]">
+                <Button className="w-full h-12 rounded-[11px] bg-gradient-to-b from-[#141E3E] to-[#141E3E] hover:from-[#141E3E] hover:to-[#141E3E]">
                   Sign in
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
@@ -204,7 +204,7 @@ export default function ResetPassword() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full h-12 rounded-[11px] bg-gradient-to-b from-[#6D6FF5] to-[#6366F1] hover:from-[#5B5EE8] hover:to-[#595BE3]"
+                className="w-full h-12 rounded-[11px] bg-gradient-to-b from-[#141E3E] to-[#141E3E] hover:from-[#141E3E] hover:to-[#141E3E]"
               >
                 {loading ? "Updating…" : "Update password"}
                 {!loading && <ArrowRight className="w-4 h-4 ml-2" />}

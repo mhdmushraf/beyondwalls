@@ -22,7 +22,7 @@ import {
   Cell
 } from "recharts";
 
-const COLORS = ["#8b5cf6", "#6366f1", "#3b82f6", "#22c55e", "#f59e0b"];
+const COLORS = ["#E8603C", "#141E3E", "#3b82f6", "#22c55e", "#f59e0b"];
 
 export default function EarningsBreakdown({ transactions, screens, venues, bookings }) {
   // Filter earning transactions
@@ -178,7 +178,7 @@ export default function EarningsBreakdown({ transactions, screens, venues, booki
                     formatter={(value) => [`AED ${value.toLocaleString()}`, "Earnings"]}
                     contentStyle={{ borderRadius: "8px", border: "1px solid #e2e8f0" }}
                   />
-                  <Bar dataKey="earnings" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="earnings" fill="#E8603C" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

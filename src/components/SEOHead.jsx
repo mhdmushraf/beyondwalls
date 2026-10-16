@@ -129,7 +129,7 @@ export default function SEOHead({
 
       // Set BeyondWalls favicon (only once)
       if (!document.querySelector('link[rel="icon"][data-beyondwalls]')) {
-        const faviconSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1"/><stop offset="100%" style="stop-color:#6366F1;stop-opacity:1"/></linearGradient></defs><rect width="48" height="48" rx="10" fill="url(#grad)"/><path d="M14 14h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H14a2 2 0 0 1-2-2V16a2 2 0 0 1 2-2z" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 34h12M24 28v6" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>`;
+        const faviconSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#E8603C;stop-opacity:1"/><stop offset="100%" style="stop-color:#141E3E;stop-opacity:1"/></linearGradient></defs><rect width="48" height="48" rx="10" fill="url(#grad)"/><path d="M14 14h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H14a2 2 0 0 1-2-2V16a2 2 0 0 1 2-2z" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 34h12M24 28v6" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>`;
         const faviconHref = 'data:image/svg+xml;base64,' + btoa(faviconSVG);
 
         // Remove all existing favicons
@@ -227,7 +227,7 @@ export default function SEOHead({
     setMetaTag("geo.placename", "Dubai");
     setMetaTag("geo.position", "25.0957;55.1548");
     setMetaTag("ICBM", "25.0957, 55.1548");
-    setMetaTag("theme-color", "#8B5CF6");
+    setMetaTag("theme-color", "#E8603C");
 
   }, [title, description, keywords, canonical, ogImage, structuredData, noIndex, article]);
 

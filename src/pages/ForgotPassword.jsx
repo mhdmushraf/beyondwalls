@@ -10,7 +10,7 @@ import { Mail, ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
 const inputFocusClass =
-  "text-[16px] min-h-[46px] focus-visible:ring-0 focus-visible:border-[#6366f1] focus-visible:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] transition-all duration-150";
+  "text-[16px] min-h-[46px] focus-visible:ring-0 focus-visible:border-[#141E3E] focus-visible:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] transition-all duration-150";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -113,7 +113,7 @@ export default function ForgotPassword() {
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="w-full h-12 rounded-[11px] bg-gradient-to-b from-[#6D6FF5] to-[#6366F1] hover:from-[#5B5EE8] hover:to-[#595BE3]"
+                    className="w-full h-12 rounded-[11px] bg-gradient-to-b from-[#141E3E] to-[#141E3E] hover:from-[#141E3E] hover:to-[#141E3E]"
                   >
                     {loading ? "Sending…" : "Send reset link"}
                     {!loading && <ArrowRight className="w-4 h-4 ml-2" />}
@@ -123,7 +123,7 @@ export default function ForgotPassword() {
 
               <p className="text-center text-sm text-slate-500 mt-6">
                 Remembered your password?{" "}
-                <Link to="/login" className="text-[#6366f1] font-medium hover:underline">
+                <Link to="/login" className="text-[#141E3E] font-medium hover:underline">
                   Sign in
                 </Link>
               </p>

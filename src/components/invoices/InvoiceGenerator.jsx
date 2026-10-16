@@ -21,26 +21,26 @@ export function generateInvoiceHTML(type, data) {
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1e293b; line-height: 1.6; }
     .invoice { max-width: 800px; margin: 0 auto; padding: 40px; }
-    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; border-bottom: 3px solid #8b5cf6; padding-bottom: 20px; }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; border-bottom: 3px solid #E8603C; padding-bottom: 20px; }
     .logo { display: flex; align-items: center; gap: 12px; }
-    .logo-icon { width: 50px; height: 50px; background: linear-gradient(135deg, #8b5cf6, #6366f1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; }
-    .logo-text { font-size: 28px; font-weight: bold; background: linear-gradient(90deg, #8b5cf6, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .logo-icon { width: 50px; height: 50px; background: linear-gradient(135deg, #E8603C, #141E3E); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; }
+    .logo-text { font-size: 28px; font-weight: bold; background: linear-gradient(90deg, #E8603C, #141E3E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .invoice-title { text-align: right; }
-    .invoice-title h1 { font-size: 32px; color: #8b5cf6; margin-bottom: 5px; }
+    .invoice-title h1 { font-size: 32px; color: #E8603C; margin-bottom: 5px; }
     .invoice-title p { color: #64748b; }
     .section { margin-bottom: 30px; }
-    .section-title { font-size: 14px; color: #8b5cf6; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-weight: 600; }
+    .section-title { font-size: 14px; color: #E8603C; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-weight: 600; }
     .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-    .info-box { background: #f8fafc; padding: 20px; border-radius: 12px; border-left: 4px solid #8b5cf6; }
+    .info-box { background: #f8fafc; padding: 20px; border-radius: 12px; border-left: 4px solid #E8603C; }
     .info-box h3 { font-size: 16px; margin-bottom: 10px; color: #1e293b; }
     .info-box p { color: #64748b; font-size: 14px; }
     .table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    .table th { background: linear-gradient(135deg, #8b5cf6, #6366f1); color: white; padding: 15px; text-align: left; font-weight: 600; }
+    .table th { background: linear-gradient(135deg, #E8603C, #141E3E); color: white; padding: 15px; text-align: left; font-weight: 600; }
     .table td { padding: 15px; border-bottom: 1px solid #e2e8f0; }
     .table tr:hover { background: #f8fafc; }
     .totals { margin-top: 30px; background: #f8fafc; padding: 25px; border-radius: 12px; }
     .total-row { display: flex; justify-content: space-between; padding: 8px 0; }
-    .total-row.final { border-top: 2px solid #8b5cf6; margin-top: 10px; padding-top: 15px; font-size: 20px; font-weight: bold; color: #8b5cf6; }
+    .total-row.final { border-top: 2px solid #E8603C; margin-top: 10px; padding-top: 15px; font-size: 20px; font-weight: bold; color: #E8603C; }
     .footer { margin-top: 50px; text-align: center; color: #64748b; font-size: 12px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
     .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
     .badge-success { background: #dcfce7; color: #166534; }

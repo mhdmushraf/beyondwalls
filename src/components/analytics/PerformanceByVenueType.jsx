@@ -45,12 +45,12 @@ export default function PerformanceByVenueType({ bookings, screens, venues }) {
   const venueColors = {
     restaurant: "#ef4444",
     cafe: "#f97316",
-    mall: "#8b5cf6",
+    mall: "#E8603C",
     gym: "#10b981",
     coworking: "#3b82f6",
-    hotel: "#6366f1",
+    hotel: "#141E3E",
     hospital: "#14b8a6",
-    salon: "#ec4899",
+    salon: "#C94E2E",
     other: "#64748b"
   };
 
@@ -236,7 +236,7 @@ export default function PerformanceByVenueType({ bookings, screens, venues }) {
                   <YAxis stroke="#94a3b8" fontSize={12} />
                   <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0" }} />
                   <Legend />
-                  <Bar dataKey="playouts" name="Ad Playouts" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="playouts" name="Ad Playouts" fill="#E8603C" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="reach" name="People Reached" fill="#10b981" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>

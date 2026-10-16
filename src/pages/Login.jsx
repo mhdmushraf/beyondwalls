@@ -8,7 +8,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
 const inputClass =
-  "w-full h-[48px] pl-11 pr-4 rounded-xl border bg-[#F7F8FC] border-[#E3E6F1] text-[16px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#6366f1] focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] transition-all duration-150";
+  "w-full h-[48px] pl-11 pr-4 rounded-xl border bg-[#F7F8FC] border-[#E3E6F1] text-[16px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#141E3E] focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] transition-all duration-150";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -186,7 +186,7 @@ export default function Login() {
                 type="submit"
                 disabled={otpLoading || otpCode.length !== 6}
                 whileTap={{ scale: reduceMotion ? 1 : 0.985 }}
-                className="w-full h-[52px] rounded-[11px] bg-gradient-to-b from-[#6D6FF5] to-[#6366F1] text-white font-semibold text-[16px] hover:from-[#5B5EE8] hover:to-[#595BE3] disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                className="w-full h-[52px] rounded-[11px] bg-gradient-to-b from-[#141E3E] to-[#141E3E] text-white font-semibold text-[16px] hover:from-[#141E3E] hover:to-[#141E3E] disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
                 {otpLoading ? (
                   <>
@@ -208,7 +208,7 @@ export default function Login() {
                 type="button"
                 onClick={handleResendOtp}
                 disabled={resendCooldown > 0}
-                className="text-[#6366f1] font-semibold hover:underline disabled:text-slate-400 disabled:no-underline disabled:cursor-not-allowed"
+                className="text-[#141E3E] font-semibold hover:underline disabled:text-slate-400 disabled:no-underline disabled:cursor-not-allowed"
               >
                 {resendCooldown > 0 ? `Resend code (${resendCooldown}s)` : "Resend code"}
               </button>
@@ -309,13 +309,13 @@ export default function Login() {
                   type="checkbox"
                   checked={keepSignedIn}
                   onChange={(e) => setKeepSignedIn(e.target.checked)}
-                  className="w-4 h-4 rounded border-[#E3E6F1] text-[#6366f1] focus:ring-[#6366f1]"
+                  className="w-4 h-4 rounded border-[#E3E6F1] text-[#141E3E] focus:ring-[#141E3E]"
                 />
                 <span className="text-sm text-slate-600">Keep me signed in</span>
               </label>
               <Link
                 to="/forgot-password"
-                className="text-sm text-[#6366f1] hover:text-[#4f46e5] font-medium"
+                className="text-sm text-[#141E3E] hover:text-[#0C1329] font-medium"
               >
                 Forgot password?
               </Link>
@@ -325,7 +325,7 @@ export default function Login() {
               type="submit"
               disabled={loading}
               whileTap={{ scale: reduceMotion ? 1 : 0.985 }}
-              className="w-full h-[52px] rounded-[11px] bg-gradient-to-b from-[#6D6FF5] to-[#6366F1] text-white font-semibold text-[16px] hover:from-[#5B5EE8] hover:to-[#595BE3] disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+              className="w-full h-[52px] rounded-[11px] bg-gradient-to-b from-[#141E3E] to-[#141E3E] text-white font-semibold text-[16px] hover:from-[#141E3E] hover:to-[#141E3E] disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -343,7 +343,7 @@ export default function Login() {
 
           <p className="text-center text-sm text-slate-500 mt-8">
             New to Beyond Walls?{" "}
-            <Link to="/Register" className="text-[#6366f1] font-semibold hover:underline">
+            <Link to="/Register" className="text-[#141E3E] font-semibold hover:underline">
               Create account
             </Link>
           </p>

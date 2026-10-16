@@ -234,8 +234,8 @@ export default function SpendHistory({ transactions = [], bookings = [] }) {
                 <AreaChart data={dailyData}>
                   <defs>
                     <linearGradient id="spendGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#E8603C" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#E8603C" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -248,7 +248,7 @@ export default function SpendHistory({ transactions = [], bookings = [] }) {
                   <Area 
                     type="monotone" 
                     dataKey="spend" 
-                    stroke="#8b5cf6" 
+                    stroke="#E8603C" 
                     strokeWidth={2}
                     fill="url(#spendGradient)" 
                   />
@@ -262,7 +262,7 @@ export default function SpendHistory({ transactions = [], bookings = [] }) {
                     contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0" }}
                     formatter={(value) => [`AED ${value.toLocaleString()}`, "Spend"]}
                   />
-                  <Bar dataKey="spend" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="spend" fill="#E8603C" radius={[4, 4, 0, 0]} />
                 </BarChart>
               )}
             </ResponsiveContainer>

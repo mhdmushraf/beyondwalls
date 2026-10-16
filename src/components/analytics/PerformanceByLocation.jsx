@@ -57,7 +57,7 @@ export default function PerformanceByLocation({ bookings, screens, venues }) {
     }))
     .sort((a, b) => b.impressions - a.impressions);
 
-  const colors = ["#8b5cf6", "#6366f1", "#3b82f6", "#0ea5e9", "#14b8a6", "#10b981"];
+  const colors = ["#E8603C", "#141E3E", "#3b82f6", "#0ea5e9", "#14b8a6", "#10b981"];
 
   const topCity = chartData[0];
 

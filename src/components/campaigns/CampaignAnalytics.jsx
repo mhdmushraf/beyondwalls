@@ -114,8 +114,8 @@ export default function CampaignAnalytics({ booking, screen, venue }) {
 
   // Audience demographics (simulated)
   const demographicsData = [
-    { name: "18-24", value: 22, color: "#8b5cf6" },
-    { name: "25-34", value: 35, color: "#6366f1" },
+    { name: "18-24", value: 22, color: "#E8603C" },
+    { name: "25-34", value: 35, color: "#141E3E" },
     { name: "35-44", value: 25, color: "#3b82f6" },
     { name: "45-54", value: 12, color: "#0ea5e9" },
     { name: "55+", value: 6, color: "#06b6d4" },
@@ -289,8 +289,8 @@ export default function CampaignAnalytics({ booking, screen, venue }) {
                   <AreaChart data={dailyData}>
                     <defs>
                       <linearGradient id="impressionGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#E8603C" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="#E8603C" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -303,7 +303,7 @@ export default function CampaignAnalytics({ booking, screen, venue }) {
                     <Area 
                       type="monotone" 
                       dataKey="impressions" 
-                      stroke="#8b5cf6" 
+                      stroke="#E8603C" 
                       strokeWidth={2}
                       fill="url(#impressionGradient)" 
                     />
@@ -402,7 +402,7 @@ export default function CampaignAnalytics({ booking, screen, venue }) {
                   <XAxis type="number" stroke="#94a3b8" fontSize={12} />
                   <YAxis type="category" dataKey="hour" stroke="#94a3b8" fontSize={12} width={50} />
                   <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0" }} />
-                  <Bar dataKey="impressions" fill="#6366f1" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="impressions" fill="#141E3E" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
