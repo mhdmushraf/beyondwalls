@@ -112,7 +112,7 @@ export default function ARFeatureSection() {
   ];
 
   return (
-    <section className="py-24 px-6 relative overflow-hidden bg-gradient-to-b from-slate-900 via-violet-950 to-slate-900">
+    <section className="py-24 px-6 relative overflow-hidden bg-gradient-to-b from-slate-900 via-indigo-700 to-slate-900">
       {/* Animated Background */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-violet-500/20 rounded-full blur-[100px] animate-pulse" />
@@ -176,7 +176,7 @@ export default function ARFeatureSection() {
                   <div className="w-64 h-[500px] bg-slate-900 rounded-[3rem] border-4 border-slate-700 shadow-2xl shadow-violet-500/20 overflow-hidden">
                     <div className="absolute top-4 left-1/2 -translate-x-1/2 w-20 h-6 bg-slate-800 rounded-full" />
                     <div className="h-full p-2 pt-8">
-                      <div className="h-full bg-gradient-to-br from-violet-900/50 to-indigo-900/50 rounded-[2.5rem] overflow-hidden relative">
+                      <div className="h-full bg-gradient-to-br from-indigo-600/60 to-indigo-800/60 rounded-[2.5rem] overflow-hidden relative">
                         {/* AR Scene */}
                         <img 
                           src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=600&fit=crop" 

@@ -536,7 +536,7 @@ export default function ScreenPlayer() {
   // ─── Login Screen ───────────────────────────────────────────
   if (!authenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-violet-900 to-slate-900 flex items-center justify-center p-6">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-700 to-slate-900 flex items-center justify-center p-6">
         <Card className="w-full max-w-md border-0 shadow-2xl bg-white/10 backdrop-blur-xl">
           <CardContent className="p-8">
             <div className="text-center mb-8">

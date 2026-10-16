@@ -53,7 +53,7 @@ export default function DOOHvsOOHComparison() {
   ];
 
   return (
-    <section className="py-20 px-6 bg-gradient-to-br from-slate-900 via-violet-950 to-slate-900 relative overflow-hidden">
+    <section className="py-20 px-6 bg-gradient-to-br from-slate-900 via-indigo-700 to-slate-900 relative overflow-hidden">
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-0 left-0 w-full h-full" style={{backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "30px 30px"}} />
       </div>

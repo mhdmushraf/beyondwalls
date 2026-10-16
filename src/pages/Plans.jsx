@@ -143,7 +143,7 @@ export default function Plans() {
       <PublicNav />
 
       {/* Hero */}
-      <section className="pt-28 pb-16 px-6 bg-gradient-to-br from-slate-900 via-violet-900 to-indigo-900 text-white">
+      <section className="pt-28 pb-16 px-6 bg-gradient-to-br from-slate-900 via-indigo-700 to-indigo-900 text-white">
         <div className="max-w-4xl mx-auto text-center">
           <Badge className="bg-white/20 text-white border-0 mb-4">Account Types</Badge>
           <h1 className="text-3xl md:text-5xl font-bold mb-6 leading-tight">
