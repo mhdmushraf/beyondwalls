@@ -55,7 +55,7 @@ export default function Home() {
       try {
         const isAuth = await base44.auth.isAuthenticated();
         if (isAuth && !cancelled) {
-          navigate(createPageUrl("Contact"), { replace: true });
+          // logged-in redirect removed: no dashboard (Nov 2026)
         }
       } catch (e) {
         // Not logged in — stay on the homepage.

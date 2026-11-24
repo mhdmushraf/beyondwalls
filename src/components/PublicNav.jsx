@@ -76,33 +76,11 @@ export default function PublicNav() {
         </div>
 
         <div className="flex items-center gap-2">
-          {isAuthenticated ? (
-              <Button 
-                size="sm" 
-                className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700"
-                onClick={handleDashboardClick}
-              >
-                Dashboard
-                <ArrowRight className="w-4 h-4 ml-1" />
-              </Button>
-            ) : (
-            <>
-              <Link to={createPageUrl("Contact")}>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="hidden sm:flex"
-                >
-                  Sign In
-                </Button>
-              </Link>
-              <Link to={createPageUrl("Contact")}>
-                <Button size="sm" className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700">
-                  Get Started
-                </Button>
-              </Link>
-            </>
-          )}
+          <Link to={createPageUrl("Contact")}>
+            <Button size="sm" className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700">
+              Get Started
+            </Button>
+          </Link>
 
           {/* Mobile Menu Button */}
           <button 
