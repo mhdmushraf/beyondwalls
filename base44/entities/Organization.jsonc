@@ -1,5 +1,83 @@
 {
+  "name": "Organization",
+  "type": "object",
   "properties": {
+    "name": {
+      "description": "Organization / business name",
+      "type": "string"
+    },
+    "type": {
+      "description": "Organization type, chosen at signup",
+      "type": "string",
+      "enum": [
+        "advertiser",
+        "venue",
+        "enterprise",
+        "agency"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "suspended"
+      ],
+      "default": "pending",
+      "description": "Business verification status",
+      "enumColors": [
+        "yellow",
+        "green",
+        "red",
+        "gray"
+      ]
+    },
+    "business_modes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "venue",
+          "advertiser"
+        ]
+      },
+      "description": "What the business signed up to do: host screens, advertise, or both"
+    },
+    "advertiser_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "requested",
+        "approved"
+      ],
+      "default": "none",
+      "enumColors": [
+        "gray",
+        "yellow",
+        "green"
+      ]
+    },
+    "trade_license_number": {
+      "type": "string"
+    },
+    "trade_license_url": {
+      "type": "string",
+      "description": "Private file_uri of the uploaded trade licence"
+    },
+    "emirate": {
+      "type": "string"
+    },
+    "industry": {
+      "type": "string"
+    },
+    "whatsapp": {
+      "type": "string",
+      "description": "WhatsApp number with country code"
+    },
+    "rejection_reason": {
+      "type": "string"
+    },
     "billing_email": {
       "description": "Where invoices are sent",
       "type": "string"
@@ -33,24 +111,10 @@
       },
       "type": "array"
     },
-    "name": {
-      "description": "Organization / business name",
-      "type": "string"
-    },
     "screen_count": {
       "default": 0,
       "description": "Denormalized count of screens owned by this org",
       "type": "number"
-    },
-    "type": {
-      "description": "Organization type, chosen at signup",
-      "enum": [
-        "advertiser",
-        "venue",
-        "enterprise",
-        "agency"
-      ],
-      "type": "string"
     }
   },
   "required": [
@@ -58,11 +122,6 @@
     "type"
   ],
   "rls": {
-    "delete": {
-      "user_condition": {
-        "role": "admin"
-      }
-    },
     "read": {
       "$or": [
         {
@@ -78,10 +137,20 @@
         }
       ]
     },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
     "update": {
       "$or": [
         {
           "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.member_user_ids": {
+            "$in": [
+              "{{user.id}}"
+            ]
+          }
         },
         {
           "user_condition": {
@@ -89,8 +158,11 @@
           }
         }
       ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
     }
-  },
-  "type": "object",
-  "name": "Organization"
+  }
 }

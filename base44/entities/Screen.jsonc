@@ -11,25 +11,15 @@
       "items": {
         "type": "string"
       },
-      "description": "Denormalized from parent Organization.member_user_ids \u2014 drives RLS on this screen. Updated when the screen is created or when org membership changes."
-    },
-    "site_id": {
-      "type": "string",
-      "description": "ID of the Site this screen belongs to (enterprise grouping). Optional \u2014 screens may belong to a Venue, a Site, or neither."
-    },
-    "monetization_mode": {
-      "type": "string",
-      "enum": [
-        "marketplace",
-        "self_serve",
-        "hybrid"
-      ],
-      "default": "marketplace",
-      "description": "How this screen monetizes ad slots"
+      "description": "Denormalized from parent Organization.member_user_ids \u2014 drives RLS on this screen."
     },
     "venue_id": {
       "type": "string",
-      "description": "Associated venue ID (optional \u2014 enterprise screens may use site_id instead)"
+      "description": "Venue this screen sits in (required for new screens)"
+    },
+    "site_id": {
+      "type": "string",
+      "description": "ID of the Site this screen belongs to (enterprise grouping). Optional."
     },
     "name": {
       "type": "string",
@@ -37,20 +27,97 @@
     },
     "description": {
       "type": "string",
-      "description": "Optional description of the screen (up to 1000 characters)",
       "maxLength": 1000
     },
-    "setup_code": {
+    "mode": {
       "type": "string",
-      "description": "Unique setup code for player (BW- prefix)"
+      "enum": [
+        "ads_only",
+        "signage_ads",
+        "signage_only"
+      ],
+      "default": "signage_ads",
+      "description": "What the screen shows: advertising only, signage plus ads, or signage only",
+      "enumColors": [
+        "blue",
+        "purple",
+        "gray"
+      ]
     },
-    "screen_pin": {
+    "position_label": {
       "type": "string",
-      "description": "6-digit PIN for secondary authentication"
+      "description": "Where the screen sits, e.g. front counter"
+    },
+    "orientation": {
+      "type": "string",
+      "enum": [
+        "landscape",
+        "portrait"
+      ],
+      "default": "landscape"
+    },
+    "player_type": {
+      "type": "string",
+      "enum": [
+        "bone",
+        "browser",
+        "android_tv",
+        "lg",
+        "samsung"
+      ],
+      "default": "browser"
+    },
+    "pairing_code": {
+      "type": "string",
+      "description": "6 character code used to pair a device to this screen"
+    },
+    "paired_device_id": {
+      "type": "string",
+      "description": "The one device currently locked to this screen"
+    },
+    "paired_at": {
+      "type": "string"
     },
     "device_token": {
       "type": "string",
-      "description": "Secure token for kiosk autologin"
+      "description": "Secret the paired player uses to call the player endpoints"
+    },
+    "last_heartbeat": {
+      "type": "string"
+    },
+    "is_online": {
+      "type": "boolean",
+      "default": false
+    },
+    "current_item": {
+      "type": "string",
+      "description": "What the player last reported as playing"
+    },
+    "player_version": {
+      "type": "string"
+    },
+    "uptime_seconds": {
+      "type": "number",
+      "default": 0
+    },
+    "last_snapshot_url": {
+      "type": "string",
+      "description": "Private file_uri of the most recent player snapshot"
+    },
+    "player_command": {
+      "type": "string",
+      "description": "Pending command for the player, e.g. restart:1712345678"
+    },
+    "marketplace_enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "setup_code": {
+      "type": "string",
+      "description": "Legacy setup code for player (BW- prefix)"
+    },
+    "screen_pin": {
+      "type": "string"
     },
     "screen_image_url": {
       "type": "string",
@@ -58,7 +125,7 @@
     },
     "default_image_url": {
       "type": "string",
-      "description": "Default image shown when screen is stopped or has no content"
+      "description": "Image shown when the screen is stopped or has no content"
     },
     "width_px": {
       "type": "number",
@@ -79,18 +146,15 @@
     },
     "total_slots": {
       "type": "number",
-      "default": 10,
-      "description": "Total ad slots"
+      "default": 10
     },
     "public_ad_slots": {
       "type": "number",
-      "default": 7,
-      "description": "Slots for public advertisers"
+      "default": 7
     },
     "internal_slots": {
       "type": "number",
-      "default": 3,
-      "description": "Slots for internal/owner content"
+      "default": 3
     },
     "slot_duration": {
       "type": "number",
@@ -100,12 +164,19 @@
         45,
         60
       ],
-      "default": 30,
-      "description": "Seconds per slot"
+      "default": 30
     },
     "price_per_week": {
-      "type": "number",
-      "description": "Price per slot per week (AED)"
+      "type": "number"
+    },
+    "monetization_mode": {
+      "type": "string",
+      "enum": [
+        "marketplace",
+        "self_serve",
+        "hybrid"
+      ],
+      "default": "marketplace"
     },
     "status": {
       "type": "string",
@@ -124,14 +195,15 @@
         "approved",
         "rejected"
       ],
-      "default": "pending"
-    },
-    "player_command": {
-      "type": "string"
+      "default": "pending",
+      "enumColors": [
+        "yellow",
+        "green",
+        "red"
+      ]
     },
     "location_description": {
-      "type": "string",
-      "description": "Where screen is placed in venue"
+      "type": "string"
     },
     "tags": {
       "type": "array",
@@ -243,10 +315,17 @@
         }
       ]
     },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
     "update": {
       "$or": [
         {
-          "data.org_member_user_ids": "{{user.id}}"
+          "data.org_member_user_ids": {
+            "$in": [
+              "{{user.id}}"
+            ]
+          }
         },
         {
           "user_condition": {
@@ -258,7 +337,11 @@
     "delete": {
       "$or": [
         {
-          "data.org_member_user_ids": "{{user.id}}"
+          "data.org_member_user_ids": {
+            "$in": [
+              "{{user.id}}"
+            ]
+          }
         },
         {
           "user_condition": {

@@ -1,0 +1,45 @@
+{
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "screen_offline_sweep",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "mark_offline": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "markOfflineScreens",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Mark stale screens offline",
+            "description": "No heartbeat for 3 minutes"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "*/5 * * * *",
+      "one_time_date": null,
+      "timezone": "UTC",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Every 5 minutes, marks a screen offline when it has not sent a heartbeat for 3 minutes.",
+  "name": "Screen Offline Sweep"
+}

@@ -25,6 +25,17 @@ import WhatIsDOOHAdvertisingGuide from './pages/WhatIsDOOHAdvertisingGuide';
 import EarnMoneyVenueScreensDubai from './pages/EarnMoneyVenueScreensDubai';
 import DOOHAdvertisingMarketplaceDubai from './pages/DOOHAdvertisingMarketplaceDubai';
 import Plans from './pages/Plans';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Onboarding from './pages/Onboarding';
+import Player from './pages/Player';
+import PortalLayout from './components/portal/PortalLayout';
+import PortalDashboard from './pages/portal/PortalDashboard';
+import PortalVenues from './pages/portal/PortalVenues';
+import PortalScreens from './pages/portal/PortalScreens';
+import PortalScreenDetail from './pages/portal/PortalScreenDetail';
+import AdminApprovals from './pages/admin/AdminApprovals';
+import { I18nProvider } from '@/lib/i18n';
 
 // Lazy load pages for code splitting
 const LazyPageLoader = ({ Page }) => (
@@ -75,6 +86,7 @@ const AuthenticatedApp = () => {
         '/doohadvertisingcostdubai', '/indoorvenuedoohvsbillboardsdubai',
         '/whatisdoohadvertisingguide', '/earnmoneyvenuescreensdubai',
         '/doohadvertisingmarketplacedubai', '/robotstxt', '/sitemapxml', '/notfound',
+        '/login', '/signup', '/player',
       ];
       const currentPath = window.location.pathname.toLowerCase().replace(/\/$/, '') || '/';
       const onPublicRoute = PUBLIC_PATH_PREFIXES.includes(currentPath);
@@ -222,8 +234,19 @@ const AuthenticatedApp = () => {
              </MobileRouteTransition>
            </LayoutWrapper>
          } />
+         <Route path="/login" element={<Login />} />
+         <Route path="/signup" element={<Signup />} />
+         <Route path="/player" element={<Player />} />
+         <Route path="/onboarding" element={<Onboarding />} />
+         <Route path="/admin" element={<AdminApprovals />} />
+         <Route path="/app" element={<PortalLayout />}>
+           <Route index element={<PortalDashboard />} />
+           <Route path="venues" element={<PortalVenues />} />
+           <Route path="screens" element={<PortalScreens />} />
+           <Route path="screens/:screenId" element={<PortalScreenDetail />} />
+         </Route>
          <Route path="*" element={<PageNotFound />} />
-       </Routes>
+         </Routes>
      </AnimatePresence>
    );
 };
@@ -236,16 +259,18 @@ function App() {
   // every page.
 
   return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClientInstance}>
-        <Router>
-          <NavigationTracker />
-          <AuthenticatedApp />
-        </Router>
-        <Toaster closeButton richColors position="top-right" />
-        <VisualEditAgent />
-      </QueryClientProvider>
-    </AuthProvider>
+    <I18nProvider>
+      <AuthProvider>
+        <QueryClientProvider client={queryClientInstance}>
+          <Router>
+            <NavigationTracker />
+            <AuthenticatedApp />
+          </Router>
+          <Toaster closeButton richColors position="top-right" />
+          <VisualEditAgent />
+        </QueryClientProvider>
+      </AuthProvider>
+    </I18nProvider>
   )
 }
 

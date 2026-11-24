@@ -1,4 +1,6 @@
 {
+  "name": "Membership",
+  "type": "object",
   "properties": {
     "org_id": {
       "description": "The organization they belong to",
@@ -9,11 +11,29 @@
       "description": "Role within the organization",
       "enum": [
         "owner",
-        "admin",
-        "member",
-        "advertiser"
+        "venue_manager",
+        "designer",
+        "viewer"
       ],
-      "type": "string"
+      "type": "string",
+      "enumColors": [
+        "blue",
+        "purple",
+        "pink",
+        "gray"
+      ]
+    },
+    "venue_ids": {
+      "description": "Venues this member can access. Empty means every venue in the organization.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "current_org": {
+      "default": false,
+      "description": "True for the business the user last had open in the portal",
+      "type": "boolean"
     },
     "user_email": {
       "description": "Denormalized user email for display",
@@ -34,11 +54,6 @@
     "role"
   ],
   "rls": {
-    "delete": {
-      "user_condition": {
-        "role": "admin"
-      }
-    },
     "read": {
       "$or": [
         {
@@ -51,12 +66,25 @@
         }
       ]
     },
+    "create": {
+      "data.user_id": "{{user.id}}"
+    },
     "update": {
+      "$or": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
       "user_condition": {
         "role": "admin"
       }
     }
-  },
-  "type": "object",
-  "name": "Membership"
+  }
 }

@@ -14,6 +14,15 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+  			bw: {
+  				navy: 'hsl(var(--bw-navy) / <alpha-value>)',
+  				'navy-soft': 'hsl(var(--bw-navy-soft) / <alpha-value>)',
+  				coral: 'hsl(var(--bw-coral) / <alpha-value>)',
+  				cream: 'hsl(var(--bw-cream) / <alpha-value>)',
+  				line: 'hsl(var(--bw-line) / <alpha-value>)',
+  				ink: 'hsl(var(--bw-ink) / <alpha-value>)',
+  				muted: 'hsl(var(--bw-muted) / <alpha-value>)'
+  			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			navy: {

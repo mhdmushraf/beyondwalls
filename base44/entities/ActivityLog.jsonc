@@ -1,0 +1,78 @@
+{
+  "name": "ActivityLog",
+  "type": "object",
+  "properties": {
+    "org_id": {
+      "type": "string"
+    },
+    "org_member_user_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Denormalized from Organization.member_user_ids \u2014 drives RLS"
+    },
+    "user_email": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string",
+      "description": "Short verb, e.g. business_approved, venue_created, screen_paired"
+    },
+    "target_type": {
+      "type": "string",
+      "enum": [
+        "organization",
+        "venue",
+        "screen",
+        "membership",
+        "player",
+        "system"
+      ]
+    },
+    "target_id": {
+      "type": "string"
+    },
+    "details": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "timestamp": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "action",
+    "target_type"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.org_member_user_ids": "{{user.id}}"
+        },
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

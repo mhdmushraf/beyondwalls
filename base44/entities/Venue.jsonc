@@ -2,6 +2,17 @@
   "name": "Venue",
   "type": "object",
   "properties": {
+    "org_id": {
+      "type": "string",
+      "description": "ID of the Organization that owns this venue"
+    },
+    "org_member_user_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Denormalized from Organization.member_user_ids \u2014 drives RLS"
+    },
     "owner_email": {
       "type": "string",
       "description": "Email of venue owner"
@@ -34,6 +45,9 @@
       "type": "string",
       "description": "City"
     },
+    "emirate": {
+      "type": "string"
+    },
     "country": {
       "type": "string",
       "default": "UAE"
@@ -47,6 +61,9 @@
     "description": {
       "type": "string"
     },
+    "logo_url": {
+      "type": "string"
+    },
     "image_url": {
       "type": "string"
     },
@@ -55,7 +72,7 @@
       "items": {
         "type": "string"
       },
-      "description": "Up to 3 venue photos"
+      "description": "Up to 5 venue photos"
     },
     "status": {
       "type": "string",
@@ -73,7 +90,33 @@
         "approved",
         "rejected"
       ],
-      "default": "pending"
+      "default": "pending",
+      "enumColors": [
+        "yellow",
+        "green",
+        "red"
+      ]
+    },
+    "rejection_reason": {
+      "type": "string"
+    },
+    "opening_hours": {
+      "type": "string",
+      "description": "Human readable opening hours, e.g. 08:00 - 23:00"
+    },
+    "opening_time": {
+      "type": "string"
+    },
+    "closing_time": {
+      "type": "string"
+    },
+    "peak_hours": {
+      "type": "string",
+      "description": "Peak visitor hours"
+    },
+    "daily_customers": {
+      "type": "number",
+      "description": "Average daily visitors"
     },
     "daily_footfall": {
       "type": "number",
@@ -83,13 +126,29 @@
       "type": "number",
       "description": "Estimated weekly visitors"
     },
-    "peak_hours": {
+    "avg_spend_range": {
       "type": "string",
-      "description": "Peak visitor hours"
+      "enum": [
+        "under_25",
+        "25_50",
+        "50_100",
+        "100_plus"
+      ]
+    },
+    "avg_stay_minutes": {
+      "type": "number",
+      "description": "Average time a visitor stays (minutes)"
     },
     "avg_dwell_time_minutes": {
       "type": "number",
       "description": "Average time visitors spend in venue (minutes)"
+    },
+    "venue_group_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Grouping tags for reporting, e.g. mall-branch, downtown"
     },
     "audience_age_group": {
       "type": "string",
@@ -109,12 +168,6 @@
         "female_dominant",
         "mixed"
       ]
-    },
-    "opening_time": {
-      "type": "string"
-    },
-    "closing_time": {
-      "type": "string"
     },
     "contact_phone": {
       "type": "string"
@@ -136,6 +189,9 @@
           "data.status": "active"
         },
         {
+          "data.org_member_user_ids": "{{user.id}}"
+        },
+        {
           "data.owner_email": "{{user.email}}"
         },
         {
@@ -145,8 +201,18 @@
         }
       ]
     },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
     "update": {
       "$or": [
+        {
+          "data.org_member_user_ids": {
+            "$in": [
+              "{{user.id}}"
+            ]
+          }
+        },
         {
           "data.owner_email": "{{user.email}}"
         },
