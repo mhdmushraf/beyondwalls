@@ -24,33 +24,6 @@ import IndoorVenueDOOHvsBillboardsDubai from './pages/IndoorVenueDOOHvsBillboard
 import WhatIsDOOHAdvertisingGuide from './pages/WhatIsDOOHAdvertisingGuide';
 import EarnMoneyVenueScreensDubai from './pages/EarnMoneyVenueScreensDubai';
 import DOOHAdvertisingMarketplaceDubai from './pages/DOOHAdvertisingMarketplaceDubai';
-import ScreensOverview from './pages/ScreensOverview';
-import Workspace from './pages/Workspace';
-import Login from './pages/Login';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-import Marketplace from './pages/Marketplace';
-import Campaigns from './pages/Campaigns';
-import Media from './pages/Media';
-import Analytics from './pages/Analytics';
-import Settings from './pages/Settings';
-import MyScreens from './pages/MyScreens';
-import Bookings from './pages/Bookings';
-import Playlists from './pages/Playlists';
-import Revenue from './pages/Revenue';
-import Screens from './pages/Screens';
-import Content from './pages/Content';
-import Team from './pages/Team';
-import Finance from './pages/Finance';
-import Clients from './pages/Clients';
-import Reports from './pages/Reports';
-import Organizations from './pages/Organizations';
-import UsersPage from './pages/Users';
-import Approvals from './pages/Approvals';
-import Network from './pages/Network';
-import AddScreen from './pages/AddScreen';
-import ScreenPairing from './pages/ScreenPairing';
-import ScreenDetail from './pages/ScreenDetail';
 import Plans from './pages/Plans';
 
 // Lazy load pages for code splitting
@@ -92,10 +65,10 @@ const AuthenticatedApp = () => {
       // infinite reload loop that shows as a permanent spinner. Just fall
       // through and render the public page.
       const PUBLIC_PATH_PREFIXES = [
-        '/', '/home', '/login', '/register', '/about', '/services', '/contact',
+        '/', '/home', '/about', '/services', '/contact',
         '/screenlocations', '/blog', '/blogpost', '/authorprofile', '/helpcenter',
         '/terms', '/privacy', '/howitworks', '/connect', '/plans', '/sitemap',
-        '/screenplayer', '/screensoverview', '/forgotpassword', '/resetpassword',
+        
         '/doohadvertisingdubai', '/digitalsignageuae', '/cafescreenadvertisingdubai',
         '/gymscreenadvertisingdubai', '/coworkingspaceadvertisingdubai',
         '/clinicscreenadvertisingdubai', '/monetizeyourscreensdubai',
@@ -150,24 +123,6 @@ const AuthenticatedApp = () => {
              }
            />
          ))}
-         <Route path="/workspace" element={
-           <LayoutWrapper currentPageName="Workspace">
-             <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
-                 <Workspace />
-               </Suspense>
-             </MobileRouteTransition>
-           </LayoutWrapper>
-         } />
-         <Route path="/ScreensOverview" element={
-           <LayoutWrapper currentPageName="ScreensOverview">
-             <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
-                 <ScreensOverview />
-               </Suspense>
-             </MobileRouteTransition>
-           </LayoutWrapper>
-         } />
          <Route path="/CafeScreenAdvertisingDubai" element={
            <LayoutWrapper currentPageName="CafeScreenAdvertisingDubai">
              <MobileRouteTransition>
@@ -267,43 +222,6 @@ const AuthenticatedApp = () => {
              </MobileRouteTransition>
            </LayoutWrapper>
          } />
-         <Route path="/login" element={<Login />} />
-         {[
-           { path: '/marketplace', name: 'Marketplace', Comp: Marketplace },
-           { path: '/campaigns', name: 'Campaigns', Comp: Campaigns },
-           { path: '/media', name: 'Media', Comp: Media },
-           { path: '/analytics', name: 'Analytics', Comp: Analytics },
-           { path: '/settings', name: 'Settings', Comp: Settings },
-           { path: '/my-screens', name: 'MyScreens', Comp: MyScreens },
-           { path: '/bookings', name: 'Bookings', Comp: Bookings },
-           { path: '/playlists', name: 'Playlists', Comp: Playlists },
-           { path: '/revenue', name: 'Revenue', Comp: Revenue },
-           { path: '/screens', name: 'Screens', Comp: Screens },
-           { path: '/content', name: 'Content', Comp: Content },
-           { path: '/team', name: 'Team', Comp: Team },
-           { path: '/finance', name: 'Finance', Comp: Finance },
-           { path: '/clients', name: 'Clients', Comp: Clients },
-           { path: '/reports', name: 'Reports', Comp: Reports },
-           { path: '/organizations', name: 'Organizations', Comp: Organizations },
-           { path: '/users', name: 'Users', Comp: UsersPage },
-           { path: '/approvals', name: 'Approvals', Comp: Approvals },
-           { path: '/network', name: 'Network', Comp: Network },
-           { path: '/add-screen', name: 'AddScreen', Comp: AddScreen },
-           { path: '/screen-pairing', name: 'ScreenPairing', Comp: ScreenPairing },
-           { path: '/screen-detail', name: 'ScreenDetail', Comp: ScreenDetail },
-         ].map(({ path, name, Comp }) => (
-           <Route key={path} path={path} element={
-             <LayoutWrapper currentPageName={name}>
-               <MobileRouteTransition>
-                 <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
-                   <Comp />
-                 </Suspense>
-               </MobileRouteTransition>
-             </LayoutWrapper>
-           } />
-         ))}
-         <Route path="/forgot-password" element={<ForgotPassword />} />
-         <Route path="/reset-password" element={<ResetPassword />} />
          <Route path="*" element={<PageNotFound />} />
        </Routes>
      </AnimatePresence>

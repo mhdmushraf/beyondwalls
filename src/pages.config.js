@@ -20,17 +20,13 @@ import Home from './pages/Home';
 import HowItWorks from './pages/HowItWorks';
 import NotFound from './pages/NotFound';
 import Privacy from './pages/Privacy';
-import Register from './pages/Register';
 import RobotsTxt from './pages/RobotsTxt';
 import ScreenLocations from './pages/ScreenLocations';
-import ScreensOverview from './pages/ScreensOverview';
-import ScreenPlayer from './pages/ScreenPlayer';
 import Services from './pages/Services';
 import Sitemap from './pages/Sitemap';
 import SitemapPage from './pages/SitemapPage';
 import SitemapXML from './pages/SitemapXML';
 import Terms from './pages/Terms';
-import Workspace from './pages/Workspace';
 import __Layout from './Layout.jsx';
 
 export const PAGES = {
@@ -56,17 +52,13 @@ export const PAGES = {
     "HowItWorks": HowItWorks,
     "NotFound": NotFound,
     "Privacy": Privacy,
-    "Register": Register,
     "RobotsTxt": RobotsTxt,
     "ScreenLocations": ScreenLocations,
-    "ScreensOverview": ScreensOverview,
-    "ScreenPlayer": ScreenPlayer,
     "Services": Services,
     "Sitemap": Sitemap,
     "SitemapPage": SitemapPage,
     "SitemapXML": SitemapXML,
     "Terms": Terms,
-    "Workspace": Workspace,
 };
 
 export const pagesConfig = {
