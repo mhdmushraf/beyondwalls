@@ -531,7 +531,7 @@ export default function About() {
             Whether you're an advertiser, venue owner, or investor - there's a place for you in the BeyondWalls ecosystem.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to={createPageUrl("Register")}>
+            <Link to={createPageUrl("Contact")}>
               <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8">
                 <Megaphone className="w-5 h-5 mr-2" />
                 Start Advertising

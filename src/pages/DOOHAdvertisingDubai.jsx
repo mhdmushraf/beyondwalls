@@ -91,7 +91,7 @@ export default function DOOHAdvertisingDubai() {
                 Self-serve booking, real-time analytics, no long-term contracts.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Link to={createPageUrl("Register")}>
+                <Link to={createPageUrl("Contact")}>
                   <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8">
                     Start Advertising
                     <ArrowRight className="w-5 h-5 ml-2" />
@@ -197,7 +197,7 @@ export default function DOOHAdvertisingDubai() {
           <p className="text-xl text-white/80 mb-8">
             Start advertising with BeyondWalls today
           </p>
-          <Link to={createPageUrl("Register")}>
+          <Link to={createPageUrl("Contact")}>
             <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8">
               Get Started Free
               <ArrowRight className="w-5 h-5 ml-2" />

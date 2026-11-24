@@ -31,7 +31,7 @@ export default function PublicNav() {
   };
 
   const handleDashboardClick = () => {
-    navigate(createPageUrl("Workspace"));
+    navigate(createPageUrl("Contact"));
   };
 
   const navLinks = [
@@ -87,7 +87,7 @@ export default function PublicNav() {
               </Button>
             ) : (
             <>
-              <Link to={createPageUrl("Login")}>
+              <Link to={createPageUrl("Contact")}>
                 <Button 
                   variant="outline" 
                   size="sm"
@@ -96,7 +96,7 @@ export default function PublicNav() {
                   Sign In
                 </Button>
               </Link>
-              <Link to={createPageUrl("Register")}>
+              <Link to={createPageUrl("Contact")}>
                 <Button size="sm" className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700">
                   Get Started
                 </Button>

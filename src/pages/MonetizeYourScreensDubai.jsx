@@ -69,7 +69,7 @@ export default function MonetizeYourScreensDubai() {
                 customers — with zero upfront cost and full control over what appears.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Link to={createPageUrl("Register")}>
+                <Link to={createPageUrl("Contact")}>
                   <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8">
                     List Your Screens Free
                     <ArrowRight className="w-5 h-5 ml-2" />
@@ -253,7 +253,7 @@ export default function MonetizeYourScreensDubai() {
           <p className="text-slate-600 mb-6 leading-relaxed">
             Whether you have one screen or twenty, Beyond Walls makes it effortless to turn idle displays into a
             reliable stream of passive income. <Link to={createPageUrl("Home")} className="text-violet-600 hover:underline font-semibold">Learn more about our platform</Link> or
-            <Link to={createPageUrl("Register")} className="text-violet-600 hover:underline font-semibold"> list your screens today</Link> — it's free, it takes two minutes, and you could be earning by next week.
+            <Link to={createPageUrl("Contact")} className="text-violet-600 hover:underline font-semibold"> list your screens today</Link> — it's free, it takes two minutes, and you could be earning by next week.
           </p>
         </div>
       </section>
@@ -269,7 +269,7 @@ export default function MonetizeYourScreensDubai() {
           <p className="text-xl text-white/80 mb-8">
             Join Dubai's leading DOOH marketplace — free to join, keep 100% of your rate, weekly payouts
           </p>
-          <Link to={createPageUrl("Register")}>
+          <Link to={createPageUrl("Contact")}>
             <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8">
               List Your Screens Free
               <ArrowRight className="w-5 h-5 ml-2" />

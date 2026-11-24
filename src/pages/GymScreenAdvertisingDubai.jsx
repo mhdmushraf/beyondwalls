@@ -68,7 +68,7 @@ export default function GymScreenAdvertisingDubai() {
                 cycling every 5 minutes, gym screens deliver the deepest audience engagement of any DOOH format.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Link to={createPageUrl("Register")}>
+                <Link to={createPageUrl("Contact")}>
                   <Button size="lg" className="bg-white text-emerald-600 hover:bg-slate-100 h-14 px-8">
                     Start Advertising
                     <ArrowRight className="w-5 h-5 ml-2" />
@@ -193,7 +193,7 @@ export default function GymScreenAdvertisingDubai() {
             Prices start at just AED 99 per week per screen, with no minimum spend or long-term contract. You can run
             a campaign for a single week to test the waters, or book multiple screens across Dubai for maximum reach.
             <Link to={createPageUrl("Home")} className="text-emerald-600 hover:underline font-semibold"> Learn more about Beyond Walls</Link> or
-            <Link to={createPageUrl("Register")} className="text-emerald-600 hover:underline font-semibold"> create your free account</Link> to get started today.
+            <Link to={createPageUrl("Contact")} className="text-emerald-600 hover:underline font-semibold"> create your free account</Link> to get started today.
           </p>
         </div>
       </section>
@@ -209,7 +209,7 @@ export default function GymScreenAdvertisingDubai() {
           <p className="text-xl text-white/80 mb-8">
             Launch your gym DOOH campaign today — from AED 99/week, no contracts
           </p>
-          <Link to={createPageUrl("Register")}>
+          <Link to={createPageUrl("Contact")}>
             <Button size="lg" className="bg-white text-emerald-600 hover:bg-slate-100 h-14 px-8">
               Get Started Free
               <ArrowRight className="w-5 h-5 ml-2" />

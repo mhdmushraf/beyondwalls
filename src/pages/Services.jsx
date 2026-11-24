@@ -253,7 +253,7 @@ export default function Services() {
             advertisers and venue owners need to succeed in digital out-of-home advertising.
           </p>
           <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4">
-            <Link to={createPageUrl("Register")}>
+            <Link to={createPageUrl("Contact")}>
               <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600 h-14 px-8">
                 <Megaphone className="w-5 h-5 mr-2" />
                 Start Advertising
@@ -411,7 +411,7 @@ export default function Services() {
                       </li>
                     ))}
                   </ul>
-                  <Link to={createPageUrl("Register")}>
+                  <Link to={createPageUrl("Contact")}>
                     <Button className={`w-full h-12 ${plan.popular ? 'bg-gradient-to-r from-violet-600 to-indigo-600' : 'bg-slate-100 text-slate-900 hover:bg-slate-200'}`}>
                       Get Started
                       <ArrowRight className="w-4 h-4 ml-2" />
@@ -653,7 +653,7 @@ export default function Services() {
           </div>
 
           <div className="mt-12 text-center">
-            <Link to={createPageUrl("Register")}>
+            <Link to={createPageUrl("Contact")}>
               <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600 h-14 px-8">
                 <Sparkles className="w-5 h-5 mr-2" />
                 Experience These Features
@@ -710,7 +710,7 @@ export default function Services() {
             Start reaching customers through BeyondWalls screens
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to={createPageUrl("Register")}>
+            <Link to={createPageUrl("Contact")}>
               <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8 shadow-xl">
                 <Megaphone className="w-5 h-5 mr-2" />
                 Start Advertising Now

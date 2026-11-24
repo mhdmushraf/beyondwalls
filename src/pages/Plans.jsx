@@ -200,7 +200,7 @@ export default function Plans() {
                     <span className="font-semibold">Example:</span> {t.example}
                   </p>
                 </div>
-                <Link to={createPageUrl("Register")} className="block">
+                <Link to={createPageUrl("Contact")} className="block">
                   <Button
                     className="w-full text-white hover:opacity-90"
                     style={{ backgroundColor: t.accent }}
@@ -368,7 +368,7 @@ export default function Plans() {
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">Ready to get started?</h2>
           <p className="text-lg text-white/80 mb-8">Create your free account in under two minutes.</p>
-          <Link to={createPageUrl("Register")}>
+          <Link to={createPageUrl("Contact")}>
             <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8 text-lg">
               Get Started
               <ArrowRight className="w-5 h-5 ml-2" />

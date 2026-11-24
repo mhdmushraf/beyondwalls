@@ -66,7 +66,7 @@ export default function MobileAppIntro3() {
         </div>
 
         {/* CTA */}
-        <Link to={createPageUrl('Login')} className="block">
+        <Link to={createPageUrl("Contact")} className="block">
           <Button 
             size="lg"
             className="w-full bg-white text-violet-600 hover:bg-slate-100 h-14 text-lg font-semibold shadow-xl"

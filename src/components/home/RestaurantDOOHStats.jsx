@@ -111,7 +111,7 @@ export default function RestaurantDOOHStats() {
               Keeps viewers engaged throughout their entire visit, maximizing your ad impact.
             </p>
           </div>
-          <Link to={createPageUrl("Register")}>
+          <Link to={createPageUrl("Contact")}>
             <Button size="lg" className="bg-emerald-500 hover:bg-emerald-600 h-14 px-8">
               Book Your Campaign
               <ArrowRight className="w-5 h-5 ml-2" />

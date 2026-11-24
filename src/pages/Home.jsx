@@ -55,7 +55,7 @@ export default function Home() {
       try {
         const isAuth = await base44.auth.isAuthenticated();
         if (isAuth && !cancelled) {
-          navigate(createPageUrl("Workspace"), { replace: true });
+          navigate(createPageUrl("Contact"), { replace: true });
         }
       } catch (e) {
         // Not logged in — stay on the homepage.
@@ -225,7 +225,7 @@ export default function Home() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8">
-                <Link to={createPageUrl("Register")} className="w-full sm:w-auto">
+                <Link to={createPageUrl("Contact")} className="w-full sm:w-auto">
                   <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg shadow-xl shadow-violet-500/25">
                     Start Advertising
                     <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
@@ -493,7 +493,7 @@ export default function Home() {
                 ))}
               </div>
 
-              <Link to={createPageUrl("Register")}>
+              <Link to={createPageUrl("Contact")}>
                 <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8 text-lg">
                   Start Advertising Now
                   <ArrowRight className="w-5 h-5 ml-2" />
@@ -739,7 +739,7 @@ export default function Home() {
             Be among the first to access UAE's most innovative DOOH platform. Early adopters get priority access and special rates.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to={createPageUrl("Register")}>
+            <Link to={createPageUrl("Contact")}>
               <Button size="lg" className="w-full sm:w-auto bg-white text-violet-600 hover:bg-slate-100 h-14 px-8 text-lg shadow-xl">
                 Get Early Access
                 <ArrowRight className="w-5 h-5 ml-2" />

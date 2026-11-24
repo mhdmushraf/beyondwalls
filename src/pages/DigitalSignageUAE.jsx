@@ -67,7 +67,7 @@ export default function DigitalSignageUAE() {
             From Dubai to Abu Dhabi, reach your audience where they shop, dine, and relax.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link to={createPageUrl("Register")}>
+            <Link to={createPageUrl("Contact")}>
               <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8">
                 Start Advertising
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -157,7 +157,7 @@ export default function DigitalSignageUAE() {
           <p className="text-xl text-white/80 mb-8">
             Start reaching customers across the Emirates today
           </p>
-          <Link to={createPageUrl("Register")}>
+          <Link to={createPageUrl("Contact")}>
             <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8">
               Get Started Free
               <ArrowRight className="w-5 h-5 ml-2" />

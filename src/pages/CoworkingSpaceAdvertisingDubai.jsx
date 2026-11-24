@@ -69,7 +69,7 @@ export default function CoworkingSpaceAdvertisingDubai() {
                 SaaS products, and premium services.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Link to={createPageUrl("Register")}>
+                <Link to={createPageUrl("Contact")}>
                   <Button size="lg" className="bg-white text-indigo-600 hover:bg-slate-100 h-14 px-8">
                     Start Advertising
                     <ArrowRight className="w-5 h-5 ml-2" />
@@ -198,7 +198,7 @@ export default function CoworkingSpaceAdvertisingDubai() {
             out — your campaign goes live within 30 minutes. At AED 99 per week per screen with no contracts, you can
             test different co-working spaces and creative messages affordably, then scale what works.
             <Link to={createPageUrl("Home")} className="text-indigo-600 hover:underline font-semibold"> Explore Beyond Walls</Link> or
-            <Link to={createPageUrl("Register")} className="text-indigo-600 hover:underline font-semibold"> get started today</Link>.
+            <Link to={createPageUrl("Contact")} className="text-indigo-600 hover:underline font-semibold"> get started today</Link>.
           </p>
         </div>
       </section>
@@ -214,7 +214,7 @@ export default function CoworkingSpaceAdvertisingDubai() {
           <p className="text-xl text-white/80 mb-8">
             Launch your B2B DOOH campaign today — from AED 99/week, no contracts
           </p>
-          <Link to={createPageUrl("Register")}>
+          <Link to={createPageUrl("Contact")}>
             <Button size="lg" className="bg-white text-indigo-600 hover:bg-slate-100 h-14 px-8">
               Get Started Free
               <ArrowRight className="w-5 h-5 ml-2" />

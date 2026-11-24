@@ -505,7 +505,7 @@ export default function ScreenLocations() {
                         </div>
                       </div>
 
-                      <Link to={createPageUrl("Register")}>
+                      <Link to={createPageUrl("Contact")}>
                         <Button className="w-full mt-4 bg-gradient-to-r from-violet-600 to-indigo-600">
                           Advertise at This Venue
                         </Button>
@@ -586,7 +586,7 @@ export default function ScreenLocations() {
                         {venue.operating_hours || "N/A"}
                       </div>
                     </div>
-                    <Link to={createPageUrl("Register")}>
+                    <Link to={createPageUrl("Contact")}>
                       <Button className="w-full mt-4 bg-gradient-to-r from-violet-600 to-indigo-600">
                         Advertise Here
                       </Button>
@@ -623,7 +623,7 @@ export default function ScreenLocations() {
           <p className="text-xl text-white/80 mb-8">
             Join our network and start earning from your screens
           </p>
-          <Link to={createPageUrl("Register")}>
+          <Link to={createPageUrl("Contact")}>
             <Button size="lg" className="bg-amber-100 text-slate-900 hover:bg-amber-100/90">
               <Building2 className="w-5 h-5 mr-2" />
               List Your Venue

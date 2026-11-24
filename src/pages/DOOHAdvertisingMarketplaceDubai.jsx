@@ -78,7 +78,7 @@ export default function DOOHAdvertisingMarketplaceDubai() {
                 no minimum spends, no waiting.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Link to={createPageUrl("Register")}>
+                <Link to={createPageUrl("Contact")}>
                   <Button size="lg" className="bg-white text-violet-700 hover:bg-slate-100 h-14 px-8">
                     Start Advertising
                     <ArrowRight className="w-5 h-5 ml-2" />
@@ -246,7 +246,7 @@ export default function DOOHAdvertisingMarketplaceDubai() {
           <p className="text-slate-600 mb-6 leading-relaxed">
             Ready to explore the marketplace? <Link to={createPageUrl("Home")} className="text-violet-600 hover:underline font-semibold">Return to the Beyond Walls home page</Link> to
             learn more, <Link to={createPageUrl("MonetizeYourScreensDubai")} className="text-violet-600 hover:underline font-semibold">discover how to monetise your venue screens</Link>,
-            or <Link to={createPageUrl("Register")} className="text-violet-600 hover:underline font-semibold">create your free account</Link> to start browsing screens today.
+            or <Link to={createPageUrl("Contact")} className="text-violet-600 hover:underline font-semibold">create your free account</Link> to start browsing screens today.
           </p>
         </div>
       </section>
@@ -262,7 +262,7 @@ export default function DOOHAdvertisingMarketplaceDubai() {
           <p className="text-xl text-white/80 mb-8">
             Browse venue screens, compare prices, and launch your campaign today — no agencies, no minimums
           </p>
-          <Link to={createPageUrl("Register")}>
+          <Link to={createPageUrl("Contact")}>
             <Button size="lg" className="bg-white text-violet-700 hover:bg-slate-100 h-14 px-8">
               Get Started Free
               <ArrowRight className="w-5 h-5 ml-2" />

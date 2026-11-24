@@ -68,7 +68,7 @@ export default function CafeScreenAdvertisingDubai() {
                 café screens deliver the kind of sustained attention that billboards simply cannot match.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Link to={createPageUrl("Register")}>
+                <Link to={createPageUrl("Contact")}>
                   <Button size="lg" className="bg-white text-orange-600 hover:bg-slate-100 h-14 px-8">
                     Start Advertising
                     <ArrowRight className="w-5 h-5 ml-2" />
@@ -203,7 +203,7 @@ export default function CafeScreenAdvertisingDubai() {
           </p>
           <p className="text-slate-600 mb-6 leading-relaxed">
             Ready to reach customers where they're most receptive? <Link to={createPageUrl("Home")} className="text-amber-600 hover:underline font-semibold">Explore Beyond Walls</Link> to browse available café screens across Dubai,
-            or <Link to={createPageUrl("Register")} className="text-amber-600 hover:underline font-semibold">create your free account</Link> to launch your campaign today.
+            or <Link to={createPageUrl("Contact")} className="text-amber-600 hover:underline font-semibold">create your free account</Link> to launch your campaign today.
           </p>
         </div>
       </section>
@@ -219,7 +219,7 @@ export default function CafeScreenAdvertisingDubai() {
           <p className="text-xl text-white/80 mb-8">
             Launch your café DOOH campaign in under 30 minutes — no contracts, no minimums
           </p>
-          <Link to={createPageUrl("Register")}>
+          <Link to={createPageUrl("Contact")}>
             <Button size="lg" className="bg-white text-orange-600 hover:bg-slate-100 h-14 px-8">
               Get Started Free
               <ArrowRight className="w-5 h-5 ml-2" />

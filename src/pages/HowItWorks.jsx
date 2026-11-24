@@ -285,13 +285,13 @@ export default function HowItWorks() {
             Whether you're an advertiser or venue owner, here's everything you need to know.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link to={createPageUrl("Register")}>
+            <Link to={createPageUrl("Contact")}>
               <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600 h-14 px-8">
                 <Megaphone className="w-5 h-5 mr-2" />
                 I'm an Advertiser
               </Button>
             </Link>
-            <Link to={createPageUrl("Register")}>
+            <Link to={createPageUrl("Contact")}>
               <Button size="lg" variant="outline" className="h-14 px-8 border-2">
                 <Building2 className="w-5 h-5 mr-2" />
                 I'm a Venue Owner
@@ -725,13 +725,13 @@ export default function HowItWorks() {
             Join the fastest-growing DOOH network in the UAE. Launch your first campaign in under 30 minutes.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to={createPageUrl("Register")}>
+            <Link to={createPageUrl("Contact")}>
               <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8 shadow-xl">
                 <Megaphone className="w-5 h-5 mr-2" />
                 Start as Advertiser
               </Button>
             </Link>
-            <Link to={createPageUrl("Register")}>
+            <Link to={createPageUrl("Contact")}>
               <Button size="lg" className="border-2 border-white bg-transparent text-white hover:bg-white hover:text-violet-600 h-14 px-8">
                 <Building2 className="w-5 h-5 mr-2" />
                 Join as Venue Owner

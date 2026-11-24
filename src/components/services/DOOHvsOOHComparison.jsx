@@ -107,7 +107,7 @@ export default function DOOHvsOOHComparison() {
           <p className="text-slate-400 mb-6 max-w-xl mx-auto">
             Make the switch. No contracts, no hidden fees, just results.
           </p>
-          <Link to={createPageUrl("Register")}>
+          <Link to={createPageUrl("Contact")}>
             <Button size="lg" className="bg-gradient-to-r from-violet-500 to-indigo-500 hover:from-violet-600 hover:to-indigo-600 h-14 px-8 text-lg">
               Start Your Free Campaign
               <ArrowRight className="w-5 h-5 ml-2" />

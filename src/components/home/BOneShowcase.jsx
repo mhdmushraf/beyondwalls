@@ -172,7 +172,7 @@ export default function BOneShowcase() {
 
         {/* CTA */}
         <div className="text-center mt-12">
-          <Link to={createPageUrl("Register")}>
+          <Link to={createPageUrl("Contact")}>
             <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 h-14 px-8 text-lg shadow-xl shadow-violet-500/25">
               Get Your B.One Now
               <ArrowRight className="w-5 h-5 ml-2" />
