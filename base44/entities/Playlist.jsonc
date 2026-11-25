@@ -1,0 +1,136 @@
+{
+  "description": "An ordered loop of content a screen plays, with optional time windows.",
+  "name": "Playlist",
+  "properties": {
+    "days_of_week": {
+      "description": "0=Sun..6=Sat. Empty = every day",
+      "items": {
+        "type": "number"
+      },
+      "type": "array"
+    },
+    "end_time": {
+      "description": "HH:MM",
+      "type": "string"
+    },
+    "is_active": {
+      "default": true,
+      "type": "boolean"
+    },
+    "items": {
+      "description": "Ordered items",
+      "items": {
+        "properties": {
+          "duration": {
+            "type": "number"
+          },
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "media",
+              "menu"
+            ],
+            "type": "string"
+          },
+          "media_asset_id": {
+            "type": "string"
+          },
+          "menu_board_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "image",
+              "video"
+            ],
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "name": {
+      "type": "string"
+    },
+    "org_id": {
+      "type": "string"
+    },
+    "org_member_user_ids": {
+      "description": "Denormalized from Organization.member_user_ids \u2014 drives RLS",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "priority": {
+      "default": 0,
+      "type": "number"
+    },
+    "screen_ids": {
+      "description": "Screens this playlist plays on",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "start_time": {
+      "description": "HH:MM, empty = all day",
+      "type": "string"
+    }
+  },
+  "required": [
+    "org_id",
+    "name"
+  ],
+  "type": "object",
+  "rls": {
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.org_member_user_ids": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "data.org_member_user_ids": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.org_member_user_ids": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
