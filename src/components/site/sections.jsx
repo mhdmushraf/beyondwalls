@@ -149,7 +149,7 @@ export function ForAdvertisersBlock() {
     <Section style={{ backgroundImage: "linear-gradient(155deg, #6f3ffd 0%, #5a2ded 71%)" }}>
       <div className="flex flex-col lg:flex-row items-center gap-14">
         <div className="flex-1 flex flex-col gap-5 items-start">
-          <Pill dark>For advertisers</Pill>
+          <Pill dark className="!bg-white/15 !text-white">For advertisers</Pill>
           <h2 className="font-bold text-[32px] md:text-[44px] leading-[1.1] tracking-[-1.1px] text-white max-w-[600px]">Reach customers where they actually spend time</h2>
           <p className="text-[18px] text-[#e7e0ff] max-w-[580px]">Your ad on screens inside cafés, gyms, clinics and supermarkets across the UAE. Target by area, venue type and time of day.</p>
           <div className="grid sm:grid-cols-2 gap-x-6 gap-y-4 w-full">
