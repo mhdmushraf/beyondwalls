@@ -43,7 +43,7 @@ async function sendDecisionEmail({ to, businessName, decision, reason }) {
           ? 'Your business is verified. You can now add venues, pair screens and start using the portal.'
           : 'We could not verify this business with the documents provided.',
         reason: reason || 'No further details were provided.',
-        action_url: 'https://beyondwalls.ae/app',
+        action_url: 'https://beyondwalls.linkzoneglobal.com/app',
       },
     });
   } catch (e) {

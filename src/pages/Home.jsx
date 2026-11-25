@@ -16,9 +16,9 @@ export default function Home() {
       <SEOHead
         title="BeyondWalls — Signage that pays you | Screen advertising UAE"
         description={`Run menus, prices and promos on any TV, then sell spare slots to advertisers and keep ${PRICING.venueShare}%. Advertise on venue screens across the UAE from AED ${PRICING.advertiseFrom}/week.`}
-        canonical="https://beyondwalls.ae"
+        canonical="https://beyondwalls.linkzoneglobal.com"
         structuredData={[
-          { "@context": "https://schema.org", "@type": "Organization", name: "BeyondWalls", legalName: "Linkzone Global FZ-LLC", url: "https://beyondwalls.ae", email: "beyondwalls@linkzoneglobal.com", telephone: "+971545469496", address: { "@type": "PostalAddress", streetAddress: "in5 Tech, Dubai Internet City", addressLocality: "Dubai", addressCountry: "AE" } },
+          { "@context": "https://schema.org", "@type": "Organization", name: "BeyondWalls", legalName: "Linkzone Global FZ-LLC", url: "https://beyondwalls.linkzoneglobal.com", email: "beyondwalls@linkzoneglobal.com", telephone: "+971545469496", address: { "@type": "PostalAddress", streetAddress: "in5 Tech, Dubai Internet City", addressLocality: "Dubai", addressCountry: "AE" } },
           faqSchema(),
         ]}
       />

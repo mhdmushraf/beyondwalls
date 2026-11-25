@@ -135,11 +135,11 @@ export default function Services() {
           "@graph": [
             {
               "@type": "WebPage",
-              "@id": "https://beyondwalls.ae/Services#webpage",
-              "url": "https://beyondwalls.ae/Services",
+              "@id": "https://beyondwalls.linkzoneglobal.com/Services#webpage",
+              "url": "https://beyondwalls.linkzoneglobal.com/Services",
               "name": "DOOH Advertising Services Dubai",
               "isPartOf": {
-                "@id": "https://beyondwalls.ae/#website"
+                "@id": "https://beyondwalls.linkzoneglobal.com/#website"
               },
               "breadcrumb": {
                 "@type": "BreadcrumbList",
@@ -148,13 +148,13 @@ export default function Services() {
                     "@type": "ListItem",
                     "position": 1,
                     "name": "Home",
-                    "item": "https://beyondwalls.ae"
+                    "item": "https://beyondwalls.linkzoneglobal.com"
                   },
                   {
                     "@type": "ListItem",
                     "position": 2,
                     "name": "Services",
-                    "item": "https://beyondwalls.ae/Services"
+                    "item": "https://beyondwalls.linkzoneglobal.com/Services"
                   }
                 ]
               }
@@ -166,7 +166,7 @@ export default function Services() {
           "provider": {
             "@type": "Organization",
             "name": "BeyondWalls",
-            "url": "https://beyondwalls.ae"
+            "url": "https://beyondwalls.linkzoneglobal.com"
           },
           "areaServed": ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "RAK", "UAE"],
           "description": "Premium DOOH advertising services with performance scoring, campaign bundles, gamification, sustainability tracking and local business support. AI-powered platform with screens across UAE.",

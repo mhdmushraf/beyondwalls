@@ -31,12 +31,12 @@ export default function ArticleLayout({
     "author": {
       "@type": "Organization",
       "name": "Beyond Walls",
-      "url": "https://beyondwalls.ae"
+      "url": "https://beyondwalls.linkzoneglobal.com"
     },
     "publisher": {
       "@type": "Organization",
       "name": "Beyond Walls",
-      "url": "https://beyondwalls.ae",
+      "url": "https://beyondwalls.linkzoneglobal.com",
       "logo": {
         "@type": "ImageObject",
         "url": "https://media.base44.com/images/public/69b31183956b052c51ee3a67/b64097b04_beyondwalls-icon.png"

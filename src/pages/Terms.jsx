@@ -20,7 +20,7 @@ export default function Terms() {
       <p>BeyondWalls lets venues run digital signage on their screens (menus, prices, playlists, QR codes) and, if they choose, offer spare ad slots to advertisers through a marketplace. Advertisers and agencies can book those slots and receive proof-of-play and QR-scan reporting.</p>
 
       <h2>3. Accounts</h2>
-      <p>You must give accurate details, including business documents we ask for to verify your business. You are responsible for activity under your account and for keeping your sign-in secure. You may delete your account at any time from the app or at <a href="/delete-account">beyondwalls.ae/delete-account</a>.</p>
+      <p>You must give accurate details, including business documents we ask for to verify your business. You are responsible for activity under your account and for keeping your sign-in secure. You may delete your account at any time from the app or at <a href="/delete-account">beyondwalls.linkzoneglobal.com/delete-account</a>.</p>
 
       <h2>4. Plans and fees for venues</h2>
       <ul>

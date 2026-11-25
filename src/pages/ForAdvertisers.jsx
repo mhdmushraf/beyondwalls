@@ -15,7 +15,7 @@ const STEPS = [
 export default function ForAdvertisers() {
   return (
     <SitePage>
-      <SEOHead title="Advertise on venue screens in Dubai & the UAE | BeyondWalls" description={`Book screens in cafés, gyms and supermarkets on a map from AED ${PRICING.advertiseFrom} a week, and track results with QR scans.`} canonical="https://beyondwalls.ae/ForAdvertisers" />
+      <SEOHead title="Advertise on venue screens in Dubai & the UAE | BeyondWalls" description={`Book screens in cafés, gyms and supermarkets on a map from AED ${PRICING.advertiseFrom} a week, and track results with QR scans.`} canonical="https://beyondwalls.linkzoneglobal.com/ForAdvertisers" />
       <PageHero
         tag="Local screen advertising"
         title="Be seen in the places your customers already are."

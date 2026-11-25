@@ -21,7 +21,7 @@ const FAQS = [
 export default function Pricing() {
   return (
     <SitePage>
-      <SEOHead title={`Pricing — from free, AED ${PRICING.signageAds}/screen | BeyondWalls`} description={`Ads only: free, keep ${PRICING.venueShare}%. Signage + Ads: AED ${PRICING.signageAds} per screen per month. Signage only: AED ${PRICING.signageOnly}. B.One player AED ${PRICING.bone}.`} canonical="https://beyondwalls.ae/Pricing" structuredData={faqLd(FAQS)} />
+      <SEOHead title={`Pricing — from free, AED ${PRICING.signageAds}/screen | BeyondWalls`} description={`Ads only: free, keep ${PRICING.venueShare}%. Signage + Ads: AED ${PRICING.signageAds} per screen per month. Signage only: AED ${PRICING.signageOnly}. B.One player AED ${PRICING.bone}.`} canonical="https://beyondwalls.linkzoneglobal.com/Pricing" structuredData={faqLd(FAQS)} />
       <section className="bg-[#fbfaff]">
         <div className={`${wrap} py-14 lg:py-20 flex flex-col gap-10`}>
           <div className="flex flex-col gap-4 items-start">

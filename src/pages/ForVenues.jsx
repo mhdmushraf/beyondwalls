@@ -14,7 +14,7 @@ const FAQS = [
 export default function ForVenues() {
   return (
     <SitePage>
-      <SEOHead title="For venues — digital signage that earns | BeyondWalls UAE" description={`Run menus, prices and promos on every TV from your phone, and keep ${PRICING.venueShare}% when brands book your spare slots. Free to list.`} canonical="https://beyondwalls.ae/ForVenues" structuredData={faqLd(FAQS)} />
+      <SEOHead title="For venues — digital signage that earns | BeyondWalls UAE" description={`Run menus, prices and promos on every TV from your phone, and keep ${PRICING.venueShare}% when brands book your spare slots. Free to list.`} canonical="https://beyondwalls.linkzoneglobal.com/ForVenues" structuredData={faqLd(FAQS)} />
       <PageHero
         tag="For cafés, gyms, clinics & shops"
         title="Your screens. Your menu. Plus rent from ads."

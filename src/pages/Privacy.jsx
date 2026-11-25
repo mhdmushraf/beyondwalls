@@ -59,7 +59,7 @@ export default function Privacy() {
 
       <h2>7. Delete your account</h2>
       <p>
-        In the app: <strong>More → Delete account</strong>. On the web: <a href="/delete-account">beyondwalls.ae/delete-account</a>.
+        In the app: <strong>More → Delete account</strong>. On the web: <a href="/delete-account">beyondwalls.linkzoneglobal.com/delete-account</a>.
         This removes your login and personal details and takes you off every business. Records the business must keep by law stay with the business without your login.
       </p>
 

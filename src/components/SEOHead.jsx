@@ -6,65 +6,65 @@ export const PAGE_SEO = {
     title: "DOOH Advertising Dubai | Beyond Walls — Digital Out-of-Home Marketplace",
     description: "Book digital out-of-home advertising across Dubai and the UAE. Beyond Walls connects advertisers with premium venue screens — transparent pricing, instant booking.",
     keywords: "digital advertising dubai, DOOH advertising UAE, digital billboard advertising, screen advertising dubai, outdoor advertising uae, digital signage advertising, advertising company dubai, best advertising agency uae",
-    canonical: "https://beyondwalls.ae",
+    canonical: "https://beyondwalls.linkzoneglobal.com",
     ogImage: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&h=630&fit=crop&q=80"
   },
   about: {
     title: "About BeyondWalls - UAE's Leading DOOH Advertising Platform | Our Story",
     description: "Learn about BeyondWalls, UAE's first self-serve Digital Out-of-Home advertising marketplace. Founded in Dubai, we're transforming how businesses advertise on digital screens.",
     keywords: "about beyondwalls, dooh company dubai, digital advertising startup uae, advertising technology dubai",
-    canonical: "https://beyondwalls.ae/About"
+    canonical: "https://beyondwalls.linkzoneglobal.com/About"
   },
   services: {
     title: "DOOH Advertising Services in Dubai & UAE | Beyond Walls",
     description: "Full-service digital out-of-home advertising in the UAE — venue sourcing, campaign booking, content scheduling and live performance monitoring.",
     keywords: "dooh services dubai, digital screen advertising, venue advertising uae, performance score advertising, campaign bundles dubai, gamification advertising, sustainability dooh, local business advertising uae, scan and win advertising, interactive advertising dubai",
-    canonical: "https://beyondwalls.ae/Services"
+    canonical: "https://beyondwalls.linkzoneglobal.com/Services"
   },
   contact: {
     title: "Contact BeyondWalls | Dubai Digital Advertising Experts | Get in Touch",
     description: "Contact BeyondWalls for digital advertising solutions in UAE. Located in in5 Tech, Dubai Internet City. Phone: +971 54 546 9496. Email: beyondwalls@linkzoneglobal.com",
     keywords: "contact beyondwalls, advertising agency contact dubai, dooh advertising inquiry",
-    canonical: "https://beyondwalls.ae/Contact"
+    canonical: "https://beyondwalls.linkzoneglobal.com/Contact"
   },
   blog: {
     title: "BeyondWalls Blog | Digital Advertising Insights & Tips | DOOH News UAE",
     description: "Latest insights on digital out-of-home advertising, marketing tips, case studies, and industry news from BeyondWalls - UAE's leading DOOH platform.",
     keywords: "digital advertising blog, dooh news, advertising tips dubai, marketing insights uae",
-    canonical: "https://beyondwalls.ae/Blog"
+    canonical: "https://beyondwalls.linkzoneglobal.com/Blog"
   },
   screenLocations: {
     title: "Digital Screen Locations UAE | Find Advertising Screens Near You | BeyondWalls",
     description: "Browse digital advertising screens across Dubai, Abu Dhabi, Sharjah. Filter by venue type, location, and price. Book your ad space today.",
     keywords: "screen locations dubai, digital billboards uae, advertising screens near me, dooh locations",
-    canonical: "https://beyondwalls.ae/ScreenLocations"
+    canonical: "https://beyondwalls.linkzoneglobal.com/ScreenLocations"
   },
   howItWorks: {
     title: "How BeyondWalls Works | Book Digital Ads in 4 Easy Steps | DOOH Guide",
     description: "Learn how to advertise on digital screens with BeyondWalls. Choose screens, upload creative, set budget, go live in 30 minutes. Simple self-serve platform.",
     keywords: "how to advertise digitally, dooh advertising guide, digital billboard booking, screen advertising how to",
-    canonical: "https://beyondwalls.ae/HowItWorks"
+    canonical: "https://beyondwalls.linkzoneglobal.com/HowItWorks"
   },
   register: {
     title: "Sign Up | Start Advertising on Digital Screens | BeyondWalls UAE",
     description: "Create your free BeyondWalls account. Start advertising on digital screens across UAE or monetize your venue screens. No setup fees.",
     keywords: "sign up beyondwalls, register advertising account, dooh platform signup",
-    canonical: "https://beyondwalls.ae/Register"
+    canonical: "https://beyondwalls.linkzoneglobal.com/Register"
   },
   terms: {
     title: "Terms of Service | BeyondWalls UAE",
     description: "Read BeyondWalls Terms of Service. Understand your rights and obligations when using our digital advertising platform.",
-    canonical: "https://beyondwalls.ae/Terms"
+    canonical: "https://beyondwalls.linkzoneglobal.com/Terms"
   },
   privacy: {
     title: "Privacy Policy | BeyondWalls UAE",
     description: "BeyondWalls Privacy Policy. Learn how we collect, use, and protect your personal information on our DOOH advertising platform.",
-    canonical: "https://beyondwalls.ae/Privacy"
+    canonical: "https://beyondwalls.linkzoneglobal.com/Privacy"
   },
   helpCenter: {
     title: "Help Center | FAQs & Support | BeyondWalls",
     description: "Get help with BeyondWalls. FAQs, tutorials, and support for advertisers and venue owners using our digital advertising platform.",
-    canonical: "https://beyondwalls.ae/HelpCenter"
+    canonical: "https://beyondwalls.linkzoneglobal.com/HelpCenter"
   }
 };
 
@@ -118,7 +118,7 @@ export default function SEOHead({
   noIndex = false,
   article = null
 }) {
-  const baseUrl = "https://beyondwalls.ae";
+  const baseUrl = "https://beyondwalls.linkzoneglobal.com";
   const defaultOgImage = "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&h=630&fit=crop&q=80";
   const finalCanonical = canonical || baseUrl;
   const finalOgImage = ogImage || defaultOgImage;

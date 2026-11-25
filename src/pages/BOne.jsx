@@ -70,7 +70,7 @@ function OrderForm() {
 export default function BOne() {
   return (
     <SitePage>
-      <SEOHead title={`B.One media player — AED ${PRICING.bone} | BeyondWalls`} description="A small media player you plug into HDMI. Pre-loaded, self-install, made for 24/7 playback. Turn any TV into a smart screen." canonical="https://beyondwalls.ae/BOne" structuredData={[faqLd(FAQS), { "@context": "https://schema.org", "@type": "Product", name: "B.One media player", brand: { "@type": "Brand", name: "BeyondWalls" }, description: "Plug-in HDMI media player for digital signage. Up to 4K, Wi-Fi + Ethernet, offline caching, remote control.", offers: { "@type": "Offer", price: PRICING.bone, priceCurrency: "AED", availability: "https://schema.org/PreOrder" } }]} />
+      <SEOHead title={`B.One media player — AED ${PRICING.bone} | BeyondWalls`} description="A small media player you plug into HDMI. Pre-loaded, self-install, made for 24/7 playback. Turn any TV into a smart screen." canonical="https://beyondwalls.linkzoneglobal.com/BOne" structuredData={[faqLd(FAQS), { "@context": "https://schema.org", "@type": "Product", name: "B.One media player", brand: { "@type": "Brand", name: "BeyondWalls" }, description: "Plug-in HDMI media player for digital signage. Up to 4K, Wi-Fi + Ethernet, offline caching, remote control.", offers: { "@type": "Offer", price: PRICING.bone, priceCurrency: "AED", availability: "https://schema.org/PreOrder" } }]} />
       <PageHero
         tag="The B.One player"
         title="Turn any TV into a smart screen."

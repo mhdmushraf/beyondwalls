@@ -28,4 +28,4 @@ Disallow: /ScreenMonitor
 Disallow: /LiveScreenMonitorPage
 Disallow: /ScreenPlayer
 
-Sitemap: https://www.beyondwalls.ae/sitemap.xml
+Sitemap: https://beyondwalls.linkzoneglobal.com/sitemap.xml

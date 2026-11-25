@@ -1,6 +1,6 @@
 // Google Maps JavaScript API key — the same browser key Saqr uses (Linkzone's Google Cloud).
 // In Google Cloud → Credentials, add this app's domains to the key's website restrictions
-// (beyondwalls.ae/*, *.base44.app/*), or Google refuses to load it here.
+// (beyondwalls.linkzoneglobal.com/*, *.base44.app/*), or Google refuses to load it here.
 // If Google fails to load, the maps fall back to free OpenStreetMap automatically.
 export const GOOGLE_MAPS_API_KEY = 'AIzaSyDqGm2ok3haWfS2SaaytZhgPgIvq9k7PK0';
 

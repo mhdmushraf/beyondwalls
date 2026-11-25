@@ -55,7 +55,7 @@ export default function DOOHAdvertisingMarketplaceDubai() {
         title="DOOH Advertising Marketplace Dubai & UAE | Book Screens Direct | Beyond Walls"
         description="The UAE's first self-serve DOOH advertising marketplace. Compare venue screens, book instantly, and launch digital out-of-home campaigns across Dubai — no agencies, transparent pricing."
         keywords="dooh marketplace dubai, digital advertising marketplace uae, screen advertising marketplace, book screens direct dubai, self-serve dooh dubai, venue screen marketplace"
-        canonical="https://beyondwalls.ae/DOOHAdvertisingMarketplaceDubai"
+        canonical="https://beyondwalls.linkzoneglobal.com/DOOHAdvertisingMarketplaceDubai"
         structuredData={buildFAQSchema(faqs)}
       />
       <PublicNav />

@@ -13,7 +13,7 @@ const PROGRESS = [
 export default function About() {
   return (
     <SitePage>
-      <SEOHead title="About BeyondWalls — Linkzone Global FZ-LLC, Dubai" description="Beyond Walls helps small venues run their screens and earn from them, and helps local brands reach people nearby. Built in Dubai by Linkzone Global FZ-LLC." canonical="https://beyondwalls.ae/About" />
+      <SEOHead title="About BeyondWalls — Linkzone Global FZ-LLC, Dubai" description="Beyond Walls helps small venues run their screens and earn from them, and helps local brands reach people nearby. Built in Dubai by Linkzone Global FZ-LLC." canonical="https://beyondwalls.linkzoneglobal.com/About" />
       <PageHero
         tag="About Beyond Walls"
         title="Screens should work for the business that owns them."

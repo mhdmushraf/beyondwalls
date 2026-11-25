@@ -46,7 +46,7 @@ export default function GymScreenAdvertisingDubai() {
         title="Gym Screen Advertising Dubai | Fitness DOOH Ads | Beyond Walls"
         description="Put your brand on gym and fitness studio screens across Dubai. Reach health-focused audiences during full workout sessions. Book in minutes with Beyond Walls."
         keywords="gym advertising dubai, fitness screen advertising, gym DOOH dubai, gym tv advertising uae, fitness center digital signage, health advertising dubai"
-        canonical="https://beyondwalls.ae/GymScreenAdvertisingDubai"
+        canonical="https://beyondwalls.linkzoneglobal.com/GymScreenAdvertisingDubai"
         structuredData={buildFAQSchema(faqs)}
       />
       <PublicNav />

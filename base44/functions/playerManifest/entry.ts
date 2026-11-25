@@ -165,7 +165,7 @@ export default async function (req: Request) {
       qr: qr && { id: qr.id, label: qr.label || "", position: qr.position || "bottom_right" },
       house: {
         title: "Advertise here",
-        subtitle: "beyondwalls.ae",
+        subtitle: "beyondwalls.linkzoneglobal.com",
       },
       server_time: nowIso,
     });

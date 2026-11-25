@@ -58,7 +58,7 @@ export default function BlogPost() {
     title: `${post.title} | BeyondWalls Blog`,
     description: post.excerpt || (post.content ? post.content.substring(0, 157).replace(/\s+\S*$/, "") + "…" : ""),
     keywords: `${post.title}, DOOH advertising, digital advertising Dubai, ${categoryLabels[post.category] || post.category}, BeyondWalls blog, ${(post.tags || []).join(", ")}`,
-    image: post.cover_image || "https://beyondwalls.ae/og-blog.jpg",
+    image: post.cover_image || "https://beyondwalls.linkzoneglobal.com/og-blog.jpg",
     url: `/blog/${post.slug || post.id}`,
     type: "article",
     article: {
@@ -73,11 +73,11 @@ export default function BlogPost() {
       "@type": "BlogPosting",
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": `https://beyondwalls.ae/blog/${post.slug || post.id}`
+        "@id": `https://beyondwalls.linkzoneglobal.com/blog/${post.slug || post.id}`
       },
       "headline": post.title,
       "description": post.excerpt,
-      "image": post.cover_image || "https://beyondwalls.ae/og-blog.jpg",
+      "image": post.cover_image || "https://beyondwalls.linkzoneglobal.com/og-blog.jpg",
       "author": {
         "@type": "Person",
         "name": post.author_name || "BeyondWalls Team"
@@ -87,7 +87,7 @@ export default function BlogPost() {
         "name": "BeyondWalls",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://beyondwalls.ae/logo.png",
+          "url": "https://beyondwalls.linkzoneglobal.com/logo.png",
           "width": 200,
           "height": 60
         }

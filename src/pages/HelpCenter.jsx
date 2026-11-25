@@ -27,7 +27,7 @@ const ARTICLES = [
   ["earnings", "Add your bank details for payouts", "Open Ad requests & earnings and add your bank details: account holder name, bank and IBAN (UAE IBANs start with AE and have 23 characters). Then request a payout from your available balance."],
   ["ads", "What happens if a venue declines my ad?", "You're only charged for screens that approve your ad. If a venue declines, the amount for that screen is refunded in full."],
   ["ads", "How much does advertising cost?", `Each venue sets its own weekly price per screen, from AED ${PRICING.advertiseFrom}. Prices exclude 5% VAT. Longer bookings get tier discounts.`],
-  ["account", "Delete your account", "You can delete your account any time from the More tab in the mobile app, or at beyondwalls.ae/delete-account."],
+  ["account", "Delete your account", "You can delete your account any time from the More tab in the mobile app, or at beyondwalls.linkzoneglobal.com/delete-account."],
   ["policies", "Advertising rules", "No alcohol, tobacco, adult, political or misleading ads. Content must follow UAE law and the venue's own blocked categories. Venues approve every ad."],
   ["policies", "Privacy", "We collect account details, screen and player data and QR scan counts. We never use cameras to identify people and never sell personal data. See the Privacy policy for full details."],
 ];
@@ -44,7 +44,7 @@ export default function HelpCenter() {
 
   return (
     <SitePage>
-      <SEOHead title="Help centre | BeyondWalls" description="Pair a screen, update prices, understand earnings and payouts, and book ads. Real people on WhatsApp, 9am–9pm." canonical="https://beyondwalls.ae/HelpCenter" />
+      <SEOHead title="Help centre | BeyondWalls" description="Pair a screen, update prices, understand earnings and payouts, and book ads. Real people on WhatsApp, 9am–9pm." canonical="https://beyondwalls.linkzoneglobal.com/HelpCenter" />
       <section className="bg-[#fbfaff]">
         <div className={`${wrap} py-14 lg:py-20 flex flex-col items-center gap-6 text-center`}>
           <h1 className="font-bold text-[40px] md:text-[56px] tracking-[-1.68px] text-[#111027]">How can we help?</h1>

@@ -7,7 +7,7 @@ export default function EarnMoneyVenueScreensDubai() {
     <ArticleLayout
       title="How to Earn Passive Income From Your Venue Screens in Dubai | Beyond Walls"
       description="Own a café, gym, salon or clinic in Dubai? Your idle TV screens can earn money. Here's how venue owners monetise screens with DOOH advertising through Beyond Walls."
-      canonical="https://beyondwalls.ae/EarnMoneyVenueScreensDubai"
+      canonical="https://beyondwalls.linkzoneglobal.com/EarnMoneyVenueScreensDubai"
       publishedDate="2026-01-25"
       category="For Venue Owners"
       readTime={7}

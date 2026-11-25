@@ -141,7 +141,7 @@ export default function ScreenLocations() {
 
   return (
     <SitePage>
-      <SEOHead title="Screen map — advertise on venue screens in the UAE | BeyondWalls" description="Browse verified venues on the map, see each screen's position and weekly price, and book in minutes." canonical="https://beyondwalls.ae/ScreenLocations" />
+      <SEOHead title="Screen map — advertise on venue screens in the UAE | BeyondWalls" description="Browse verified venues on the map, see each screen's position and weekly price, and book in minutes." canonical="https://beyondwalls.linkzoneglobal.com/ScreenLocations" />
       <section className="relative h-[calc(100svh-81px)] min-h-[560px] bg-[#e9e6f3] overflow-hidden">
         <div className="absolute inset-0">
           {screens ? (

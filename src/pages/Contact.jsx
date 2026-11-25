@@ -36,7 +36,7 @@ export default function Contact() {
 
   return (
     <SitePage>
-      <SEOHead title="Book a demo | BeyondWalls" description="See live prices, the ad marketplace and earnings on your own screen in 20 minutes — on a call or at your venue in Dubai." canonical="https://beyondwalls.ae/Contact" />
+      <SEOHead title="Book a demo | BeyondWalls" description="See live prices, the ad marketplace and earnings on your own screen in 20 minutes — on a call or at your venue in Dubai." canonical="https://beyondwalls.linkzoneglobal.com/Contact" />
       <section className="bg-[#fbfaff]">
         <div className={`${wrap} py-14 lg:py-20 flex flex-col lg:flex-row gap-12 lg:gap-16`}>
           <div className="flex-1 flex flex-col gap-[22px] items-start">

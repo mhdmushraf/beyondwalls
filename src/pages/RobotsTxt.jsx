@@ -56,7 +56,7 @@ Allow: /DOOHAdvertisingDubai
 Allow: /DigitalSignageUAE
 Allow: /HotelAdvertisingDubai
 
-Sitemap: https://beyondwalls.ae/sitemap.xml
+Sitemap: https://beyondwalls.linkzoneglobal.com/sitemap.xml
 `;
     // Create downloadable robots.txt file
     const blob = new Blob([robotsTxt], { type: 'text/plain' });
@@ -87,7 +87,7 @@ Sitemap: https://beyondwalls.ae/sitemap.xml
           <h2 className="font-semibold text-slate-900 mb-3">📋 Implementation Steps:</h2>
           <ol className="space-y-2 text-slate-600">
             <li>1. Upload robots.txt to your website root directory (same level as index.html)</li>
-            <li>2. Verify it's accessible at: <code className="bg-slate-200 px-2 py-1 rounded text-sm">https://beyondwalls.ae/robots.txt</code></li>
+            <li>2. Verify it's accessible at: <code className="bg-slate-200 px-2 py-1 rounded text-sm">https://beyondwalls.linkzoneglobal.com/robots.txt</code></li>
             <li>3. Test using Google's robots.txt Tester in Search Console</li>
           </ol>
         </div>

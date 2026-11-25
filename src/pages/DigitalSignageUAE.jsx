@@ -19,7 +19,7 @@ export default function DigitalSignageUAE() {
     "provider": {
       "@type": "Organization",
       "name": "BeyondWalls",
-      "url": "https://beyondwalls.ae"
+      "url": "https://beyondwalls.linkzoneglobal.com"
     },
     "areaServed": "United Arab Emirates",
     "description": "Digital signage advertising network across UAE with screens in Dubai, Abu Dhabi, Sharjah and more."
@@ -47,7 +47,7 @@ export default function DigitalSignageUAE() {
         title="Digital Signage Advertising UAE | Screen Network | Beyond Walls"
         description="Advertise on a UAE-wide digital signage network. Reach audiences in malls, hotels and high-traffic venues with Beyond Walls."
         keywords="digital signage UAE, digital displays UAE, screen advertising UAE, digital signage Dubai, digital signage Abu Dhabi, LED advertising UAE"
-        canonical="https://beyondwalls.ae/DigitalSignageUAE"
+        canonical="https://beyondwalls.linkzoneglobal.com/DigitalSignageUAE"
         structuredData={structuredData}
       />
       <PublicNav />
