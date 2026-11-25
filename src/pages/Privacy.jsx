@@ -16,127 +16,84 @@ export default function Privacy() {
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
             Privacy Policy
           </h1>
-          <p className="text-slate-600">Last updated: November 25, 2024</p>
+          <p className="text-slate-600">Last updated: November 25, 2026</p>
         </div>
       </section>
 
       {/* Content */}
       <section className="py-12 px-6">
         <div className="max-w-3xl mx-auto prose prose-slate prose-lg">
-          <h2>1. Introduction</h2>
+          <h2>1. Who we are</h2>
           <p>
-            BeyondWalls ("we," "our," or "us") is committed to protecting your privacy. 
-            This Privacy Policy explains how we collect, use, disclose, and safeguard your 
-            information when you use our digital out-of-home advertising platform.
+            Beyond Walls is run by Linkzone Global FZ-LLC, Dubai, United Arab Emirates ("we", "us").
+            This policy covers the Beyond Walls website, web portal, TV player and the Beyond Walls app for iPhone and Android.
           </p>
 
-          <h2>2. Information We Collect</h2>
-          <h3>2.1 Personal Information</h3>
-          <p>We may collect:</p>
+          <h2>2. What we collect</h2>
           <ul>
-            <li>Name and contact information (email, phone number)</li>
-            <li>Business information (company name, trade license)</li>
-            <li>Emirates ID or other government-issued identification</li>
-            <li>Payment and billing information</li>
-            <li>Account credentials</li>
+            <li><strong>Account:</strong> your name, email address and password (stored hashed by our hosting provider).</li>
+            <li><strong>Business:</strong> business name, type, emirate, WhatsApp number, billing email, tax registration number (TRN), trade licence number and an optional photo of the trade licence (stored privately).</li>
+            <li><strong>Venues and screens:</strong> venue name, address, map pin, photos, opening hours, visitor estimates; screen names, status, the item playing and periodic screenshots of what the TV shows.</li>
+            <li><strong>Content you upload:</strong> images, videos, menus, QR links and ads.</li>
+            <li><strong>Messages:</strong> team chat messages and support requests.</li>
+            <li><strong>Payments:</strong> invoices and payment status. Card payments are handled by Paymob; we never see or store your card number. For payouts we store the bank name, account holder and IBAN you give us.</li>
+            <li><strong>App and device:</strong> a push notification token for your phone, the phone model name, and basic technical logs (for example IP address and errors) kept by our hosting provider.</li>
+            <li><strong>QR scans:</strong> a count of scans per QR code and screen. We do not identify the person scanning.</li>
+          </ul>
+          <p>The app uses the camera or photo library only when you choose to add a trade licence photo. We do not use your location, contacts or microphone, and we do not track you across other companies' apps or websites.</p>
+
+          <h2>3. Why we use it</h2>
+          <ul>
+            <li>To run your account, your screens and your bookings.</li>
+            <li>To verify businesses before they go live and prevent fraud.</li>
+            <li>To take payments, issue invoices and pay venues their earnings.</li>
+            <li>To send notifications you need (a screen offline, an ad to review, a payment or payout).</li>
+            <li>To provide support and keep the service secure.</li>
+            <li>To meet legal duties, such as keeping tax records.</li>
           </ul>
 
-          <h3>2.2 Usage Information</h3>
-          <p>We automatically collect:</p>
+          <h2>4. Who we share it with</h2>
           <ul>
-            <li>Device information and browser type</li>
-            <li>IP address and location data</li>
-            <li>Usage patterns and preferences</li>
-            <li>Campaign performance data</li>
-            <li>Screen status and heartbeat data</li>
+            <li><strong>Base44</strong> — hosts the app, database, files and sign-in.</li>
+            <li><strong>Paymob</strong> — processes card payments.</li>
+            <li><strong>Expo, Apple and Google</strong> — deliver push notifications to your phone.</li>
+            <li><strong>Other users, only where the service needs it:</strong> advertisers see venue names, photos, prices and audience estimates; venues see the ads booked on their screens and the advertiser's business name; your team sees what you post in team chat.</li>
+            <li><strong>Authorities</strong>, when the law requires it.</li>
           </ul>
+          <p>We do not sell personal information, and we do not use it for advertising profiles.</p>
 
-          <h2>3. How We Use Your Information</h2>
-          <p>We use collected information to:</p>
-          <ul>
-            <li>Provide and improve our services</li>
-            <li>Process transactions and payments</li>
-            <li>Verify user identity and prevent fraud</li>
-            <li>Send service-related communications</li>
-            <li>Analyze usage and optimize performance</li>
-            <li>Comply with legal obligations</li>
-          </ul>
+          <h2>5. Security</h2>
+          <p>Data is encrypted in transit (HTTPS). Access is limited by business: you only see data for businesses you belong to. Trade licences are stored as private files. The app keeps your sign-in token in the phone's secure storage.</p>
 
-          <h2>4. Information Sharing</h2>
-          <p>We may share your information with:</p>
-          <ul>
-            <li><strong>Service Providers:</strong> Third parties who assist in operating our platform</li>
-            <li><strong>Business Partners:</strong> When necessary for campaign delivery</li>
-            <li><strong>Legal Authorities:</strong> When required by law or to protect our rights</li>
-          </ul>
-          <p>We do not sell your personal information to third parties.</p>
+          <h2>6. How long we keep it</h2>
+          <p>We keep your data while your account is active. Invoices and booking records are kept for 5 years to meet UAE tax rules. Screen screenshots are replaced as new ones arrive. When you delete your account we delete your login, profile, notifications and push tokens straight away.</p>
 
-          <h2>5. Data Security</h2>
+          <h2>7. Delete your account</h2>
           <p>
-            We implement industry-standard security measures including:
-          </p>
-          <ul>
-            <li>SSL/TLS encryption for data transmission</li>
-            <li>Secure data storage with access controls</li>
-            <li>Regular security audits and monitoring</li>
-            <li>PCI-compliant payment processing</li>
-          </ul>
-
-          <h2>6. Data Retention</h2>
-          <p>
-            We retain your information for as long as your account is active or as needed 
-            to provide services. We may retain certain information for legal compliance, 
-            dispute resolution, or enforcement of agreements.
+            In the app: <strong>More → Delete account</strong>. On the web: <a href="/delete-account">beyondwalls.ae/delete-account</a>.
+            This removes your login and personal details and takes you off every business. Records the business must keep by law stay with the business without your login.
           </p>
 
-          <h2>7. Your Rights</h2>
-          <p>You have the right to:</p>
-          <ul>
-            <li>Access your personal information</li>
-            <li>Correct inaccurate data</li>
-            <li>Request deletion of your data</li>
-            <li>Object to certain processing activities</li>
-            <li>Export your data in a portable format</li>
-          </ul>
-          <p>To exercise these rights, contact us at info@linkzoneglobal.com.</p>
+          <h2>8. Your rights</h2>
+          <p>You can ask to see, correct, export or delete your personal data, or object to how we use it, under the UAE Personal Data Protection Law. Contact us below; we reply within 30 days.</p>
 
-          <h2>8. Cookies and Tracking</h2>
-          <p>
-            We use cookies and similar technologies to enhance user experience, analyze 
-            usage, and personalize content. You can control cookie preferences through 
-            your browser settings.
-          </p>
+          <h2>9. Cookies</h2>
+          <p>The website uses essential cookies and local storage to keep you signed in and remember your settings. We do not use advertising cookies.</p>
 
-          <h2>9. Third-Party Links</h2>
-          <p>
-            Our platform may contain links to third-party websites. We are not responsible 
-            for the privacy practices of these external sites.
-          </p>
+          <h2>10. Children</h2>
+          <p>Beyond Walls is a business service for people aged 18 and over. We do not knowingly collect data from children.</p>
 
-          <h2>10. Children's Privacy</h2>
-          <p>
-            Our services are not intended for individuals under 18 years of age. We do not 
-            knowingly collect personal information from children.
-          </p>
+          <h2>11. Where data is processed</h2>
+          <p>Our providers may process data outside the UAE. We use providers that protect data with contracts and security safeguards.</p>
 
-          <h2>11. International Data Transfers</h2>
-          <p>
-            Your information may be processed in countries other than your own. We ensure 
-            appropriate safeguards are in place for international data transfers.
-          </p>
+          <h2>12. Changes</h2>
+          <p>We will tell you about important changes by email or in the app before they apply.</p>
 
-          <h2>12. Changes to This Policy</h2>
+          <h2>13. Contact</h2>
           <p>
-            We may update this Privacy Policy periodically. We will notify you of significant 
-            changes via email or through our platform.
-          </p>
-
-          <h2>13. Contact Us</h2>
-          <p>
-            For questions about this Privacy Policy or our data practices, contact us at:<br />
+            Linkzone Global FZ-LLC, Dubai, United Arab Emirates<br />
             Email: info@linkzoneglobal.com<br />
-            Phone: +971 55 614 0067<br />
-            Address: Dubai, United Arab Emirates
+            WhatsApp: +971 55 614 0067
           </p>
         </div>
       </section>
