@@ -48,7 +48,7 @@ export default function PortalScreenDetail() {
 
   useEffect(() => {
     if (screen && !form) {
-      setForm({ name: screen.name || '', position_label: screen.position_label || '', orientation: screen.orientation || 'landscape', mode: screen.mode || 'signage_ads', screen_image_url: screen.screen_image_url || '' });
+      setForm({ name: screen.name || '', position_label: screen.position_label || '', orientation: screen.orientation || 'landscape', mode: screen.mode || 'signage_ads', screen_image_url: screen.screen_image_url || '', marketplace_enabled: !!screen.marketplace_enabled, price_per_week: screen.price_per_week || 150, public_ad_slots: screen.public_ad_slots || 6 });
       setBlanked((screen.player_command || '').startsWith('blank'));
     }
   }, [screen, form]);
@@ -80,7 +80,9 @@ export default function PortalScreenDetail() {
     try { await hook.update(it.id, { screen_ids: [...ids] }); } catch (e) { notifyError(e, on ? `add ${it.name || it.label}` : `remove ${it.name || it.label}`); }
   };
   const save = async () => {
-    const errs = validate({ name: [rules.required('Screen name'), rules.max('Screen name', 40)], position_label: [rules.max('Position', 40)] }, form);
+    const errs = validate({ name: [rules.required('Screen name'), rules.max('Screen name', 40)], position_label: [rules.max('Position', 40)], ...(form.marketplace_enabled ? { price_per_week: [rules.price('Weekly price')] } : {}) }, form);
+    if (form.marketplace_enabled && Number(form.price_per_week) < 20) errs.price_per_week = 'Set at least AED 20 a week.';
+    if (form.marketplace_enabled && form.mode === 'signage_only') errs.mode = 'Signage-only screens show no ads. Pick "Signage + Ads" or "Ads only" to open it to advertisers.';
     setErrors(errs);
     if (Object.keys(errs).length) { toast.error('Fix the highlighted fields first', { description: Object.values(errs)[0] }); return; }
     setBusy(true);
@@ -152,7 +154,19 @@ export default function PortalScreenDetail() {
               <Field label="Where is it?"><input className="bw-input" value={form.position_label} onChange={(e) => setForm({ ...form, position_label: e.target.value })} /><FieldError msg={errors.position_label} /></Field>
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Orientation"><select className="bw-input" value={form.orientation} onChange={(e) => setForm({ ...form, orientation: e.target.value })}><option value="landscape">Landscape</option><option value="portrait">Portrait</option></select></Field>
-                <Field label="Mode"><select className="bw-input" value={form.mode} onChange={(e) => setForm({ ...form, mode: e.target.value })}>{SCREEN_MODES.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}</select></Field>
+                <Field label="Mode"><select className="bw-input" value={form.mode} onChange={(e) => setForm({ ...form, mode: e.target.value })}>{SCREEN_MODES.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}</select><FieldError msg={errors.mode} /></Field>
+              </div>
+              <div className="rounded-xl bg-bw-cream p-3 space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex-1"><p className="text-[13px] font-bold text-bw-navy">Marketplace</p><p className="text-[11px] text-bw-muted">Let advertisers book this screen. You approve every ad and keep your share.</p></div>
+                  <Toggle checked={form.marketplace_enabled} onChange={(v) => setForm({ ...form, marketplace_enabled: v })} />
+                </div>
+                {form.marketplace_enabled && (
+                  <div className="grid grid-cols-2 gap-3">
+                    <Field label="Price per week (AED)"><input type="number" min="20" step="5" className="bw-input" value={form.price_per_week} onChange={(e) => setForm({ ...form, price_per_week: e.target.value === '' ? '' : Number(e.target.value) })} /><FieldError msg={errors.price_per_week} /></Field>
+                    <Field label="Ad slots" hint="Advertisers per loop"><select className="bw-input" value={form.public_ad_slots} onChange={(e) => setForm({ ...form, public_ad_slots: Number(e.target.value) })}>{[2, 4, 6, 8, 10].map((n) => <option key={n} value={n}>{n}</option>)}</select></Field>
+                  </div>
+                )}
               </div>
               <div className="flex items-center gap-3">
                 {form.screen_image_url ? <img src={form.screen_image_url} alt="" className="h-12 w-16 rounded-lg object-cover" /> : <span className="h-12 w-16 rounded-lg bg-bw-cream flex items-center justify-center"><Camera className="h-4 w-4 text-bw-muted" /></span>}
