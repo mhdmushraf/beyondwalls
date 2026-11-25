@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { NavLink, Outlet, Navigate, useLocation } from 'react-router-dom';
+import { NavLink, Outlet, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Store, MonitorPlay, LogOut, Menu, X, Megaphone, Image as ImageIcon,
   UtensilsCrossed, ListVideo, Siren, MessagesSquare, Search, MessageCircle, MoreHorizontal, QrCode, Receipt, LifeBuoy, ShieldCheck, ShoppingBag, Inbox, Briefcase, Settings,
@@ -30,7 +30,28 @@ function BrandMark() {
   );
 }
 
-function useNavGroups(t) {
+function useNavGroups(t, mode) {
+  if (mode === 'advertise') {
+    return [
+      {
+        label: t('nav.group.advertise', 'Advertise'),
+        items: [
+          { to: '/app/marketplace', label: t('nav.bookScreens', 'Book screens'), icon: ShoppingBag },
+          { to: '/app/campaigns', label: t('nav.campaigns', 'My campaigns'), icon: Megaphone },
+          { to: '/app/clients', label: t('nav.clients', 'Clients (agency)'), icon: Briefcase },
+          { to: '/app/media', label: t('nav.media', 'Media library'), icon: ImageIcon },
+        ],
+      },
+      {
+        label: t('nav.group.account', 'Account'),
+        items: [
+          { to: '/app/settings', label: t('nav.settings', 'Business settings'), icon: Settings },
+          { to: '/app/billing', label: t('nav.billing', 'Billing'), icon: Receipt },
+          { to: '/app/support', label: t('nav.support', 'Help & support'), icon: LifeBuoy },
+        ],
+      },
+    ];
+  }
   return [
     {
       label: t('nav.group.overview', 'Overview'),
@@ -53,10 +74,7 @@ function useNavGroups(t) {
     {
       label: t('nav.group.marketplace', 'Marketplace'),
       items: [
-        { to: '/app/ad-requests', label: t('nav.adRequests', 'Ad requests'), icon: Inbox },
-        { to: '/app/marketplace', label: t('nav.bookScreens', 'Book screens'), icon: ShoppingBag },
-        { to: '/app/campaigns', label: t('nav.campaigns', 'My campaigns'), icon: Megaphone },
-        { to: '/app/clients', label: t('nav.clients', 'Clients (agency)'), icon: Briefcase },
+        { to: '/app/ad-requests', label: t('nav.adRequests', 'Ad requests & earnings'), icon: Inbox },
       ],
     },
     {
@@ -81,6 +99,7 @@ function PortalShell() {
   const { user, logout } = useAuth();
   const { loading, orgs, org, selectOrg, reload, screens, preview } = usePortal();
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mode, setMode] = useState(() => {
     try { return localStorage.getItem(MODE_KEY) || 'screens'; } catch (e) { return 'screens'; }
@@ -92,7 +111,8 @@ function PortalShell() {
 
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
-  const groups = useNavGroups(t);
+  const groups = useNavGroups(t, org?.advertiser_status === 'approved' || org?.type === 'advertiser' || org?.type === 'agency' ? mode : 'screens');
+  const switchMode = (m) => { setMode(m); navigate(m === 'advertise' ? '/app/marketplace' : '/app'); };
 
   if (loading) {
     return (
@@ -148,7 +168,7 @@ function PortalShell() {
       <div className="px-3 pb-2">
         <BusinessSwitcher orgs={orgs} org={org} onSelect={selectOrg} />
         <div className="mt-3">
-          <ModeToggle org={org} mode={mode} onMode={setMode} onRequest={requestAdvertising} />
+          <ModeToggle org={org} mode={mode} onMode={switchMode} onRequest={requestAdvertising} />
         </div>
       </div>
 
@@ -266,17 +286,7 @@ function PortalShell() {
           </div>
         )}
         <main className="p-4 md:p-8 pb-28 md:pb-8 max-w-[1240px]">
-          {mode === 'advertise' ? (
-            <div className="bw-card p-10 text-center">
-              <div className="mx-auto h-12 w-12 rounded-2xl bg-bw-lav flex items-center justify-center">
-                <Megaphone className="h-6 w-6 text-bw-coral" />
-              </div>
-              <h2 className="mt-4 text-lg font-semibold text-bw-navy">{t('mode.advertise')}</h2>
-              <p className="mt-2 text-sm text-bw-muted max-w-md mx-auto">{t('mode.advertiseSoon')}</p>
-            </div>
-          ) : (
-            <Outlet />
-          )}
+          <Outlet />
         </main>
       </div>
 
