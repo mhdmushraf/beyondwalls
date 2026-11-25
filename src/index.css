@@ -565,3 +565,18 @@ body {
   background-size: 200% 100%;
   animation: bw-shimmer 1.5s ease-in-out infinite;
 }
+/* Beyond Walls brand utilities (violet) */
+.bw-grad { background-image: linear-gradient(135deg, #6F3FFD 0%, #5A2DED 100%); }
+.bw-grad-dark { background-image: linear-gradient(135deg, #2A1B6B 0%, #111027 100%); }
+.bw-card { background: #fff; border: 1px solid hsl(var(--bw-line)); border-radius: 18px; box-shadow: 0 1px 2px rgba(17,16,39,.04), 0 8px 24px -12px rgba(17,16,39,.08); }
+.bw-input { width: 100%; border: 1px solid hsl(var(--bw-line)); border-radius: 10px; padding: 10px 14px; font-size: 14px; background: #fff; color: #111027; outline: none; }
+.bw-input:focus { border-color: #6F3FFD; box-shadow: 0 0 0 3px rgba(111,63,253,.15); }
+.bw-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 10px; padding: 9px 14px; font-size: 13px; font-weight: 600; transition: opacity .15s, background .15s; }
+.bw-btn-primary { color: #fff; background-image: linear-gradient(135deg, #6F3FFD 0%, #5A2DED 100%); }
+.bw-btn-primary:hover { opacity: .92; }
+.bw-btn-ghost { color: #111027; background: #fff; border: 1px solid hsl(var(--bw-line)); }
+.bw-btn-ghost:hover { background: #F6F5FB; }
+.bw-btn-danger { color: #fff; background: #E5484D; }
+.bw-chip { display: inline-flex; align-items: center; gap: 4px; border-radius: 999px; padding: 3px 9px; font-size: 11px; font-weight: 600; }
+[dir="rtl"] body, [dir="rtl"] .bw-ar { font-family: 'Readex Pro', 'Inter', sans-serif; }
+.bw-ar { font-family: 'Readex Pro', 'Inter', sans-serif; }
