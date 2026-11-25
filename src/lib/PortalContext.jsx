@@ -1,6 +1,10 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
+import { readPreviewState, applyPreviewState } from '@/lib/states';
+
+const readCache = (k) => { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } };
+const writeCache = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* full */ } };
 
 const PortalContext = createContext(null);
 const ORG_KEY = 'bw_org_id';
@@ -24,6 +28,15 @@ export function PortalProvider({ children }) {
       setLoading(false);
       return () => { cancelled = true; };
     }
+    // Offline: start from the last business list seen on this device.
+    const cached = readCache(`bw_cache:orgs:${user.id}`);
+    if (cached && !navigator.onLine) {
+      setMemberships(cached.memberships || []);
+      setOrgs(cached.orgs || []);
+      setOrgId((prev) => prev || localStorage.getItem(ORG_KEY) || cached.orgs?.[0]?.id || null);
+      setLoading(false);
+      return () => { cancelled = true; };
+    }
     (async () => {
       const page = await base44.entities.Membership.filter({ user_id: user.id }, { limit: 50 });
       const list = page.items || [];
@@ -36,6 +49,7 @@ export function PortalProvider({ children }) {
       if (cancelled) return;
       setMemberships(list);
       setOrgs(orgList);
+      writeCache(`bw_cache:orgs:${user.id}`, { memberships: list, orgs: orgList });
       let stored = null;
       try { stored = localStorage.getItem(ORG_KEY); } catch (e) { stored = null; }
       setOrgId((prev) => {
@@ -44,7 +58,11 @@ export function PortalProvider({ children }) {
         return orgList[0]?.id || null;
       });
       setLoading(false);
-    })().catch(() => { if (!cancelled) setLoading(false); });
+    })().catch(() => {
+      if (cancelled) return;
+      if (cached) { setMemberships(cached.memberships || []); setOrgs(cached.orgs || []); setOrgId((prev) => prev || cached.orgs?.[0]?.id || null); }
+      setLoading(false);
+    });
     return () => { cancelled = true; };
   }, [user?.id, reloadKey]);
 
@@ -55,7 +73,11 @@ export function PortalProvider({ children }) {
       setScreens([]);
       return () => { cancelled = true; };
     }
-    setLoadingData(true);
+    const key = `bw_cache:org:${orgId}`;
+    const cached = readCache(key);
+    if (cached) { setVenues(cached.venues || []); setScreens(cached.screens || []); }
+    setLoadingData(!cached);
+    if (!navigator.onLine) { setLoadingData(false); return () => { cancelled = true; }; }
     (async () => {
       const [venuePage, screenPage] = await Promise.all([
         base44.entities.Venue.filter({ org_id: orgId }, { sort: '-created_date', limit: 100 }),
@@ -65,6 +87,7 @@ export function PortalProvider({ children }) {
       setVenues(venuePage.items || []);
       setScreens(screenPage.items || []);
       setLoadingData(false);
+      writeCache(key, { venues: venuePage.items || [], screens: screenPage.items || [] });
     })().catch(() => { if (!cancelled) setLoadingData(false); });
     return () => { cancelled = true; };
   }, [orgId, reloadKey]);
@@ -88,7 +111,17 @@ export function PortalProvider({ children }) {
     [memberships, orgId],
   );
 
+  const preview = readPreviewState(user);
+  useEffect(() => { applyPreviewState(preview); }, [preview]);
+  useEffect(() => {
+    const back = () => setReloadKey((k) => k + 1);
+    window.addEventListener('online', back);
+    return () => window.removeEventListener('online', back);
+  }, []);
+  const emptyPreview = preview === 'empty';
+
   const value = {
+    preview,
     user,
     loading,
     loadingData,
@@ -97,8 +130,8 @@ export function PortalProvider({ children }) {
     org,
     membership,
     orgId,
-    venues,
-    screens,
+    venues: emptyPreview ? [] : venues,
+    screens: emptyPreview ? [] : screens,
     selectOrg,
     reload,
   };
