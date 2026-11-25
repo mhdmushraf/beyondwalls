@@ -1,0 +1,147 @@
+{
+  "description": "Tax invoice to a business (plans, B.One, marketplace). Shown in Arabic + English.",
+  "name": "Invoice",
+  "properties": {
+    "campaign_id": {
+      "type": "string"
+    },
+    "currency": {
+      "default": "AED",
+      "type": "string"
+    },
+    "due_at": {
+      "type": "string"
+    },
+    "issued_at": {
+      "type": "string"
+    },
+    "kind": {
+      "default": "plans",
+      "enum": [
+        "plans",
+        "hardware",
+        "install",
+        "marketplace",
+        "other"
+      ],
+      "type": "string"
+    },
+    "lines": {
+      "items": {
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "description_ar": {
+            "type": "string"
+          },
+          "qty": {
+            "type": "number"
+          },
+          "unit_price": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "number": {
+      "type": "string"
+    },
+    "org_id": {
+      "type": "string"
+    },
+    "org_member_user_ids": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "org_name": {
+      "type": "string"
+    },
+    "org_trn": {
+      "type": "string"
+    },
+    "paid_at": {
+      "type": "string"
+    },
+    "payment_method": {
+      "default": "bank_transfer",
+      "enum": [
+        "bank_transfer",
+        "card",
+        "other"
+      ],
+      "type": "string"
+    },
+    "payment_ref": {
+      "type": "string"
+    },
+    "period": {
+      "description": "YYYY-MM",
+      "type": "string"
+    },
+    "status": {
+      "default": "issued",
+      "enum": [
+        "draft",
+        "issued",
+        "paid",
+        "void"
+      ],
+      "type": "string"
+    },
+    "subtotal": {
+      "type": "number"
+    },
+    "total": {
+      "type": "number"
+    },
+    "vat": {
+      "type": "number"
+    },
+    "vat_pct": {
+      "default": 5,
+      "type": "number"
+    }
+  },
+  "required": [
+    "org_id",
+    "number"
+  ],
+  "type": "object",
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "$or": [
+        {
+          "data.org_member_user_ids": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
