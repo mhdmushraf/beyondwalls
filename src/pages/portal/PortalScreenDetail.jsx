@@ -30,6 +30,9 @@ function AssignList({ title, icon: Icon, items, screenId, onToggle, empty, to, s
   );
 }
 
+import { validate, rules, notifyError, notifySuccess, isOnline } from '@/lib/states';
+import { FieldError } from '@/components/states/StateViews';
+
 export default function PortalScreenDetail() {
   const { screenId } = useParams();
   const { screens, venues, loadingData, reload } = usePortal();
@@ -42,6 +45,7 @@ export default function PortalScreenDetail() {
   const [form, setForm] = useState(null);
   const [busy, setBusy] = useState(false);
   const [blanked, setBlanked] = useState(false);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (screen && !form) {
@@ -56,7 +60,8 @@ export default function PortalScreenDetail() {
   if (!screen) {
     return (
       <div className="bw-card p-10 text-center">
-        <p className="text-sm text-bw-muted">Screen not found.</p>
+        <p className="text-[16px] font-bold text-bw-navy">We can't find this screen</p>
+        <p className="mt-1 text-sm text-bw-muted">It may have been removed, or it belongs to another business. Pick it again from your screens list.</p>
         <Link to="/app/screens" className="mt-4 inline-flex items-center gap-2 text-[13px] font-semibold text-bw-coral"><ArrowLeft className="h-4 w-4" />Screens</Link>
       </div>
     );
@@ -64,17 +69,23 @@ export default function PortalScreenDetail() {
 
   const state = screenState(screen);
   const cmd = async (action, msg) => {
-    await base44.entities.Screen.update(screen.id, { player_command: `${action}:${Date.now()}` });
-    toast.success(msg || 'Sent — the TV picks it up within 15 seconds');
+    if (!isOnline()) { toast.error("You're offline", { description: 'Remote controls need internet. Try again when you reconnect.' }); return; }
+    try {
+      await base44.entities.Screen.update(screen.id, { player_command: `${action}:${Date.now()}` });
+      notifySuccess(msg || 'Sent to the TV', state === 'online' ? 'It picks it up within 15 seconds.' : 'The TV is offline — it runs this as soon as it reconnects.');
+    } catch (e) { notifyError(e, 'send that to the TV', () => cmd(action, msg)); }
   };
   const toggleAssign = (hook) => async (it, on) => {
     const ids = new Set(it.screen_ids || []);
     if (on) ids.add(screen.id); else ids.delete(screen.id);
-    await hook.update(it.id, { screen_ids: [...ids] });
+    try { await hook.update(it.id, { screen_ids: [...ids] }); } catch (e) { notifyError(e, on ? `add ${it.name || it.label}` : `remove ${it.name || it.label}`); }
   };
   const save = async () => {
+    const errs = validate({ name: [rules.required('Screen name'), rules.max('Screen name', 40)], position_label: [rules.max('Position', 40)] }, form);
+    setErrors(errs);
+    if (Object.keys(errs).length) { toast.error('Fix the highlighted fields first', { description: Object.values(errs)[0] }); return; }
     setBusy(true);
-    try { await base44.entities.Screen.update(screen.id, form); reload(); toast.success('Saved'); } finally { setBusy(false); }
+    try { await base44.entities.Screen.update(screen.id, form); reload(); notifySuccess('Screen saved', 'Changes show on the TV within a minute.'); } catch (e) { notifyError(e, 'save the screen', save); } finally { setBusy(false); }
   };
 
   const chip = { online: ['bg-emerald-50 text-emerald-700', 'Online'], offline: ['bg-rose-50 text-rose-600', 'Offline'], unpaired: ['bg-amber-50 text-amber-700', 'Not paired'] }[state];
