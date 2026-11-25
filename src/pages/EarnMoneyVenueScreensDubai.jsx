@@ -13,7 +13,7 @@ export default function EarnMoneyVenueScreensDubai() {
       readTime={7}
       coverImage="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&h=400&fit=crop"
       ctaTitle="Your Screens Are Ready to Earn. Are You?"
-      ctaText="List your screens on Beyond Walls for free — keep 100% of your screen rate, weekly payouts, full content control. Join Dubai's leading DOOH marketplace today."
+      ctaText="List your screens on Beyond Walls for free — keep 70% of every booking, monthly payouts, full content control. Join Dubai's leading DOOH marketplace today."
       ctaLink="Register"
       ctaLabel="List Your Screens Free"
     >
@@ -41,7 +41,7 @@ export default function EarnMoneyVenueScreensDubai() {
       </p>
       <p>
         The concept is simple: you provide the screen and the audience, advertisers provide the content and the
-        budget, and Beyond Walls handles the matching, booking, payment, and scheduling. You keep 100% of every
+        budget, and Beyond Walls handles the matching, booking, payment, and scheduling. You keep 70% of every
         booking.
       </p>
 
@@ -53,9 +53,8 @@ export default function EarnMoneyVenueScreensDubai() {
       </p>
       <p>
         When an advertiser books your screen, you receive a notification. You review the ad creative, approve or
-        reject it, and once approved, the ad goes live on your screen at the scheduled time. The booking fee is
-        paid directly to you — you keep 100% of your screen rate. Advertisers pay a service fee on top for platform operations, payment processing, and
-        advertiser support. You don't have to chase payments, negotiate rates, or manage advertising sales. The
+        reject it, and once approved, the ad goes live on your screen at the scheduled time. You keep 70% of the booking value, paid monthly to your bank; Beyond Walls keeps 30% for running the
+        platform, payments, moderation and advertiser support. Partner venues with free B.One hardware share 60/40 or 50/50, and advertisers you bring yourself carry only a 10% fee. You don't have to chase payments, negotiate rates, or manage advertising sales. The
         platform handles it all.
       </p>
 
@@ -123,9 +122,7 @@ export default function EarnMoneyVenueScreensDubai() {
       </p>
 
       <p>
-        On average, venue owners on Beyond Walls earn between AED 2,000 and AED 4,000 per screen per month, with
-        high-traffic venues in prime locations earning significantly more. If you have multiple screens, those
-        earnings multiply.
+        With the Ads-only plan (free) or Signage + Ads (AED 15 per screen per month), you keep 70% of every marketplace booking. As an example, 3 ad slots at AED 99 a week, fully booked, come to about AED 830 per screen per month for the venue. Early on, before bookings build up near you, it may be little or nothing. Busier venues in prime areas can set higher weekly prices.
       </p>
 
       <h2>Step-by-Step: How to List Your Screen</h2>
@@ -150,8 +147,8 @@ export default function EarnMoneyVenueScreensDubai() {
           ad goes live at the scheduled time.
         </li>
         <li>
-          <strong>Get paid weekly:</strong> Earnings are tracked in real time and paid out weekly directly to your
-          bank account. You keep 100% of every booking.
+          <strong>Get paid monthly:</strong> Earnings are tracked in real time and paid out monthly to your
+          bank account. You keep 70% of every booking.
         </li>
       </ol>
 
@@ -160,10 +157,10 @@ export default function EarnMoneyVenueScreensDubai() {
         There are several reasons Beyond Walls stands out as the DOOH monetisation platform for Dubai venue owners:
       </p>
       <ul>
-        <li><strong>Keep 100% of your rate:</strong> you set the price, advertisers pay a service fee on top — most platforms take 30% or more</li>
-        <li><strong>Zero upfront cost:</strong> Free to join, no equipment to buy, no subscription fees</li>
+        <li><strong>Keep 70% of every booking:</strong> you set the weekly price and approve every ad</li>
+        <li><strong>Free to start:</strong> the Ads-only plan is free; Signage + Ads is AED 15 per screen per month (founding price), and a B.One player (AED 449) is only needed for TVs that aren't smart</li>
         <li><strong>Full content control:</strong> You approve every ad before it appears — your screens, your rules</li>
-        <li><strong>Weekly payouts:</strong> No waiting months for payment — earnings hit your bank every week</li>
+        <li><strong>Monthly payouts:</strong> earnings go to your bank every month, or pay your plan fee from them</li>
         <li><strong>Real-time dashboard:</strong> Track earnings, see which ads are running, and monitor performance live</li>
         <li><strong>Built for Dubai:</strong> Based in Dubai Internet City, we understand the local market and regulatory environment</li>
       </ul>

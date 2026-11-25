@@ -13,11 +13,11 @@ export default function MonetizeYourScreensDubai() {
   const faqs = [
     {
       question: "How much can I earn from my screen?",
-      answer: "Earnings depend on your screen size, venue location, and daily footfall, but venue owners on Beyond Walls typically earn AED 2,000–4,000+ per screen per month. Screens in high-traffic areas like Dubai Marina or Downtown Dubai can earn significantly more. If you have multiple screens, those earnings multiply. All revenue is tracked in real time and paid out weekly to your bank account."
+      answer: "Earnings depend on your screen size, venue location, and daily footfall, and how many slots get booked near you. You keep 70% of every booking — for example, 3 ad slots at AED 99 a week, fully booked, come to about AED 830 per screen per month. Early on it may be little or nothing. Earnings are tracked in real time and paid out monthly to your bank account."
     },
     {
       question: "Does it cost anything to list?",
-      answer: "No. Listing your screens on Beyond Walls is completely free. There are no setup fees, no monthly charges, and no hidden costs. You only earn — we make our revenue from a service fee charged to advertisers on top of your screen rate. You keep 100% of every booking, the highest revenue share in the UAE DOOH industry."
+      answer: "The Ads-only plan is free: your screen plays ads you approve and you keep 70% of every booking. If you also want to run your own menus and promos, Signage + Ads is AED 15 per screen per month (founding price), usually covered by your ad earnings. Smart TVs use our free app; a B.One player (AED 449, one-off) is only needed for TVs that aren't smart."
     },
     {
       question: "Do I control what plays?",
@@ -34,10 +34,10 @@ export default function MonetizeYourScreensDubai() {
   ];
 
   const benefits = [
-    { icon: DollarSign, title: "100% of Your Rate", desc: "The highest payout in the DOOH industry" },
+    { icon: DollarSign, title: "70% of Every Booking", desc: "You set the price and approve every ad" },
     { icon: Shield, title: "Full Content Control", desc: "Approve every ad before it appears" },
     { icon: Wifi, title: "Zero Upfront Cost", desc: "Free to join, no equipment needed" },
-    { icon: Wallet, title: "Weekly Payouts", desc: "Get paid every week, directly to your bank" },
+    { icon: Wallet, title: "Monthly Payouts", desc: "Paid monthly to your bank, or put towards your plan fee" },
   ];
 
   return (
@@ -95,9 +95,9 @@ export default function MonetizeYourScreensDubai() {
       {/* Stats */}
       <section className="py-12 px-6 bg-slate-900 text-white">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          <div><p className="text-4xl font-bold text-violet-400">100%</p><p className="text-slate-400">Revenue Share</p></div>
-          <div><p className="text-4xl font-bold text-violet-400">AED 4K+</p><p className="text-slate-400">Monthly Potential</p></div>
-          <div><p className="text-4xl font-bold text-violet-400">AED 0</p><p className="text-slate-400">Upfront Cost</p></div>
+          <div><p className="text-4xl font-bold text-violet-400">70%</p><p className="text-slate-400">Your share of every booking</p></div>
+          <div><p className="text-4xl font-bold text-violet-400">AED 15</p><p className="text-slate-400">Signage + Ads, per screen/month</p></div>
+          <div><p className="text-4xl font-bold text-violet-400">Free</p><p className="text-slate-400">Ads-only plan</p></div>
           <div><p className="text-4xl font-bold text-violet-400">Weekly</p><p className="text-slate-400">Payouts</p></div>
         </div>
       </section>
@@ -137,21 +137,21 @@ export default function MonetizeYourScreensDubai() {
             uses. That screen is in front of your customers for hours every day — and right now, it's not generating a
             single dirham in revenue. Beyond Walls changes that. By listing your screens on our platform, you connect
             them to a marketplace of advertisers who are actively looking to reach audiences in venues exactly like
-            yours. You keep 100% of every booking. We handle the rest.
+            yours. You keep 70% of every booking. We handle the rest.
           </p>
 
           <h2 className="text-3xl font-bold text-slate-900 mb-6 mt-12">How Venues Earn: Zero Upfront Cost</h2>
           <p className="text-slate-600 mb-6 leading-relaxed">
             The model is simple: you provide the screen and the audience, advertisers provide the content and the
-            budget, and Beyond Walls handles the matching, booking, payment, and scheduling. There is no cost to join,
-            no monthly subscription, and no equipment to buy. If you already have a TV or digital display — whether it's
+            budget, and Beyond Walls handles the matching, booking, payment, and scheduling. The Ads-only plan is free and
+            smart TVs need no extra equipment. If you already have a TV or digital display — whether it's
             a 43-inch smart TV in a café or a 65-inch screen in a gym — you can start earning immediately.
           </p>
           <p className="text-slate-600 mb-6 leading-relaxed">
             Advertisers browse available screens on the Beyond Walls platform, select the ones that match their target
-            audience, and book them by the week. When a booking is made on your screen, you receive 100% of your screen rate.
-            Advertisers pay a service fee on top, which covers platform operations, payment processing, and advertiser support. This is the
-            highest revenue share offered by any DOOH platform in the UAE — most traditional networks keep 50% or more.
+            audience, and book them by the week. When a booking plays on your screen, you receive 70% of the booking value.
+            Beyond Walls keeps 30% for platform operations, payment processing, moderation and advertiser support. Many traditional
+            networks keep 50% or more.
           </p>
 
           <h2 className="text-3xl font-bold text-slate-900 mb-6 mt-12">You Stay in Full Control</h2>
@@ -188,10 +188,7 @@ export default function MonetizeYourScreensDubai() {
             commands higher rates than one in a less central area.
           </p>
           <p className="text-slate-600 mb-6 leading-relaxed">
-            On average, venue owners on Beyond Walls earn between AED 2,000 and AED 4,000 per screen per month, with
-            high-traffic venues in prime locations earning significantly more. A 55-inch screen in a busy Dubai Marina
-            café will earn more than the same screen in a quieter neighbourhood café — but both will earn. If you have
-            multiple screens, those earnings multiply.
+            With the Ads-only plan (free) or Signage + Ads (AED 15 per screen per month), you keep 70% of every marketplace booking. As an example, 3 ad slots at AED 99 a week, fully booked, come to about AED 830 per screen per month for the venue. Early on, before bookings build up near you, it may be little or nothing. A screen in a busy Dubai Marina café can set a higher weekly price than one in a quieter neighbourhood.
           </p>
           <p className="text-slate-600 mb-6 leading-relaxed">
             All earnings are tracked in real time through your venue owner dashboard. You can see exactly which ads are
@@ -266,7 +263,7 @@ export default function MonetizeYourScreensDubai() {
             Your Screens Are Ready to Earn. Are You?
           </h2>
           <p className="text-xl text-white/80 mb-8">
-            Join Dubai's leading DOOH marketplace — free to join, keep 100% of your rate, weekly payouts
+            Join Dubai's leading DOOH marketplace — free to start, keep 70% of every booking, monthly payouts
           </p>
           <Link to={createPageUrl("Contact")}>
             <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8">
