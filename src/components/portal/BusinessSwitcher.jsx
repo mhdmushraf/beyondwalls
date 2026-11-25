@@ -32,10 +32,10 @@ export default function BusinessSwitcher({ orgs, org, onSelect }) {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="flex items-center gap-2 rounded-xl border border-bw-line bg-white px-3 py-1.5 hover:border-bw-navy/30 transition-colors min-w-0"
+          className="!min-h-0 !justify-start flex w-full items-center gap-2 rounded-xl border border-bw-line bg-white px-3 py-2 hover:border-bw-violet/40 transition-colors min-w-0"
         >
           <Building2 className="h-4 w-4 text-bw-navy shrink-0" />
-          <span className="text-sm font-semibold text-bw-navy truncate max-w-[180px]">{org.name}</span>
+          <span className="flex-1 min-w-0 text-start text-sm font-semibold text-bw-navy truncate">{org.name}</span>
           <ChevronDown className="h-4 w-4 text-bw-muted shrink-0" />
         </button>
       </DropdownMenuTrigger>
