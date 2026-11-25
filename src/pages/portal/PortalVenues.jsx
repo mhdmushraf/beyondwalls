@@ -5,6 +5,7 @@ import { usePortal } from '@/lib/PortalContext';
 import { useI18n } from '@/lib/i18n';
 import AddVenueDialog from '@/components/portal/AddVenueDialog';
 import { ListSkeleton } from '@/components/portal/Skeletons';
+import { ErrorState, SlowHint } from '@/components/states/StateViews';
 
 const STATUS_STYLES = {
   approved: 'bg-emerald-50 text-emerald-700 border-emerald-100',
@@ -14,8 +15,9 @@ const STATUS_STYLES = {
 
 export default function PortalVenues() {
   const { t } = useI18n();
-  const { venues, screens, loadingData } = usePortal();
+  const { venues, screens, loadingData, dataError, reload, preview } = usePortal();
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState(null);
 
   const screenCount = (venueId) => screens.filter((screen) => screen.venue_id === venueId).length;
 
@@ -28,7 +30,7 @@ export default function PortalVenues() {
         </div>
         <button
           type="button"
-          onClick={() => setOpen(true)}
+          onClick={() => { setEditing(null); setOpen(true); }}
           className="inline-flex items-center gap-2 rounded-xl bg-bw-coral px-4 py-2.5 text-sm font-semibold text-white hover:bg-bw-coral/90 shrink-0"
         >
           <Plus className="h-4 w-4" />
@@ -36,8 +38,11 @@ export default function PortalVenues() {
         </button>
       </div>
 
+      <SlowHint loading={loadingData} forced={preview === 'slow'} />
       {loadingData && !venues.length ? (
         <ListSkeleton rows={3} />
+      ) : dataError && !venues.length ? (
+        <ErrorState error={dataError} action="load your venues" onRetry={reload} />
       ) : venues.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-bw-line bg-white/60 p-12 text-center">
           <div className="mx-auto h-12 w-12 rounded-2xl bg-bw-cream flex items-center justify-center">
@@ -46,7 +51,7 @@ export default function PortalVenues() {
           <p className="mt-3 text-sm text-bw-muted">{t('venues.empty')}</p>
           <button
             type="button"
-            onClick={() => setOpen(true)}
+            onClick={() => { setEditing(null); setOpen(true); }}
             className="mt-4 inline-flex items-center gap-2 rounded-xl bg-bw-navy px-4 py-2.5 text-xs font-semibold text-white hover:bg-bw-navy/90"
           >
             <Plus className="h-4 w-4" />
@@ -84,6 +89,8 @@ export default function PortalVenues() {
                     </div>
                   </div>
 
+                  {status === 'rejected' && venue.rejection_reason && <p className="mt-2 rounded-lg bg-rose-50 px-2 py-1.5 text-[11px] text-rose-700">Not approved: {venue.rejection_reason} — edit and save to send it again.</p>}
+                  {status === 'pending' && <p className="mt-2 text-[11px] text-amber-700">In review — usually under 24 hours.</p>}
                   <p className="mt-3 flex items-start gap-1.5 text-[11px] text-bw-muted">
                     <MapPin className="h-3.5 w-3.5 mt-0.5 shrink-0" />
                     <span className="line-clamp-2">{[venue.address, venue.city].filter(Boolean).join(', ')}</span>
@@ -94,9 +101,10 @@ export default function PortalVenues() {
                       <MonitorPlay className="h-3.5 w-3.5" />
                       {screenCount(venue.id)} {t('venues.screens')}
                     </span>
-                    <Link to="/app/screens" className="text-[11px] font-semibold text-bw-coral hover:underline">
-                      {t('nav.screens')}
-                    </Link>
+                    <span className="flex gap-3">
+                      <button type="button" className="!min-h-0 text-[11px] font-semibold text-bw-navy hover:underline" onClick={() => { setEditing(venue); setOpen(true); }}>Edit</button>
+                      <Link to="/app/screens" className="text-[11px] font-semibold text-bw-coral hover:underline">{t('nav.screens')}</Link>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -105,7 +113,7 @@ export default function PortalVenues() {
         </div>
       )}
 
-      <AddVenueDialog open={open} onOpenChange={setOpen} />
+      <AddVenueDialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) setEditing(null); }} venue={editing} />
     </div>
   );
 }

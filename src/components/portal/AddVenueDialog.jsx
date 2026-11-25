@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Upload, X, Check, AlertCircle } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,8 @@ import { useAuth } from '@/lib/AuthContext';
 import { useI18n } from '@/lib/i18n';
 import { uploadPublic, logActivity, VENUE_TYPES, EMIRATES, SPEND_RANGES } from '@/lib/portalData';
 import MapPinPicker from './MapPinPicker';
+import { useDraft, validate, rules, friendlyError, notifySuccess, isOnline } from '@/lib/states';
+import { FieldError, DraftBanner } from '@/components/states/StateViews';
 
 const fieldClass = 'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring';
 
@@ -26,7 +28,7 @@ const EMPTY = {
   peak_hours: '',
 };
 
-export default function AddVenueDialog({ open, onOpenChange }) {
+export default function AddVenueDialog({ open, onOpenChange, venue = null }) {
   const { t } = useI18n();
   const { user } = useAuth();
   const { org, reload } = usePortal();
@@ -38,17 +40,31 @@ export default function AddVenueDialog({ open, onOpenChange }) {
   const [uploading, setUploading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
+
+  // Editing: start from the venue. Adding: start blank.
+  useEffect(() => {
+    if (!open) return;
+    setErrors({}); setError('');
+    if (venue) {
+      setForm({ ...EMPTY, ...Object.fromEntries(Object.keys(EMPTY).map((k) => [k, venue[k] ?? EMPTY[k]])) });
+      setLat(venue.latitude ?? null); setLng(venue.longitude ?? null);
+      setLogoUrl(venue.logo_url || ''); setPhotos(venue.photo_urls || (venue.image_url ? [venue.image_url] : []));
+    }
+  }, [open, venue?.id]); // eslint-disable-line
+  const { restored, discard, clear } = useDraft(open ? `venue:${venue?.id || 'new'}` : null, form, setForm, { enabled: open, saved: venue ? undefined : EMPTY });
 
   const set = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
 
   const uploadLogo = async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
+    if (file.size > 10 * 1048576) { setError(`${file.name} is over 10 MB. Use a smaller image.`); return; }
     setUploading(true);
     try {
       setLogoUrl(await uploadPublic(file));
     } catch (e) {
-      setError('Logo upload failed.');
+      setError(friendlyError(e, 'upload the logo').title);
     } finally {
       setUploading(false);
     }
@@ -65,7 +81,7 @@ export default function AddVenueDialog({ open, onOpenChange }) {
       }
       setPhotos((prev) => [...prev, ...urls].slice(0, 5));
     } catch (e) {
-      setError('Photo upload failed.');
+      setError(friendlyError(e, 'upload the photos').title);
     } finally {
       setUploading(false);
     }
@@ -74,13 +90,17 @@ export default function AddVenueDialog({ open, onOpenChange }) {
   const submit = async (event) => {
     event.preventDefault();
     if (!org) return;
+    const errs = validate({ name: [rules.required('Venue name'), rules.max('Venue name', 60)], address: [rules.required('Address')] }, form);
+    if (form.opening_time && form.opening_time === form.closing_time) errs.closing_time = 'Opening and closing time are the same. For 24 hours use 00:00 to 23:59.';
+    if (form.daily_customers !== '' && !(Number(form.daily_customers) >= 0)) errs.daily_customers = 'Use a number, like 250.';
+    if (form.avg_stay_minutes !== '' && !(Number(form.avg_stay_minutes) >= 0)) errs.avg_stay_minutes = 'Use minutes, like 45.';
+    setErrors(errs);
+    if (Object.keys(errs).length) { setError('Fix the highlighted fields first.'); return; }
+    if (!isOnline()) { setError("You're offline. Your venue details are saved on this device — try again when you reconnect."); return; }
     setBusy(true);
     setError('');
     try {
-      const venue = await base44.entities.Venue.create({
-        org_id: org.id,
-        org_member_user_ids: org.member_user_ids || [user.id],
-        owner_email: user.email,
+      const data = {
         name: form.name.trim(),
         venue_type: form.venue_type,
         address: form.address.trim(),
@@ -95,12 +115,19 @@ export default function AddVenueDialog({ open, onOpenChange }) {
         closing_time: form.closing_time,
         opening_hours: `${form.opening_time} - ${form.closing_time}`,
         daily_customers: form.daily_customers ? Number(form.daily_customers) : undefined,
+        weekly_footfall: form.daily_customers ? Number(form.daily_customers) * 7 : undefined,
         avg_spend_range: form.avg_spend_range,
         avg_stay_minutes: form.avg_stay_minutes ? Number(form.avg_stay_minutes) : undefined,
         peak_hours: form.peak_hours,
-        status: 'pending',
-        approval_status: 'pending',
-      });
+      };
+      if (venue) {
+        await base44.entities.Venue.update(venue.id, data);
+        clear(); reload(); onOpenChange(false);
+        notifySuccess(`${data.name} saved`, 'Advertisers see the updated details in the marketplace.');
+        return;
+      }
+      const created = await base44.entities.Venue.create({ ...data, org_id: org.id, org_member_user_ids: org.member_user_ids || [user.id], owner_email: user.email, status: 'pending', approval_status: 'pending' });
+      const venueRec = created;
 
       await logActivity({
         orgId: org.id,
@@ -108,8 +135,8 @@ export default function AddVenueDialog({ open, onOpenChange }) {
         userEmail: user.email,
         action: 'venue_created',
         targetType: 'venue',
-        targetId: venue.id,
-        details: `${venue.name} created in ${venue.city}`,
+        targetId: venueRec.id,
+        details: `${venueRec.name} created in ${venueRec.city}`,
       });
 
       setForm(EMPTY);
@@ -118,9 +145,12 @@ export default function AddVenueDialog({ open, onOpenChange }) {
       setLat(null);
       setLng(null);
       reload();
+      clear();
       onOpenChange(false);
+      notifySuccess(`${venueRec.name} sent for review`, 'We usually approve venues within 24 hours. You can pair screens once it is approved.');
     } catch (e) {
-      setError('We could not create this venue.');
+      const f = friendlyError(e, venue ? 'save this venue' : 'create this venue');
+      setError(`${f.title} ${f.fix || ''}`);
     } finally {
       setBusy(false);
     }
@@ -130,13 +160,14 @@ export default function AddVenueDialog({ open, onOpenChange }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{t('venues.addTitle')}</DialogTitle>
+          <DialogTitle>{venue ? `Edit ${venue.name}` : t('venues.addTitle')}</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={submit} className="space-y-4">
+        <form onSubmit={submit} className="space-y-4" noValidate>
+          {restored && <DraftBanner restored onDiscard={discard} what="venue details" />}
           <div className="space-y-1.5">
             <Label htmlFor="venue-name">{t('venues.name')}</Label>
-            <Input id="venue-name" required value={form.name} onChange={(e) => set('name', e.target.value)} />
+            <Input id="venue-name" value={form.name} onChange={(e) => set('name', e.target.value)} /><FieldError msg={errors.name} />
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
@@ -160,7 +191,7 @@ export default function AddVenueDialog({ open, onOpenChange }) {
 
           <div className="space-y-1.5">
             <Label htmlFor="venue-address">{t('venues.address')}</Label>
-            <Input id="venue-address" required value={form.address} onChange={(e) => set('address', e.target.value)} placeholder="Al Wasl Road, Jumeirah 1" />
+            <Input id="venue-address" required value={form.address} onChange={(e) => set('address', e.target.value)} placeholder="Al Wasl Road, Jumeirah 1" /><FieldError msg={errors.address} />
           </div>
 
           <div className="space-y-1.5">
@@ -214,14 +245,14 @@ export default function AddVenueDialog({ open, onOpenChange }) {
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="close">{t('venues.close')}</Label>
-              <Input id="close" type="time" value={form.closing_time} onChange={(e) => set('closing_time', e.target.value)} />
+              <Input id="close" type="time" value={form.closing_time} onChange={(e) => set('closing_time', e.target.value)} /><FieldError msg={errors.closing_time} />
             </div>
           </div>
 
           <div className="grid sm:grid-cols-3 gap-4">
             <div className="space-y-1.5">
               <Label htmlFor="customers">{t('venues.dailyCustomers')}</Label>
-              <Input id="customers" type="number" min="0" value={form.daily_customers} onChange={(e) => set('daily_customers', e.target.value)} />
+              <Input id="customers" type="number" min="0" value={form.daily_customers} onChange={(e) => set('daily_customers', e.target.value)} /><FieldError msg={errors.daily_customers} />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="spend">{t('venues.spend')}</Label>
@@ -233,7 +264,7 @@ export default function AddVenueDialog({ open, onOpenChange }) {
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="stay">{t('venues.stay')}</Label>
-              <Input id="stay" type="number" min="0" value={form.avg_stay_minutes} onChange={(e) => set('avg_stay_minutes', e.target.value)} />
+              <Input id="stay" type="number" min="0" value={form.avg_stay_minutes} onChange={(e) => set('avg_stay_minutes', e.target.value)} /><FieldError msg={errors.avg_stay_minutes} />
             </div>
           </div>
 
@@ -260,7 +291,7 @@ export default function AddVenueDialog({ open, onOpenChange }) {
               disabled={busy || uploading}
               className="rounded-xl bg-bw-coral px-5 py-2.5 text-sm font-semibold text-white hover:bg-bw-coral/90 disabled:opacity-60"
             >
-              {busy ? t('common.loading') : t('venues.create')}
+              {busy ? 'Saving…' : venue ? 'Save changes' : t('venues.create')}
             </button>
           </div>
         </form>
