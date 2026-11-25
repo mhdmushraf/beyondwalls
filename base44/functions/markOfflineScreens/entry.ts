@@ -18,6 +18,8 @@ export default async function (req) {
     const now = Date.now();
 
     const stale = screens.filter((screen) => {
+      // App Store / Play review demo screens have no physical player; keep them online.
+      if (String(screen.paired_device_id || "").startsWith("demo-")) return false;
       if (!screen.last_heartbeat) return true;
       const last = new Date(screen.last_heartbeat).getTime();
       return !Number.isFinite(last) || now - last > STALE_MS;
