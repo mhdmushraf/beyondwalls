@@ -1,412 +1,97 @@
 import { useState } from "react";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Clock,
-  Send,
-  MessageSquare,
-  Loader2,
-  Megaphone,
-  Building2
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { useLocation } from "react-router-dom";
+import { MessageCircle, Mail, MapPin, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
-import PublicNav from "@/components/PublicNav";
-import PublicFooter from "@/components/PublicFooter";
-import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
-import PublicAIChatWidget from "@/components/chat/PublicAIChatWidget";
+import SEOHead from "@/components/SEOHead";
+import { SitePage, WHATSAPP, submitLead } from "@/components/site/Site";
+import { Tag, Btn, Field, inputCls, wrap } from "@/components/site/inner";
+
+const TYPES = [["venue", "I have screens"], ["advertiser", "I want to advertise"], ["agency", "Agency"]];
 
 export default function Contact() {
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    subject: "",
-    message: ""
-  });
+  const q = new URLSearchParams(useLocation().search);
+  const initialType = ["venue", "advertiser", "agency"].includes(q.get("type")) ? q.get("type") : "venue";
+  const [f, setF] = useState({ type: initialType, name: "", company: "", phone: "", email: "", screens: "1–5", preferred_time: "Weekday mornings", website: "" });
+  const [err, setErr] = useState({});
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState(false);
+  const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
 
-  const handleSubmit = async (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    toast.success("Message sent! We'll get back to you soon.");
-    setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
-    setLoading(false);
+    setBusy(true); setErr({});
+    try {
+      await submitLead({ kind: q.get("topic") === "investor" ? "investor" : "demo", ...f });
+      setDone(true);
+    } catch (x) {
+      if (x.field) setErr({ [x.field]: x.message }); else toast.error(x.message);
+    } finally { setBusy(false); }
   };
 
-  const contactInfo = [
-    {
-      icon: Mail,
-      title: "Email",
-      value: "hello@linkzoneglobal.com",
-      link: "mailto:hello@linkzoneglobal.com"
-    },
-    {
-      icon: Phone,
-      title: "Phone",
-      value: "+971 55 614 0067",
-      link: "tel:+971556140067"
-    },
-    {
-      icon: MapPin,
-      title: "Address",
-      value: "in5 - Dubai Internet City, Dubai, UAE",
-      link: "https://maps.google.com/?q=in5+Dubai+Internet+City"
-    },
-    {
-      icon: Clock,
-      title: "Business Hours",
-      value: "Sun - Thu: 9AM - 6PM",
-      link: null
-    }
+  const contacts = [
+    [MessageCircle, "WhatsApp", "Fastest reply · 9am–9pm", WHATSAPP],
+    [Mail, "Email", "hello@linkzoneglobal.com", "mailto:hello@linkzoneglobal.com"],
+    [MapPin, "Office", "in5, Dubai Internet City", "https://maps.google.com/?q=in5+Dubai+Internet+City"],
   ];
 
   return (
-    <div className="min-h-screen bg-white">
-      <SEOHead 
-        {...PAGE_SEO.contact}
-        structuredData={{
-          "@context": "https://schema.org",
-          "@graph": [
-            {
-              "@type": "WebPage",
-              "@id": "https://beyondwalls.ae/Contact#webpage",
-              "url": "https://beyondwalls.ae/Contact",
-              "name": "Contact BeyondWalls - Advertising Inquiries Dubai",
-              "isPartOf": {
-                "@id": "https://beyondwalls.ae/#website"
-              },
-              "breadcrumb": {
-                "@type": "BreadcrumbList",
-                "itemListElement": [
-                  {
-                    "@type": "ListItem",
-                    "position": 1,
-                    "name": "Home",
-                    "item": "https://beyondwalls.ae"
-                  },
-                  {
-                    "@type": "ListItem",
-                    "position": 2,
-                    "name": "Contact",
-                    "item": "https://beyondwalls.ae/Contact"
-                  }
-                ]
-              }
-            },
-            {
-          "@type": "ContactPage",
-          "name": "Contact BeyondWalls - Advertising Inquiries Dubai",
-          "description": "Contact BeyondWalls for DOOH advertising inquiries, venue partnerships, or support",
-          "mainEntity": {
-            "@type": "Organization",
-            "name": "BeyondWalls",
-            "url": "https://beyondwalls.ae",
-            "logo": "https://beyondwalls.ae/logo.png",
-            "telephone": "+971-55-614-0067",
-            "email": "hello@linkzoneglobal.com",
-            "address": {
-              "@type": "PostalAddress",
-              "streetAddress": "in5 Tech, Dubai Internet City",
-              "addressLocality": "Dubai",
-              "addressRegion": "Dubai",
-              "postalCode": "500001",
-              "addressCountry": "AE"
-            },
-            "geo": {
-              "@type": "GeoCoordinates",
-              "latitude": "25.0957",
-              "longitude": "55.1548"
-            },
-            "openingHoursSpecification": {
-              "@type": "OpeningHoursSpecification",
-              "dayOfWeek": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
-              "opens": "09:00",
-              "closes": "18:00"
-            },
-            "contactPoint": [
-              {
-                "@type": "ContactPoint",
-                "telephone": "+971-55-614-0067",
-                "contactType": "customer service",
-                "email": "hello@linkzoneglobal.com",
-                "availableLanguage": ["English", "Arabic"]
-              },
-              {
-                "@type": "ContactPoint",
-                "telephone": "+971-55-614-0067",
-                "contactType": "sales",
-                "email": "hello@linkzoneglobal.com"
-              }
-            ]
-          }
-            }
-          ]
-        }}
-      />
-      <PublicNav />
-
-      {/* Hero */}
-      <section className="pt-20 sm:pt-24 lg:pt-32 pb-12 sm:pb-16 lg:pb-20 px-4 sm:px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50 relative overflow-hidden">
-        <div className="absolute top-20 right-20 w-48 h-48 sm:w-72 sm:h-72 bg-violet-200 rounded-full blur-3xl opacity-30" />
-        <div className="absolute bottom-20 left-20 w-48 h-48 sm:w-64 sm:h-64 bg-indigo-200 rounded-full blur-3xl opacity-30" />
-        <div className="max-w-4xl mx-auto text-center relative">
-          <Badge className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-0 px-3 sm:px-4 py-1.5 sm:py-2 mb-4 sm:mb-6 text-xs sm:text-sm">
-            Let's Connect
-          </Badge>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 mb-4 sm:mb-6">
-            We'd Love to Hear From You
-          </h1>
-          <p className="text-base sm:text-lg lg:text-xl text-slate-600 max-w-2xl mx-auto">
-            Whether you're an advertiser, venue owner, or investor - our team is ready to help you succeed.
-          </p>
-        </div>
-      </section>
-
-      {/* Contact Cards */}
-      <section className="py-6 sm:py-8 px-4 sm:px-6 -mt-8 sm:-mt-12 relative z-10">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-            <div className="bg-white rounded-2xl p-6 shadow-xl text-center">
-              <div className="w-14 h-14 bg-violet-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Megaphone className="w-7 h-7 text-violet-600" />
-              </div>
-              <h3 className="font-bold text-slate-900 mb-1">Advertisers</h3>
-              <p className="text-slate-500 text-sm mb-3">Start your campaign today</p>
-              <a href="mailto:hello@linkzoneglobal.com" className="text-violet-600 font-medium text-sm hover:underline">
-                hello@linkzoneglobal.com
-              </a>
-            </div>
-            <div className="bg-white rounded-2xl p-6 shadow-xl text-center">
-              <div className="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Building2 className="w-7 h-7 text-emerald-600" />
-              </div>
-              <h3 className="font-bold text-slate-900 mb-1">Venue Partners</h3>
-              <p className="text-slate-500 text-sm mb-3">Monetize your screens</p>
-              <a href="mailto:hello@linkzoneglobal.com" className="text-emerald-600 font-medium text-sm hover:underline">
-                hello@linkzoneglobal.com
-              </a>
-            </div>
-            <div className="bg-white rounded-2xl p-6 shadow-xl text-center">
-              <div className="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <MessageSquare className="w-7 h-7 text-amber-600" />
-              </div>
-              <h3 className="font-bold text-slate-900 mb-1">Technical Support</h3>
-              <p className="text-slate-500 text-sm mb-3">Need help? We're here</p>
-              <a href="mailto:support@linkzoneglobal.com" className="text-amber-600 font-medium text-sm hover:underline">
-                support@linkzoneglobal.com
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Form & Info */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-3 gap-8 sm:gap-12">
-            {/* Contact Info */}
-            <div className="space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">Contact Information</h2>
-                <p className="text-slate-600">
-                  Reach out to us through any of these channels. We're here to help!
-                </p>
-              </div>
-
-              {contactInfo.map((info, i) => (
-                <Card key={i} className="border-0 shadow-md">
-                  <CardContent className="p-4 flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center">
-                      <info.icon className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-slate-500">{info.title}</p>
-                      {info.link ? (
-                        <a href={info.link} className="font-medium text-slate-900 hover:text-violet-600">
-                          {info.value}
-                        </a>
-                      ) : (
-                        <p className="font-medium text-slate-900">{info.value}</p>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
+    <SitePage>
+      <SEOHead title="Book a demo | BeyondWalls" description="See live prices, the ad marketplace and earnings on your own screen in 20 minutes — on a call or at your venue in Dubai." canonical="https://beyondwalls.ae/Contact" />
+      <section className="bg-[#fbfaff]">
+        <div className={`${wrap} py-14 lg:py-20 flex flex-col lg:flex-row gap-12 lg:gap-16`}>
+          <div className="flex-1 flex flex-col gap-[22px] items-start">
+            <Tag>Book a demo</Tag>
+            <h1 className="font-bold text-[40px] md:text-[56px] leading-[1.1] tracking-[-1.68px] text-[#111027] max-w-[560px]">See it on your own screen in 20 minutes.</h1>
+            <p className="text-[17px] md:text-[19px] text-[#6b6787] max-w-[520px]">We'll show live prices, the ad marketplace and earnings — on a call or at your venue in Dubai.</p>
+            <div className="flex flex-col gap-3 w-full max-w-[460px]">
+              {contacts.map(([Icon, t, d, href]) => (
+                <a key={t} href={href} target="_blank" rel="noreferrer" className="bg-white border border-[#eceaf3] rounded-[18px] p-4 flex items-center gap-4 hover:border-[#6f3ffd]">
+                  <span className="bg-[#f1ecff] rounded-xl p-2.5"><Icon className="w-5 h-5 text-[#5a2ded]" /></span>
+                  <div><p className="font-bold text-[16px] text-[#111027]">{t}</p><p className="text-[14px] text-[#6b6787]">{d}</p></div>
+                </a>
               ))}
-
-              {/* Social Links */}
-              <div className="pt-6">
-                <p className="text-sm text-slate-500 mb-4">Follow us on social media</p>
-                <div className="flex gap-3 flex-wrap">
-                  <a href="https://www.linkedin.com/company/beyondwallsae" target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" size="sm" className="text-slate-900">LinkedIn</Button>
-                  </a>
-                  <a href="https://x.com/BeyondWallsae" target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" size="sm" className="text-slate-900">X/Twitter</Button>
-                  </a>
-                  <a href="https://www.instagram.com/beyondwallsae/" target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" size="sm" className="text-slate-900">Instagram</Button>
-                  </a>
-                  <a href="https://www.facebook.com/beyondwallsae" target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" size="sm" className="text-slate-900">Facebook</Button>
-                  </a>
-                  <a href="https://www.youtube.com/@BeyondWallsAE" target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" size="sm" className="text-slate-900">YouTube</Button>
-                  </a>
-                </div>
+            </div>
+          </div>
+          <div className="w-full lg:w-[540px] shrink-0">
+            {done ? (
+              <div className="bg-white border border-[#eceaf3] rounded-[28px] p-8 flex flex-col items-center gap-4 text-center">
+                <CheckCircle2 className="w-12 h-12 text-[#16a34a]" />
+                <p className="font-bold text-[24px] text-[#111027]">Request received</p>
+                <p className="text-[15px] text-[#6b6787]">We'll WhatsApp you within one working day to set a time.</p>
+                <Btn href={WHATSAPP}>WhatsApp us now</Btn>
               </div>
-            </div>
-
-            {/* Contact Form */}
-            <div className="lg:col-span-2">
-              <Card className="border-0 shadow-xl">
-                <CardContent className="p-8">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
-                      <MessageSquare className="w-5 h-5 text-slate-900" />
-                    </div>
-                    <h3 className="text-xl font-bold text-slate-900">Send us a Message</h3>
-                  </div>
-
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label>Full Name *</Label>
-                        <Input
-                          required
-                          placeholder="Your name"
-                          value={formData.name}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Email Address *</Label>
-                        <Input
-                          type="email"
-                          required
-                          placeholder="your@email.com"
-                          value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label>Phone Number</Label>
-                        <Input
-                          placeholder="+971 XX XXX XXXX"
-                          value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Subject *</Label>
-                        <Select
-                          value={formData.subject}
-                          onValueChange={(v) => setFormData({ ...formData, subject: v })}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a topic" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="advertiser">I'm an Advertiser</SelectItem>
-                            <SelectItem value="venue">I'm a Venue Owner</SelectItem>
-                            <SelectItem value="partnership">Partnership Inquiry</SelectItem>
-                            <SelectItem value="support">Technical Support</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Message *</Label>
-                      <Textarea
-                        required
-                        placeholder="How can we help you?"
-                        className="h-32"
-                        value={formData.message}
-                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      />
-                    </div>
-
-                    <Button
-                      type="submit"
-                      disabled={loading}
-                      className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 h-12"
-                    >
-                      {loading ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Sending...
-                        </>
-                      ) : (
-                        <>
-                          <Send className="w-4 h-4 mr-2" />
-                          Send Message
-                        </>
-                      )}
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-            </div>
+            ) : (
+              <form onSubmit={submit} className="bg-white border border-[#eceaf3] rounded-[28px] p-6 md:p-8 flex flex-col gap-4 shadow-[0_10px_30px_rgba(31,20,77,0.06)]">
+                <p className="font-bold text-[22px] text-[#111027]">Tell us about you</p>
+                <div className="grid grid-cols-3 gap-2 bg-[#f6f5fa] rounded-xl p-1">
+                  {TYPES.map(([k, l]) => (
+                    <button type="button" key={k} onClick={() => setF({ ...f, type: k })} className={`rounded-lg py-2.5 text-[13px] font-semibold ${f.type === k ? "bg-white text-[#5a2ded] shadow-sm" : "text-[#6b6787]"}`}>{l}</button>
+                  ))}
+                </div>
+                <input type="text" name="website" value={f.website} onChange={set("website")} className="hidden" tabIndex={-1} autoComplete="off" />
+                <Field label="Full name" error={err.name}><input className={inputCls} value={f.name} onChange={set("name")} placeholder="Your name" autoComplete="name" /></Field>
+                <Field label="Business name"><input className={inputCls} value={f.company} onChange={set("company")} placeholder="e.g. Bean & Co." autoComplete="organization" /></Field>
+                <Field label="Mobile (WhatsApp)" error={err.phone}><input className={inputCls} value={f.phone} onChange={set("phone")} placeholder="+971 5X XXX XXXX" inputMode="tel" autoComplete="tel" /></Field>
+                <Field label="Email (optional)" error={err.email}><input className={inputCls} value={f.email} onChange={set("email")} placeholder="you@business.ae" type="email" autoComplete="email" /></Field>
+                <div className="grid grid-cols-2 gap-4">
+                  <Field label={f.type === "venue" ? "Number of screens" : "Monthly budget"}>
+                    <select className={inputCls} value={f.screens} onChange={set("screens")}>
+                      {(f.type === "venue" ? ["1–5", "6–20", "21–50", "50+"] : ["Under AED 1k", "AED 1–5k", "AED 5–20k", "AED 20k+"]).map((o) => <option key={o}>{o}</option>)}
+                    </select>
+                  </Field>
+                  <Field label="Preferred time">
+                    <select className={inputCls} value={f.preferred_time} onChange={set("preferred_time")}>
+                      {["Weekday mornings", "Weekday afternoons", "Evenings", "Weekend"].map((o) => <option key={o}>{o}</option>)}
+                    </select>
+                  </Field>
+                </div>
+                <Btn type="submit" disabled={busy} className="w-full mt-1">{busy ? "Sending…" : "Book my demo"}</Btn>
+                <p className="text-[12px] text-[#6b6787] text-center">We'll only use this to arrange your demo.</p>
+              </form>
+            )}
           </div>
         </div>
       </section>
-
-      {/* Google Map */}
-      <section className="py-20 px-6 bg-slate-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-slate-900 mb-2">Visit Our Office</h3>
-            <p className="text-slate-600">in5 - Dubai Internet City, Dubai, UAE</p>
-          </div>
-          <div className="rounded-2xl overflow-hidden shadow-xl">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3613.168!2d55.1544!3d25.0957!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f6b5402c126e3%3A0xb9511e6655c46d7c!2sin5%20Tech%20Innovation%20Centre!5e0!3m2!1sen!2sae!4v1700000000000!5m2!1sen!2sae"
-              width="100%"
-              height="450"
-              style={{ border: 0 }}
-              allowFullScreen=""
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="BeyondWalls Office Location - in5 Dubai Internet City"
-            />
-          </div>
-          <div className="mt-6 text-center">
-            <a
-              href="https://maps.google.com/?q=in5+Dubai+Internet+City+Dubai"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button className="bg-gradient-to-r from-violet-600 to-indigo-600">
-                <MapPin className="w-4 h-4 mr-2" />
-                Get Directions
-              </Button>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <PublicFooter />
-      <PublicAIChatWidget />
-    </div>
+    </SitePage>
   );
 }
