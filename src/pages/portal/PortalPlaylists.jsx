@@ -30,7 +30,9 @@ export default function PortalPlaylists() {
   useEffect(() => { if (!activeId && playlists.length) setActiveId(playlists[0].id); }, [playlists, activeId]);
   useEffect(() => {
     const p = playlists.find((x) => x.id === activeId);
-    setDraft(p ? JSON.parse(JSON.stringify(p)) : null);
+    const copy = p ? JSON.parse(JSON.stringify(p)) : null;
+    if (copy) copy.items = (copy.items || []).map((i) => ({ ...i, id: i.id || uid() }));
+    setDraft(copy);
   }, [activeId, playlists.length]);
 
   const set = (patch) => setDraft((d) => ({ ...d, ...patch }));
