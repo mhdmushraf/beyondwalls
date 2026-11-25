@@ -580,3 +580,6 @@ body {
 .bw-chip { display: inline-flex; align-items: center; gap: 4px; border-radius: 999px; padding: 3px 9px; font-size: 11px; font-weight: 600; }
 [dir="rtl"] body, [dir="rtl"] .bw-ar { font-family: 'Readex Pro', 'Inter', sans-serif; }
 .bw-ar { font-family: 'Readex Pro', 'Inter', sans-serif; }
+
+/* Never let a wide element push the whole page sideways. */
+html, body { overflow-x: clip; }

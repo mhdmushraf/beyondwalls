@@ -137,7 +137,7 @@ function PortalShell() {
   const offline = screens.filter((s) => s.paired_device_id && !s.is_online).length;
 
   const sidebar = (
-    <div className="h-full flex flex-col bg-white border-e border-bw-line">
+    <div className="h-full w-full min-w-0 flex flex-col overflow-x-hidden bg-white border-e border-bw-line">
       <div className="h-16 flex items-center justify-between px-5">
         <BrandMark />
         <button type="button" onClick={() => setMobileOpen(false)} className="md:hidden text-bw-muted hover:text-bw-navy">
@@ -146,15 +146,13 @@ function PortalShell() {
       </div>
 
       <div className="px-3 pb-2">
-        <div className="rounded-2xl border-2 border-bw-violet/30 p-2.5">
-          <BusinessSwitcher orgs={orgs} org={org} onSelect={selectOrg} />
-        </div>
+        <BusinessSwitcher orgs={orgs} org={org} onSelect={selectOrg} />
         <div className="mt-3">
           <ModeToggle org={org} mode={mode} onMode={setMode} onRequest={requestAdvertising} />
         </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3 py-2">
+      <nav className="flex-1 min-w-0 overflow-y-auto overflow-x-hidden px-3 py-2">
         {groups.map((group) => (
           <div key={group.label} className="mb-3">
             <p className="px-3 pb-1.5 pt-2 text-[10px] font-semibold uppercase tracking-wider text-bw-muted/80">{group.label}</p>
@@ -167,13 +165,13 @@ function PortalShell() {
                     to={item.to}
                     end={item.end}
                     className={({ isActive }) =>
-                      `flex items-center justify-start gap-3 rounded-xl px-3 py-2 text-[13px] font-medium transition-colors ${
+                      `!min-h-0 flex w-full items-center !justify-start gap-3 rounded-xl px-3 py-2 text-[13px] font-medium transition-colors ${
                         isActive ? 'bg-bw-lav text-bw-coral font-semibold' : 'text-bw-ink hover:bg-bw-cream'
                       }`
                     }
                   >
                     <Icon className="h-4 w-4" />
-                    <span className="flex-1">{item.label}</span>
+                    <span className="flex-1 min-w-0 truncate">{item.label}</span>
                     {item.to === '/app/screens' && screens.length > 0 && (
                       <span className={`bw-chip ${offline ? 'bg-rose-100 text-rose-600' : 'bw-grad text-white'}`}>{screens.length}</span>
                     )}
@@ -262,7 +260,7 @@ function PortalShell() {
         <PreviewSwitcher user={user} current={preview} />
         {isAdmin && org && org.status !== 'approved' && (
           <div className="mx-4 md:mx-8 mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 flex flex-wrap items-center gap-3">
-            <p className="flex-1 min-w-[220px] text-[13px] text-amber-800"><b>{org.name}</b> is {org.status}. Customers in this business see a "pending approval" screen — you see the portal because you're an admin.</p>
+            <p className="flex-1 min-w-[220px] text-[13px] text-amber-800"><b>{org.name}</b> is {org.status || 'pending'} approval. Customers in this business see a "pending approval" screen — you see the portal because you're an admin.</p>
             {org.status === 'pending' && <button type="button" className="bw-btn bw-btn-primary !py-1.5" onClick={approveNow}>Approve now</button>}
             <a href="/admin/approvals" className="bw-btn bw-btn-ghost !py-1.5">Open approvals</a>
           </div>
