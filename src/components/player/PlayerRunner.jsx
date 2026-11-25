@@ -2,6 +2,14 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import MenuBoardView from './MenuBoardView';
 import UrgentOverlay from './UrgentOverlay';
+import { QRCodeSVG } from 'qrcode.react';
+
+const QR_POS = {
+  bottom_right: { bottom: '3vh', right: '2vw' },
+  bottom_left: { bottom: '3vh', left: '2vw' },
+  top_right: { top: '3vh', right: '2vw' },
+  top_left: { top: '3vh', left: '2vw' },
+};
 
 function chime() {
   try {
@@ -230,6 +238,12 @@ export default function PlayerRunner({ token, onMoved }) {
   return (
     <div className="fixed inset-0 bg-black flex items-center justify-center overflow-hidden">
       {urgent && <UrgentOverlay message={urgent} />}
+      {!urgent && manifest?.qr && (
+        <div className="absolute z-40 flex items-center gap-[1vw] rounded-[1.2vw] bg-white/95 p-[0.8vw] shadow-2xl" style={QR_POS[manifest.qr.position] || QR_POS.bottom_right}>
+          <QRCodeSVG value={`${window.location.origin}/q/${manifest.qr.id}?s=${manifest.screen?.id || ''}`} size={Math.round(window.innerHeight * 0.14)} />
+          {manifest.qr.label && <span className="max-w-[14vw] text-[1.6vw] font-bold leading-tight text-[#111027]">{manifest.qr.label}<span className="block text-[1vw] font-medium text-[#6B6787]">Scan with your camera</span></span>}
+        </div>
+      )}
       {current ? (
         current.kind === 'menu' ? (
           <div className="w-full" style={{ maxWidth: 'calc(100vh * 16 / 9)' }}>
