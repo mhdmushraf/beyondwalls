@@ -11,6 +11,7 @@ import AddScreenWizard from '@/components/portal/AddScreenWizard';
 import { PageSkeleton } from '@/components/portal/Skeletons';
 import { screenState } from './PortalScreens';
 import { isLive } from './PortalUrgent';
+import { ErrorState, SlowHint } from '@/components/states/StateViews';
 
 function greeting() {
   const h = Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Dubai', hour: 'numeric', hour12: false }).format(new Date()));
@@ -35,13 +36,14 @@ function StoryRing({ screen }) {
 
 export default function PortalDashboard() {
   const { user } = useAuth();
-  const { org, venues, screens, loadingData } = usePortal();
+  const { org, venues, screens, loadingData, dataError, reload, preview } = usePortal();
   const urgent = useOrgEntity('UrgentMessage', { limit: 20 });
   const chat = useOrgEntity('TeamMessage', { limit: 100 });
   const qr = useOrgEntity('QRCode');
   const [addOpen, setAddOpen] = useState(false);
 
-  if (loadingData && !screens.length && !venues.length) return <PageSkeleton />;
+  if ((loadingData || preview === 'loading') && !screens.length && !venues.length) return <div><SlowHint loading forced={preview === 'slow'} /><PageSkeleton /></div>;
+  if (dataError && !screens.length && !venues.length) return <ErrorState error={dataError} action="load your dashboard" onRetry={reload} />;
 
   const online = screens.filter((s) => screenState(s) === 'online').length;
   const liveMsgs = urgent.items.filter(isLive);
