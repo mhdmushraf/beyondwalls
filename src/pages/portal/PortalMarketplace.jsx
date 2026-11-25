@@ -9,6 +9,7 @@ import { PageHeader, EmptyState, Field } from '@/components/portal/ui';
 import { TilesSkeleton } from '@/components/portal/Skeletons';
 import { useDraft, isOnline, notifyError, notifySuccess } from '@/lib/states';
 import { DraftBanner, FieldError, ErrorState, SlowHint, ProgressStrip } from '@/components/states/StateViews';
+import { payInvoiceByCard } from '@/lib/payments';
 
 const MAX_MB = 200;
 const aed = (n) => `AED ${Number(n || 0).toLocaleString('en-AE', { maximumFractionDigits: 2 })}`;
@@ -122,12 +123,13 @@ export default function PortalMarketplace() {
         <p className="mt-1 text-[13px] text-bw-muted">{done.bookings?.length || 0} screens · {done.campaign?.weeks} weeks from {done.campaign?.start_date}</p>
         <div className="mt-5 rounded-2xl bg-bw-cream p-4 text-start space-y-1.5 text-[13px]">
           <p className="font-bold text-bw-navy">What happens next</p>
-          <p>1. Pay invoice <b>{inv.number}</b> — <b>{aed(inv.total)}</b> — by bank transfer. Put the invoice number in the reference.</p>
+          <p>1. Pay invoice <b>{inv.number}</b> — <b>{aed(inv.total)}</b> — by card now, or by bank transfer with the invoice number as the reference.</p>
           <p>2. Each venue checks your ad (usually same day). If one says no, it's removed from the invoice.</p>
           <p>3. Once paid and approved, your ad plays from the start date. You'll see plays in My campaigns.</p>
         </div>
         <div className="mt-5 flex flex-wrap justify-center gap-2">
-          <button type="button" className="bw-btn bw-btn-primary" onClick={() => navigate('/app/campaigns')}>Open My campaigns</button>
+          <button type="button" className="bw-btn bw-btn-primary" disabled={busy} onClick={async () => { setBusy(true); await payInvoiceByCard(inv.id); setBusy(false); }}>{busy ? 'Opening payment…' : `Pay ${aed(inv.total)} by card`}</button>
+          <button type="button" className="bw-btn bw-btn-ghost" onClick={() => navigate('/app/campaigns')}>I'll pay by bank transfer</button>
           <button type="button" className="bw-btn bw-btn-ghost" onClick={() => setDone(null)}>Book more screens</button>
         </div>
       </div>
@@ -192,7 +194,7 @@ export default function PortalMarketplace() {
       </div>
       <FieldError msg={errors.org} />
       <button type="button" className="bw-btn bw-btn-primary w-full" disabled={busy || uploading > 0} onClick={book}>{busy ? 'Sending booking…' : `Book ${picked.length || ''} screens · ${aed(subtotal + vat)}`}</button>
-      <p className="text-[11px] text-bw-muted text-center">Pay by bank transfer after booking. Nothing plays until it's paid and each venue approves your ad.</p>
+      <p className="text-[11px] text-bw-muted text-center">Pay by card (Paymob) or bank transfer after booking. Nothing plays until it's paid and each venue approves your ad.</p>
     </div>
   );
 
