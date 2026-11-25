@@ -15,18 +15,19 @@ const TOPICS = [
 ];
 
 const ARTICLES = [
-  ["screens", "Pair your first screen in 2 minutes", "Open the BeyondWalls app on the TV (LG, Samsung or Android TV) or plug in your B.One. A 6-digit code appears. In the web portal or mobile app go to Screens → Add screen, enter the code and pick the venue. The screen downloads its playlist and starts playing.", true],
-  ["screens", "Why does my screen say 'offline'?", "A screen shows offline when it hasn't checked in for a few minutes. Check the TV is on and connected to Wi-Fi or ethernet. It keeps playing the last downloaded playlist while offline and catches up when it reconnects. You get an alert if it stays offline.", true],
-  ["earnings", "How ad earnings and fees are calculated", `You keep ${PRICING.venueShare}% of every marketplace booking on your screens. Partner venues with free hardware share 60/40 or 50/50. Ads you sell yourself (direct deals) carry a ${PRICING.directDealFee}% fee. Your plan fee (AED ${PRICING.signageAds} per screen per month on Signage + Ads) comes out of earnings first; payouts go to your bank monthly.`, true],
+  ["screens", "Pair your first screen in 2 minutes", "Open the BeyondWalls app on the TV (LG, Samsung or Android TV) or plug in your B.One. A 6-digit code appears. In the web portal or mobile app go to Screens, add a screen, enter the code and pick the venue. The screen downloads its playlist and starts playing.", true],
+  ["screens", "Why does my screen say 'offline'?", "A screen shows offline when it hasn't checked in for a few minutes. Check the TV is on and connected to Wi-Fi or ethernet. It keeps playing the last downloaded playlist while offline and catches up when it reconnects.", true],
+  ["earnings", "How ad earnings and fees are calculated", `You keep ${PRICING.venueShare}% of every marketplace booking on your screens. Partner venues with free hardware share 60/40 or 50/50. Ads you sell yourself (direct deals) carry a ${PRICING.directDealFee}% fee. Your plan fee (AED ${PRICING.signageAds} per screen per month on Signage + Ads) comes out of earnings first; the rest is paid to your bank.`, true],
   ["ads", "Upload a video that fits portrait screens", "Use MP4 (H.264) up to 15 seconds. For portrait screens export 1080×1920; for landscape 1920×1080. We check size and orientation on upload and tell you which screens it won't fit.", true],
-  ["account", "Add a team member and set their role", "Go to Settings → Team, invite by email and choose a role: Owner, Manager (content and screens) or Staff (prices only). They get an email invite to join your business.", true],
+  ["account", "Run more than one business from one login", "If you manage several businesses (or an agency and a venue), use the business switcher at the top of the sidebar to move between them. Each business has its own screens, content, billing and earnings.", true],
+  ["account", "Add a team member", "Team roles (owner, venue manager, designer, viewer) are being rolled out. Until then, message us on WhatsApp with the person's email and the role you want and we'll add them for you."],
   ["screens", "Setting up the B.One player", `Connect B.One to the TV's HDMI port and power, join Wi-Fi from the on-screen setup or plug in ethernet, then pair with the code. B.One costs AED ${PRICING.bone} one-off with a 12-month warranty.`],
-  ["products", "Change a price on every screen", "Open Products, edit the price and save. Every menu board using that product updates within seconds."],
-  ["products", "Schedule a breakfast and lunch menu", "In Playlists, add a schedule rule: pick days and hours for each playlist. Prayer-time breaks can be switched on per venue."],
-  ["earnings", "Add your bank details for payouts", "Go to Billing → Payouts and add the account holder name, bank and IBAN. Payouts are sent monthly once your balance is above the minimum."],
+  ["products", "Change a price on every screen", "Open Menus & prices, edit the price and save. Every menu board using that item updates within seconds."],
+  ["products", "Schedule a breakfast and lunch menu", "Open Playlists & schedules and set the days and hours for each playlist, so breakfast plays in the morning and lunch from noon."],
+  ["earnings", "Add your bank details for payouts", "Open Ad requests & earnings and add your bank details: account holder name, bank and IBAN (UAE IBANs start with AE and have 23 characters). Then request a payout from your available balance."],
   ["ads", "What happens if a venue declines my ad?", "You're only charged for screens that approve your ad. If a venue declines, the amount for that screen is refunded in full."],
   ["ads", "How much does advertising cost?", `Each venue sets its own weekly price per screen, from AED ${PRICING.advertiseFrom}. Prices exclude 5% VAT. Longer bookings get tier discounts.`],
-  ["account", "Delete your account", "You can delete your account any time from Settings → Delete account in the app, or at beyondwalls.ae/delete-account."],
+  ["account", "Delete your account", "You can delete your account any time from the More tab in the mobile app, or at beyondwalls.ae/delete-account."],
   ["policies", "Advertising rules", "No alcohol, tobacco, adult, political or misleading ads. Content must follow UAE law and the venue's own blocked categories. Venues approve every ad."],
   ["policies", "Privacy", "We collect account details, screen and player data and QR scan counts. We never use cameras to identify people and never sell personal data. See the Privacy policy for full details."],
 ];
