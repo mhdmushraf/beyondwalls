@@ -10,6 +10,7 @@ import { TilesSkeleton } from '@/components/portal/Skeletons';
 import { useDraft, isOnline, notifyError, notifySuccess } from '@/lib/states';
 import { DraftBanner, FieldError, ErrorState, SlowHint, ProgressStrip } from '@/components/states/StateViews';
 import { payInvoiceByCard } from '@/lib/payments';
+import ScreensMap from '@/components/portal/ScreensMap';
 
 const MAX_MB = 200;
 const aed = (n) => `AED ${Number(n || 0).toLocaleString('en-AE', { maximumFractionDigits: 2 })}`;
@@ -29,6 +30,7 @@ export default function PortalMarketplace() {
   const [emirate, setEmirate] = useState('all');
   const [vtype, setVtype] = useState('all');
   const [cartOpen, setCartOpen] = useState(false);
+  const [view, setView] = useState('list');
   const [errors, setErrors] = useState({});
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(0);
@@ -237,6 +239,11 @@ export default function PortalMarketplace() {
               <input className="bw-input !ps-9" placeholder="Search venue or area" value={q} onChange={(e) => setQ(e.target.value)} />
             </div>
             <select className="bw-input !w-auto" value={emirate} onChange={(e) => setEmirate(e.target.value)}><option value="all">All emirates</option>{EMIRATES.map((x) => <option key={x}>{x}</option>)}</select>
+            <div className="inline-flex rounded-xl border border-bw-line bg-white p-0.5">
+              {[['list', 'List'], ['map', 'Map']].map(([k, l]) => (
+                <button key={k} type="button" onClick={() => setView(k)} className={`!min-h-0 rounded-lg px-3 py-1.5 text-xs font-semibold ${view === k ? 'bg-bw-navy text-white' : 'text-bw-muted'}`}>{l}</button>
+              ))}
+            </div>
             <select className="bw-input !w-auto capitalize" value={vtype} onChange={(e) => setVtype(e.target.value)}><option value="all">All venue types</option>{VENUE_TYPES.map((x) => <option key={x} value={x}>{x}</option>)}</select>
           </div>
 
@@ -245,6 +252,7 @@ export default function PortalMarketplace() {
               : !isOnline() && !data ? <EmptyState icon={WifiOff} title="You're offline" body="Screen prices and free slots need internet. Your booking draft is safe on this device." />
                 : screens.length === 0 ? <EmptyState icon={Megaphone} title="No screens open for booking yet" body="Venues are joining every week. Leave your details and we'll WhatsApp you when screens in your area open." action={<a className="bw-btn bw-btn-primary" href="https://wa.me/971556140067?text=Hi%2C%20I%27d%20like%20to%20advertise%20on%20Beyond%20Walls%20screens" target="_blank" rel="noreferrer">WhatsApp us</a>} />
                   : shown.length === 0 || preview === 'noresults' ? <EmptyState icon={Search} title={q ? `No screens match "${q}"` : 'No screens match these filters'} body="Try another emirate or venue type." action={<button type="button" className="bw-btn bw-btn-ghost" onClick={() => { setQ(''); setEmirate('all'); setVtype('all'); }}>Clear filters</button>} />
+                    : view === 'map' ? <ScreensMap screens={shown} selected={form.screen_ids} onToggle={toggle} />
                     : (
                       <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
                         {shown.map((s) => {
