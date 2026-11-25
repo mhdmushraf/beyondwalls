@@ -7,6 +7,9 @@ import { uploadPublic } from '@/lib/portalData';
 import { PageHeader, EmptyState, Toggle, Field, ScreenPicker } from '@/components/portal/ui';
 import MenuBoardView, { MENU_THEMES } from '@/components/player/MenuBoardView';
 import { ListSkeleton } from '@/components/portal/Skeletons';
+import { useNavigate } from 'react-router-dom';
+import { useDraft, validate, rules, notifyError, notifySuccess } from '@/lib/states';
+import { DraftBanner, FieldError, ErrorState, SlowHint } from '@/components/states/StateViews';
 
 const LAYOUTS = [
   { key: 'photo_left', label: 'Photo + list' },
@@ -29,7 +32,9 @@ function blankBoard() {
 
 export default function PortalMenus() {
   const { screens, venues } = usePortal();
-  const { items: boards, loading, create, update, remove } = useOrgEntity('MenuBoard', { sort: 'created_date' });
+  const { items: boards, loading, error, reload, create, update, remove, preview } = useOrgEntity('MenuBoard', { sort: 'created_date' });
+  const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
   const [activeId, setActiveId] = useState(null);
   const [draft, setDraft] = useState(null);
   const [editingId, setEditingId] = useState(null);
@@ -46,10 +51,22 @@ export default function PortalMenus() {
     setEditingId(b?.items?.[0]?.id || null);
   }, [activeId, boards.length]);
 
+  const activeBoard = boards.find((x) => x.id === activeId);
+  const { restored, discard, clear } = useDraft(activeId ? `menu:${activeId}` : null, draft, setDraft, { saved: activeBoard, enabled: !!activeBoard && !!draft });
+
   const dirty = useMemo(() => {
     const b = boards.find((x) => x.id === activeId);
     return b && draft && JSON.stringify(b) !== JSON.stringify({ ...b, ...draft });
   }, [boards, activeId, draft]);
+
+  const check = (d) => {
+    const errs = validate({ name: [rules.required('Menu name'), rules.max('Menu name', 40)] }, d);
+    for (const item of d.items || []) {
+      const e = validate({ name_en: [rules.required('Item name'), rules.max('Item name', 40)], price: [rules.price('Price')] }, item);
+      if (Object.keys(e).length) { errs[`item:${item.id}`] = e; if (!errs.firstItem) errs.firstItem = item.id; }
+    }
+    return errs;
+  };
 
   const set = (patch) => setDraft((d) => ({ ...d, ...patch }));
   const setItem = (id, patch) => setDraft((d) => ({ ...d, items: d.items.map((i) => (i.id === id ? { ...i, ...patch } : i)) }));
@@ -62,20 +79,35 @@ export default function PortalMenus() {
   });
 
   const newBoard = async () => {
-    const rec = await create(blankBoard());
-    setActiveId(rec.id);
-    toast.success('Menu created');
+    try {
+      const rec = await create(blankBoard());
+      setActiveId(rec.id);
+      notifySuccess('Menu created', 'Edit the items, pick your screens, then Publish.');
+    } catch (e) { notifyError(e, 'create the menu', newBoard); }
   };
 
   const save = async (publish) => {
     if (!draft) return;
+    const errs = check(draft);
+    setErrors(errs);
+    if (Object.keys(errs).length) {
+      if (errs.firstItem) setEditingId(errs.firstItem);
+      toast.error('Fix the highlighted fields first', { description: errs.name || 'One of your items needs a name or a valid price.' });
+      return;
+    }
+    if (publish && !(draft.screen_ids || []).length) {
+      toast.error('Pick at least one screen', { description: 'Under "Show on screens", tick where this menu should appear.' });
+      return;
+    }
     setSaving(true);
     try {
       const { id, created_date, updated_date, created_by, created_by_id, org_id, org_member_user_ids, ...data } = draft; // eslint-disable-line no-unused-vars
       await update(activeId, { ...data, ...(publish ? { published_at: new Date().toISOString() } : {}) });
-      toast.success(publish ? `Published to ${draft.screen_ids?.length || 0} screens` : 'Saved');
+      clear();
+      if (publish) notifySuccess(`Published to ${draft.screen_ids?.length || 0} screens`, 'Screens update within a minute.', { label: 'View screens', onClick: () => navigate('/app/screens') });
+      else notifySuccess('Saved', 'Not on screens yet — tap Publish when ready.');
     } catch (e) {
-      toast.error('Could not save');
+      notifyError(e, publish ? 'publish the menu' : 'save the menu', () => save(publish));
     } finally {
       setSaving(false);
     }
@@ -84,12 +116,15 @@ export default function PortalMenus() {
   const onPhoto = async (file) => {
     if (!file) return;
     setUploading(true);
-    try { set({ photo_url: await uploadPublic(file) }); } catch (e) { toast.error('Upload failed'); } finally { setUploading(false); }
+    if (!file.type.startsWith('image/')) { toast.error(`${file.name} isn't an image`, { description: 'Use a JPG, PNG or WebP photo.' }); return; }
+    if (file.size > 10 * 1048576) { toast.error('Photo is too big', { description: 'Use a photo under 10 MB.' }); return; }
+    try { set({ photo_url: await uploadPublic(file) }); } catch (e) { notifyError(e, 'upload the photo', () => onPhoto(file)); } finally { setUploading(false); }
   };
 
   const editing = draft?.items?.find((i) => i.id === editingId);
 
-  if (loading) return <ListSkeleton rows={4} />;
+  if (loading) return <div><SlowHint loading forced={preview === 'slow'} /><ListSkeleton rows={4} /></div>;
+  if (error && !boards.length) return <div><PageHeader title="Menus & prices" /><ErrorState error={error} action="load your menus" onRetry={reload} /></div>;
 
   if (!boards.length) {
     return (
@@ -114,7 +149,7 @@ export default function PortalMenus() {
             <button type="button" className="bw-btn bw-btn-ghost" onClick={newBoard}><Plus className="h-4 w-4" />New</button>
             <button type="button" className="bw-btn bw-btn-ghost" onClick={async () => {
               const { id, created_date, updated_date, created_by, created_by_id, ...rest } = draft; // eslint-disable-line no-unused-vars
-              const rec = await create({ ...rest, name: `${draft.name} copy`, published_at: '' }); setActiveId(rec.id);
+              try { const rec = await create({ ...rest, name: `${draft.name} copy`, published_at: '' }); setActiveId(rec.id); notifySuccess('Menu duplicated', 'Not on any screen until you publish it.'); } catch (e) { notifyError(e, 'duplicate the menu'); }
             }}><Copy className="h-4 w-4" />Duplicate</button>
             <button type="button" className="bw-btn bw-btn-ghost" disabled={saving || !dirty} onClick={() => save(false)}>Save</button>
             <button type="button" className="bw-btn bw-btn-primary" disabled={saving} onClick={() => save(true)}>
@@ -124,6 +159,7 @@ export default function PortalMenus() {
         )}
       />
 
+      {restored && <DraftBanner restored onDiscard={discard} what="menu changes" />}
       {draft && (
         <div className="grid xl:grid-cols-[1fr_440px] gap-5">
           <div className="space-y-5">
@@ -155,7 +191,7 @@ export default function PortalMenus() {
             </div>
 
             <div className="bw-card p-5 grid md:grid-cols-2 gap-4">
-              <Field label="Menu name (English)"><input className="bw-input" value={draft.name || ''} onChange={(e) => set({ name: e.target.value })} /></Field>
+              <Field label="Menu name (English)"><input className="bw-input" value={draft.name || ''} onChange={(e) => set({ name: e.target.value })} aria-invalid={!!errors.name} /><FieldError msg={errors.name} /></Field>
               <Field label="Menu name (Arabic)"><input className="bw-input bw-ar text-right" dir="rtl" value={draft.name_ar || ''} onChange={(e) => set({ name_ar: e.target.value })} /></Field>
               <Field label="Show from" hint="Leave empty to show all day"><input type="time" className="bw-input" value={draft.show_from || ''} onChange={(e) => set({ show_from: e.target.value })} /></Field>
               <Field label="Show until"><input type="time" className="bw-input" value={draft.show_until || ''} onChange={(e) => set({ show_until: e.target.value })} /></Field>
@@ -166,7 +202,7 @@ export default function PortalMenus() {
               <div className="md:col-span-2 flex justify-end">
                 <button type="button" className="bw-btn bw-btn-ghost !text-rose-600" onClick={async () => {
                   if (!window.confirm(`Delete ${draft.name}?`)) return;
-                  await remove(activeId); setActiveId(null); toast.success('Menu deleted');
+                  try { await remove(activeId); clear(); setActiveId(null); notifySuccess('Menu deleted', 'Screens showing it go back to their playlist.'); } catch (e) { notifyError(e, 'delete the menu'); }
                 }}><Trash2 className="h-4 w-4" />Delete menu</button>
               </div>
             </div>
@@ -193,6 +229,7 @@ export default function PortalMenus() {
                     <p className={`text-[13px] font-semibold truncate ${item.sold_out ? 'text-bw-muted line-through' : 'text-bw-navy'}`}>{item.name_en}</p>
                     <p className="text-[11px] text-bw-muted bw-ar truncate">{item.name_ar}</p>
                   </div>
+                  {errors[`item:${item.id}`] && <span className="h-2 w-2 rounded-full bg-rose-500" title="Needs fixing" />}
                   <span className="rounded-lg bg-white px-2 py-1 text-[12px] font-bold text-bw-coral">{draft.currency || 'AED'} {item.price}</span>
                   <div onClick={(e) => e.stopPropagation()}><Toggle checked={!item.sold_out} onChange={(v) => setItem(item.id, { sold_out: !v })} /></div>
                 </div>
@@ -203,9 +240,9 @@ export default function PortalMenus() {
               <div className="mt-4 rounded-2xl bg-bw-cream p-4 space-y-3">
                 <p className="text-[13px] font-bold text-bw-navy">Editing · {editing.name_en}</p>
                 <div className="grid grid-cols-2 gap-3">
-                  <Field label="English"><input className="bw-input" value={editing.name_en || ''} onChange={(e) => setItem(editing.id, { name_en: e.target.value })} /></Field>
+                  <Field label="English"><input className="bw-input" value={editing.name_en || ''} onChange={(e) => setItem(editing.id, { name_en: e.target.value })} /><FieldError msg={errors[`item:${editing.id}`]?.name_en} /></Field>
                   <Field label="Arabic"><input className="bw-input bw-ar text-right" dir="rtl" value={editing.name_ar || ''} onChange={(e) => setItem(editing.id, { name_ar: e.target.value })} /></Field>
-                  <Field label={`Price (${draft.currency || 'AED'})`}><input type="number" min="0" step="0.5" className="bw-input" value={editing.price ?? ''} onChange={(e) => setItem(editing.id, { price: e.target.value === '' ? '' : Number(e.target.value) })} /></Field>
+                  <Field label={`Price (${draft.currency || 'AED'})`}><input type="number" min="0" step="0.5" className="bw-input" value={editing.price ?? ''} onChange={(e) => setItem(editing.id, { price: e.target.value === '' ? '' : Number(e.target.value) })} /><FieldError msg={errors[`item:${editing.id}`]?.price} /></Field>
                   <Field label="Was (optional)"><input type="number" min="0" step="0.5" className="bw-input" value={editing.was_price ?? ''} onChange={(e) => setItem(editing.id, { was_price: e.target.value === '' ? undefined : Number(e.target.value) })} /></Field>
                   <Field label="Emoji"><input className="bw-input" maxLength={4} value={editing.emoji || ''} onChange={(e) => setItem(editing.id, { emoji: e.target.value })} /></Field>
                 </div>
