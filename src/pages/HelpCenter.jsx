@@ -1,295 +1,92 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { createPageUrl } from "@/utils";
-import {
-  Search,
-  ChevronDown,
-  ChevronUp,
-  HelpCircle,
-  Megaphone,
-  Building2,
-  CreditCard,
-  Settings,
-  Shield,
-  MessageSquare
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import PublicNav from "@/components/PublicNav";
-import PublicFooter from "@/components/PublicFooter";
-import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
+import { useMemo, useState } from "react";
+import { Search, MonitorSmartphone, Tag as TagIcon, Wallet, Megaphone, Users, FileText, ChevronRight } from "lucide-react";
+import SEOHead from "@/components/SEOHead";
+import { SitePage } from "@/components/site/Site";
+import { CTABox, wrap } from "@/components/site/inner";
+import { PRICING } from "@/components/site/sections";
+
+const TOPICS = [
+  ["screens", MonitorSmartphone, "Screens & pairing", "Pair a TV, B.One setup, offline screens"],
+  ["products", TagIcon, "Products & prices", "Templates, price updates, playlists"],
+  ["earnings", Wallet, "Earnings & payouts", "Revenue share, fees, bank details"],
+  ["ads", Megaphone, "Advertising", "Booking, creatives, refunds"],
+  ["account", Users, "Account & team", "Sign-in, roles, switching business"],
+  ["policies", FileText, "Policies", "Ad rules, privacy, content guidelines"],
+];
+
+const ARTICLES = [
+  ["screens", "Pair your first screen in 2 minutes", "Open the BeyondWalls app on the TV (LG, Samsung or Android TV) or plug in your B.One. A 6-digit code appears. In the web portal or mobile app go to Screens → Add screen, enter the code and pick the venue. The screen downloads its playlist and starts playing.", true],
+  ["screens", "Why does my screen say 'offline'?", "A screen shows offline when it hasn't checked in for a few minutes. Check the TV is on and connected to Wi-Fi or ethernet. It keeps playing the last downloaded playlist while offline and catches up when it reconnects. You get an alert if it stays offline.", true],
+  ["earnings", "How ad earnings and fees are calculated", `You keep ${PRICING.venueShare}% of every marketplace booking on your screens. Partner venues with free hardware share 60/40 or 50/50. Ads you sell yourself (direct deals) carry a ${PRICING.directDealFee}% fee. Your plan fee (AED ${PRICING.signageAds} per screen per month on Signage + Ads) comes out of earnings first; payouts go to your bank monthly.`, true],
+  ["ads", "Upload a video that fits portrait screens", "Use MP4 (H.264) up to 15 seconds. For portrait screens export 1080×1920; for landscape 1920×1080. We check size and orientation on upload and tell you which screens it won't fit.", true],
+  ["account", "Add a team member and set their role", "Go to Settings → Team, invite by email and choose a role: Owner, Manager (content and screens) or Staff (prices only). They get an email invite to join your business.", true],
+  ["screens", "Setting up the B.One player", `Connect B.One to the TV's HDMI port and power, join Wi-Fi from the on-screen setup or plug in ethernet, then pair with the code. B.One costs AED ${PRICING.bone} one-off with a 12-month warranty.`],
+  ["products", "Change a price on every screen", "Open Products, edit the price and save. Every menu board using that product updates within seconds."],
+  ["products", "Schedule a breakfast and lunch menu", "In Playlists, add a schedule rule: pick days and hours for each playlist. Prayer-time breaks can be switched on per venue."],
+  ["earnings", "Add your bank details for payouts", "Go to Billing → Payouts and add the account holder name, bank and IBAN. Payouts are sent monthly once your balance is above the minimum."],
+  ["ads", "What happens if a venue declines my ad?", "You're only charged for screens that approve your ad. If a venue declines, the amount for that screen is refunded in full."],
+  ["ads", "How much does advertising cost?", `Each venue sets its own weekly price per screen, from AED ${PRICING.advertiseFrom}. Prices exclude 5% VAT. Longer bookings get tier discounts.`],
+  ["account", "Delete your account", "You can delete your account any time from Settings → Delete account in the app, or at beyondwalls.ae/delete-account."],
+  ["policies", "Advertising rules", "No alcohol, tobacco, adult, political or misleading ads. Content must follow UAE law and the venue's own blocked categories. Venues approve every ad."],
+  ["policies", "Privacy", "We collect account details, screen and player data and QR scan counts. We never use cameras to identify people and never sell personal data. See the Privacy policy for full details."],
+];
 
 export default function HelpCenter() {
-  const [search, setSearch] = useState("");
-  const [openFaq, setOpenFaq] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState("all");
-
-  const categories = [
-    { id: "all", name: "All Topics", icon: HelpCircle },
-    { id: "advertiser", name: "For Advertisers", icon: Megaphone },
-    { id: "venue", name: "For Venues", icon: Building2 },
-    { id: "billing", name: "Billing & Payments", icon: CreditCard },
-    { id: "technical", name: "Technical", icon: Settings },
-    { id: "security", name: "Security & Privacy", icon: Shield }
-  ];
-
-  const faqs = [
-    {
-      category: "advertiser",
-      question: "How do I create my first campaign?",
-      answer: "Creating a campaign is easy! Log in to your dashboard, click 'Create Campaign', and follow the 5-step wizard. You'll set your campaign details, choose target locations, select screens, upload your creative, and review before submitting. Campaigns are typically approved within 2-4 hours."
-    },
-    {
-      category: "advertiser",
-      question: "What ad formats are supported?",
-      answer: "We support static images (JPG, PNG) and videos (MP4). Recommended resolution is 1920x1080 for landscape or 1080x1920 for portrait screens. Maximum video duration is 60 seconds. File size limit is 50MB."
-    },
-    {
-      category: "advertiser",
-      question: "How is campaign pricing calculated?",
-      answer: "Pricing is based on the hourly rate of each screen multiplied by the duration and time slots selected. You'll see the total cost before submitting your campaign. There are no hidden fees."
-    },
-    {
-      category: "advertiser",
-      question: "Can I pause or cancel my campaign?",
-      answer: "Yes! You can pause an active campaign anytime from your dashboard. Paused campaigns don't incur charges. To cancel, contact our support team and we'll process a refund for any unused budget."
-    },
-    {
-      category: "venue",
-      question: "How do I register my venue?",
-      answer: "Sign up as a venue owner and complete your profile with venue details, trade license, and contact information. Once verified (usually within 24-48 hours), you can start adding screens to your venue."
-    },
-    {
-      category: "venue",
-      question: "What devices are compatible with the screen player?",
-      answer: "Our web-based player works on any device with a modern browser. This includes Android TV, LG WebOS, Samsung Tizen, Amazon Fire TV, and any computer or smart TV with Chrome, Firefox, or Safari."
-    },
-    {
-      category: "venue",
-      question: "How do I set up my screen?",
-      answer: "1. Add the screen in your dashboard (name, size, location, rate). 2. Get your Screen ID and PIN. 3. Open the BeyondWalls Player URL on your TV. 4. Enter credentials and connect. That's it!"
-    },
-    {
-      category: "venue",
-      question: "How much can I earn from my screens?",
-      answer: "Earnings depend on your screen's hourly rate and how often ads are displayed. You keep 100% of your screen rate. Most venues earn AED 500-3000 per screen per month depending on location and foot traffic."
-    },
-    {
-      category: "billing",
-      question: "What payment methods do you accept?",
-      answer: "We accept credit/debit cards (Visa, Mastercard), Apple Pay, Google Pay, and bank transfers. All payments are processed securely through our payment partners."
-    },
-    {
-      category: "billing",
-      question: "How do wallet top-ups work?",
-      answer: "Add funds to your wallet using any payment method. Your wallet balance is used to pay for campaigns. Top-ups are instant and you can add any amount above AED 100."
-    },
-    {
-      category: "billing",
-      question: "How do withdrawals work for venue owners?",
-      answer: "Request a withdrawal from your dashboard anytime your balance exceeds AED 100. Withdrawals are processed within 3-5 business days to your registered bank account."
-    },
-    {
-      category: "technical",
-      question: "What happens if my screen goes offline?",
-      answer: "Our system detects offline screens within 60 seconds via heartbeat monitoring. You'll receive notifications via email. The screen will automatically reconnect when internet is restored."
-    },
-    {
-      category: "technical",
-      question: "How do I reset my screen's PIN?",
-      answer: "Go to My Screens in your dashboard, click on the screen settings, and generate a new PIN. Update the PIN on your physical screen player to reconnect."
-    },
-    {
-      category: "security",
-      question: "Is my payment information secure?",
-      answer: "Yes! We use industry-standard encryption (SSL/TLS) and never store your full card details. All payments are processed through PCI-compliant payment providers."
-    },
-    {
-      category: "security",
-      question: "How is my screen protected from unauthorized access?",
-      answer: "Each screen has a unique ID and optional PIN protection. Only authenticated devices can display content. All communications are encrypted and we monitor for suspicious activity."
-    }
-  ];
-
-  const filteredFaqs = faqs.filter(faq => {
-    const matchesSearch = faq.question.toLowerCase().includes(search.toLowerCase()) ||
-                         faq.answer.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || faq.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const [q, setQ] = useState("");
+  const [topic, setTopic] = useState(null);
+  const [open, setOpen] = useState(null);
+  const shown = useMemo(() => {
+    const s = q.trim().toLowerCase();
+    return ARTICLES.filter(([t, title, body, popular]) => (topic ? t === topic : s ? true : popular) && (!s || `${title} ${body}`.toLowerCase().includes(s)));
+  }, [q, topic]);
+  const heading = topic ? TOPICS.find((t) => t[0] === topic)[2] : q.trim() ? `Results for “${q.trim()}”` : "Popular articles";
 
   return (
-    <div className="min-h-screen bg-white">
-      <SEOHead 
-        {...PAGE_SEO.helpCenter}
-        structuredData={{
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          "name": "BeyondWalls Help Center & FAQs",
-          "description": "Frequently asked questions about DOOH advertising on BeyondWalls platform",
-          "mainEntity": faqs.map(faq => ({
-            "@type": "Question",
-            "name": faq.question,
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": faq.answer
-            }
-          }))
-        }}
-      />
-      <PublicNav />
-
-      {/* Hero */}
-      <section className="pt-32 pb-12 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50 relative overflow-hidden">
-        <div className="absolute top-20 right-20 w-72 h-72 bg-violet-200 rounded-full blur-3xl opacity-30" />
-        <div className="absolute bottom-20 left-20 w-64 h-64 bg-indigo-200 rounded-full blur-3xl opacity-30" />
-        <div className="max-w-4xl mx-auto text-center relative">
-          <Badge className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-0 px-4 py-2 mb-6">
-            24/7 Support
-          </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
-            How Can We Help You?
-          </h1>
-          <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
-            Find answers to common questions or reach out to our support team
-          </p>
-          <div className="relative max-w-xl mx-auto">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-            <Input
-              placeholder="Search for answers..."
-              className="pl-12 h-14 text-lg shadow-lg border-0"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+    <SitePage>
+      <SEOHead title="Help centre | BeyondWalls" description="Pair a screen, update prices, understand earnings and payouts, and book ads. Real people on WhatsApp, 9am–9pm." canonical="https://beyondwalls.ae/HelpCenter" />
+      <section className="bg-[#fbfaff]">
+        <div className={`${wrap} py-14 lg:py-20 flex flex-col items-center gap-6 text-center`}>
+          <h1 className="font-bold text-[40px] md:text-[56px] tracking-[-1.68px] text-[#111027]">How can we help?</h1>
+          <label className="w-full max-w-[640px] flex items-center gap-3 bg-white border border-[#eceaf3] rounded-2xl px-5 py-4 focus-within:border-[#6f3ffd]">
+            <Search className="w-5 h-5 text-[#8f86b8]" />
+            <input value={q} onChange={(e) => { setQ(e.target.value); setTopic(null); }} placeholder="Search: pairing, prices, payouts…" className="flex-1 outline-none text-[16px] text-[#111027] placeholder:text-[#a39fb8] bg-transparent" />
+          </label>
         </div>
       </section>
-
-      {/* Quick Links */}
-      <section className="py-8 px-6 bg-slate-900">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Link to={createPageUrl("HowItWorks")} className="bg-white/5 hover:bg-white/10 rounded-xl p-4 text-center transition-colors">
-              <Megaphone className="w-6 h-6 text-violet-400 mx-auto mb-2" />
-              <p className="text-white font-medium text-sm">How It Works</p>
-            </Link>
-            <Link to={createPageUrl("Contact")} className="bg-white/5 hover:bg-white/10 rounded-xl p-4 text-center transition-colors">
-              <MessageSquare className="w-6 h-6 text-emerald-400 mx-auto mb-2" />
-              <p className="text-white font-medium text-sm">Contact Support</p>
-            </Link>
-            <Link to={createPageUrl("Services")} className="bg-white/5 hover:bg-white/10 rounded-xl p-4 text-center transition-colors">
-              <Building2 className="w-6 h-6 text-amber-400 mx-auto mb-2" />
-              <p className="text-white font-medium text-sm">Our Services</p>
-            </Link>
-            <a href="mailto:support@linkzoneglobal.com" className="bg-white/5 hover:bg-white/10 rounded-xl p-4 text-center transition-colors">
-              <Shield className="w-6 h-6 text-rose-400 mx-auto mb-2" />
-              <p className="text-white font-medium text-sm">Email Support</p>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Categories */}
-      <section className="py-8 px-6 border-b border-slate-100">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex gap-3 flex-wrap justify-center">
-            {categories.map((cat) => (
-              <Button
-                key={cat.id}
-                variant={selectedCategory === cat.id ? "default" : "outline"}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={selectedCategory === cat.id 
-                  ? "bg-gradient-to-r from-violet-600 to-indigo-600" 
-                  : "text-slate-900"
-                }
-              >
-                <cat.icon className="w-4 h-4 mr-2" />
-                {cat.name}
-              </Button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQs */}
-      <section className="py-12 px-6">
-        <div className="max-w-3xl mx-auto">
-          {filteredFaqs.length === 0 ? (
-            <div className="text-center py-16">
-              <HelpCircle className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-slate-700 mb-2">No results found</h3>
-              <p className="text-slate-500 mb-6">Try adjusting your search or browse categories</p>
-              <Link to={createPageUrl("Contact")}>
-                <Button className="bg-gradient-to-r from-violet-600 to-indigo-600">
-                  Contact Support
-                </Button>
-              </Link>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {filteredFaqs.map((faq, index) => (
-                <Card key={index} className="border border-slate-200 overflow-hidden">
-                  <button
-                    className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors"
-                    onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                  >
-                    <span className="font-medium text-slate-900 pr-4">{faq.question}</span>
-                    {openFaq === index ? (
-                      <ChevronUp className="w-5 h-5 text-violet-600 flex-shrink-0" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5 text-slate-400 flex-shrink-0" />
-                    )}
-                  </button>
-                  {openFaq === index && (
-                    <CardContent className="px-6 pb-4 pt-0">
-                      <p className="text-slate-600 leading-relaxed">{faq.answer}</p>
-                    </CardContent>
-                  )}
-                </Card>
+      <section className="bg-white">
+        <div className={`${wrap} py-14 flex flex-col gap-12`}>
+          <div className="flex flex-col gap-5">
+            <h2 className="font-bold text-[24px] text-[#111027]">Browse by topic</h2>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {TOPICS.map(([k, Icon, t, d]) => (
+                <button key={k} onClick={() => { setTopic(topic === k ? null : k); setQ(""); setOpen(null); }} className={`text-left bg-white border rounded-[20px] p-5 flex gap-4 items-start transition ${topic === k ? "border-[#6f3ffd] ring-2 ring-[#6f3ffd]/15" : "border-[#eceaf3] hover:border-[#c9bdfb]"}`}>
+                  <span className="bg-[#f1ecff] rounded-xl p-2.5"><Icon className="w-5 h-5 text-[#5a2ded]" /></span>
+                  <div><p className="font-bold text-[17px] text-[#111027]">{t}</p><p className="text-[14px] text-[#6b6787]">{d}</p></div>
+                </button>
               ))}
             </div>
-          )}
-        </div>
-      </section>
-
-      {/* Contact CTA */}
-      <section className="py-20 px-6 bg-gradient-to-br from-violet-600 to-indigo-600 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-full h-full" style={{backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "24px 24px"}} />
-        </div>
-        <div className="max-w-4xl mx-auto text-center relative">
-          <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <MessageSquare className="w-10 h-10 text-white" />
           </div>
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Can't Find What You're Looking For?
-          </h2>
-          <p className="text-white/80 mb-8 max-w-xl mx-auto">
-            Our support team responds within 24 hours. We're here to help you succeed.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to={createPageUrl("Contact")}>
-              <Button size="lg" className="bg-white text-violet-600 hover:bg-slate-100 h-14 px-8">
-                Contact Support
-              </Button>
-            </Link>
-            <a href="mailto:support@linkzoneglobal.com">
-              <Button size="lg" className="border-2 border-white bg-transparent text-white hover:bg-white hover:text-violet-600 h-14 px-8">
-                support@linkzoneglobal.com
-              </Button>
-            </a>
-          </div>
-          <div className="mt-8 flex flex-wrap justify-center gap-6 text-white/60 text-sm">
-            <span>📞 +971 55 614 0067</span>
-            <span>📍 in5 Dubai, UAE</span>
-            <span>⏰ Sun-Thu 9AM-6PM</span>
+          <div className="flex flex-col gap-4">
+            <h2 className="font-bold text-[24px] text-[#111027]">{heading}</h2>
+            {shown.length === 0 ? (
+              <p className="text-[15px] text-[#6b6787]">Nothing matches that yet — ask us on WhatsApp and we'll answer in minutes.</p>
+            ) : (
+              <div className="bg-white border border-[#eceaf3] rounded-[20px] divide-y divide-[#eceaf3]">
+                {shown.map(([, title, body]) => (
+                  <div key={title}>
+                    <button onClick={() => setOpen(open === title ? null : title)} className="w-full px-6 py-4 flex items-center justify-between gap-4 text-left hover:bg-[#fbfaff]" aria-expanded={open === title}>
+                      <span className="font-semibold text-[16px] text-[#111027]">{title}</span>
+                      <ChevronRight className={`w-5 h-5 text-[#6f3ffd] shrink-0 transition-transform ${open === title ? "rotate-90" : ""}`} />
+                    </button>
+                    {open === title && <p className="px-6 pb-5 text-[15px] leading-[1.6] text-[#6b6787]">{body}</p>}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>
-
-      <PublicFooter />
-    </div>
+      <CTABox title="Still stuck?" sub="Real people on WhatsApp, 9am–9pm, Arabic and English." primary={{ label: "Book a call", to: "/Contact" }} />
+    </SitePage>
   );
 }
