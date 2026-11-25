@@ -17,12 +17,10 @@ import EarnMoneyVenueScreensDubai from './pages/EarnMoneyVenueScreensDubai';
 import DOOHAdvertisingDubai from './pages/DOOHAdvertisingDubai';
 import HelpCenter from './pages/HelpCenter';
 import Home from './pages/Home';
-import HowItWorks from './pages/HowItWorks';
 import NotFound from './pages/NotFound';
 import Privacy from './pages/Privacy';
 import RobotsTxt from './pages/RobotsTxt';
 import ScreenLocations from './pages/ScreenLocations';
-import Services from './pages/Services';
 import Sitemap from './pages/Sitemap';
 import SitemapPage from './pages/SitemapPage';
 import SitemapXML from './pages/SitemapXML';
@@ -53,12 +51,10 @@ export const PAGES = {
     "DOOHAdvertisingDubai": DOOHAdvertisingDubai,
     "HelpCenter": HelpCenter,
     "Home": Home,
-    "HowItWorks": HowItWorks,
     "NotFound": NotFound,
     "Privacy": Privacy,
     "RobotsTxt": RobotsTxt,
     "ScreenLocations": ScreenLocations,
-    "Services": Services,
     "Sitemap": Sitemap,
     "SitemapPage": SitemapPage,
     "SitemapXML": SitemapXML,

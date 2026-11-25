@@ -250,6 +250,8 @@ const AuthenticatedApp = () => {
            </LayoutWrapper>
          } />
          <Route path="/plans" element={<Navigate to="/Pricing" replace />} />
+         <Route path="/HowItWorks" element={<Navigate to="/ForAdvertisers" replace />} />
+         <Route path="/Services" element={<Navigate to="/ForVenues" replace />} />
          <Route path="/login" element={<Login />} />
          <Route path="/signup" element={<Signup />} />
          <Route path="/player" element={<Player />} />

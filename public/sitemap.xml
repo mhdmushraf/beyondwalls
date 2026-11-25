@@ -41,17 +41,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://beyondwalls.linkzoneglobal.com/Services</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://beyondwalls.linkzoneglobal.com/Contact</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://beyondwalls.linkzoneglobal.com/HowItWorks</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
