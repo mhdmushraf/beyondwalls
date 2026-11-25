@@ -18,17 +18,24 @@ export default function AdminSettings() {
   useEffect(() => { if (!form && list.items[0]) setForm({ ...list.items[0] }); }, [list.items, form]);
   if (list.loading) return <div><SlowHint loading forced={list.preview === 'slow'} /><TableSkeleton /></div>;
   if (list.error && !list.items.length) return <ErrorState error={list.error} action="load prices & shares" onRetry={list.reload} />;
-  if (!form) return <div className="bw-card p-8 text-center"><p className="text-[16px] font-bold text-bw-navy">No price settings yet</p><p className="mt-1 text-[13px] text-bw-muted">Create the default settings (70% venue share, AED 15 / 29 / 0 plans, B.One AED 449), then edit them.</p><button type="button" className="bw-btn bw-btn-primary mt-4" onClick={async () => { const rec = await list.create({ key: 'main', venue_share_pct: 70, partner_splits: [60, 50], direct_fee_pct: 10, agency_share_pct: 85, price_signage_ads: 15, price_signage_only: 29, price_ads_only: 0, bone_price: 449, vat_pct: 0 }); setForm({ ...rec }); }}>Create default settings</button></div>;
+  if (!form) return <div className="bw-card p-8 text-center"><p className="text-[16px] font-bold text-bw-navy">No price settings yet</p><p className="mt-1 text-[13px] text-bw-muted">Create the default settings (70% venue share, AED 15 / 29 / 0 plans, B.One AED 449), then edit them.</p><button type="button" className="bw-btn bw-btn-primary mt-4" onClick={async () => { const rec = await list.create({ key: 'main', venue_share_pct: 70, partner_share_options: [60, 50], direct_deal_fee_pct: 10, connect_agency_share_pct: 85, company_name: 'Linkzone Global FZ-LLC', invoice_prefix: 'BW', price_signage_ads: 15, price_signage_only: 29, price_ads_only: 0, bone_price: 449, vat_pct: 0 }); setForm({ ...rec }); }}>Create default settings</button></div>;
 
   const save = async () => {
     const data = {};
-    NUM.forEach(([, f]) => f.forEach(([k]) => { data[k] = Number(form[k]); }));
+    const bad = [];
+    NUM.forEach(([, f]) => f.forEach(([k, label]) => {
+      const n = Number(form[k]);
+      if (form[k] === '' || Number.isNaN(n) || n < 0 || (k.endsWith('_pct') && n > 100)) bad.push(label);
+      data[k] = n;
+    }));
+    if (bad.length) { toast.error('Fix these numbers first', { description: `${bad.join(', ')} must be a number${bad.some((b) => b.includes('%')) ? ' (0–100 for %)' : ''}.` }); return; }
+    if (!String(form.company_name || '').trim()) { toast.error('Company name is required', { description: 'It prints on every invoice.' }); return; }
     Object.assign(data, {
       partner_share_options: String(form.partner_share_options || '').split(',').map((x) => Number(x.trim())).filter(Boolean),
       founding_pricing: !!form.founding_pricing, company_name: form.company_name, company_trn: form.company_trn || '', company_address: form.company_address, invoice_prefix: form.invoice_prefix || 'BW',
     });
-    await list.update(form.id, data);
-    toast.success('Prices & shares saved — new bookings and invoices use them');
+    try { await list.update(form.id, data); } catch (e) { return; }
+    toast.success('Prices & shares saved', { description: 'New bookings and invoices use them. Existing invoices stay as they are.' });
   };
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
