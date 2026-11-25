@@ -53,7 +53,7 @@ export function SiteNav({ dark = true }) {
   const [open, setOpen] = useState(false);
   const link = dark ? "text-[#cfc9ee] hover:text-white" : "text-[#5b5675] hover:text-[#111027]";
   return (
-    <header className={dark ? "" : "bg-white border-b border-[#eceaf3] sticky top-0 z-40"}>
+    <header className={dark ? "" : "bg-white/95 backdrop-blur border-b border-[#eceaf3] sticky top-0 z-40"}>
       <nav className="max-w-[1440px] mx-auto px-6 lg:px-24 py-5 lg:py-7 flex items-center justify-between gap-6">
         <Logo dark={dark} />
         <div className="hidden lg:flex items-center gap-8">
