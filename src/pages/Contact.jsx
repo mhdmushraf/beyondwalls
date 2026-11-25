@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { createPageUrl } from "@/utils";
+import { useState } from "react";
 import {
   Mail,
   Phone,

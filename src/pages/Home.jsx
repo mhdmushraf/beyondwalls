@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
@@ -9,10 +9,8 @@ import {
   TrendingUp,
   Zap,
   Shield,
-  Building2,
   Play,
   CheckCircle2,
-  Users,
   BarChart3,
   Clock,
   DollarSign,
@@ -26,7 +24,6 @@ import {
   Rocket
 } from "lucide-react";
 import InvestorInquiryModal from "@/components/InvestorInquiryModal";
-import PersonalizedHero from "@/components/personalization/PersonalizedHero";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";

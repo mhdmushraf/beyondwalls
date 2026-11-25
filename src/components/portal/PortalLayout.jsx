@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, Outlet, Navigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Store, MonitorPlay, LogOut, Menu, X, Megaphone, Image as ImageIcon,
-  UtensilsCrossed, ListVideo, Siren, MessagesSquare, Search, Bell, MessageCircle, MoreHorizontal, QrCode, Receipt, LifeBuoy, ShieldCheck, ShoppingBag, Inbox,
+  UtensilsCrossed, ListVideo, Siren, MessagesSquare, Search, MessageCircle, MoreHorizontal, QrCode, Receipt, LifeBuoy, ShieldCheck, ShoppingBag, Inbox,
 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import NotificationBell from '@/components/portal/NotificationBell';

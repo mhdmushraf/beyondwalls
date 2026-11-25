@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
@@ -23,7 +22,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
-import CommentSection from "@/components/blog/CommentSection";
 
 export default function AuthorProfile() {
   const urlParams = new URLSearchParams(window.location.search);

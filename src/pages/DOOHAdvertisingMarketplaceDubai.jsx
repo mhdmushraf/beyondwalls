@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { ArrowRight, Store, Coffee, Dumbbell, Stethoscope, Building2, Hotel, ShoppingBag, CheckCircle2, Zap, DollarSign, MapPin } from "lucide-react";

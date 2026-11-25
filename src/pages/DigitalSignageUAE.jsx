@@ -1,9 +1,8 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
-  MonitorPlay, ArrowRight, CheckCircle2, MapPin, Building2,
-  Wifi, Settings, BarChart3, Zap, Shield, Clock
+  MonitorPlay, ArrowRight,
+  Wifi, Settings, BarChart3, Shield, Clock
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { ArrowRight, Stethoscope, Clock, Target, Shield, Heart, CheckCircle2 } from "lucide-react";

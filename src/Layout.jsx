@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 // All pages are public marketing pages for now. The dashboard shell was
 // removed (Nov 2026) ahead of the signage-first rebuild.

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import PlayerPairing from '@/components/player/PlayerPairing';

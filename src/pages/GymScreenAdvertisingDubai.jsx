@@ -1,7 +1,6 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { ArrowRight, Dumbbell, Clock, Target, BarChart3, Heart, Users, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Dumbbell, Clock, Target, Heart, Users, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";

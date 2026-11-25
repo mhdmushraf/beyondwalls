@@ -1,4 +1,3 @@
-import React from "react";
 import { Badge } from "@/components/ui/badge";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 const baseUrl = "https://beyondwalls.ae";
 const today = new Date().toISOString().split('T')[0];

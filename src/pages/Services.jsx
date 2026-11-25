@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
@@ -15,7 +14,6 @@ import {
   Wifi,
   CheckCircle2,
   Megaphone,
-  TrendingUp,
   Sparkles,
   Globe,
   Users,
