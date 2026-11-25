@@ -11,7 +11,7 @@ const TYPES = [["venue", "I have screens"], ["advertiser", "I want to advertise"
 export default function Contact() {
   const q = new URLSearchParams(useLocation().search);
   const initialType = ["venue", "advertiser", "agency"].includes(q.get("type")) ? q.get("type") : "venue";
-  const [f, setF] = useState({ type: initialType, name: "", company: "", phone: "", email: "", screens: "1–5", preferred_time: "Weekday mornings", website: "" });
+  const [f, setF] = useState({ type: initialType, name: "", company: "", phone: "", email: "", screens: initialType === "venue" ? "1–5" : "Under AED 1k", preferred_time: "Weekday mornings", website: "" });
   const [err, setErr] = useState({});
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
@@ -65,7 +65,7 @@ export default function Contact() {
                 <p className="font-bold text-[22px] text-[#111027]">Tell us about you</p>
                 <div className="grid grid-cols-3 gap-2 bg-[#f6f5fa] rounded-xl p-1">
                   {TYPES.map(([k, l]) => (
-                    <button type="button" key={k} onClick={() => setF({ ...f, type: k })} className={`rounded-lg py-2.5 text-[13px] font-semibold ${f.type === k ? "bg-white text-[#5a2ded] shadow-sm" : "text-[#6b6787]"}`}>{l}</button>
+                    <button type="button" key={k} onClick={() => setF({ ...f, type: k, screens: k === "venue" ? "1–5" : "Under AED 1k" })} className={`rounded-lg py-2.5 text-[13px] font-semibold ${f.type === k ? "bg-white text-[#5a2ded] shadow-sm" : "text-[#6b6787]"}`}>{l}</button>
                   ))}
                 </div>
                 <input type="text" name="website" value={f.website} onChange={set("website")} className="hidden" tabIndex={-1} autoComplete="off" />
