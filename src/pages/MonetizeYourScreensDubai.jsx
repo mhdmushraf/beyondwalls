@@ -29,7 +29,7 @@ export default function MonetizeYourScreensDubai() {
     },
     {
       question: "How do I sign up?",
-      answer: "Create a free venue owner account on Beyond Walls in under two minutes, add your screen details (size, location, venue type), set your preferred ad categories, and your screens go live on the marketplace for advertisers to discover. You approve campaigns as they come in, and earnings are paid weekly. Get started at our registration page — it costs nothing to join."
+      answer: "Create a free venue owner account on Beyond Walls in under two minutes, add your screen details (size, location, venue type), set your preferred ad categories, and your screens go live on the marketplace for advertisers to discover. You approve campaigns as they come in, and earnings are paid monthly. Get started at our registration page — the Ads-only plan is free."
     }
   ];
 
@@ -232,7 +232,7 @@ export default function MonetizeYourScreensDubai() {
             {[
               { step: "1", title: "Create Your Free Account", desc: "Sign up as a venue owner on Beyond Walls — it takes under two minutes and costs nothing." },
               { step: "2", title: "List Your Screens", desc: "Add your screen details — size, location, venue type — and set your preferred ad categories." },
-              { step: "3", title: "Start Earning", desc: "Advertisers discover and book your screens. You approve campaigns, ads go live, and earnings are paid weekly." },
+              { step: "3", title: "Start Earning", desc: "Advertisers discover and book your screens. You approve campaigns, ads go live, and you keep 70%, paid monthly." },
             ].map((item, i) => (
               <div key={i} className="flex gap-4 items-start">
                 <div className="w-10 h-10 bg-violet-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">
