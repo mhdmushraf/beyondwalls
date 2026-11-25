@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, Outlet, Navigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Store, MonitorPlay, LogOut, Menu, X, Megaphone, Image as ImageIcon,
-  UtensilsCrossed, ListVideo, Siren, MessagesSquare, Search, MessageCircle, MoreHorizontal, QrCode, Receipt, LifeBuoy, ShieldCheck, ShoppingBag, Inbox,
+  UtensilsCrossed, ListVideo, Siren, MessagesSquare, Search, MessageCircle, MoreHorizontal, QrCode, Receipt, LifeBuoy, ShieldCheck, ShoppingBag, Inbox, Briefcase,
 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import NotificationBell from '@/components/portal/NotificationBell';
@@ -55,6 +55,7 @@ function useNavGroups(t) {
         { to: '/app/ad-requests', label: t('nav.adRequests', 'Ad requests'), icon: Inbox },
         { to: '/app/marketplace', label: t('nav.bookScreens', 'Book screens'), icon: ShoppingBag },
         { to: '/app/campaigns', label: t('nav.campaigns', 'My campaigns'), icon: Megaphone },
+        { to: '/app/clients', label: t('nav.clients', 'Clients (agency)'), icon: Briefcase },
       ],
     },
     {

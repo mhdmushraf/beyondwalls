@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { toast } from 'sonner';
 import { Plus, Briefcase, Search, X, Archive, RotateCcw } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { usePortal } from '@/lib/PortalContext';

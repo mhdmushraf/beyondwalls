@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { MapPin, Users, MonitorPlay, Search, ShoppingCart, X, Upload, Check, Wifi, WifiOff, Megaphone, Building2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
@@ -15,7 +15,7 @@ const MAX_MB = 200;
 const aed = (n) => `AED ${Number(n || 0).toLocaleString('en-AE', { maximumFractionDigits: 2 })}`;
 const fmtK = (n) => (n >= 1000 ? `${Math.round(n / 100) / 10}k` : String(n || 0));
 const todayDubai = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Dubai' }).format(new Date());
-const BLANK = { name: '', goal: 'brand_awareness', start_date: '', weeks: 2, screen_ids: [], creative_url: '', creative_type: 'image', creative_name: '' };
+const BLANK = { client_id: '', name: '', goal: 'brand_awareness', start_date: '', weeks: 2, screen_ids: [], creative_url: '', creative_type: 'image', creative_name: '' };
 
 export default function PortalMarketplace() {
   const navigate = useNavigate();
@@ -35,6 +35,19 @@ export default function PortalMarketplace() {
   const [done, setDone] = useState(null);
   const fileRef = useRef(null);
   const set = (p) => setForm((f) => ({ ...f, ...p }));
+  const [params] = useSearchParams();
+  const [clients, setClients] = useState([]);
+  useEffect(() => {
+    if (!org?.id || !isOnline()) return;
+    base44.entities.Client.filter({ agency_org_id: org.id, status: 'active' }, { sort: 'name', limit: 300 })
+      .then((p) => {
+        const list = p.items || p || [];
+        setClients(list);
+        const want = params.get('client');
+        if (want && list.some((c) => c.id === want)) setForm((f) => ({ ...f, client_id: want }));
+      }).catch(() => {});
+  }, [org?.id]); // eslint-disable-line
+  const isAgency = org?.type === 'agency' || clients.length > 0;
 
   const load = async () => {
     if (preview === 'error') { setError({ response: { status: 500 } }); setLoading(false); return; }
@@ -87,6 +100,7 @@ export default function PortalMarketplace() {
     if (!(form.weeks >= 1 && form.weeks <= 12)) e.weeks = 'Book between 1 and 12 weeks.';
     if (!picked.length) e.screen_ids = 'Pick at least one screen from the list.';
     else if (picked.some((s) => s.slots_free <= 0)) e.screen_ids = `${picked.filter((s) => s.slots_free <= 0).map((s) => s.venue.name).join(', ')} is full for these dates — remove it or change dates.`;
+    if (isAgency && org?.type === 'agency' && !form.client_id && clients.length) e.client_id = 'Pick which client this campaign is for.';
     if (!form.creative_url) e.creative_url = 'Upload your ad — an image or a video up to 200 MB.';
     return e;
   };
@@ -99,7 +113,7 @@ export default function PortalMarketplace() {
     setBusy(true);
     try {
       const res = await base44.functions.invoke('marketplaceBook', {
-        org_id: org.id, name: form.name.trim(), goal: form.goal, start_date: form.start_date, weeks: Number(form.weeks),
+        org_id: org.id, client_id: form.client_id || undefined, name: form.name.trim(), goal: form.goal, start_date: form.start_date, weeks: Number(form.weeks),
         screen_ids: picked.map((s) => s.id), creative_url: form.creative_url, creative_type: form.creative_type,
       });
       clear();
@@ -138,6 +152,16 @@ export default function PortalMarketplace() {
 
   const cart = (
     <div className="space-y-4">
+      {isAgency && (
+        <Field label="Booking for" hint={clients.length ? '' : 'Add your clients first to book on their behalf.'}>
+          <select className="bw-input" value={form.client_id} onChange={(e) => set({ client_id: e.target.value })}>
+            <option value="">{org?.type === 'agency' ? 'Pick a client…' : 'My own business'}</option>
+            {clients.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+          </select>
+          <FieldError msg={errors.client_id} />
+          {!clients.length && <button type="button" className="!min-h-0 mt-1 text-[12px] font-semibold text-bw-coral" onClick={() => navigate('/app/clients')}>Add a client</button>}
+        </Field>
+      )}
       <Field label="Campaign name"><input className="bw-input" maxLength={60} placeholder="e.g. Weekend brunch offer" value={form.name} onChange={(e) => set({ name: e.target.value })} /><FieldError msg={errors.name} /></Field>
       <div className="grid grid-cols-2 gap-3">
         <Field label="Start date"><input type="date" min={todayDubai()} className="bw-input" value={form.start_date} onChange={(e) => set({ start_date: e.target.value })} /><FieldError msg={errors.start_date} /></Field>

@@ -34,6 +34,7 @@ export default function PortalCampaigns() {
   const [open, setOpen] = useState(null);
   const [view, setView] = useState(null);
   const [paying, setPaying] = useState(null);
+  const [client, setClient] = useState('all');
 
   const expand = async (c) => {
     setOpen(open === c.id ? null : c.id);
@@ -59,17 +60,27 @@ export default function PortalCampaigns() {
   if (campaigns.error && !campaigns.items.length) return <div><PageHeader title="My campaigns" /><ErrorState error={campaigns.error} action="load your campaigns" onRetry={campaigns.reload} /></div>;
 
   const invById = new Map(invoices.items.map((i) => [i.id, i]));
+  const clientNames = [...new Set(campaigns.items.map((c) => c.client_name).filter(Boolean))];
+  const shownCampaigns = campaigns.items.filter((c) => client === 'all' || (client === '_own' ? !c.client_name : c.client_name === client));
 
   return (
     <div>
       <PageHeader title="My campaigns" subtitle="Your ads on venue screens — payment, venue approval and plays"
         actions={<Link to="/app/marketplace" className="bw-btn bw-btn-primary"><Plus className="h-4 w-4" />Book screens</Link>} />
+      {clientNames.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          {[['all', 'All'], ...clientNames.map((n) => [n, n]), ['_own', 'Own business']].map(([k, l]) => (
+            <button key={k} type="button" onClick={() => setClient(k)} className={`!min-h-0 rounded-full px-4 py-1.5 text-[13px] font-semibold ${client === k ? 'bg-bw-navy text-white' : 'bg-white border border-bw-line text-bw-ink'}`}>{l}</button>
+          ))}
+        </div>
+      )}
       {campaigns.items.length === 0 ? (
         <EmptyState icon={Megaphone} title="No campaigns yet" body="Pick screens in cafés, gyms and clinics, upload your ad, and pay by card or bank transfer. You'll track everything here."
           action={<Link to="/app/marketplace" className="bw-btn bw-btn-primary"><Plus className="h-4 w-4" />Book screens</Link>} />
       ) : (
         <div className="space-y-3">
-          {campaigns.items.map((c) => {
+          {shownCampaigns.length === 0 && <EmptyState icon={Megaphone} title="No campaigns for this client" body="" action={<button type="button" className="bw-btn bw-btn-ghost" onClick={() => setClient('all')}>Show all</button>} />}
+          {shownCampaigns.map((c) => {
             const inv = invById.get(c.invoice_id);
             const st = CST[c.status] || [c.status, 'bg-bw-cream text-bw-muted'];
             const unpaid = c.payment_status !== 'paid' && c.status !== 'cancelled' && inv?.status === 'issued';
@@ -81,8 +92,8 @@ export default function PortalCampaigns() {
                     {c.creative_type === 'video' ? <video src={c.creative_urls?.[0]} muted className="h-full w-full object-cover" /> : <img src={c.creative_urls?.[0]} alt="" className="h-full w-full object-cover" />}
                   </div>
                   <div className="flex-1 min-w-[180px]">
-                    <p className="text-[15px] font-bold text-bw-navy">{c.name}</p>
-                    <p className="text-[12px] text-bw-muted">{(c.selected_screens || []).length} screens · {c.weeks} wk · {c.start_date} → {c.end_date} · {aed(c.total_budget)}</p>
+                    <p className="text-[15px] font-bold text-bw-navy">{c.name}{c.client_name && <span className="ms-2 bw-chip bg-bw-lav text-bw-coral">{c.client_name}</span>}{c.deal_type === 'direct' && <span className="ms-2 bw-chip bg-bw-cream text-bw-muted">Direct deal</span>}</p>
+                    <p className="text-[12px] text-bw-muted">{(c.selected_screens || []).length} screens · {c.weeks} wk · {c.start_date} → {c.end_date} · {aed(c.total_budget)} · {(c.total_plays || 0).toLocaleString()} plays</p>
                   </div>
                   <span className={`bw-chip ${st[1]}`}>{st[0]}</span>
                   {unpaid && <button type="button" className="bw-btn bw-btn-primary !py-1.5" disabled={paying === inv.id} onClick={() => pay(inv.id)}><CreditCard className="h-4 w-4" />{paying === inv.id ? 'Opening…' : `Pay ${aed(inv.total)}`}</button>}
