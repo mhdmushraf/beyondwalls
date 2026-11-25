@@ -30,6 +30,10 @@ export const dictionaries = {
     'common.arabic': 'العربية',
 
     'auth.signIn': 'Sign in',
+    'auth.welcomeBack': 'Welcome back',
+    'auth.signInSub': 'Sign in to manage your screens or campaigns.',
+    'auth.createTitle': 'Create your account',
+    'auth.createSub': 'List your screens free, or start advertising across the UAE.',
     'auth.signUp': 'Create account',
     'auth.email': 'Email',
     'auth.password': 'Password',
@@ -216,6 +220,10 @@ export const dictionaries = {
     'common.arabic': 'العربية',
 
     'auth.signIn': 'تسجيل الدخول',
+    'auth.welcomeBack': 'مرحبًا بعودتك',
+    'auth.signInSub': 'سجّل الدخول لإدارة شاشاتك أو حملاتك.',
+    'auth.createTitle': 'أنشئ حسابك',
+    'auth.createSub': 'أدرج شاشاتك مجانًا، أو ابدأ الإعلان في الإمارات.',
     'auth.signUp': 'إنشاء حساب',
     'auth.email': 'البريد الإلكتروني',
     'auth.password': 'كلمة المرور',
