@@ -9,8 +9,7 @@ import {
   ArrowLeft,
   Calendar,
   Clock,
-  FileText,
-  Loader2
+  FileText
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -118,7 +117,7 @@ export default function BlogPost() {
 
           {isLoading ? (
             <div className="text-center py-16">
-              <Loader2 className="w-12 h-12 text-violet-600 animate-spin mx-auto" />
+              <div className="max-w-3xl mx-auto grid gap-4 text-left" aria-label="Loading">{[0, 1, 2].map((i) => (<div key={i} className="rounded-2xl border border-[#eceaf3] p-5 animate-pulse"><div className="h-40 rounded-xl bg-[#efedf6] mb-4" /><div className="h-4 w-2/3 rounded bg-[#efedf6] mb-2" /><div className="h-3 w-1/2 rounded bg-[#efedf6]" /></div>))}</div>
             </div>
           ) : !post ? (
             <div className="text-center py-16">
