@@ -376,22 +376,8 @@ export default function AdminApprovals() {
   };
 
   return (
-    <div className="min-h-screen bg-bw-cream">
-      <header className="h-16 bg-bw-navy flex items-center justify-between px-5 md:px-8">
-        <div className="flex items-center gap-2.5">
-          <span className="h-8 w-8 rounded-lg bg-white/10 flex items-center justify-center">
-            <span className="h-3 w-3 rounded-sm bg-bw-coral" />
-          </span>
-          <span className="text-sm font-semibold text-white">Beyond Walls</span>
-          <span className="text-[11px] text-white/40">Admin</span>
-        </div>
-        <button type="button" onClick={() => logout(true)} className="inline-flex items-center gap-2 text-[11px] font-semibold text-white/60 hover:text-white">
-          <LogOut className="h-3.5 w-3.5" />
-          {t('nav.signOut')}
-        </button>
-      </header>
-
-      <div className="max-w-5xl mx-auto px-5 md:px-8 py-8 space-y-6">
+    <div>
+      <div className="max-w-5xl space-y-6">
         <div>
           <h1 className="text-xl md:text-2xl font-semibold text-bw-navy">{t('admin.title')}</h1>
           <p className="mt-1 text-sm text-bw-muted">{t('admin.subtitle')}</p>
