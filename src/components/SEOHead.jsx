@@ -85,7 +85,6 @@ export const SITEMAP_PAGES = [
   { url: "/ForAdvertisers", priority: "0.9", changefreq: "weekly" },
   { url: "/Pricing", priority: "0.9", changefreq: "weekly" },
   { url: "/BOne", priority: "0.8", changefreq: "monthly" },
-  { url: "/ScreenLocations", priority: "0.8", changefreq: "daily" },
   { url: "/About", priority: "0.8", changefreq: "monthly" },
   { url: "/Services", priority: "0.9", changefreq: "weekly" },
   { url: "/Contact", priority: "0.7", changefreq: "monthly" },
