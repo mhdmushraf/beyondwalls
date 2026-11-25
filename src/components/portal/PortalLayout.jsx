@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, Outlet, Navigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Store, MonitorPlay, LogOut, Menu, X, Megaphone, Image as ImageIcon,
-  UtensilsCrossed, ListVideo, Siren, MessagesSquare, Search, Bell, MessageCircle, MoreHorizontal, QrCode,
+  UtensilsCrossed, ListVideo, Siren, MessagesSquare, Search, Bell, MessageCircle, MoreHorizontal, QrCode, Receipt, LifeBuoy, ShieldCheck,
 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { PortalProvider, usePortal } from '@/lib/PortalContext';
@@ -50,6 +50,13 @@ function useNavGroups(t) {
       label: t('nav.group.team', 'Team'),
       items: [
         { to: '/app/chat', label: t('nav.chat', 'Team chat'), icon: MessagesSquare },
+      ],
+    },
+    {
+      label: t('nav.group.account', 'Account'),
+      items: [
+        { to: '/app/billing', label: t('nav.billing', 'Billing'), icon: Receipt },
+        { to: '/app/support', label: t('nav.support', 'Help & support'), icon: LifeBuoy },
       ],
     },
   ];
@@ -154,6 +161,11 @@ function PortalShell() {
       </nav>
 
       <div className="px-3 pb-4 pt-2 space-y-2">
+        {user?.role === 'admin' && (
+          <NavLink to="/admin" className="!justify-start flex items-center gap-3 rounded-xl bg-bw-navy px-3 py-2.5 text-[13px] font-semibold text-white">
+            <ShieldCheck className="h-4 w-4" />Beyond Walls HQ
+          </NavLink>
+        )}
         <a
           href="https://wa.me/971556140067"
           target="_blank"
