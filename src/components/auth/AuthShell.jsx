@@ -8,8 +8,8 @@ const GRAD = 'linear-gradient(135deg, #6f3ffd 0%, #5a2ded 71%)';
 export default function AuthShell({ children, quote, quoteBy }) {
   return (
     <div className="min-h-screen bg-[#f6f5fa] lg:grid lg:grid-cols-[minmax(0,700px)_1fr] font-[Inter,system-ui,sans-serif]">
-      <div className="relative overflow-hidden px-6 py-6 lg:px-14 lg:py-12 flex flex-col lg:min-h-screen min-h-[220px]">
-        <img src="/site/cafe.webp" alt="" className="absolute inset-0 w-full h-full object-cover" />
+      <div className="relative overflow-hidden bg-[#140b3a] px-6 py-6 lg:px-14 lg:py-12 flex flex-col lg:min-h-screen min-h-[220px]">
+        <img src="/site/cafe.webp" alt="" fetchpriority="high" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/40 lg:to-black/20" />
         <div className="relative z-10 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
