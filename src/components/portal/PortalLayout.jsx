@@ -12,6 +12,8 @@ import LanguageToggle from './LanguageToggle';
 import BusinessSwitcher from './BusinessSwitcher';
 import ModeToggle from './ModeToggle';
 import StatusScreen from './StatusScreen';
+import { OfflineBanner } from '@/components/states/StateViews';
+import { SessionExpiredDialog, PreviewSwitcher } from '@/components/states/SessionAndPreview';
 
 const MODE_KEY = 'bw_mode';
 
@@ -65,7 +67,7 @@ function useNavGroups(t) {
 function PortalShell() {
   const { t } = useI18n();
   const { user, logout } = useAuth();
-  const { loading, orgs, org, selectOrg, reload, screens } = usePortal();
+  const { loading, orgs, org, selectOrg, reload, screens, preview } = usePortal();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mode, setMode] = useState(() => {
@@ -235,6 +237,9 @@ function PortalShell() {
           </div>
         </header>
 
+        <OfflineBanner />
+        <SessionExpiredDialog forced={preview === 'expired'} />
+        <PreviewSwitcher user={user} current={preview} />
         <main className="p-4 md:p-8 pb-28 md:pb-8 max-w-[1240px]">
           {mode === 'advertise' ? (
             <div className="bw-card p-10 text-center">
