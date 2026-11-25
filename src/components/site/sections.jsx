@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import {
   Map, Upload, CircleDollarSign, LineChart, Sparkles, Eye, QrCode, Clock, Target, ShieldCheck,
   Wallet, Tv, Shield, User, Plug, Wifi, TrendingUp, Monitor, RefreshCw, Zap, Check, ChevronDown,
-  Rocket, Award, Lock, Globe,
+  Rocket, Award, Lock, Globe, Languages,
 } from "lucide-react";
 import { GRAD, Pill, Section, SectionHead, CheckLine, GradButton } from "./Site";
 
@@ -20,18 +20,21 @@ export const PRICING = {
 
 export function ProofStrip() {
   const items = [
-    ["Any TV", "LG · Samsung · Android · browser · B.One"],
-    ["Arabic + English", "Built for the UAE"],
-    ["Real reporting", "Proof of play · snapshots · QR scans"],
-    ["Live in minutes", "Pair with a 6-digit code"],
+    [Tv, "Any TV", "LG · Samsung · Android · browser · B.One"],
+    [Languages, "Arabic + English", "Built for the UAE"],
+    [LineChart, "Real reporting", "Proof of play · snapshots · QR scans"],
+    [Zap, "Live in minutes", "Pair with a 6-digit code"],
   ];
   return (
     <section className="bg-white border-b border-[#eceaf3]">
       <div className="max-w-[1440px] mx-auto px-6 lg:px-24 py-7 grid grid-cols-2 lg:flex lg:justify-between gap-6">
-        {items.map(([a, b]) => (
-          <div key={a}>
-            <p className="font-bold text-[18px] text-[#0d0a1f]">{a}</p>
-            <p className="font-medium text-[13px] text-[#5b5675]">{b}</p>
+        {items.map(([Icon, a, b]) => (
+          <div key={a} className="flex items-center gap-3.5">
+            <span className="shrink-0 w-11 h-11 rounded-xl bg-[#f1ecff] flex items-center justify-center"><Icon className="w-[22px] h-[22px] text-[#5a2ded]" /></span>
+            <div>
+              <p className="font-bold text-[18px] text-[#0d0a1f]">{a}</p>
+              <p className="font-medium text-[13px] text-[#5b5675]">{b}</p>
+            </div>
           </div>
         ))}
       </div>
