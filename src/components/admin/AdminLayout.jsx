@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { NavLink, Outlet, Link } from 'react-router-dom';
-import { LayoutDashboard, ShieldCheck, MonitorPlay, Wrench, LifeBuoy, Target, Receipt, Settings, LogOut, Menu, X, ArrowLeft } from 'lucide-react';
+import { LayoutDashboard, ShieldCheck, MonitorPlay, Wrench, LifeBuoy, Target, Receipt, Settings, LogOut, Store, Menu, X, ArrowLeft } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { readPreviewState, applyPreviewState, isOnline, notifyError } from '@/lib/states';
@@ -79,6 +79,7 @@ const NAV = [
   ['/admin/installs', Wrench, 'Installs'],
   ['/admin/support', LifeBuoy, 'Users & support'],
   ['/admin/leads', Target, 'Leads'],
+  ['/admin/marketplace', Store, 'Marketplace'],
   ['/admin/billing', Receipt, 'Billing & invoices'],
   ['/admin/settings', Settings, 'Prices & shares'],
 ];

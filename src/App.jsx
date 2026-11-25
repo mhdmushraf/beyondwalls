@@ -44,6 +44,11 @@ import PortalQR from './pages/portal/PortalQR';
 import QRRedirect from './pages/QRRedirect';
 import PortalBilling from './pages/portal/PortalBilling';
 import PortalSupport from './pages/portal/PortalSupport';
+import PortalMarketplace from './pages/portal/PortalMarketplace';
+import PortalCampaigns from './pages/portal/PortalCampaigns';
+import PortalAdRequests from './pages/portal/PortalAdRequests';
+import PortalPayReturn from './pages/portal/PortalPayReturn';
+import AdminMarketplace from './pages/admin/AdminMarketplace';
 import AdminLayout from './components/admin/AdminLayout';
 import AdminOverview from './pages/admin/AdminOverview';
 import AdminScreenWall from './pages/admin/AdminScreenWall';
@@ -265,6 +270,7 @@ const AuthenticatedApp = () => {
            <Route path="leads" element={<AdminLeads />} />
            <Route path="billing" element={<AdminBilling />} />
            <Route path="settings" element={<AdminSettings />} />
+           <Route path="marketplace" element={<AdminMarketplace />} />
          </Route>
          <Route path="/app" element={<PortalLayout />}>
            <Route index element={<PortalDashboard />} />
@@ -279,6 +285,10 @@ const AuthenticatedApp = () => {
            <Route path="qr" element={<PortalQR />} />
            <Route path="billing" element={<PortalBilling />} />
            <Route path="support" element={<PortalSupport />} />
+           <Route path="marketplace" element={<PortalMarketplace />} />
+           <Route path="campaigns" element={<PortalCampaigns />} />
+           <Route path="ad-requests" element={<PortalAdRequests />} />
+           <Route path="pay/return" element={<PortalPayReturn />} />
          </Route>
          <Route path="*" element={<PageNotFound />} />
          </Routes>

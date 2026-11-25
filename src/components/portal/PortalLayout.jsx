@@ -3,6 +3,7 @@ import { NavLink, Outlet, Navigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Store, MonitorPlay, LogOut, Menu, X, Megaphone, Image as ImageIcon,
   UtensilsCrossed, ListVideo, Siren, MessagesSquare, Search, Bell, MessageCircle, MoreHorizontal, QrCode, Receipt, LifeBuoy, ShieldCheck,
+, Megaphone, ShoppingBag, Inbox,
 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { PortalProvider, usePortal } from '@/lib/PortalContext';
@@ -46,6 +47,14 @@ function useNavGroups(t) {
         { to: '/app/playlists', label: t('nav.playlists', 'Playlists & schedules'), icon: ListVideo },
         { to: '/app/qr', label: t('nav.qr', 'QR codes'), icon: QrCode },
         { to: '/app/urgent', label: t('nav.urgent', 'Urgent message'), icon: Siren },
+      ],
+    },
+    {
+      label: t('nav.group.marketplace', 'Marketplace'),
+      items: [
+        { to: '/app/ad-requests', label: t('nav.adRequests', 'Ad requests'), icon: Inbox },
+        { to: '/app/marketplace', label: t('nav.bookScreens', 'Book screens'), icon: ShoppingBag },
+        { to: '/app/campaigns', label: t('nav.campaigns', 'My campaigns'), icon: Megaphone },
       ],
     },
     {
