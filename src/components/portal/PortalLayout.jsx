@@ -215,7 +215,7 @@ function PortalShell() {
           </NavLink>
         )}
         <a
-          href="https://wa.me/971556140067"
+          href="https://wa.me/971545469496"
           target="_blank"
           rel="noreferrer"
           className="flex items-center justify-start gap-3 rounded-2xl bg-emerald-50 px-3 py-3"

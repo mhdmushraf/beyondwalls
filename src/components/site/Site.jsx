@@ -7,7 +7,7 @@ import PublicAIChatWidget from "@/components/chat/PublicAIChatWidget";
 
 // Shared building blocks for the public website (Figma file zt5zHPFgpthYEAfpSeJYZr).
 export const GRAD = "linear-gradient(135deg, #6f3ffd 0%, #5a2ded 71%)";
-export const WHATSAPP = "https://wa.me/971556140067";
+export const WHATSAPP = "https://wa.me/971545469496?text=" + encodeURIComponent("Hi Beyond Walls, I have a question about ");
 
 // Public lead capture (book a demo, B.One order, investor deck, newsletter) → Lead entity + admin alert.
 export async function submitLead(payload) {
@@ -181,7 +181,7 @@ function FooterNewsletter() {
     <form onSubmit={submit} className="bg-white/5 border border-white/10 rounded-[20px] px-6 md:px-7 py-6 flex flex-col md:flex-row md:items-center gap-4 md:gap-5">
       <div className="flex-1 min-w-0">
         <p className="font-bold text-[18px] text-white">Get launch updates</p>
-        <p className="text-[13px] text-[#9a93c4]">beyondwalls@linkzoneglobal.com · +971 55 614 0067 · in5 Tech, Dubai Internet City</p>
+        <p className="text-[13px] text-[#9a93c4]">beyondwalls@linkzoneglobal.com · +971 54 546 9496 · in5 Tech, Dubai Internet City</p>
       </div>
       <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your email" aria-label="Email"
         className="md:w-[280px] bg-white/[0.06] border border-white/[0.12] rounded-[10px] px-4 py-3 text-[14px] text-white placeholder:text-[#9a93c4] outline-none focus:border-[#6f3ffd]" />
@@ -201,7 +201,7 @@ export function SiteFooter() {
             <Logo size="sm" />
             <p className="text-[14px] text-[#9a93c4] max-w-[300px]">Signage and screen advertising for venues across the UAE. A Linkzone Global company.</p>
             <StoreBadges compact tv={false} />
-            <a href={WHATSAPP} target="_blank" rel="noreferrer" className="self-start bg-[#25d366] text-[#062e16] rounded-full px-3.5 py-2.5 text-[13px] font-semibold">WhatsApp +971 55 614 0067</a>
+            <a href={WHATSAPP} target="_blank" rel="noreferrer" className="self-start bg-[#25d366] text-[#062e16] rounded-full px-3.5 py-2.5 text-[13px] font-semibold">WhatsApp +971 54 546 9496</a>
           </div>
           {FOOTER_COLS.map(([head, links]) => (
             <div key={head} className="flex flex-col gap-3 min-w-0">

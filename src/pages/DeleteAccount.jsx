@@ -51,7 +51,7 @@ export default function DeleteAccount() {
             <div className="mt-6 space-y-2">
               <p className="text-[13px] text-bw-muted">Sign in first so we know it's you, then you'll come back here.</p>
               <Link to="/login?next=/delete-account" className="bw-btn bw-btn-primary w-full">Sign in to continue</Link>
-              <p className="text-[12px] text-bw-muted text-center">Can't sign in? WhatsApp us on +971 55 614 0067 from the number on the account and we'll delete it within 7 days.</p>
+              <p className="text-[12px] text-bw-muted text-center">Can't sign in? WhatsApp us on +971 54 546 9496 from the number on the account and we'll delete it within 7 days.</p>
             </div>
           ) : (
             <div className="mt-6 space-y-3">

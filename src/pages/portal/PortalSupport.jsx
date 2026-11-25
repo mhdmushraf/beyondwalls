@@ -52,7 +52,7 @@ export default function PortalSupport() {
     <div>
       <PageHeader title="Help & support" subtitle="Message the Beyond Walls team · 9am–9pm every day"
         actions={<>
-          <a className="bw-btn bw-btn-ghost" href="https://wa.me/971556140067" target="_blank" rel="noreferrer"><MessageCircle className="h-4 w-4 text-emerald-600" />WhatsApp</a>
+          <a className="bw-btn bw-btn-ghost" href="https://wa.me/971545469496" target="_blank" rel="noreferrer"><MessageCircle className="h-4 w-4 text-emerald-600" />WhatsApp</a>
           <button type="button" className="bw-btn bw-btn-primary" onClick={() => setForm({ subject: '', category: 'other', screen_id: '', text: '' })}><Plus className="h-4 w-4" />New request</button>
         </>} />
       {restored && form && <DraftBanner restored onDiscard={() => { discard(); setForm(null); }} what="support request" />}

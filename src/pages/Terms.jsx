@@ -71,7 +71,7 @@ export default function Terms() {
       <p>These terms are governed by the laws of the United Arab Emirates as applied in the Emirate of Dubai, and the Dubai courts have jurisdiction.</p>
 
       <h2>14. Contact</h2>
-      <p>beyondwalls@linkzoneglobal.com · +971 55 614 0067 (WhatsApp)</p>
+      <p>beyondwalls@linkzoneglobal.com · +971 54 546 9496 (WhatsApp)</p>
     </LegalShell>
   );
 }

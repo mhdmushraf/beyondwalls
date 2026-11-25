@@ -250,7 +250,7 @@ export default function PortalMarketplace() {
           {loading || preview === 'loading' ? <TilesSkeleton count={6} />
             : error ? <ErrorState error={error} action="load screens" onRetry={load} />
               : !isOnline() && !data ? <EmptyState icon={WifiOff} title="You're offline" body="Screen prices and free slots need internet. Your booking draft is safe on this device." />
-                : screens.length === 0 ? <EmptyState icon={Megaphone} title="No screens open for booking yet" body="Venues are joining every week. Leave your details and we'll WhatsApp you when screens in your area open." action={<a className="bw-btn bw-btn-primary" href="https://wa.me/971556140067?text=Hi%2C%20I%27d%20like%20to%20advertise%20on%20Beyond%20Walls%20screens" target="_blank" rel="noreferrer">WhatsApp us</a>} />
+                : screens.length === 0 ? <EmptyState icon={Megaphone} title="No screens open for booking yet" body="Venues are joining every week. Leave your details and we'll WhatsApp you when screens in your area open." action={<a className="bw-btn bw-btn-primary" href="https://wa.me/971545469496?text=Hi%2C%20I%27d%20like%20to%20advertise%20on%20Beyond%20Walls%20screens" target="_blank" rel="noreferrer">WhatsApp us</a>} />
                   : shown.length === 0 || preview === 'noresults' ? <EmptyState icon={Search} title={q ? `No screens match "${q}"` : 'No screens match these filters'} body="Try another emirate or venue type." action={<button type="button" className="bw-btn bw-btn-ghost" onClick={() => { setQ(''); setEmirate('all'); setVtype('all'); }}>Clear filters</button>} />
                     : view === 'map' ? <ScreensMap screens={shown} selected={form.screen_ids} onToggle={toggle} />
                     : (

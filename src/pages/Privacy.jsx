@@ -82,7 +82,7 @@ export default function Privacy() {
       <p>
         Linkzone Global FZ-LLC, Dubai, United Arab Emirates<br />
         Email: beyondwalls@linkzoneglobal.com<br />
-        WhatsApp: +971 55 614 0067
+        WhatsApp: +971 54 546 9496
       </p>
     </LegalShell>
   );

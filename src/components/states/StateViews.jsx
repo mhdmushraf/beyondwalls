@@ -45,7 +45,7 @@ export function ErrorState({ error, action = 'load this', onRetry }) {
       <p className="mt-1 text-[13px] text-bw-muted max-w-md mx-auto">{fix}</p>
       <div className="mt-4 flex justify-center gap-2">
         {onRetry && <button type="button" className="bw-btn bw-btn-primary" onClick={onRetry}><RotateCcw className="h-4 w-4" />Try again</button>}
-        <a className="bw-btn bw-btn-ghost" href="https://wa.me/971556140067" target="_blank" rel="noreferrer"><MessageCircle className="h-4 w-4 text-emerald-600" />Message support</a>
+        <a className="bw-btn bw-btn-ghost" href="https://wa.me/971545469496" target="_blank" rel="noreferrer"><MessageCircle className="h-4 w-4 text-emerald-600" />Message support</a>
       </div>
     </div>
   );

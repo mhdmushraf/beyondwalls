@@ -117,7 +117,7 @@ export default function AddScreenWizard({ open, onOpenChange, venue: fixedVenue 
               })}
             </div>
             <div className="mt-4 flex items-center justify-between gap-3">
-              <a href="https://wa.me/971556140067?text=Hi%2C%20I%20need%20help%20choosing%20a%20player%20for%20my%20TV" target="_blank" rel="noreferrer" className="text-[13px] font-semibold text-emerald-600 flex items-center gap-1.5"><MessageCircle className="h-4 w-4" />Not sure? Ask us on WhatsApp</a>
+              <a href="https://wa.me/971545469496?text=Hi%2C%20I%20need%20help%20choosing%20a%20player%20for%20my%20TV" target="_blank" rel="noreferrer" className="text-[13px] font-semibold text-emerald-600 flex items-center gap-1.5"><MessageCircle className="h-4 w-4" />Not sure? Ask us on WhatsApp</a>
               <button type="button" className="bw-btn bw-btn-primary" disabled={!venueId} onClick={() => setStep(2)}>Continue</button>
             </div>
           </div>

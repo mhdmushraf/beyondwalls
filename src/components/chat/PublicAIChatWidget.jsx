@@ -80,7 +80,7 @@ Key Features for Venue Owners:
 - Reserve slots for your own promotions
 - Weekly payouts
 
-Contact: beyondwalls@linkzoneglobal.com | +971 55 614 0067
+Contact: beyondwalls@linkzoneglobal.com | +971 54 546 9496
 
 The user is asking: "${userMessage}"
 
@@ -92,7 +92,7 @@ Provide a helpful, concise, and friendly response. If they ask about pricing, me
     } catch (error) {
       setMessages(prev => [...prev, { 
         role: "assistant", 
-        content: "I apologize, but I'm having trouble processing your request right now. Please try again or contact us directly at beyondwalls@linkzoneglobal.com or +971 55 614 0067." 
+        content: "I apologize, but I'm having trouble processing your request right now. Please try again or contact us directly at beyondwalls@linkzoneglobal.com or +971 54 546 9496." 
       }]);
     } finally {
       setIsLoading(false);
