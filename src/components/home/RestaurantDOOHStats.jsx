@@ -1,9 +1,6 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { 
-  MonitorPlay, Users, Play, MapPin, Clock, 
-  TrendingUp, Eye, Sparkles, ArrowRight,
+import { Play, Clock, Eye, Sparkles, ArrowRight,
   Coffee, Dumbbell, Scissors, Hotel, Building2, Heart, ShoppingBag, UtensilsCrossed
 } from "lucide-react";
 import { Button } from "@/components/ui/button";

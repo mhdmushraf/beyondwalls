@@ -1,4 +1,3 @@
-import React from 'react';
 import { Clock, ShieldX, ShieldAlert, MessageCircle, LogOut } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';

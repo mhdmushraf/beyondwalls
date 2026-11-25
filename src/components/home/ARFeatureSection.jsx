@@ -1,15 +1,11 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { createPageUrl } from "@/utils";
+import { useState } from "react";
 import {
-  Smartphone,
   ScanLine,
   Box,
   Sparkles,
   ArrowRight,
   Play,
   Crown,
-  Zap,
   Eye,
   ShoppingBag,
   BarChart3,

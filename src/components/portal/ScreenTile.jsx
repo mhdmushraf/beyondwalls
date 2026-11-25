@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { MonitorPlay, WifiOff, Radio } from 'lucide-react';
 import { useSignedUrl, timeAgo } from '@/lib/portalData';

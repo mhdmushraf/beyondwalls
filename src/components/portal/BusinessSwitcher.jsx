@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { Building2, ChevronDown, Check } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useI18n } from '@/lib/i18n';

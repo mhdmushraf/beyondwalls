@@ -1,10 +1,8 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { 
   Wallet, MonitorPlay, PieChart, Shield, 
-  Clock, Users, Building2, ArrowRight,
-  CheckCircle2, TrendingUp, DollarSign
+  Clock, Users, Building2, DollarSign
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";

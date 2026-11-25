@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, TrendingUp, Clock, DollarSign, Zap } from 'lucide-react';
 

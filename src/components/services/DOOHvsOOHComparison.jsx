@@ -1,4 +1,3 @@
-import React from "react";
 import { CheckCircle2, XCircle, ArrowRight, Zap, Clock, Target, DollarSign, BarChart3, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
