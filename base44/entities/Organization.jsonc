@@ -1,86 +1,45 @@
 {
   "name": "Organization",
-  "type": "object",
   "properties": {
-    "name": {
-      "description": "Organization / business name",
-      "type": "string"
-    },
-    "type": {
-      "description": "Organization type, chosen at signup",
-      "type": "string",
-      "enum": [
-        "advertiser",
-        "venue",
-        "enterprise",
-        "agency"
-      ]
-    },
-    "status": {
-      "type": "string",
-      "enum": [
-        "pending",
-        "approved",
-        "rejected",
-        "suspended"
-      ],
-      "default": "pending",
-      "description": "Business verification status",
-      "enumColors": [
-        "yellow",
-        "green",
-        "red",
-        "gray"
-      ]
-    },
-    "business_modes": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "enum": [
-          "venue",
-          "advertiser"
-        ]
-      },
-      "description": "What the business signed up to do: host screens, advertise, or both"
-    },
     "advertiser_status": {
-      "type": "string",
+      "default": "none",
       "enum": [
         "none",
         "requested",
         "approved"
       ],
-      "default": "none",
       "enumColors": [
         "gray",
         "yellow",
         "green"
-      ]
-    },
-    "trade_license_number": {
+      ],
+      "rls": {
+        "update": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      },
       "type": "string"
     },
-    "trade_license_url": {
-      "type": "string",
-      "description": "Private file_uri of the uploaded trade licence"
-    },
-    "emirate": {
-      "type": "string"
-    },
-    "industry": {
-      "type": "string"
-    },
-    "whatsapp": {
-      "type": "string",
-      "description": "WhatsApp number with country code"
-    },
-    "rejection_reason": {
-      "type": "string"
+    "auto_approve_creative": {
+      "default": false,
+      "type": "boolean"
     },
     "billing_email": {
       "description": "Where invoices are sent",
       "type": "string"
+    },
+    "business_modes": {
+      "description": "What the business signed up to do: host screens, advertise, or both",
+      "items": {
+        "enum": [
+          "venue",
+          "advertiser"
+        ],
+        "type": "string"
+      },
+      "type": "array"
     },
     "commercial_plan": {
       "default": "revenue_share",
@@ -89,16 +48,32 @@
         "revenue_share",
         "saas"
       ],
+      "rls": {
+        "update": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      },
       "type": "string"
     },
     "commission_rate": {
       "default": 30,
-      "description": "Percent taken from marketplace earnings. 30 for revenue_share, 0 for saas.",
+      "description": "Percent Beyond Walls keeps from marketplace ads on this business's screens (30 standard, 15 Connect partner, 40/50 partner venues). Admin only.",
+      "rls": {
+        "update": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      },
       "type": "number"
     },
-    "auto_approve_creative": {
-      "type": "boolean",
-      "default": false
+    "emirate": {
+      "type": "string"
+    },
+    "industry": {
+      "type": "string"
     },
     "logo_url": {
       "description": "Organization logo",
@@ -111,10 +86,73 @@
       },
       "type": "array"
     },
+    "name": {
+      "description": "Organization / business name",
+      "type": "string"
+    },
+    "rejection_reason": {
+      "rls": {
+        "update": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      },
+      "type": "string"
+    },
     "screen_count": {
       "default": 0,
       "description": "Denormalized count of screens owned by this org",
       "type": "number"
+    },
+    "status": {
+      "default": "pending",
+      "description": "Business verification status",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "suspended"
+      ],
+      "enumColors": [
+        "yellow",
+        "green",
+        "red",
+        "gray"
+      ],
+      "rls": {
+        "update": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      },
+      "type": "string"
+    },
+    "trade_license_number": {
+      "type": "string"
+    },
+    "trade_license_url": {
+      "description": "Private file_uri of the uploaded trade licence",
+      "type": "string"
+    },
+    "trn": {
+      "description": "UAE tax registration number, printed on invoices",
+      "type": "string"
+    },
+    "type": {
+      "description": "Organization type, chosen at signup",
+      "enum": [
+        "advertiser",
+        "venue",
+        "enterprise",
+        "agency"
+      ],
+      "type": "string"
+    },
+    "whatsapp": {
+      "description": "WhatsApp number with country code",
+      "type": "string"
     }
   },
   "required": [
@@ -122,6 +160,14 @@
     "type"
   ],
   "rls": {
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
     "read": {
       "$or": [
         {
@@ -136,9 +182,6 @@
           }
         }
       ]
-    },
-    "create": {
-      "created_by_id": "{{user.id}}"
     },
     "update": {
       "$or": [
@@ -158,11 +201,7 @@
           }
         }
       ]
-    },
-    "delete": {
-      "user_condition": {
-        "role": "admin"
-      }
     }
-  }
+  },
+  "type": "object"
 }
