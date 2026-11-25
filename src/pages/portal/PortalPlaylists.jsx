@@ -121,6 +121,7 @@ export default function PortalPlaylists() {
         )}
       />
 
+      {restored && <DraftBanner restored onDiscard={discard} what="playlist changes" />}
       <div className="grid lg:grid-cols-[260px_1fr] gap-5">
         <div className="bw-card p-2 h-fit">
           {playlists.map((p) => (
@@ -146,6 +147,7 @@ export default function PortalPlaylists() {
                   <span className="text-[12px] text-bw-muted whitespace-nowrap">{(draft.items || []).length} items · {mmss(sec)}</span>
                   <Toggle checked={draft.is_active !== false} onChange={(v) => set({ is_active: v })} />
                 </div>
+                <FieldError msg={errors.name || errors.items} />
 
                 <div className="mt-4 space-y-2">
                   {(draft.items || []).length === 0 && <p className="text-[13px] text-bw-muted py-6 text-center">Add media or a menu from the right →</p>}
@@ -200,6 +202,7 @@ export default function PortalPlaylists() {
                   <Field label="From" hint="Empty = all day"><input type="time" className="bw-input" value={draft.start_time || ''} onChange={(e) => set({ start_time: e.target.value })} /></Field>
                   <Field label="Until"><input type="time" className="bw-input" value={draft.end_time || ''} onChange={(e) => set({ end_time: e.target.value })} /></Field>
                 </div>
+                <FieldError msg={errors.time} />
                 <div>
                   <p className="text-[12px] font-semibold text-bw-ink mb-2">Plays on</p>
                   <ScreenPicker screens={screens} venues={venues} value={draft.screen_ids || []} onChange={(v) => set({ screen_ids: v })} />
@@ -207,7 +210,7 @@ export default function PortalPlaylists() {
                 <div className="flex justify-end">
                   <button type="button" className="bw-btn bw-btn-ghost !text-rose-600" onClick={async () => {
                     if (!window.confirm(`Delete ${draft.name}?`)) return;
-                    await remove(activeId); setActiveId(null); toast.success('Playlist deleted');
+                    try { await remove(activeId); clear(); setActiveId(null); notifySuccess('Playlist deleted', 'Its screens fall back to their other playlists or menus.'); } catch (e) { notifyError(e, 'delete the playlist'); }
                   }}><Trash2 className="h-4 w-4" />Delete playlist</button>
                 </div>
               </div>
