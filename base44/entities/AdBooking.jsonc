@@ -1,5 +1,5 @@
 {
-  "description": "One advertiser booking on one venue screen. Created only by the marketplaceBook function.",
+  "description": "One advertiser booking on one venue screen. Created only by server functions.",
   "name": "AdBooking",
   "properties": {
     "advertiser_email": {
@@ -24,6 +24,12 @@
       "type": "string"
     },
     "checkout_url": {
+      "type": "string"
+    },
+    "client_id": {
+      "type": "string"
+    },
+    "client_name": {
       "type": "string"
     },
     "commission_rate_snapshot": {
@@ -59,6 +65,14 @@
     "creative_url": {
       "type": "string"
     },
+    "deal_type": {
+      "default": "marketplace",
+      "enum": [
+        "marketplace",
+        "direct"
+      ],
+      "type": "string"
+    },
     "description": {
       "maxLength": 1000,
       "type": "string"
@@ -74,8 +88,15 @@
     "invoice_id": {
       "type": "string"
     },
+    "last_played_at": {
+      "type": "string"
+    },
     "org_id": {
-      "description": "ID of the venue-side Organization that owns the screen (snapshot at booking time)",
+      "description": "Venue-side Organization that owns the screen",
+      "type": "string"
+    },
+    "payout_id": {
+      "description": "PayoutRequest that paid this out to the venue",
       "type": "string"
     },
     "platform_fee": {
