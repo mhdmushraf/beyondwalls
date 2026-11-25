@@ -22,6 +22,23 @@ export default async function (req) {
       player_version: String(body.player_version || "").slice(0, 40),
     });
 
+    // Marketplace ad plays counted on the device since the last heartbeat.
+    const plays = body.ad_plays && typeof body.ad_plays === "object" ? body.ad_plays : {};
+    const svc = base44.asServiceRole.entities;
+    const campaignAdds = {};
+    for (const [bookingId, raw] of Object.entries(plays).slice(0, 50)) {
+      const n = Math.min(Math.max(Math.floor(Number(raw) || 0), 0), 2000);
+      if (!n) continue;
+      const b = await svc.AdBooking.get(bookingId).catch(() => null);
+      if (!b || b.screen_id !== screen.id) continue; // only this screen's own bookings count
+      await svc.AdBooking.update(b.id, { plays: (Number(b.plays) || 0) + n, impressions: (Number(b.impressions) || 0) + n, last_played_at: new Date().toISOString() });
+      if (b.campaign_id) campaignAdds[b.campaign_id] = (campaignAdds[b.campaign_id] || 0) + n;
+    }
+    for (const [cid, n] of Object.entries(campaignAdds)) {
+      const c = await svc.Campaign.get(cid).catch(() => null);
+      if (c) await svc.Campaign.update(c.id, { total_plays: (Number(c.total_plays) || 0) + n, total_impressions: (Number(c.total_impressions) || 0) + n });
+    }
+
     return Response.json({ ok: true, server_time: new Date().toISOString() });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
