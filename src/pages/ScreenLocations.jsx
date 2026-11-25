@@ -4,7 +4,7 @@ import { Search, BadgeCheck, List, Map as MapIcon, MonitorPlay } from "lucide-re
 import { base44 } from "@/api/base44Client";
 import SEOHead from "@/components/SEOHead";
 import { SitePage } from "@/components/site/Site";
-import { Tag, Btn, inputCls, wrap, Select } from "@/components/site/inner";
+import { Tag, Btn, wrap, Select } from "@/components/site/inner";
 import ScreensMap from "@/components/portal/ScreensMap";
 
 const label = (t) => (t || "venue").replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
