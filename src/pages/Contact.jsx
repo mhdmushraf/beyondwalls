@@ -4,7 +4,7 @@ import { MessageCircle, Mail, MapPin, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import SEOHead from "@/components/SEOHead";
 import { SitePage, WHATSAPP, submitLead } from "@/components/site/Site";
-import { Tag, Btn, Field, inputCls, wrap } from "@/components/site/inner";
+import { Tag, Btn, Field, inputCls, wrap, Select } from "@/components/site/inner";
 
 const TYPES = [["venue", "I have screens"], ["advertiser", "I want to advertise"], ["agency", "Agency"]];
 
@@ -75,14 +75,14 @@ export default function Contact() {
                 <Field label="Email (optional)" error={err.email}><input className={inputCls} value={f.email} onChange={set("email")} placeholder="you@business.ae" type="email" autoComplete="email" /></Field>
                 <div className="grid grid-cols-2 gap-4">
                   <Field label={f.type === "venue" ? "Number of screens" : "Monthly budget"}>
-                    <select className={inputCls} value={f.screens} onChange={set("screens")}>
+                    <Select value={f.screens} onChange={set("screens")}>
                       {(f.type === "venue" ? ["1–5", "6–20", "21–50", "50+"] : ["Under AED 1k", "AED 1–5k", "AED 5–20k", "AED 20k+"]).map((o) => <option key={o}>{o}</option>)}
-                    </select>
+                    </Select>
                   </Field>
                   <Field label="Preferred time">
-                    <select className={inputCls} value={f.preferred_time} onChange={set("preferred_time")}>
+                    <Select value={f.preferred_time} onChange={set("preferred_time")}>
                       {["Weekday mornings", "Weekday afternoons", "Evenings", "Weekend"].map((o) => <option key={o}>{o}</option>)}
-                    </select>
+                    </Select>
                   </Field>
                 </div>
                 <Btn type="submit" disabled={busy} className="w-full mt-1">{busy ? "Sending…" : "Book my demo"}</Btn>

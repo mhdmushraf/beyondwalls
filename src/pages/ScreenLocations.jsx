@@ -4,7 +4,7 @@ import { Search, BadgeCheck, List, Map as MapIcon, MonitorPlay } from "lucide-re
 import { base44 } from "@/api/base44Client";
 import SEOHead from "@/components/SEOHead";
 import { SitePage } from "@/components/site/Site";
-import { Tag, Btn, inputCls, wrap } from "@/components/site/inner";
+import { Tag, Btn, inputCls, wrap, Select } from "@/components/site/inner";
 import ScreensMap from "@/components/portal/ScreensMap";
 
 const label = (t) => (t || "venue").replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -99,9 +99,9 @@ export default function ScreenLocations() {
               <Search className="w-4 h-4 text-[#8f86b8]" />
               <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search venues or areas…" className="flex-1 py-2.5 outline-none text-[15px] bg-transparent" />
             </label>
-            <select value={emirate} onChange={(e) => setEmirate(e.target.value)} className={`${inputCls} md:w-44`}><option value="all">All emirates</option>{emirates.map((e) => <option key={e}>{e}</option>)}</select>
-            <select value={type} onChange={(e) => setType(e.target.value)} className={`${inputCls} md:w-48`}><option value="all">All venue types</option>{types.map((t) => <option key={t} value={t}>{label(t)}</option>)}</select>
-            <select value={price} onChange={(e) => setPrice(e.target.value)} className={`${inputCls} md:w-48`}>{PRICE_BANDS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select>
+            <Select value={emirate} onChange={(e) => setEmirate(e.target.value)} className="md:w-44"><option value="all">All emirates</option>{emirates.map((e) => <option key={e}>{e}</option>)}</Select>
+            <Select value={type} onChange={(e) => setType(e.target.value)} className="md:w-48"><option value="all">All venue types</option>{types.map((t) => <option key={t} value={t}>{label(t)}</option>)}</Select>
+            <Select value={price} onChange={(e) => setPrice(e.target.value)} className="md:w-48">{PRICE_BANDS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</Select>
             <div className="lg:hidden grid grid-cols-2 bg-[#f6f5fa] rounded-xl p-1">
               {[["list", List, "List"], ["map", MapIcon, "Map"]].map(([k, Icon, l]) => (
                 <button key={k} onClick={() => setView(k)} className={`flex items-center justify-center gap-1.5 rounded-lg py-2 text-[13px] font-semibold ${view === k ? "bg-white text-[#5a2ded] shadow-sm" : "text-[#6b6787]"}`}><Icon className="w-4 h-4" />{l}</button>

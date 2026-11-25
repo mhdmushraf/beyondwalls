@@ -145,4 +145,14 @@ export function Field({ label, error, children }) {
   );
 }
 
-export const inputCls = "w-full bg-white border border-[#eceaf3] rounded-xl px-4 py-3 text-[15px] text-[#111027] placeholder:text-[#a39fb8] outline-none focus:border-[#6f3ffd] focus:ring-2 focus:ring-[#6f3ffd]/15";
+export const inputCls = "w-full h-[50px] bg-white border border-[#eceaf3] rounded-xl px-4 text-[15px] text-[#111027] placeholder:text-[#a39fb8] outline-none focus:border-[#6f3ffd] focus:ring-2 focus:ring-[#6f3ffd]/15";
+
+// Native select styled like the inputs, with our own chevron.
+export function Select({ className = "", children, ...props }) {
+  return (
+    <div className={`relative ${className}`}>
+      <select {...props} className={`${inputCls} appearance-none pr-10 cursor-pointer`}>{children}</select>
+      <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8f86b8]" />
+    </div>
+  );
+}

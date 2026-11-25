@@ -3,7 +3,7 @@ import { Cpu, Plug, Wifi, QrCode } from "lucide-react";
 import { toast } from "sonner";
 import SEOHead from "@/components/SEOHead";
 import { SitePage, submitLead } from "@/components/site/Site";
-import { PageHero, Block, FeatureGrid, CTABox, Btn, Field, inputCls } from "@/components/site/inner";
+import { PageHero, Block, FeatureGrid, CTABox, Btn, Field, inputCls, Select } from "@/components/site/inner";
 import { PRICING } from "@/components/site/sections";
 
 const SPECS = [
@@ -38,7 +38,7 @@ function OrderForm() {
       <Field label="Full name" error={err.name}><input className={inputCls} value={f.name} onChange={set("name")} placeholder="Your name" /></Field>
       <Field label="Mobile (WhatsApp)" error={err.phone}><input className={inputCls} value={f.phone} onChange={set("phone")} placeholder="+971 5X XXX XXXX" inputMode="tel" /></Field>
       <Field label="Business name"><input className={inputCls} value={f.company} onChange={set("company")} placeholder="e.g. Bean & Co." /></Field>
-      <Field label="How many players?"><select className={inputCls} value={f.screens} onChange={set("screens")}>{["1", "2", "3", "4", "5", "6–10", "10+"].map((n) => <option key={n}>{n}</option>)}</select></Field>
+      <Field label="How many players?"><Select value={f.screens} onChange={set("screens")}>{["1", "2", "3", "4", "5", "6–10", "10+"].map((n) => <option key={n}>{n}</option>)}</Select></Field>
       <div className="md:col-span-2 flex flex-col md:flex-row md:items-center gap-3 md:justify-between">
         <p className="text-[13px] text-[#6b6787]">AED {PRICING.bone} per player. We confirm delivery and payment on WhatsApp — nothing is charged now.</p>
         <Btn type="submit" disabled={busy}>{busy ? "Sending…" : `Order B.One · AED ${PRICING.bone}`}</Btn>
