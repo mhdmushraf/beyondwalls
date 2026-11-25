@@ -21,7 +21,11 @@ module.exports = {
   				cream: 'hsl(var(--bw-cream) / <alpha-value>)',
   				line: 'hsl(var(--bw-line) / <alpha-value>)',
   				ink: 'hsl(var(--bw-ink) / <alpha-value>)',
-  				muted: 'hsl(var(--bw-muted) / <alpha-value>)'
+  				muted: 'hsl(var(--bw-muted) / <alpha-value>)',
+  				violet: '#6F3FFD',
+  				lav: '#EFEAFF',
+  				green: '#16A34A',
+  				red: '#E5484D'
   			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
