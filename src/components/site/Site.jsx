@@ -196,7 +196,7 @@ export function SiteFooter() {
   return (
     <footer className="bg-[#0b0920]">
       <div className="max-w-[1440px] mx-auto px-6 lg:px-24 pt-16 lg:pt-[72px] pb-9 flex flex-col gap-12">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-[320px_repeat(5,1fr)] gap-10 lg:gap-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-[300px_repeat(4,minmax(0,1fr))_minmax(0,1.5fr)] gap-10 lg:gap-10">
           <div className="col-span-2 md:col-span-3 lg:col-span-1 flex flex-col gap-4">
             <Logo size="sm" />
             <p className="text-[14px] text-[#9a93c4] max-w-[300px]">Signage and screen advertising for venues across the UAE. A Linkzone Global company.</p>
