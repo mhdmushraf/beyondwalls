@@ -74,3 +74,55 @@ export async function nextInvoiceNumber(svc: any, prefix: string) {
   const seq = all.filter((i: any) => String(i.number || "").startsWith(`${prefix}-${ym}`)).length + 1;
   return { number: `${prefix}-${ym}-${String(seq).padStart(4, "0")}`, period: `${ym.slice(0, 4)}-${ym.slice(4)}` };
 }
+
+/** Marks an invoice paid and switches its campaign + bookings live. Safe to call twice. */
+export async function markInvoicePaid(svc: any, invoice: any, ref: string, method = "bank_transfer") {
+  if (!invoice || invoice.status === "paid") return { already: true };
+  await svc.Invoice.update(invoice.id, { status: "paid", paid_at: new Date().toISOString(), payment_ref: String(ref || "").slice(0, 80), payment_method: method });
+  if (invoice.campaign_id) {
+    const bookings = list(await svc.AdBooking.filter({ campaign_id: invoice.campaign_id }, { limit: 200 }));
+    for (const b of bookings) if (b.status === "pending_payment") await svc.AdBooking.update(b.id, { status: "active" });
+    await svc.Campaign.update(invoice.campaign_id, { payment_status: "paid", status: "active" });
+  }
+  return { already: false };
+}
+
+/* ---------------------------------- Paymob ---------------------------------- */
+
+export function paymobConfig() {
+  const env = (k: string) => (Deno.env.get(k) || "").trim();
+  return {
+    base: env("PAYMOB_BASE_URL") || "https://uae.paymob.com",
+    secretKey: env("PAYMOB_SECRET_KEY"),
+    publicKey: env("PAYMOB_PUBLIC_KEY"),
+    hmacSecret: env("PAYMOB_HMAC_SECRET"),
+    integrationIds: env("PAYMOB_INTEGRATION_IDS").split(",").map((x) => x.trim()).filter(Boolean).map((x) => (/^\d+$/.test(x) ? Number(x) : x)),
+  };
+}
+
+const HMAC_FIELDS = [
+  "amount_cents", "created_at", "currency", "error_occured", "has_parent_transaction", "id", "integration_id",
+  "is_3d_secure", "is_auth", "is_capture", "is_refunded", "is_standalone_payment", "is_voided", "order.id",
+  "owner", "pending", "source_data.pan", "source_data.sub_type", "source_data.type", "success",
+];
+
+async function hmacHex(secret: string, text: string) {
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-512" }, false, ["sign"]);
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(text));
+  return [...new Uint8Array(sig)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+/** obj = nested POST callback object, or flat GET params (order.id → order, source_data.pan → source_data.pan). */
+export async function paymobHmacOk(secret: string, obj: any, received: string, flat = false) {
+  if (!secret || !received) return false;
+  const get = (path: string) => {
+    if (flat) {
+      if (path === "order.id") return obj.order ?? obj.order_id;
+      return obj[path];
+    }
+    return path.split(".").reduce((o, k) => (o == null ? o : o[k]), obj);
+  };
+  const text = HMAC_FIELDS.map((f) => { const v = get(f); return v === null || v === undefined ? "" : String(v); }).join("");
+  const mine = await hmacHex(secret, text);
+  return mine.toLowerCase() === String(received).toLowerCase();
+}
