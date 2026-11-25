@@ -31,7 +31,7 @@ export default function PortalPlaylists() {
   useEffect(() => {
     const p = playlists.find((x) => x.id === activeId);
     setDraft(p ? JSON.parse(JSON.stringify(p)) : null);
-  }, [activeId, playlists.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [activeId, playlists.length]);
 
   const set = (patch) => setDraft((d) => ({ ...d, ...patch }));
   const setItem = (id, patch) => setDraft((d) => ({ ...d, items: d.items.map((i) => (i.id === id ? { ...i, ...patch } : i)) }));

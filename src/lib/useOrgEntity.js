@@ -24,7 +24,6 @@ export function useOrgEntity(entityName, { sort = '-created_date', limit = 200, 
       setLoading(false);
     })().catch(() => { if (alive) setLoading(false); });
     return () => { alive = false; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entityName, orgId, tick, sort, limit, queryKey]);
 
   useEffect(() => {

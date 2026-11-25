@@ -44,7 +44,7 @@ export default function PortalMenus() {
     const b = boards.find((x) => x.id === activeId);
     setDraft(b ? JSON.parse(JSON.stringify(b)) : null);
     setEditingId(b?.items?.[0]?.id || null);
-  }, [activeId, boards.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [activeId, boards.length]);
 
   const dirty = useMemo(() => {
     const b = boards.find((x) => x.id === activeId);
