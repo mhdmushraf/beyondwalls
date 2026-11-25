@@ -7,7 +7,7 @@ import { usePortal } from '@/lib/PortalContext';
 import { uploadPublic, EMIRATES, VENUE_TYPES } from '@/lib/portalData';
 import { PageHeader, EmptyState, Field } from '@/components/portal/ui';
 import { TilesSkeleton } from '@/components/portal/Skeletons';
-import { useDraft, isOnline, notifyError, notifySuccess, friendlyError } from '@/lib/states';
+import { useDraft, isOnline, notifyError, notifySuccess } from '@/lib/states';
 import { DraftBanner, FieldError, ErrorState, SlowHint, ProgressStrip } from '@/components/states/StateViews';
 
 const MAX_MB = 200;
@@ -18,7 +18,7 @@ const BLANK = { name: '', goal: 'brand_awareness', start_date: '', weeks: 2, scr
 
 export default function PortalMarketplace() {
   const navigate = useNavigate();
-  const { org, user, preview } = usePortal();
+  const { org, preview } = usePortal();
   const [form, setForm] = useState(() => ({ ...BLANK, start_date: todayDubai() }));
   const { restored, discard, clear } = useDraft(org?.id ? `book:${org.id}` : null, form, setForm, { enabled: !!org?.id });
   const [data, setData] = useState(null);
@@ -266,7 +266,6 @@ export default function PortalMarketplace() {
           </div>
         </div>
       )}
-      {user && !org && <p className="mt-4 text-[12px] text-bw-muted">{friendlyError(null, 'book').title}</p>}
     </div>
   );
 }
