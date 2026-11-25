@@ -8,6 +8,10 @@ import { timeAgo } from '@/lib/portalData';
 import { PageHeader, Field, ScreenPicker } from '@/components/portal/ui';
 import { ScaledCanvas } from '@/components/player/MenuBoardView';
 import UrgentOverlay from '@/components/player/UrgentOverlay';
+import { useDraft, validate, rules, notifyError, notifySuccess } from '@/lib/states';
+import { DraftBanner, FieldError } from '@/components/states/StateViews';
+
+const DEFAULT_FORM = { text_en: 'Kitchen closed', text_ar: 'المطبخ مغلق', subtext: '', style: 'urgent', minutes: 60, sound: 'chime_once' };
 
 const QUICK = [
   ['Kitchen closed', 'المطبخ مغلق'],
@@ -31,7 +35,9 @@ export default function PortalUrgent() {
   const { user } = useAuth();
   const { screens, venues } = usePortal();
   const { items, create, update } = useOrgEntity('UrgentMessage', { limit: 30 });
-  const [form, setForm] = useState({ text_en: 'Kitchen closed', text_ar: 'المطبخ مغلق', subtext: '', style: 'urgent', minutes: 60, sound: 'chime_once' });
+  const [form, setForm] = useState(DEFAULT_FORM);
+  const [errors, setErrors] = useState({});
+  const { restored, discard, clear } = useDraft('urgent', form, setForm, { saved: DEFAULT_FORM });
   const [targets, setTargets] = useState(() => screens.map((s) => s.id));
   const [busy, setBusy] = useState(false);
   const set = (p) => setForm((f) => ({ ...f, ...p }));
@@ -41,8 +47,10 @@ export default function PortalUrgent() {
   }, [screens]);
 
   const send = async () => {
-    if (!form.text_en.trim()) { toast.error('Write a message'); return; }
-    if (!targets.length) { toast.error('Pick at least one screen'); return; }
+    const errs = validate({ text_en: [rules.required('The English message'), rules.max('The English message', 60)], subtext: [rules.max('The small line', 80)] }, form);
+    if (!targets.length) errs.targets = 'Pick at least one screen to show it on.';
+    setErrors(errs);
+    if (Object.keys(errs).length) { toast.error('Fix the highlighted fields first', { description: Object.values(errs)[0] }); return; }
     setBusy(true);
     try {
       const now = new Date();
@@ -51,8 +59,9 @@ export default function PortalUrgent() {
         screen_ids: targets, starts_at: now.toISOString(), ends_at: new Date(now.getTime() + form.minutes * 60000).toISOString(),
         sound: form.sound, status: 'live', sent_by_name: user?.full_name || user?.email || '',
       });
-      toast.success(`Showing on ${targets.length} screens within a minute`);
-    } catch (e) { toast.error('Could not send'); } finally { setBusy(false); }
+      clear();
+      notifySuccess(`Showing on ${targets.length} screens within a minute`, `It ends on its own after ${DURATIONS.find(([v]) => v === form.minutes)?.[1] || `${form.minutes} min`}. You can end it early below.`);
+    } catch (e) { notifyError(e, 'send the urgent message', send); } finally { setBusy(false); }
   };
 
   const live = items.filter(isLive);
@@ -75,7 +84,7 @@ export default function PortalUrgent() {
             <div key={m.id} className="flex items-center gap-3 rounded-2xl bg-rose-50 border border-rose-200 px-4 py-3">
               <span className="relative flex h-2.5 w-2.5"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-400 opacity-75" /><span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-rose-500" /></span>
               <p className="flex-1 text-[13px] font-semibold text-rose-700">LIVE · {m.text_en} · {(m.screen_ids || []).length} screens · ends {new Date(m.ends_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-              <button type="button" className="bw-btn bw-btn-ghost !py-1.5" onClick={async () => { await update(m.id, { status: 'ended', ends_at: new Date().toISOString() }); toast.success('Ended'); }}>
+              <button type="button" className="bw-btn bw-btn-ghost !py-1.5" onClick={async () => { try { await update(m.id, { status: 'ended', ends_at: new Date().toISOString() }); notifySuccess('Message ended', 'Screens go back to normal within a minute.'); } catch (e) { notifyError(e, 'end the message'); } }}>
                 <Square className="h-3.5 w-3.5" />End now
               </button>
             </div>
@@ -83,6 +92,7 @@ export default function PortalUrgent() {
         </div>
       )}
 
+      {restored && <DraftBanner restored onDiscard={discard} what="urgent message" />}
       <div className="grid xl:grid-cols-[1fr_520px] gap-5">
         <div className="bw-card p-5 space-y-4">
           <div>
@@ -95,7 +105,7 @@ export default function PortalUrgent() {
             </div>
           </div>
           <div className="grid md:grid-cols-2 gap-3">
-            <Field label="Message (English)"><input className="bw-input" maxLength={60} value={form.text_en} onChange={(e) => set({ text_en: e.target.value })} /></Field>
+            <Field label="Message (English)"><input className="bw-input" maxLength={60} value={form.text_en} onChange={(e) => set({ text_en: e.target.value })} /><FieldError msg={errors.text_en} /></Field>
             <Field label="Message (Arabic)"><input className="bw-input bw-ar text-right" dir="rtl" maxLength={60} value={form.text_ar} onChange={(e) => set({ text_ar: e.target.value })} /></Field>
           </div>
           <Field label="Small line (optional)"><input className="bw-input" maxLength={80} placeholder="Sorry for the wait — drinks & bakery still open" value={form.subtext} onChange={(e) => set({ subtext: e.target.value })} /></Field>
@@ -114,6 +124,7 @@ export default function PortalUrgent() {
           <div>
             <p className="text-[13px] font-bold text-bw-navy mb-2">Show on</p>
             <ScreenPicker screens={screens} venues={venues} value={targets} onChange={setTargets} />
+            <FieldError msg={errors.targets} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Field label="Show for">
