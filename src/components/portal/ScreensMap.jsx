@@ -14,7 +14,7 @@ function pinEl(s, on, full) {
 }
 
 /** Google map of bookable screens, with an area search. Falls back to OpenStreetMap if Google won't load. */
-export default function ScreensMap({ screens, selected, onToggle, pickLabel = 'Add to booking', heightClass = 'h-[520px]' }) {
+export default function ScreensMap({ screens, selected, onToggle, pickLabel = 'Add to booking', heightClass = 'h-[520px]', bare = false, searchClass = '' }) {
   const box = useRef(null);
   const api = useRef(null);
   const map = useRef(null);
@@ -84,7 +84,25 @@ export default function ScreensMap({ screens, selected, onToggle, pickLabel = 'A
     } catch (err) { setSearchErr(`We couldn't find "${q.trim()}". Try an area name, like Downtown Dubai.`); }
   };
 
-  if (failed) return <ScreensMapOSM screens={screens} selected={selected} onToggle={onToggle} />;
+  if (failed) return <ScreensMapOSM screens={screens} selected={selected} onToggle={onToggle} heightClass={heightClass} bare={bare} />;
+
+  // Edge-to-edge map for full-screen layouts: no card, area search floats on the map.
+  if (bare) {
+    return (
+      <div className="relative h-full w-full">
+        <div ref={box} className="absolute inset-0" />
+        {!ready && <div className="absolute inset-0 bw-shimmer" />}
+        <form onSubmit={search} className={`absolute z-10 flex gap-2 ${searchClass || 'top-4 right-4 w-[min(360px,calc(100%-2rem))]'}`}>
+          <div className="relative flex-1">
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8f86b8]" />
+            <input className="w-full h-11 rounded-xl bg-white/95 backdrop-blur border border-white shadow-[0_8px_24px_rgba(13,10,31,0.18)] ps-9 pe-3 text-[14px] outline-none focus:ring-2 focus:ring-[#6f3ffd]/30" placeholder="Jump to an area — JLT, Al Barsha…" value={q} onChange={(e) => setQ(e.target.value)} />
+          </div>
+          <button type="submit" disabled={!ready} className="h-11 px-4 rounded-xl text-white text-[14px] font-semibold shadow-[0_8px_24px_rgba(90,45,237,0.35)]" style={{ backgroundImage: 'linear-gradient(135deg,#6f3ffd,#5a2ded)' }}>Go</button>
+        </form>
+        {searchErr && <p className="absolute z-10 top-[68px] right-4 rounded-lg bg-white px-3 py-2 text-[12px] text-rose-600 shadow">{searchErr}</p>}
+      </div>
+    );
+  }
 
   const missing = screens.filter((s) => !(s.venue.latitude && s.venue.longitude)).length;
   return (

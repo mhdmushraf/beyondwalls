@@ -22,13 +22,13 @@ function Fit({ points }) {
 }
 
 /** Bookable screens on an OpenStreetMap map (no API key needed). Venues without a map pin are listed under it. */
-export default function ScreensMap({ screens, selected, onToggle }) {
+export default function ScreensMap({ screens, selected, onToggle, heightClass = 'h-[520px]', bare = false }) {
   const located = screens.filter((s) => s.venue.latitude && s.venue.longitude);
   const missing = screens.length - located.length;
   const points = located.map((s) => [s.venue.latitude, s.venue.longitude]);
   return (
-    <div>
-      <div className="bw-card overflow-hidden h-[520px]">
+    <div className={bare ? 'h-full' : ''}>
+      <div className={bare ? 'h-full w-full' : `bw-card overflow-hidden ${heightClass}`}>
         <MapContainer center={[25.2048, 55.2708]} zoom={10} className="h-full w-full" scrollWheelZoom>
           <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           <Fit points={points} />
