@@ -42,6 +42,16 @@ import PortalUrgent from './pages/portal/PortalUrgent';
 import PortalChat from './pages/portal/PortalChat';
 import PortalQR from './pages/portal/PortalQR';
 import QRRedirect from './pages/QRRedirect';
+import PortalBilling from './pages/portal/PortalBilling';
+import PortalSupport from './pages/portal/PortalSupport';
+import AdminLayout from './components/admin/AdminLayout';
+import AdminOverview from './pages/admin/AdminOverview';
+import AdminScreenWall from './pages/admin/AdminScreenWall';
+import AdminInstalls from './pages/admin/AdminInstalls';
+import AdminSupport from './pages/admin/AdminSupport';
+import AdminLeads from './pages/admin/AdminLeads';
+import AdminBilling from './pages/admin/AdminBilling';
+import AdminSettings from './pages/admin/AdminSettings';
 import { I18nProvider } from '@/lib/i18n';
 
 // Lazy load pages for code splitting
@@ -246,7 +256,16 @@ const AuthenticatedApp = () => {
          <Route path="/player" element={<Player />} />
          <Route path="/q/:id" element={<QRRedirect />} />
          <Route path="/onboarding" element={<Onboarding />} />
-         <Route path="/admin" element={<AdminApprovals />} />
+         <Route path="/admin" element={<AdminLayout />}>
+           <Route index element={<AdminOverview />} />
+           <Route path="approvals" element={<AdminApprovals />} />
+           <Route path="screens" element={<AdminScreenWall />} />
+           <Route path="installs" element={<AdminInstalls />} />
+           <Route path="support" element={<AdminSupport />} />
+           <Route path="leads" element={<AdminLeads />} />
+           <Route path="billing" element={<AdminBilling />} />
+           <Route path="settings" element={<AdminSettings />} />
+         </Route>
          <Route path="/app" element={<PortalLayout />}>
            <Route index element={<PortalDashboard />} />
            <Route path="venues" element={<PortalVenues />} />
@@ -258,6 +277,8 @@ const AuthenticatedApp = () => {
            <Route path="urgent" element={<PortalUrgent />} />
            <Route path="chat" element={<PortalChat />} />
            <Route path="qr" element={<PortalQR />} />
+           <Route path="billing" element={<PortalBilling />} />
+           <Route path="support" element={<PortalSupport />} />
          </Route>
          <Route path="*" element={<PageNotFound />} />
          </Routes>
