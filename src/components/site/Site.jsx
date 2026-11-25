@@ -181,7 +181,7 @@ function FooterNewsletter() {
     <form onSubmit={submit} className="bg-white/5 border border-white/10 rounded-[20px] px-6 md:px-7 py-6 flex flex-col md:flex-row md:items-center gap-4 md:gap-5">
       <div className="flex-1 min-w-0">
         <p className="font-bold text-[18px] text-white">Get launch updates</p>
-        <p className="text-[13px] text-[#9a93c4]">hello@linkzoneglobal.com · +971 55 614 0067 · in5 Tech, Dubai Internet City</p>
+        <p className="text-[13px] text-[#9a93c4]">beyondwalls@linkzoneglobal.com · +971 55 614 0067 · in5 Tech, Dubai Internet City</p>
       </div>
       <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your email" aria-label="Email"
         className="md:w-[280px] bg-white/[0.06] border border-white/[0.12] rounded-[10px] px-4 py-3 text-[14px] text-white placeholder:text-[#9a93c4] outline-none focus:border-[#6f3ffd]" />

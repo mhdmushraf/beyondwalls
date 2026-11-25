@@ -62,7 +62,7 @@ export default function Connect() {
       
       // Send notification email
       await base44.integrations.Core.SendEmail({
-        to: "hello@linkzoneglobal.com",
+        to: "beyondwalls@linkzoneglobal.com",
         subject: `New Partner Application: ${formData.company_name}`,
         body: `
 New partner application received:

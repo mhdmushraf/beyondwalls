@@ -47,7 +47,7 @@ export default function PremiumWaitlistModal({ open, onClose }) {
       });
 
       await base44.integrations.Core.SendEmail({
-        to: "hello@linkzoneglobal.com",
+        to: "beyondwalls@linkzoneglobal.com",
         subject: `🌟 New Premium AR Waitlist Signup: ${formData.name}`,
         body: `
 New Premium AR Waitlist Signup:

@@ -703,7 +703,7 @@ export default function HowItWorks() {
                 Contact Support
               </Button>
             </Link>
-            <a href="mailto:hello@linkzoneglobal.com">
+            <a href="mailto:beyondwalls@linkzoneglobal.com">
               <Button variant="outline" size="lg" className="border-2">
                 Email Us
               </Button>

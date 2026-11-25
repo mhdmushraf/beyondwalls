@@ -18,7 +18,7 @@ export default function Home() {
         description={`Run menus, prices and promos on any TV, then sell spare slots to advertisers and keep ${PRICING.venueShare}%. Advertise on venue screens across the UAE from AED ${PRICING.advertiseFrom}/week.`}
         canonical="https://beyondwalls.ae"
         structuredData={[
-          { "@context": "https://schema.org", "@type": "Organization", name: "BeyondWalls", legalName: "Linkzone Global FZ-LLC", url: "https://beyondwalls.ae", email: "hello@linkzoneglobal.com", telephone: "+971556140067", address: { "@type": "PostalAddress", streetAddress: "in5 Tech, Dubai Internet City", addressLocality: "Dubai", addressCountry: "AE" } },
+          { "@context": "https://schema.org", "@type": "Organization", name: "BeyondWalls", legalName: "Linkzone Global FZ-LLC", url: "https://beyondwalls.ae", email: "beyondwalls@linkzoneglobal.com", telephone: "+971556140067", address: { "@type": "PostalAddress", streetAddress: "in5 Tech, Dubai Internet City", addressLocality: "Dubai", addressCountry: "AE" } },
           faqSchema(),
         ]}
       />

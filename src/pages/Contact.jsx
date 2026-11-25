@@ -30,7 +30,7 @@ export default function Contact() {
 
   const contacts = [
     [MessageCircle, "WhatsApp", "Fastest reply · 9am–9pm", WHATSAPP],
-    [Mail, "Email", "hello@linkzoneglobal.com", "mailto:hello@linkzoneglobal.com"],
+    [Mail, "Email", "beyondwalls@linkzoneglobal.com", "mailto:beyondwalls@linkzoneglobal.com"],
     [MapPin, "Office", "in5, Dubai Internet City", "https://maps.google.com/?q=in5+Dubai+Internet+City"],
   ];
 

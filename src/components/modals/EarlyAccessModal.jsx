@@ -47,7 +47,7 @@ export default function EarlyAccessModal({ open, onClose }) {
       });
 
       await base44.integrations.Core.SendEmail({
-        to: "hello@linkzoneglobal.com",
+        to: "beyondwalls@linkzoneglobal.com",
         subject: `🚀 AR Early Access Request: ${formData.name}`,
         body: `
 New AR Early Access Request:
