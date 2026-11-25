@@ -18,7 +18,7 @@ export default function AdminOverview() {
   if (orgs.loading || screens.loading) return <div><SlowHint loading forced={orgs.preview === 'slow'} /><StatCardsSkeleton /></div>;
   if ((orgs.error && !orgs.items.length) || (screens.error && !screens.items.length)) return <ErrorState error={orgs.error || screens.error} action="load the overview" onRetry={() => { orgs.reload(); screens.reload(); }} />;
 
-  const pending = orgs.items.filter((o) => o.status === 'pending').length + venues.items.filter((v) => v.approval_status === 'pending').length + orgs.items.filter((o) => o.advertiser_status === 'requested').length;
+  const pending = orgs.items.filter((o) => (o.status || 'pending') === 'pending').length + venues.items.filter((v) => v.approval_status === 'pending').length + orgs.items.filter((o) => o.advertiser_status === 'requested').length;
   const paired = screens.items.filter((s) => s.paired_device_id);
   const online = paired.filter((s) => s.is_online).length;
   const offline = paired.filter((s) => !s.is_online);

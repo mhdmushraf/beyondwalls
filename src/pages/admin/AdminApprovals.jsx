@@ -200,7 +200,7 @@ export default function AdminApprovals() {
     );
   }
 
-  const pendingBusinesses = orgs.filter((org) => org.status === 'pending');
+  const pendingBusinesses = orgs.filter((org) => (org.status || 'pending') === 'pending');
   const advertiserRequests = orgs.filter((org) => org.advertiser_status === 'requested');
   const pendingVenues = venues.filter((venue) => venue.approval_status === 'pending');
 
