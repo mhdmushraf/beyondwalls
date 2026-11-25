@@ -58,13 +58,19 @@ export default function AddScreenWizard({ open, onOpenChange, venue: fixedVenue 
   });
 
   const pair = async () => {
+    if (!navigator.onLine) { setError("You're offline. Pairing needs internet — your code is kept, tap Pair again when you reconnect."); return; }
+    if (code.trim().length !== 6) { setError(`The TV code has 6 characters. You typed ${code.trim().length}.`); return; }
     setBusy(true); setError('');
     try {
       const res = await base44.functions.invoke('claimPlayerCode', { ...payload(), code: code.trim().toUpperCase() });
       if (res.data?.screen) { setScreen(res.data.screen); reload(); setStep(4); } else setError(res.data?.error || 'That code could not be paired.');
-    } catch (e) { setError(e?.response?.data?.error || 'That code could not be paired. Check the letters on the TV.'); } finally { setBusy(false); }
+    } catch (e) {
+      const s = e?.response?.status;
+      setError(e?.response?.data?.error || (s === 404 ? "We couldn't find that code. Check the letters on the TV — codes refresh every few minutes." : s >= 500 ? 'Our server had a problem. Wait a few seconds and tap Pair again.' : 'That code could not be paired. Check the letters on the TV.'));
+    } finally { setBusy(false); }
   };
   const generate = async () => {
+    if (!navigator.onLine) { setError("You're offline. Reconnect, then try again."); return; }
     setBusy(true); setError('');
     try {
       const res = await base44.functions.invoke('createScreenCode', payload());
