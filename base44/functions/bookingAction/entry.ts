@@ -1,6 +1,7 @@
 import { createClientFromRequest } from "npm:@base44/sdk@0.8.54";
 import { getSessionUser, logActivity } from "../../shared/portalAuth.ts";
 import { list, markInvoicePaid, r2 } from "../../shared/marketplace.ts";
+import { notifyUsers } from "../../shared/notify.ts";
 
 /**
  * Marketplace actions.
@@ -61,6 +62,9 @@ export default async function (req: Request) {
         }
       }
       await logActivity(base44, { orgId: b.org_id, memberIds: b.venue_member_user_ids, userEmail: user.email, action, targetType: "AdBooking", targetId: b.id, details: body.reason || "" });
+      await notifyUsers(svc, b.advertiser_member_user_ids || [], action === "approve_creative"
+        ? { type: "ad_approved", title: `${b.venue_name} approved your ad`, message: `"${b.campaign_name}" ${b.status === "active" ? "is now playing" : "will play once paid, from " + b.start_date}.`, link: "/app/campaigns", reference_id: b.campaign_id, org_id: b.advertiser_org_id }
+        : { type: "ad_rejected", title: `${b.venue_name} rejected your ad`, message: `Reason: ${String(body.reason || "").slice(0, 160)}. ${b.status === "pending_payment" ? "It's been removed from your invoice." : "We'll refund or move this booking."}`, link: "/app/campaigns", reference_id: b.campaign_id, org_id: b.advertiser_org_id });
       return Response.json({ ok: true, booking: await svc.AdBooking.get(b.id) });
     }
 

@@ -1,3 +1,5 @@
+import { notifyUsers } from "./notify.ts";
+
 /**
  * Shared marketplace rules: which screens can be booked, prices, availability.
  * Prices are always computed on the server — never trust a price from the browser.
@@ -83,7 +85,19 @@ export async function markInvoicePaid(svc: any, invoice: any, ref: string, metho
     const bookings = list(await svc.AdBooking.filter({ campaign_id: invoice.campaign_id }, { limit: 200 }));
     for (const b of bookings) if (b.status === "pending_payment") await svc.AdBooking.update(b.id, { status: "active" });
     await svc.Campaign.update(invoice.campaign_id, { payment_status: "paid", status: "active" });
+    const venueMembers = [...new Set(bookings.flatMap((b: any) => b.venue_member_user_ids || []))];
+    const pendingReview = bookings.some((b: any) => b.creative_status === "pending_review");
+    await notifyUsers(svc, venueMembers as string[], {
+      type: "new_booking", title: "New paid ad booking",
+      message: `${bookings[0]?.advertiser_org_name || "An advertiser"} paid for ads on your screens.${pendingReview ? " Review the ad so it can start." : ""}`,
+      link: "/app/ad-requests", reference_id: invoice.campaign_id,
+    });
   }
+  await notifyUsers(svc, invoice.org_member_user_ids || [], {
+    type: "payment_received", title: `Payment received · ${invoice.number}`,
+    message: `Thanks — AED ${invoice.total} is paid. Your ads go live on their start date once venues approve them.`,
+    link: "/app/campaigns", reference_id: invoice.id, org_id: invoice.org_id,
+  });
   return { already: false };
 }
 

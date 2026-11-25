@@ -1,5 +1,6 @@
 import { createClientFromRequest } from "npm:@base44/sdk@0.8.54";
 import { getSessionUser, logActivity } from "../../shared/portalAuth.ts";
+import { notifyUsers } from "../../shared/notify.ts";
 import {
   addDays, dubaiToday, holdsSlot, isBookable, list, loadSettings, nextInvoiceNumber, overlaps, r2, screenPrice, slotsFor,
 } from "../../shared/marketplace.ts";
@@ -117,6 +118,17 @@ export default async function (req: Request) {
       }));
     }
     await svc.Campaign.update(campaign.id, { invoice_id: invoice.id });
+    const byVenueOrg = new Map<string, any[]>();
+    bookings.forEach((b: any) => { if (!byVenueOrg.has(b.org_id)) byVenueOrg.set(b.org_id, []); byVenueOrg.get(b.org_id)!.push(b); });
+    for (const [vOrg, list2] of byVenueOrg) {
+      const review = list2.filter((b: any) => b.creative_status === "pending_review").length;
+      await notifyUsers(svc, list2[0].venue_member_user_ids || [], {
+        type: review ? "ad_review" : "new_booking", org_id: vOrg,
+        title: review ? `New ad to review · ${org.name}` : `New booking · ${org.name}`,
+        message: `${org.name} booked ${list2.length} of your screens for ${weeks} wk from ${start}.${review ? " Approve or reject the ad." : ""} It starts once they pay.`,
+        link: "/app/ad-requests", reference_id: campaign.id,
+      });
+    }
 
     await logActivity(base44, {
       orgId: org.id, memberIds: members, userEmail: user.email, action: "campaign_booked",
