@@ -5,6 +5,9 @@ import { useAuth } from '@/lib/AuthContext';
 import { useOrgEntity } from '@/lib/useOrgEntity';
 import { uploadPublic } from '@/lib/portalData';
 import { PageHeader, EmptyState } from '@/components/portal/ui';
+import { useNavigate } from 'react-router-dom';
+import { isOnline, notifyError, notifySuccess } from '@/lib/states';
+import { ErrorState, ProgressStrip, SlowHint } from '@/components/states/StateViews';
 import { TilesSkeleton } from '@/components/portal/Skeletons';
 
 const MAX_MB = 200;
@@ -29,17 +32,29 @@ function readMeta(file) {
 
 export default function PortalMedia() {
   const { user } = useAuth();
-  const { items, loading, create, remove } = useOrgEntity('MediaAsset', { limit: 300 });
+  const { items, loading, error, reload, create, remove, preview } = useOrgEntity('MediaAsset', { limit: 300 });
+  const navigate = useNavigate();
+  const [progress, setProgress] = useState({ done: 0, total: 0, name: '' });
   const [filter, setFilter] = useState('all');
   const [q, setQ] = useState('');
   const [busy, setBusy] = useState(0);
   const input = useRef(null);
 
   const onFiles = async (files) => {
-    const list = Array.from(files || []);
-    for (const file of list) {
-      if (!/^(image|video)\//.test(file.type)) { toast.error(`${file.name}: only images and videos`); continue; }
-      if (file.size > MAX_MB * 1024 * 1024) { toast.error(`${file.name}: max ${MAX_MB} MB`); continue; }
+    if (!isOnline()) {
+      toast.error("You're offline — uploads need internet", { description: 'Your files are still on your device. Try again when you are back online.' });
+      return;
+    }
+    const list = Array.from(files || []).filter((file) => {
+      if (!/^(image|video)\//.test(file.type)) { toast.error(`${file.name} isn't an image or video`, { description: 'Use JPG, PNG, WebP, MP4 or MOV.' }); return false; }
+      if (file.size > MAX_MB * 1024 * 1024) { toast.error(`${file.name} is ${Math.round(file.size / 1048576)} MB`, { description: `The limit is ${MAX_MB} MB — compress the video first.` }); return false; }
+      return true;
+    });
+    if (!list.length) return;
+    let ok = 0;
+    setProgress({ done: 0, total: list.length, name: list[0].name });
+    for (const [i, file] of list.entries()) {
+      setProgress({ done: i, total: list.length, name: file.name });
       setBusy((b) => b + 1);
       try {
         const meta = await readMeta(file);
@@ -52,13 +67,15 @@ export default function PortalMedia() {
           owner_email: user?.email || '',
           ...meta,
         });
-        toast.success(`${file.name} uploaded`);
+        ok += 1;
       } catch (e) {
-        toast.error(`${file.name}: upload failed`);
+        notifyError(e, `upload ${file.name}`, () => onFiles([file]));
       } finally {
         setBusy((b) => b - 1);
       }
     }
+    setProgress({ done: 0, total: 0, name: '' });
+    if (ok) notifySuccess(`${ok} ${ok === 1 ? 'file' : 'files'} uploaded`, 'Add them to a playlist to show them on your screens.', { label: 'Open playlists', onClick: () => navigate('/app/playlists') });
   };
 
   const shown = items.filter((a) => (filter === 'all' || a.file_type === filter) && (!q || a.name?.toLowerCase().includes(q.toLowerCase())));
@@ -92,13 +109,19 @@ export default function PortalMedia() {
         </div>
       </div>
 
+      <SlowHint loading={loading} forced={preview === 'slow'} />
+      {progress.total > 0 && <ProgressStrip done={progress.done} total={progress.total} label={`Uploading ${progress.name} ·`} />}
       <div
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => { e.preventDefault(); onFiles(e.dataTransfer.files); }}
       >
-        {loading ? <TilesSkeleton count={6} /> : shown.length === 0 ? (
-          <EmptyState icon={ImageIcon} title={items.length ? 'Nothing matches' : 'Drop images or videos here'}
-            body="They'll be ready to add to playlists and menus."
+        {loading ? <TilesSkeleton count={6} /> : error ? <ErrorState error={error} action="load your media" onRetry={reload} /> : shown.length === 0 && items.length > 0 ? (
+          <EmptyState icon={Search} title={q ? `No media called "${q}"` : `No ${filter === 'video' ? 'videos' : 'images'} yet`}
+            body={q ? 'Check the spelling, or search a shorter word.' : 'Upload some, or look in All.'}
+            action={<div className="flex gap-2">{q && <button type="button" className="bw-btn bw-btn-ghost" onClick={() => setQ('')}>Clear search</button>}{filter !== 'all' && <button type="button" className="bw-btn bw-btn-ghost" onClick={() => setFilter('all')}>Show all</button>}</div>} />
+        ) : shown.length === 0 ? (
+          <EmptyState icon={ImageIcon} title="Your media library is empty"
+            body="Upload photos and videos of your products, offers and venue — they'll be ready for playlists and menus. Drag files here or tap Upload."
             action={<button type="button" className="bw-btn bw-btn-primary" onClick={() => input.current?.click()}><Upload className="h-4 w-4" />Upload</button>} />
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -113,7 +136,10 @@ export default function PortalMedia() {
                     {a.file_type === 'video' ? `${a.duration_seconds || '?'} s` : 'Image'}
                   </span>
                   <button type="button" title="Delete"
-                    onClick={async () => { if (window.confirm(`Delete ${a.name}?`)) { await remove(a.id); toast.success('Deleted'); } }}
+                    onClick={async () => {
+                      if (!window.confirm(`Delete ${a.name}? Screens playing it will skip it.`)) return;
+                      try { await remove(a.id); notifySuccess(`${a.name} deleted`, 'Playlists using it will skip it from now on.'); } catch (e) { notifyError(e, `delete ${a.name}`); }
+                    }}
                     className="!min-h-0 !min-w-0 absolute top-2 end-2 h-8 w-8 rounded-lg bg-white/90 text-rose-600 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                     <Trash2 className="h-4 w-4" />
                   </button>
