@@ -10,6 +10,8 @@ import { ListSkeleton } from '@/components/portal/Skeletons';
 import { notifyError, notifySuccess } from '@/lib/states';
 import { ErrorState, SlowHint, FieldError } from '@/components/states/StateViews';
 import PayoutPanel from '@/components/portal/PayoutPanel';
+import DirectDealModal from '@/components/portal/DirectDealModal';
+import { usePlatformSettings } from './PortalBilling';
 
 const aed = (n) => `AED ${Number(n || 0).toLocaleString('en-AE', { maximumFractionDigits: 2 })}`;
 
@@ -21,6 +23,8 @@ export default function PortalAdRequests() {
   const [reason, setReason] = useState('');
   const [reasonErr, setReasonErr] = useState('');
   const [busy, setBusy] = useState(null);
+  const [dealOpen, setDealOpen] = useState(false);
+  const settings = usePlatformSettings();
 
   const act = async (b, action) => {
     if (action === 'reject_creative' && reason.trim().length < 5) { setReasonErr('Tell the advertiser why in a few words, e.g. "Alcohol isn\'t allowed in our venue".'); return; }
@@ -44,7 +48,8 @@ export default function PortalAdRequests() {
 
   return (
     <div>
-      <PageHeader title="Ad requests" subtitle="Advertisers who booked your screens · you keep your share of every booking" />
+      <PageHeader title="Ad requests" subtitle="Advertisers who booked your screens · you keep your share of every booking"
+        actions={<button type="button" className="bw-btn bw-btn-ghost" onClick={() => setDealOpen(true)}><Megaphone className="h-4 w-4" />Add direct deal</button>} />
       <PayoutPanel refreshKey={bookings.items.length} />
 
       {listed === 0 && (
@@ -76,7 +81,7 @@ export default function PortalAdRequests() {
               <div className="p-4">
                 <div className="flex items-start gap-2">
                   <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-bold text-bw-navy truncate">{b.advertiser_org_name || 'Advertiser'} · {b.campaign_name}</p>
+                    <p className="text-[14px] font-bold text-bw-navy truncate">{b.advertiser_org_name || 'Advertiser'} · {b.campaign_name}{b.deal_type === 'direct' ? ' · Direct deal' : ''}</p>
                     <p className="text-[12px] text-bw-muted">{b.screen_name} · {b.start_date} → {b.end_date} ({b.weeks} wk)</p>
                   </div>
                   <span className="bw-chip bg-emerald-50 text-emerald-700 font-bold"><Wallet className="h-3 w-3" />{aed(b.venue_earnings)}</span>
@@ -103,6 +108,7 @@ export default function PortalAdRequests() {
           ))}
         </div>
       )}
+      {dealOpen && <DirectDealModal feePct={settings.direct_deal_fee_pct ?? 10} onClose={() => setDealOpen(false)} onDone={bookings.reload} />}
     </div>
   );
 }

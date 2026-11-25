@@ -73,7 +73,7 @@ export default function AdminSupport() {
       )) : (
         <div className="bw-card overflow-x-auto">
           <table className="w-full min-w-[720px] text-start">
-            <thead><tr className="text-[11px] uppercase text-bw-muted"><th className="p-3 text-start">Business</th><th className="p-3 text-start">Type</th><th className="p-3 text-start">Status</th><th className="p-3 text-start">Screens</th><th className="p-3 text-start">WhatsApp</th><th className="p-3 text-start">Joined</th></tr></thead>
+            <thead><tr className="text-[11px] uppercase text-bw-muted"><th className="p-3 text-start">Business</th><th className="p-3 text-start">Type</th><th className="p-3 text-start">Status</th><th className="p-3 text-start">Screens</th><th className="p-3 text-start">Venue keeps</th><th className="p-3 text-start">WhatsApp</th><th className="p-3 text-start">Joined</th></tr></thead>
             <tbody className="divide-y divide-bw-line">
               {orgs.items.map((o) => (
                 <tr key={o.id} className="text-[13px]">
@@ -81,6 +81,13 @@ export default function AdminSupport() {
                   <td className="p-3 capitalize">{o.type}</td>
                   <td className="p-3"><span className={`bw-chip ${o.status === 'approved' ? 'bg-emerald-50 text-emerald-700' : o.status === 'pending' ? 'bg-amber-50 text-amber-700' : 'bg-rose-50 text-rose-600'}`}>{o.status}</span></td>
                   <td className="p-3">{o.screen_count || 0}</td>
+                  <td className="p-3">
+                    <select className="bw-input !w-auto !py-1 !text-[12px]" value={100 - Number(o.commission_rate ?? 30)}
+                      onChange={async (e) => { const keep = Number(e.target.value); try { await orgs.update(o.id, { commission_rate: 100 - keep }); toast.success(`${o.name} now keeps ${keep}% of marketplace ads`, { description: 'Applies to new bookings only.' }); } catch (err) { /* hook shows the error */ } }}>
+                      {[[70, 'Standard 70%'], [85, 'Connect partner 85%'], [60, 'Partner 60%'], [50, 'Partner 50%']].map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                      {![70, 85, 60, 50].includes(100 - Number(o.commission_rate ?? 30)) && <option value={100 - Number(o.commission_rate ?? 30)}>{100 - Number(o.commission_rate ?? 30)}%</option>}
+                    </select>
+                  </td>
                   <td className="p-3">{o.whatsapp ? <a className="text-emerald-600 font-semibold" href={`https://wa.me/${String(o.whatsapp).replace(/\D/g, '')}`} target="_blank" rel="noreferrer">{o.whatsapp}</a> : '—'}</td>
                   <td className="p-3 text-bw-muted">{new Date(o.created_date).toLocaleDateString()}</td>
                 </tr>
