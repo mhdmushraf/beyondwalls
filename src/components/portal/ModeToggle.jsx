@@ -11,7 +11,7 @@ export default function ModeToggle({ org, mode, onMode, onRequest }) {
         type="button"
         onClick={onRequest}
         disabled={requested}
-        className={`rounded-xl px-3 py-2 text-xs font-semibold transition-colors ${
+        className={`!min-h-0 w-full rounded-xl px-3 py-2 text-xs font-semibold transition-colors ${
           requested
             ? 'bg-bw-cream text-bw-muted border border-bw-line cursor-default'
             : 'bg-bw-coral text-white hover:bg-bw-coral/90'
@@ -23,7 +23,7 @@ export default function ModeToggle({ org, mode, onMode, onRequest }) {
   }
 
   return (
-    <div className="inline-flex rounded-xl border border-bw-line bg-white p-0.5">
+    <div className="flex w-full rounded-xl border border-bw-line bg-white p-0.5">
       {[
         { key: 'screens', label: t('mode.myScreens') },
         { key: 'advertise', label: t('mode.advertise') },
@@ -32,7 +32,7 @@ export default function ModeToggle({ org, mode, onMode, onRequest }) {
           key={option.key}
           type="button"
           onClick={() => onMode(option.key)}
-          className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
+          className={`!min-h-0 flex-1 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
             mode === option.key ? 'bg-bw-navy text-white' : 'text-bw-muted hover:text-bw-navy'
           }`}
         >
