@@ -7,6 +7,8 @@ import { usePortal } from '@/lib/PortalContext';
 import { useOrgEntity } from '@/lib/useOrgEntity';
 import { PageHeader, Field } from '@/components/portal/ui';
 import InvoiceView from '@/components/billing/InvoiceView';
+import { validate, rules, notifyError, notifySuccess } from '@/lib/states';
+import { FieldError } from '@/components/states/StateViews';
 
 export function usePlatformSettings() {
   const [s, setS] = useState({});
@@ -25,6 +27,7 @@ export default function PortalBilling() {
   const [view, setView] = useState(null);
   const [order, setOrder] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const price = { signage_ads: settings.price_signage_ads ?? 15, signage_only: settings.price_signage_only ?? 29, ads_only: settings.price_ads_only ?? 0 };
   const rows = [['signage_ads', 'Signage + Ads'], ['signage_only', 'Signage only'], ['ads_only', 'Ads only']].map(([k, l]) => {
@@ -36,7 +39,12 @@ export default function PortalBilling() {
   const unpaid = invoices.items.filter((i) => i.status === 'issued');
 
   const submitOrder = async () => {
-    if (!order.contact_phone) { toast.error('Add a phone number for the installer'); return; }
+    const errs = validate({ venue_id: [rules.required('Venue')], contact_name: [rules.required('Contact name')], contact_phone: [rules.phoneUAE('WhatsApp number')] }, order);
+    if (!(Number(order.screens_count) >= 1)) errs.screens_count = 'Set up at least 1 screen.';
+    if (Number(order.bone_units) < 0) errs.bone_units = "Players can't be below 0.";
+    if (order.preferred_date && order.preferred_date < new Date().toISOString().slice(0, 10)) errs.preferred_date = 'Pick today or a later day.';
+    setErrors(errs);
+    if (Object.keys(errs).length) { toast.error('Fix the highlighted fields first', { description: Object.values(errs)[0] }); return; }
     setBusy(true);
     try {
       const venue = venues.find((v) => v.id === order.venue_id);
@@ -45,9 +53,9 @@ export default function PortalBilling() {
         contact_name: order.contact_name, contact_phone: order.contact_phone, screens_count: Number(order.screens_count) || 1,
         bone_units: Number(order.bone_units) || 0, amount_aed: (Number(order.bone_units) || 0) * bone, preferred_date: order.preferred_date, notes: order.notes, status: 'requested',
       });
-      toast.success('Request sent — we\'ll confirm the visit on WhatsApp');
-      setOrder(null);
-    } catch (e) { toast.error('Could not send the request'); } finally { setBusy(false); }
+      notifySuccess('Request sent', "We'll confirm the visit time on WhatsApp, usually the same day.");
+      setOrder(null); setErrors({});
+    } catch (e) { notifyError(e, 'send the install request', submitOrder); } finally { setBusy(false); }
   };
 
   return (
@@ -107,12 +115,12 @@ export default function PortalBilling() {
             <p className="text-[17px] font-bold text-bw-navy">Order B.One / book an installer</p>
             <Field label="Venue"><select className="bw-input" value={order.venue_id} onChange={(e) => setOrder({ ...order, venue_id: e.target.value })}>{venues.map((v) => <option key={v.id} value={v.id}>{v.name}</option>)}</select></Field>
             <div className="grid grid-cols-2 gap-3">
-              <Field label="Screens to set up"><input type="number" min="1" className="bw-input" value={order.screens_count} onChange={(e) => setOrder({ ...order, screens_count: e.target.value })} /></Field>
-              <Field label={`B.One players (AED ${bone} each)`}><input type="number" min="0" className="bw-input" value={order.bone_units} onChange={(e) => setOrder({ ...order, bone_units: e.target.value })} /></Field>
-              <Field label="Contact name"><input className="bw-input" value={order.contact_name} onChange={(e) => setOrder({ ...order, contact_name: e.target.value })} /></Field>
-              <Field label="WhatsApp"><input className="bw-input" value={order.contact_phone} onChange={(e) => setOrder({ ...order, contact_phone: e.target.value })} /></Field>
+              <Field label="Screens to set up"><input type="number" min="1" className="bw-input" value={order.screens_count} onChange={(e) => setOrder({ ...order, screens_count: e.target.value })} /><FieldError msg={errors.screens_count} /></Field>
+              <Field label={`B.One players (AED ${bone} each)`}><input type="number" min="0" className="bw-input" value={order.bone_units} onChange={(e) => setOrder({ ...order, bone_units: e.target.value })} /><FieldError msg={errors.bone_units} /></Field>
+              <Field label="Contact name"><input className="bw-input" value={order.contact_name} onChange={(e) => setOrder({ ...order, contact_name: e.target.value })} /><FieldError msg={errors.contact_name} /></Field>
+              <Field label="WhatsApp"><input className="bw-input" inputMode="tel" placeholder="+971 50 123 4567" value={order.contact_phone} onChange={(e) => setOrder({ ...order, contact_phone: e.target.value })} /><FieldError msg={errors.contact_phone} /></Field>
             </div>
-            <Field label="Preferred day"><input type="date" className="bw-input" value={order.preferred_date} onChange={(e) => setOrder({ ...order, preferred_date: e.target.value })} /></Field>
+            <Field label="Preferred day"><input type="date" className="bw-input" value={order.preferred_date} onChange={(e) => setOrder({ ...order, preferred_date: e.target.value })} /><FieldError msg={errors.preferred_date} /></Field>
             <Field label="Notes"><textarea rows={2} className="bw-input" placeholder="TV models, mounting, Wi-Fi…" value={order.notes} onChange={(e) => setOrder({ ...order, notes: e.target.value })} /></Field>
             <p className="text-[13px] font-semibold text-bw-navy">Hardware total: AED {(Number(order.bone_units) || 0) * bone} <span className="text-bw-muted font-medium">(+VAT, invoiced after install)</span></p>
             <div className="flex justify-end gap-2"><button type="button" className="bw-btn bw-btn-ghost" onClick={() => setOrder(null)}>Cancel</button><button type="button" className="bw-btn bw-btn-primary" disabled={busy} onClick={submitOrder}>{busy && <Loader2 className="h-4 w-4 animate-spin" />}Send request</button></div>
