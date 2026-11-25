@@ -60,10 +60,11 @@ import AdminLeads from './pages/admin/AdminLeads';
 import AdminBilling from './pages/admin/AdminBilling';
 import AdminSettings from './pages/admin/AdminSettings';
 import { I18nProvider } from '@/lib/i18n';
+import BrandSplash from '@/components/BrandSplash';
 
 // Lazy load pages for code splitting
 const LazyPageLoader = ({ Page }) => (
-  <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+  <Suspense fallback={<BrandSplash />}>
     <Page />
   </Suspense>
 );
@@ -83,9 +84,7 @@ const AuthenticatedApp = () => {
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
-      </div>
+      <BrandSplash />
     );
   }
 
@@ -139,7 +138,7 @@ const AuthenticatedApp = () => {
          <Route path="/" element={
            <LayoutWrapper currentPageName={mainPageKey}>
              <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+               <Suspense fallback={<BrandSplash />}>
                  <MainPage />
                </Suspense>
              </MobileRouteTransition>
@@ -152,7 +151,7 @@ const AuthenticatedApp = () => {
              element={
                <LayoutWrapper currentPageName={path}>
                  <MobileRouteTransition>
-                   <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+                   <Suspense fallback={<BrandSplash />}>
                      <Page />
                    </Suspense>
                  </MobileRouteTransition>
@@ -163,7 +162,7 @@ const AuthenticatedApp = () => {
          <Route path="/CafeScreenAdvertisingDubai" element={
            <LayoutWrapper currentPageName="CafeScreenAdvertisingDubai">
              <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+               <Suspense fallback={<BrandSplash />}>
                  <CafeScreenAdvertisingDubai />
                </Suspense>
              </MobileRouteTransition>
@@ -172,7 +171,7 @@ const AuthenticatedApp = () => {
          <Route path="/GymScreenAdvertisingDubai" element={
            <LayoutWrapper currentPageName="GymScreenAdvertisingDubai">
              <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+               <Suspense fallback={<BrandSplash />}>
                  <GymScreenAdvertisingDubai />
                </Suspense>
              </MobileRouteTransition>
@@ -181,7 +180,7 @@ const AuthenticatedApp = () => {
          <Route path="/CoworkingSpaceAdvertisingDubai" element={
            <LayoutWrapper currentPageName="CoworkingSpaceAdvertisingDubai">
              <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+               <Suspense fallback={<BrandSplash />}>
                  <CoworkingSpaceAdvertisingDubai />
                </Suspense>
              </MobileRouteTransition>
@@ -190,7 +189,7 @@ const AuthenticatedApp = () => {
          <Route path="/ClinicScreenAdvertisingDubai" element={
            <LayoutWrapper currentPageName="ClinicScreenAdvertisingDubai">
              <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+               <Suspense fallback={<BrandSplash />}>
                  <ClinicScreenAdvertisingDubai />
                </Suspense>
              </MobileRouteTransition>
@@ -199,7 +198,7 @@ const AuthenticatedApp = () => {
          <Route path="/MonetizeYourScreensDubai" element={
            <LayoutWrapper currentPageName="MonetizeYourScreensDubai">
              <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+               <Suspense fallback={<BrandSplash />}>
                  <MonetizeYourScreensDubai />
                </Suspense>
              </MobileRouteTransition>
@@ -208,7 +207,7 @@ const AuthenticatedApp = () => {
          <Route path="/DOOHAdvertisingCostDubai" element={
            <LayoutWrapper currentPageName="DOOHAdvertisingCostDubai">
              <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+               <Suspense fallback={<BrandSplash />}>
                  <DOOHAdvertisingCostDubai />
                </Suspense>
              </MobileRouteTransition>
@@ -217,7 +216,7 @@ const AuthenticatedApp = () => {
          <Route path="/IndoorVenueDOOHvsBillboardsDubai" element={
            <LayoutWrapper currentPageName="IndoorVenueDOOHvsBillboardsDubai">
              <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+               <Suspense fallback={<BrandSplash />}>
                  <IndoorVenueDOOHvsBillboardsDubai />
                </Suspense>
              </MobileRouteTransition>
@@ -226,7 +225,7 @@ const AuthenticatedApp = () => {
          <Route path="/WhatIsDOOHAdvertisingGuide" element={
            <LayoutWrapper currentPageName="WhatIsDOOHAdvertisingGuide">
              <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+               <Suspense fallback={<BrandSplash />}>
                  <WhatIsDOOHAdvertisingGuide />
                </Suspense>
              </MobileRouteTransition>
@@ -235,7 +234,7 @@ const AuthenticatedApp = () => {
          <Route path="/EarnMoneyVenueScreensDubai" element={
            <LayoutWrapper currentPageName="EarnMoneyVenueScreensDubai">
              <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+               <Suspense fallback={<BrandSplash />}>
                  <EarnMoneyVenueScreensDubai />
                </Suspense>
              </MobileRouteTransition>
@@ -244,7 +243,7 @@ const AuthenticatedApp = () => {
          <Route path="/DOOHAdvertisingMarketplaceDubai" element={
            <LayoutWrapper currentPageName="DOOHAdvertisingMarketplaceDubai">
              <MobileRouteTransition>
-               <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div></div>}>
+               <Suspense fallback={<BrandSplash />}>
                  <DOOHAdvertisingMarketplaceDubai />
                </Suspense>
              </MobileRouteTransition>

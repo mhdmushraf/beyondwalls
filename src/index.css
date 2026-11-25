@@ -583,3 +583,9 @@ body {
 
 /* Never let a wide element push the whole page sideways. */
 html, body { overflow-x: clip; }
+
+/* Brand splash (index.html + BrandSplash) */
+@keyframes bwSplashPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+@keyframes bwSplashBar { 0% { left: -35%; } 100% { left: 100%; } }
+.bw-splash-logo { animation: bwSplashPulse 1.6s ease-in-out infinite; }
+.bw-splash-bar { animation: bwSplashBar 1.1s ease-in-out infinite; }
