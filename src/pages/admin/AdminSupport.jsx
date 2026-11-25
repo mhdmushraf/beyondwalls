@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import { MessageCircle, Mail } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { useAdminList } from '@/components/admin/AdminLayout';
+import { ErrorState, SlowHint } from '@/components/states/StateViews';
 import TicketThread from '@/components/support/TicketThread';
 import { PageHeader } from '@/components/portal/ui';
 import { ListSkeleton } from '@/components/portal/Skeletons';
@@ -34,7 +35,7 @@ export default function AdminSupport() {
         ))}
       </div>
 
-      {tab === 'tickets' ? (tickets.loading ? <ListSkeleton /> : (
+      {tab === 'tickets' ? (tickets.loading ? <ListSkeleton /> : tickets.error && !tickets.items.length ? <ErrorState error={tickets.error} action="load tickets" onRetry={tickets.reload} /> : (
         <div className="grid lg:grid-cols-[380px_1fr] gap-5">
           <div className="bw-card p-2 h-fit">
             <div className="flex gap-1 p-1 mb-1">
@@ -42,7 +43,7 @@ export default function AdminSupport() {
                 <button key={k} type="button" onClick={() => setFilter(k)} className={`!min-h-0 rounded-lg px-3 py-1 text-[12px] font-semibold ${filter === k ? 'bg-bw-navy text-white' : 'text-bw-muted'}`}>{l}</button>
               ))}
             </div>
-            {shown.length === 0 && <p className="p-3 text-[13px] text-bw-muted">No tickets.</p>}
+            {shown.length === 0 && <p className="p-3 text-[13px] text-bw-muted">{tickets.items.length ? 'No tickets here — try All.' : 'No tickets yet. Venue requests show up here.'}</p>}
             {shown.map((t) => (
               <button key={t.id} type="button" onClick={() => setActiveId(t.id)} className={`!min-h-0 !block w-full text-start rounded-xl p-3 ${t.id === activeId ? 'bg-bw-lav' : 'hover:bg-bw-cream'}`}>
                 <div className="flex items-center gap-2"><span className={`bw-chip ${STATUS[t.status]?.[1]}`}>{STATUS[t.status]?.[0]}</span>{['high', 'urgent'].includes(t.priority) && <span className="bw-chip bg-rose-50 text-rose-600">{t.priority}</span>}</div>

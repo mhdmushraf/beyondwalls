@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ShieldCheck, MonitorPlay, WifiOff, LifeBuoy, Wrench, Receipt, Target, ChevronRight } from 'lucide-react';
 import { useAdminList } from '@/components/admin/AdminLayout';
+import { ErrorState, SlowHint } from '@/components/states/StateViews';
 import { PageHeader } from '@/components/portal/ui';
 import { StatCardsSkeleton } from '@/components/portal/Skeletons';
 import { timeAgo } from '@/lib/portalData';
@@ -14,7 +15,8 @@ export default function AdminOverview() {
   const invoices = useAdminList('Invoice', { limit: 1000 });
   const leads = useAdminList('Lead');
 
-  if (orgs.loading || screens.loading) return <StatCardsSkeleton />;
+  if (orgs.loading || screens.loading) return <div><SlowHint loading forced={orgs.preview === 'slow'} /><StatCardsSkeleton /></div>;
+  if ((orgs.error && !orgs.items.length) || (screens.error && !screens.items.length)) return <ErrorState error={orgs.error || screens.error} action="load the overview" onRetry={() => { orgs.reload(); screens.reload(); }} />;
 
   const pending = orgs.items.filter((o) => o.status === 'pending').length + venues.items.filter((v) => v.approval_status === 'pending').length + orgs.items.filter((o) => o.advertiser_status === 'requested').length;
   const paired = screens.items.filter((s) => s.paired_device_id);

@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import { FilePlus2, Loader2, Check } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAdminList } from '@/components/admin/AdminLayout';
+import { ErrorState, SlowHint } from '@/components/states/StateViews';
 import { PageHeader } from '@/components/portal/ui';
 import { TableSkeleton } from '@/components/portal/Skeletons';
 import InvoiceView from '@/components/billing/InvoiceView';
@@ -34,7 +35,8 @@ export default function AdminBilling() {
     toast.success(`${inv.number} marked paid`);
   };
 
-  if (invoices.loading) return <TableSkeleton />;
+  if (invoices.loading) return <div><SlowHint loading forced={invoices.preview === 'slow'} /><TableSkeleton /></div>;
+  if (invoices.error && !invoices.items.length) return <ErrorState error={invoices.error} action="load invoices" onRetry={invoices.reload} />;
   const shown = invoices.items.filter((i) => filter === 'all' || i.status === filter);
   const sum = (st) => invoices.items.filter((i) => i.status === st).reduce((s, i) => s + (i.total || 0), 0);
   const s = settings.items[0] || {};
@@ -84,7 +86,7 @@ export default function AdminBilling() {
                 <td className="p-3 text-end">{i.status === 'issued' && <button type="button" className="bw-btn bw-btn-ghost !py-1" onClick={() => markPaid(i)}><Check className="h-3.5 w-3.5" />Mark paid</button>}</td>
               </tr>
             ))}
-            {!shown.length && <tr><td colSpan={6} className="p-6 text-center text-[13px] text-bw-muted">No invoices.</td></tr>}
+            {!shown.length && <tr><td colSpan={6} className="p-6 text-center text-[13px] text-bw-muted">{invoices.items.length ? 'No invoices with this status — pick All above.' : 'No invoices yet. Use "Generate this month" once venues have paired screens.'}</td></tr>}
           </tbody>
         </table>
       </div>

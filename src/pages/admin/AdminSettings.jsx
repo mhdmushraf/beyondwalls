@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Save } from 'lucide-react';
 import { useAdminList } from '@/components/admin/AdminLayout';
+import { ErrorState, SlowHint } from '@/components/states/StateViews';
 import { PageHeader, Field, Toggle } from '@/components/portal/ui';
 import { TableSkeleton } from '@/components/portal/Skeletons';
 
@@ -15,7 +16,9 @@ export default function AdminSettings() {
   const list = useAdminList('PlatformSettings', { limit: 5 });
   const [form, setForm] = useState(null);
   useEffect(() => { if (!form && list.items[0]) setForm({ ...list.items[0] }); }, [list.items, form]);
-  if (list.loading || !form) return <TableSkeleton />;
+  if (list.loading) return <div><SlowHint loading forced={list.preview === 'slow'} /><TableSkeleton /></div>;
+  if (list.error && !list.items.length) return <ErrorState error={list.error} action="load prices & shares" onRetry={list.reload} />;
+  if (!form) return <div className="bw-card p-8 text-center"><p className="text-[16px] font-bold text-bw-navy">No price settings yet</p><p className="mt-1 text-[13px] text-bw-muted">Create the default settings (70% venue share, AED 15 / 29 / 0 plans, B.One AED 449), then edit them.</p><button type="button" className="bw-btn bw-btn-primary mt-4" onClick={async () => { const rec = await list.create({ key: 'main', venue_share_pct: 70, partner_splits: [60, 50], direct_fee_pct: 10, agency_share_pct: 85, price_signage_ads: 15, price_signage_only: 29, price_ads_only: 0, bone_price: 449, vat_pct: 0 }); setForm({ ...rec }); }}>Create default settings</button></div>;
 
   const save = async () => {
     const data = {};

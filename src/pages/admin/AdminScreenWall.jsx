@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import { MonitorPlay, RefreshCw, RotateCcw, Siren } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAdminList } from '@/components/admin/AdminLayout';
+import { ErrorState, SlowHint } from '@/components/states/StateViews';
 import { PageHeader } from '@/components/portal/ui';
 import { TilesSkeleton } from '@/components/portal/Skeletons';
 import { useSignedUrl, timeAgo } from '@/lib/portalData';
@@ -56,7 +57,8 @@ export default function AdminScreenWall() {
         ))}
         <input className="bw-input !w-64 ms-auto" placeholder="Search screen or business" value={q} onChange={(e) => setQ(e.target.value)} />
       </div>
-      {screens.loading ? <TilesSkeleton count={8} /> : (
+      <SlowHint loading={screens.loading} forced={screens.preview === 'slow'} />
+      {screens.loading ? <TilesSkeleton count={8} /> : screens.error && !screens.items.length ? <ErrorState error={screens.error} action="load the screen wall" onRetry={screens.reload} /> : (
         <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-3">
           {shown.map((s) => <Tile key={s.id} s={s} orgName={orgName(s.org_id)} onCmd={onCmd} />)}
         </div>

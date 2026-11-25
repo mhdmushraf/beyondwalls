@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { Plus, Phone, MessageCircle } from 'lucide-react';
 import { useAdminList } from '@/components/admin/AdminLayout';
+import { ErrorState, SlowHint } from '@/components/states/StateViews';
 import { PageHeader, Field } from '@/components/portal/ui';
 import { TableSkeleton } from '@/components/portal/Skeletons';
 
@@ -21,7 +22,8 @@ export default function AdminLeads() {
     setEdit(null);
   };
 
-  if (leads.loading) return <TableSkeleton />;
+  if (leads.loading) return <div><SlowHint loading forced={leads.preview === 'slow'} /><TableSkeleton /></div>;
+  if (leads.error && !leads.items.length) return <ErrorState error={leads.error} action="load leads" onRetry={leads.reload} />;
   const shown = leads.items.filter((l) => type === 'all' || l.type === type);
   const pipeline = shown.filter((l) => !['won', 'lost'].includes(l.stage)).reduce((s, l) => s + (l.value_aed || 0), 0);
 

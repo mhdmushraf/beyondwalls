@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { MapPin, Phone, Calendar, User } from 'lucide-react';
 import { useAdminList } from '@/components/admin/AdminLayout';
+import { ErrorState, SlowHint } from '@/components/states/StateViews';
 import { PageHeader, Field } from '@/components/portal/ui';
 import { TableSkeleton } from '@/components/portal/Skeletons';
 
@@ -23,7 +24,8 @@ export default function AdminInstalls() {
     setEdit(null);
   };
 
-  if (jobs.loading) return <TableSkeleton />;
+  if (jobs.loading) return <div><SlowHint loading forced={jobs.preview === 'slow'} /><TableSkeleton /></div>;
+  if (jobs.error && !jobs.items.length) return <ErrorState error={jobs.error} action="load install jobs" onRetry={jobs.reload} />;
 
   return (
     <div>
@@ -45,7 +47,7 @@ export default function AdminInstalls() {
                     {j.technician && <p className="text-[11px] text-bw-muted flex items-center gap-1"><User className="h-3 w-3" />{j.technician}</p>}
                   </button>
                 ))}
-                {!list.length && <p className="text-[12px] text-bw-muted px-1 py-3">Nothing here.</p>}
+                {!list.length && <p className="text-[12px] text-bw-muted px-1 py-3">No jobs in this column.</p>}
               </div>
             </div>
           );
