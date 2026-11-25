@@ -63,9 +63,3 @@ export function PreviewSwitcher({ user, current }) {
   );
 }
           className={`!min-h-0 !min-w-0 rounded-full px-2.5 py-1 text-[11px] font-semibold ${current === s || (!current && !s) ? 'bg-white text-bw-navy' : 'text-white/80 hover:text-white'}`}>
-          {s || 'live'}
-        </button>
-      ))}
-    </div>
-  );
-}
