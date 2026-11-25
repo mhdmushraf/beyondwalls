@@ -49,6 +49,7 @@ import PortalCampaigns from './pages/portal/PortalCampaigns';
 import PortalAdRequests from './pages/portal/PortalAdRequests';
 import PortalPayReturn from './pages/portal/PortalPayReturn';
 import PortalClients from './pages/portal/PortalClients';
+import PortalSettings from './pages/portal/PortalSettings';
 import AdminMarketplace from './pages/admin/AdminMarketplace';
 import AdminLayout from './components/admin/AdminLayout';
 import AdminOverview from './pages/admin/AdminOverview';
@@ -291,6 +292,7 @@ const AuthenticatedApp = () => {
            <Route path="ad-requests" element={<PortalAdRequests />} />
            <Route path="pay/return" element={<PortalPayReturn />} />
            <Route path="clients" element={<PortalClients />} />
+           <Route path="settings" element={<PortalSettings />} />
          </Route>
          <Route path="*" element={<PageNotFound />} />
          </Routes>

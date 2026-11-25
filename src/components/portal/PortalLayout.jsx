@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, Outlet, Navigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Store, MonitorPlay, LogOut, Menu, X, Megaphone, Image as ImageIcon,
-  UtensilsCrossed, ListVideo, Siren, MessagesSquare, Search, MessageCircle, MoreHorizontal, QrCode, Receipt, LifeBuoy, ShieldCheck, ShoppingBag, Inbox, Briefcase,
+  UtensilsCrossed, ListVideo, Siren, MessagesSquare, Search, MessageCircle, MoreHorizontal, QrCode, Receipt, LifeBuoy, ShieldCheck, ShoppingBag, Inbox, Briefcase, Settings,
 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import NotificationBell from '@/components/portal/NotificationBell';
@@ -67,6 +67,7 @@ function useNavGroups(t) {
     {
       label: t('nav.group.account', 'Account'),
       items: [
+        { to: '/app/settings', label: t('nav.settings', 'Business settings'), icon: Settings },
         { to: '/app/billing', label: t('nav.billing', 'Billing'), icon: Receipt },
         { to: '/app/support', label: t('nav.support', 'Help & support'), icon: LifeBuoy },
       ],
