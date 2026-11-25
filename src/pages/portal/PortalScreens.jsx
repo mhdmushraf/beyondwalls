@@ -47,7 +47,12 @@ export default function PortalScreens() {
               </button>
             ))}
           </div>
-          {groups.length === 0 && <p className="text-[13px] text-bw-muted">No screens in this filter.</p>}
+          {groups.length === 0 && (
+            <EmptyState icon={MonitorPlay}
+              title={{ online: 'No screens are online right now', offline: 'All your screens are online', unpaired: 'Every screen is paired' }[filter] || 'No screens here'}
+              body={filter === 'online' ? 'Check the TVs are switched on and connected to Wi-Fi.' : 'Nothing to fix in this list.'}
+              action={<button type="button" className="bw-btn bw-btn-ghost" onClick={() => setFilter('all')}>Show all screens</button>} />
+          )}
           <div className="space-y-7">
             {groups.map(({ venue, list }) => (
               <div key={venue.id}>
