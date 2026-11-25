@@ -130,18 +130,37 @@ export default function PlayerRunner({ token, onMoved }) {
     return () => clearTimeout(timer);
   }, [current?.id, index]);
 
-  // Heartbeat every 60s.
+  // Count each marketplace ad that actually starts on screen (not under an urgent takeover or blank).
+  useEffect(() => {
+    if (!current?.ad || !current.booking_id || urgent || blank) return;
+    try {
+      const plays = JSON.parse(localStorage.getItem('bw_ad_plays') || '{}');
+      plays[current.booking_id] = (plays[current.booking_id] || 0) + 1;
+      localStorage.setItem('bw_ad_plays', JSON.stringify(plays));
+    } catch (e) { /* storage unavailable */ }
+  }, [current?.id, index]); // eslint-disable-line
+
+  // Heartbeat every 60s (also delivers counted ad plays; kept on the device if offline).
   useEffect(() => {
     const send = async () => {
+      let plays = {};
+      try { plays = JSON.parse(localStorage.getItem('bw_ad_plays') || '{}'); } catch (e) { plays = {}; }
       try {
         const item = currentRef.current;
         await base44.functions.invoke('playerHeartbeat', {
+          ad_plays: plays,
           device_token: token,
           current_item: manifestRef.current?.urgent ? `Urgent: ${manifestRef.current.urgent.text_en}`
             : item ? (item.kind === 'menu' ? `Menu: ${item.menu?.name || ''}` : item.type === 'video' ? 'Video' : 'Image') : 'House slide',
           uptime_seconds: Math.floor((Date.now() - startedAt.current) / 1000),
-          player_version: 'bw-player-1.0',
+          player_version: 'bw-player-1.1',
         });
+        // Remove only what was sent; plays counted meanwhile stay.
+        try {
+          const now = JSON.parse(localStorage.getItem('bw_ad_plays') || '{}');
+          Object.keys(plays).forEach((k) => { now[k] = (now[k] || 0) - plays[k]; if (now[k] <= 0) delete now[k]; });
+          localStorage.setItem('bw_ad_plays', JSON.stringify(now));
+        } catch (e) { /* ignore */ }
       } catch (e) {
         if (e?.response?.status === 409) onMoved();
       }
