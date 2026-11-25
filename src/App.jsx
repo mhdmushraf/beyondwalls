@@ -35,6 +35,11 @@ import PortalVenues from './pages/portal/PortalVenues';
 import PortalScreens from './pages/portal/PortalScreens';
 import PortalScreenDetail from './pages/portal/PortalScreenDetail';
 import AdminApprovals from './pages/admin/AdminApprovals';
+import PortalMedia from './pages/portal/PortalMedia';
+import PortalMenus from './pages/portal/PortalMenus';
+import PortalPlaylists from './pages/portal/PortalPlaylists';
+import PortalUrgent from './pages/portal/PortalUrgent';
+import PortalChat from './pages/portal/PortalChat';
 import { I18nProvider } from '@/lib/i18n';
 
 // Lazy load pages for code splitting
@@ -244,6 +249,11 @@ const AuthenticatedApp = () => {
            <Route path="venues" element={<PortalVenues />} />
            <Route path="screens" element={<PortalScreens />} />
            <Route path="screens/:screenId" element={<PortalScreenDetail />} />
+           <Route path="media" element={<PortalMedia />} />
+           <Route path="menus" element={<PortalMenus />} />
+           <Route path="playlists" element={<PortalPlaylists />} />
+           <Route path="urgent" element={<PortalUrgent />} />
+           <Route path="chat" element={<PortalChat />} />
          </Route>
          <Route path="*" element={<PageNotFound />} />
          </Routes>
