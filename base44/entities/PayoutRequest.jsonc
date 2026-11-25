@@ -1,56 +1,79 @@
 {
+  "description": "Venue asks Beyond Walls to pay out its marketplace earnings. Created only by the venuePayout function.",
   "name": "PayoutRequest",
-  "type": "object",
   "properties": {
-    "venue_owner_email": {
+    "account_holder_name": {
       "type": "string"
     },
-    "org_id": {
-      "type": "string",
-      "description": "ID of the organization whose earnings this payout draws down"
+    "admin_notes": {
+      "type": "string"
     },
     "amount": {
       "type": "number"
     },
-    "eligible_snapshot": {
-      "type": "number",
-      "description": "Eligible balance at request time, for audit"
-    },
-    "reference_id": {
-      "type": "string",
-      "description": "Ties the request to the payout Transaction created when marked paid"
-    },
-    "description": {
-      "type": "string",
-      "description": "Optional payout request description (up to 1000 characters)",
-      "maxLength": 1000
-    },
     "bank_name": {
       "type": "string"
     },
-    "account_holder_name": {
+    "booking_ids": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "description": {
+      "maxLength": 1000,
       "type": "string"
+    },
+    "eligible_snapshot": {
+      "type": "number"
     },
     "iban": {
       "type": "string"
     },
-    "swift_code": {
+    "kind": {
+      "default": "venue",
+      "enum": [
+        "venue",
+        "agency"
+      ],
+      "type": "string"
+    },
+    "org_id": {
+      "type": "string"
+    },
+    "org_member_user_ids": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "org_name": {
+      "type": "string"
+    },
+    "processed_date": {
+      "type": "string"
+    },
+    "reference_id": {
+      "description": "Bank transfer reference when paid",
+      "type": "string"
+    },
+    "requested_by_email": {
       "type": "string"
     },
     "status": {
-      "type": "string",
+      "default": "pending",
       "enum": [
         "pending",
         "approved",
         "paid",
         "rejected"
       ],
-      "default": "pending"
-    },
-    "admin_notes": {
       "type": "string"
     },
-    "processed_date": {
+    "swift_code": {
+      "type": "string"
+    },
+    "venue_owner_email": {
       "type": "string"
     }
   },
@@ -59,8 +82,21 @@
     "amount"
   ],
   "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
     "read": {
       "$or": [
+        {
+          "data.org_member_user_ids": "{{user.id}}"
+        },
         {
           "data.venue_owner_email": "{{user.email}}"
         },
@@ -75,11 +111,7 @@
       "user_condition": {
         "role": "admin"
       }
-    },
-    "delete": {
-      "user_condition": {
-        "role": "admin"
-      }
     }
-  }
+  },
+  "type": "object"
 }
