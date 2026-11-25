@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavLink, Outlet, Navigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Store, MonitorPlay, LogOut, Menu, X, Megaphone, Image as ImageIcon,
-  UtensilsCrossed, ListVideo, Siren, MessagesSquare, Search, Bell, MessageCircle, MoreHorizontal,
+  UtensilsCrossed, ListVideo, Siren, MessagesSquare, Search, Bell, MessageCircle, MoreHorizontal, QrCode,
 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { PortalProvider, usePortal } from '@/lib/PortalContext';
@@ -42,6 +42,7 @@ function useNavGroups(t) {
         { to: '/app/media', label: t('nav.media', 'Media library'), icon: ImageIcon },
         { to: '/app/menus', label: t('nav.menus', 'Menus & prices'), icon: UtensilsCrossed },
         { to: '/app/playlists', label: t('nav.playlists', 'Playlists & schedules'), icon: ListVideo },
+        { to: '/app/qr', label: t('nav.qr', 'QR codes'), icon: QrCode },
         { to: '/app/urgent', label: t('nav.urgent', 'Urgent message'), icon: Siren },
       ],
     },
