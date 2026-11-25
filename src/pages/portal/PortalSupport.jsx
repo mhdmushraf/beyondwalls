@@ -7,6 +7,9 @@ import { useOrgEntity } from '@/lib/useOrgEntity';
 import { timeAgo } from '@/lib/portalData';
 import { PageHeader, EmptyState, Field } from '@/components/portal/ui';
 import TicketThread from '@/components/support/TicketThread';
+import { ListSkeleton } from '@/components/portal/Skeletons';
+import { useDraft, validate, rules, notifyError, notifySuccess } from '@/lib/states';
+import { DraftBanner, FieldError, ErrorState, SlowHint } from '@/components/states/StateViews';
 
 const CATS = [['screen_offline', 'A screen is offline'], ['pairing', 'Pairing a TV'], ['content', 'Content / playlists'], ['billing', 'Billing'], ['account', 'My account'], ['other', 'Something else']];
 const ST = { open: ['Open', 'bg-amber-50 text-amber-700'], waiting_customer: ['Replied', 'bg-bw-lav text-bw-coral'], resolved: ['Resolved', 'bg-emerald-50 text-emerald-700'] };
@@ -17,23 +20,33 @@ export default function PortalSupport() {
   const tickets = useOrgEntity('SupportTicket', { sort: '-updated_date', poll: 20000 });
   const [activeId, setActiveId] = useState(null);
   const [form, setForm] = useState(null);
+  const [errors, setErrors] = useState({});
+  const [sending, setSending] = useState(false);
+  const { restored, discard, clear } = useDraft('support:new', form, setForm, { enabled: true });
   const active = tickets.items.find((t) => t.id === activeId);
 
   const createTicket = async () => {
-    if (!form.subject.trim() || !form.text.trim()) { toast.error('Add a subject and a message'); return; }
+    const errs = validate({ subject: [rules.required('Subject'), rules.max('Subject', 80)], text: [rules.required('Message'), rules.max('Message', 2000)] }, form);
+    setErrors(errs);
+    if (Object.keys(errs).length) { toast.error('Fix the highlighted fields first', { description: Object.values(errs)[0] }); return; }
     const now = new Date().toISOString();
+    setSending(true);
+    try {
     const rec = await tickets.create({
       org_name: org?.name, requester_name: user?.full_name || '', requester_email: user?.email || '', subject: form.subject.trim(), category: form.category,
       priority: form.category === 'screen_offline' ? 'high' : 'normal', status: 'open', screen_id: form.screen_id || '',
       messages: [{ by: user?.full_name || user?.email, from_team: false, text: form.text.trim(), at: now }], last_activity_at: now,
     });
-    setForm(null); setActiveId(rec.id);
-    toast.success('Sent — we usually reply within a few hours');
+    clear(); setForm(null); setActiveId(rec.id);
+    notifySuccess('Request sent', 'We usually reply within a few hours. For an emergency, WhatsApp us.');
+    } catch (e) { notifyError(e, 'send your request', createTicket); } finally { setSending(false); }
   };
   const reply = async (text) => {
     const messages = [...(active.messages || []), { by: user?.full_name || user?.email, from_team: false, text, at: new Date().toISOString() }];
-    await tickets.update(active.id, { messages, status: 'open', last_activity_at: new Date().toISOString() });
+    try { await tickets.update(active.id, { messages, status: 'open', last_activity_at: new Date().toISOString() }); } catch (e) { notifyError(e, 'send your reply', () => reply(text)); throw e; }
   };
+
+  if (tickets.loading) return <div><PageHeader title="Help & support" /><SlowHint loading forced={tickets.preview === 'slow'} /><ListSkeleton rows={4} /></div>;
 
   return (
     <div>
@@ -42,7 +55,8 @@ export default function PortalSupport() {
           <a className="bw-btn bw-btn-ghost" href="https://wa.me/971556140067" target="_blank" rel="noreferrer"><MessageCircle className="h-4 w-4 text-emerald-600" />WhatsApp</a>
           <button type="button" className="bw-btn bw-btn-primary" onClick={() => setForm({ subject: '', category: 'other', screen_id: '', text: '' })}><Plus className="h-4 w-4" />New request</button>
         </>} />
-      {tickets.items.length === 0 && !form ? (
+      {restored && form && <DraftBanner restored onDiscard={() => { discard(); setForm(null); }} what="support request" />}
+      {tickets.error && !tickets.items.length && !form ? <ErrorState error={tickets.error} action="load your requests" onRetry={tickets.reload} /> : tickets.items.length === 0 && !form ? (
         <EmptyState icon={LifeBuoy} title="No requests yet" body="If a screen goes offline or something looks wrong, send us a request and we'll sort it." action={<button type="button" className="bw-btn bw-btn-primary" onClick={() => setForm({ subject: '', category: 'other', screen_id: '', text: '' })}><Plus className="h-4 w-4" />New request</button>} />
       ) : (
         <div className="grid lg:grid-cols-[340px_1fr] gap-5">
@@ -62,9 +76,9 @@ export default function PortalSupport() {
               {['screen_offline', 'pairing', 'content'].includes(form.category) && screens.length > 0 && (
                 <Field label="Which screen?"><select className="bw-input" value={form.screen_id} onChange={(e) => setForm({ ...form, screen_id: e.target.value })}><option value="">—</option>{screens.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}</select></Field>
               )}
-              <Field label="Subject"><input className="bw-input" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} /></Field>
-              <Field label="Message"><textarea rows={5} className="bw-input" value={form.text} onChange={(e) => setForm({ ...form, text: e.target.value })} /></Field>
-              <div className="flex justify-end gap-2"><button type="button" className="bw-btn bw-btn-ghost" onClick={() => setForm(null)}>Cancel</button><button type="button" className="bw-btn bw-btn-primary" onClick={createTicket}>Send</button></div>
+              <Field label="Subject"><input className="bw-input" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} /><FieldError msg={errors.subject} /></Field>
+              <Field label="Message"><textarea rows={5} className="bw-input" placeholder="What happened, which screen, and since when?" value={form.text} onChange={(e) => setForm({ ...form, text: e.target.value })} /><FieldError msg={errors.text} /></Field>
+              <div className="flex justify-end gap-2"><button type="button" className="bw-btn bw-btn-ghost" onClick={() => { clear(); setForm(null); setErrors({}); }}>Cancel</button><button type="button" className="bw-btn bw-btn-primary" disabled={sending} onClick={createTicket}>{sending ? 'Sending…' : 'Send'}</button></div>
             </div>
           ) : active ? (
             <div className="bw-card p-5">
