@@ -1,28 +1,182 @@
 {
   "name": "Venue",
-  "type": "object",
   "properties": {
+    "address": {
+      "description": "Full address",
+      "type": "string"
+    },
+    "approval_status": {
+      "default": "pending",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "enumColors": [
+        "yellow",
+        "green",
+        "red"
+      ],
+      "rls": {
+        "update": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      },
+      "type": "string"
+    },
+    "audience_age_group": {
+      "enum": [
+        "under_18",
+        "18_25",
+        "25_35",
+        "35_50",
+        "50_plus",
+        "mixed"
+      ],
+      "type": "string"
+    },
+    "audience_gender": {
+      "enum": [
+        "male_dominant",
+        "female_dominant",
+        "mixed"
+      ],
+      "type": "string"
+    },
+    "avg_dwell_time_minutes": {
+      "description": "Average time visitors spend in venue (minutes)",
+      "type": "number"
+    },
+    "avg_spend_range": {
+      "enum": [
+        "under_25",
+        "25_50",
+        "50_100",
+        "100_plus"
+      ],
+      "type": "string"
+    },
+    "avg_stay_minutes": {
+      "description": "Average time a visitor stays (minutes)",
+      "type": "number"
+    },
+    "city": {
+      "description": "City",
+      "type": "string"
+    },
+    "closing_time": {
+      "type": "string"
+    },
+    "contact_email": {
+      "type": "string"
+    },
+    "contact_phone": {
+      "type": "string"
+    },
+    "country": {
+      "default": "UAE",
+      "type": "string"
+    },
+    "daily_customers": {
+      "description": "Average daily visitors",
+      "type": "number"
+    },
+    "daily_footfall": {
+      "description": "Estimated daily visitors",
+      "type": "number"
+    },
+    "description": {
+      "type": "string"
+    },
+    "emirate": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "longitude": {
+      "type": "number"
+    },
+    "name": {
+      "description": "Venue name",
+      "type": "string"
+    },
+    "opening_hours": {
+      "description": "Human readable opening hours, e.g. 08:00 - 23:00",
+      "type": "string"
+    },
+    "opening_time": {
+      "type": "string"
+    },
     "org_id": {
-      "type": "string",
-      "description": "ID of the Organization that owns this venue"
+      "description": "ID of the Organization that owns this venue",
+      "type": "string"
     },
     "org_member_user_ids": {
-      "type": "array",
+      "description": "Denormalized from Organization.member_user_ids \u2014 drives RLS",
       "items": {
         "type": "string"
       },
-      "description": "Denormalized from Organization.member_user_ids \u2014 drives RLS"
+      "type": "array"
     },
     "owner_email": {
-      "type": "string",
-      "description": "Email of venue owner"
+      "description": "Email of venue owner",
+      "type": "string"
     },
-    "name": {
-      "type": "string",
-      "description": "Venue name"
+    "peak_hours": {
+      "description": "Peak visitor hours",
+      "type": "string"
+    },
+    "photo_urls": {
+      "description": "Up to 5 venue photos",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "rejection_reason": {
+      "rls": {
+        "update": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      },
+      "type": "string"
+    },
+    "status": {
+      "default": "pending",
+      "enum": [
+        "active",
+        "inactive",
+        "pending"
+      ],
+      "rls": {
+        "update": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      },
+      "type": "string"
+    },
+    "venue_group_tags": {
+      "description": "Grouping tags for reporting, e.g. mall-branch, downtown",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
     },
     "venue_type": {
-      "type": "string",
+      "description": "Type of venue",
       "enum": [
         "restaurant",
         "cafe",
@@ -35,145 +189,11 @@
         "retail",
         "other"
       ],
-      "description": "Type of venue"
-    },
-    "address": {
-      "type": "string",
-      "description": "Full address"
-    },
-    "city": {
-      "type": "string",
-      "description": "City"
-    },
-    "emirate": {
       "type": "string"
-    },
-    "country": {
-      "type": "string",
-      "default": "UAE"
-    },
-    "latitude": {
-      "type": "number"
-    },
-    "longitude": {
-      "type": "number"
-    },
-    "description": {
-      "type": "string"
-    },
-    "logo_url": {
-      "type": "string"
-    },
-    "image_url": {
-      "type": "string"
-    },
-    "photo_urls": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "Up to 5 venue photos"
-    },
-    "status": {
-      "type": "string",
-      "enum": [
-        "active",
-        "inactive",
-        "pending"
-      ],
-      "default": "pending"
-    },
-    "approval_status": {
-      "type": "string",
-      "enum": [
-        "pending",
-        "approved",
-        "rejected"
-      ],
-      "default": "pending",
-      "enumColors": [
-        "yellow",
-        "green",
-        "red"
-      ]
-    },
-    "rejection_reason": {
-      "type": "string"
-    },
-    "opening_hours": {
-      "type": "string",
-      "description": "Human readable opening hours, e.g. 08:00 - 23:00"
-    },
-    "opening_time": {
-      "type": "string"
-    },
-    "closing_time": {
-      "type": "string"
-    },
-    "peak_hours": {
-      "type": "string",
-      "description": "Peak visitor hours"
-    },
-    "daily_customers": {
-      "type": "number",
-      "description": "Average daily visitors"
-    },
-    "daily_footfall": {
-      "type": "number",
-      "description": "Estimated daily visitors"
     },
     "weekly_footfall": {
-      "type": "number",
-      "description": "Estimated weekly visitors"
-    },
-    "avg_spend_range": {
-      "type": "string",
-      "enum": [
-        "under_25",
-        "25_50",
-        "50_100",
-        "100_plus"
-      ]
-    },
-    "avg_stay_minutes": {
-      "type": "number",
-      "description": "Average time a visitor stays (minutes)"
-    },
-    "avg_dwell_time_minutes": {
-      "type": "number",
-      "description": "Average time visitors spend in venue (minutes)"
-    },
-    "venue_group_tags": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "Grouping tags for reporting, e.g. mall-branch, downtown"
-    },
-    "audience_age_group": {
-      "type": "string",
-      "enum": [
-        "under_18",
-        "18_25",
-        "25_35",
-        "35_50",
-        "50_plus",
-        "mixed"
-      ]
-    },
-    "audience_gender": {
-      "type": "string",
-      "enum": [
-        "male_dominant",
-        "female_dominant",
-        "mixed"
-      ]
-    },
-    "contact_phone": {
-      "type": "string"
-    },
-    "contact_email": {
-      "type": "string"
+      "description": "Estimated weekly visitors",
+      "type": "number"
     }
   },
   "required": [
@@ -183,6 +203,14 @@
     "city"
   ],
   "rls": {
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
     "read": {
       "$or": [
         {
@@ -200,9 +228,6 @@
           }
         }
       ]
-    },
-    "create": {
-      "created_by_id": "{{user.id}}"
     },
     "update": {
       "$or": [
@@ -222,11 +247,7 @@
           }
         }
       ]
-    },
-    "delete": {
-      "user_condition": {
-        "role": "admin"
-      }
     }
-  }
+  },
+  "type": "object"
 }
