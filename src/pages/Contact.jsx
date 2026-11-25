@@ -29,7 +29,7 @@ export default function Contact() {
   };
 
   const contacts = [
-    [MessageCircle, "WhatsApp", "Fastest reply · 9am–9pm", WHATSAPP],
+    [MessageCircle, "WhatsApp +971 54 546 9496", "Tap to chat · fastest reply, 9am–9pm", WHATSAPP],
     [Mail, "Email", "beyondwalls@linkzoneglobal.com", "mailto:beyondwalls@linkzoneglobal.com"],
     [MapPin, "Office", "in5, Dubai Internet City", "https://maps.google.com/?q=in5+Dubai+Internet+City"],
   ];
