@@ -4,11 +4,11 @@ import { Download } from "lucide-react";
 const SITEMAP_PAGES = [
   { url: "/Home", priority: "1.0", changefreq: "daily" },
   { url: "/About", priority: "0.8", changefreq: "monthly" },
-  { url: "/Services", priority: "0.9", changefreq: "weekly" },
+  { url: "/ForVenues", priority: "0.9", changefreq: "weekly" },
   { url: "/Contact", priority: "0.7", changefreq: "monthly" },
   { url: "/Blog", priority: "0.8", changefreq: "daily" },
   { url: "/ScreenLocations", priority: "0.9", changefreq: "daily" },
-  { url: "/HowItWorks", priority: "0.8", changefreq: "monthly" },
+  { url: "/ForAdvertisers", priority: "0.9", changefreq: "weekly" },
   { url: "/Register", priority: "0.9", changefreq: "monthly" },
   { url: "/Terms", priority: "0.3", changefreq: "yearly" },
   { url: "/Privacy", priority: "0.3", changefreq: "yearly" },

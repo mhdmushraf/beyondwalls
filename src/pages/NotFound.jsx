@@ -69,7 +69,7 @@ export default function NotFound() {
                 Browse Screens
               </Button>
             </Link>
-            <Link to={createPageUrl("HowItWorks")}>
+            <Link to={createPageUrl("ForAdvertisers")}>
               <Button variant="ghost" size="sm" className="text-violet-600 hover:text-violet-700 hover:bg-violet-50">
                 How It Works
               </Button>

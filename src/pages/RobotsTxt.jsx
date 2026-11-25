@@ -45,7 +45,10 @@ Allow: /Services
 Allow: /Contact
 Allow: /Blog
 Allow: /BlogPost
-Allow: /HowItWorks
+Allow: /ForAdvertisers
+Allow: /ForVenues
+Allow: /Pricing
+Allow: /BOne
 Allow: /Connect
 Allow: /HelpCenter
 Allow: /Privacy
