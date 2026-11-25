@@ -5,6 +5,9 @@ import { usePortal } from '@/lib/PortalContext';
 import { useOrgEntity, uid } from '@/lib/useOrgEntity';
 import { PageHeader, EmptyState, Toggle, Field, ScreenPicker } from '@/components/portal/ui';
 import { ListSkeleton } from '@/components/portal/Skeletons';
+import { useNavigate } from 'react-router-dom';
+import { useDraft, validate, rules, notifyError, notifySuccess } from '@/lib/states';
+import { DraftBanner, FieldError, ErrorState, SlowHint } from '@/components/states/StateViews';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -19,7 +22,10 @@ function mmss(sec) {
 
 export default function PortalPlaylists() {
   const { screens, venues } = usePortal();
-  const { items: playlists, loading, create, update, remove } = useOrgEntity('Playlist', { sort: 'created_date' });
+  const { items: playlists, loading, error, reload, create, update, remove, preview } = useOrgEntity('Playlist', { sort: 'created_date' });
+  const navigate = useNavigate();
+  const [base, setBase] = useState(null);
+  const [errors, setErrors] = useState({});
   const { items: media } = useOrgEntity('MediaAsset', { limit: 300 });
   const { items: menus } = useOrgEntity('MenuBoard');
   const [activeId, setActiveId] = useState(null);
@@ -33,7 +39,11 @@ export default function PortalPlaylists() {
     const copy = p ? JSON.parse(JSON.stringify(p)) : null;
     if (copy) copy.items = (copy.items || []).map((i) => ({ ...i, id: i.id || uid() }));
     setDraft(copy);
+    setBase(copy);
+    setErrors({});
   }, [activeId, playlists.length]);
+
+  const { restored, discard, clear } = useDraft(activeId ? `playlist:${activeId}` : null, draft, setDraft, { saved: base, enabled: !!base && !!draft });
 
   const set = (patch) => setDraft((d) => ({ ...d, ...patch }));
   const setItem = (id, patch) => setDraft((d) => ({ ...d, items: d.items.map((i) => (i.id === id ? { ...i, ...patch } : i)) }));
@@ -54,20 +64,35 @@ export default function PortalPlaylists() {
   }] }));
 
   const newPlaylist = async () => {
-    const rec = await create({ name: 'Morning loop', items: [], screen_ids: [], days_of_week: [], start_time: '', end_time: '', is_active: true, priority: 0 });
-    setActiveId(rec.id);
+    try {
+      const rec = await create({ name: 'Morning loop', items: [], screen_ids: [], days_of_week: [], start_time: '', end_time: '', is_active: true, priority: 0 });
+      setActiveId(rec.id);
+      notifySuccess('Playlist created', 'Add media or menus from the right, then pick screens.');
+    } catch (e) { notifyError(e, 'create the playlist', newPlaylist); }
   };
 
   const save = async () => {
+    if (!draft) return;
+    const errs = validate({ name: [rules.required('Playlist name'), rules.max('Playlist name', 40)] }, draft);
+    if (!(draft.items || []).length) errs.items = 'Add at least one image, video or menu.';
+    if ((draft.items || []).some((i) => !(Number(i.duration) > 0))) errs.items = 'Every item needs a time of at least 1 second.';
+    if (draft.start_time && draft.end_time && draft.start_time === draft.end_time) errs.time = 'Start and end time are the same — leave both empty to play all day.';
+    setErrors(errs);
+    if (Object.keys(errs).length) { toast.error('Fix the highlighted fields first', { description: Object.values(errs)[0] }); return; }
     setSaving(true);
     try {
       const { id, created_date, updated_date, created_by, created_by_id, org_id, org_member_user_ids, ...data } = draft; // eslint-disable-line no-unused-vars
       await update(activeId, data);
-      toast.success(`Saved · plays on ${data.screen_ids?.length || 0} screens`);
-    } catch (e) { toast.error('Could not save'); } finally { setSaving(false); }
+      clear();
+      setBase(draft);
+      const n = data.screen_ids?.length || 0;
+      if (n) notifySuccess(`Saved · plays on ${n} screens`, 'Screens pick it up within a minute.', { label: 'View screens', onClick: () => navigate('/app/screens') });
+      else notifySuccess('Saved', 'No screens picked yet — choose where it plays under "Show on".');
+    } catch (e) { notifyError(e, 'save the playlist', save); } finally { setSaving(false); }
   };
 
-  if (loading) return <ListSkeleton rows={4} />;
+  if (loading) return <div><SlowHint loading forced={preview === 'slow'} /><ListSkeleton rows={4} /></div>;
+  if (error && !playlists.length) return <div><PageHeader title="Playlists & schedules" /><ErrorState error={error} action="load your playlists" onRetry={reload} /></div>;
 
   if (!playlists.length) {
     return (
