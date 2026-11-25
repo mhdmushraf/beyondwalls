@@ -46,11 +46,17 @@ export default async function (req: Request) {
     const { hm, dow } = dubaiNow();
     const nowIso = new Date().toISOString();
 
-    const [urgentPage, playlistPage, menuPage] = await Promise.all([
-      svc.UrgentMessage.filter({ screen_ids: screen.id, status: "live" }, { sort: "-created_date", limit: 5 }),
-      svc.Playlist.filter({ screen_ids: screen.id, is_active: true }, { sort: "-updated_date", limit: 20 }),
-      svc.MenuBoard.filter({ screen_ids: screen.id }, { sort: "-updated_date", limit: 10 }),
+    // Filter by business, then by screen in code (array membership).
+    const org = screen.org_id || "__none__";
+    const onScreen = (r: any) => (r.screen_ids || []).includes(screen.id);
+    const [urgentAll, playlistAll, menuAll] = await Promise.all([
+      svc.UrgentMessage.filter({ org_id: org, status: "live" }, { sort: "-created_date", limit: 50 }),
+      svc.Playlist.filter({ org_id: org }, { sort: "-updated_date", limit: 100 }),
+      svc.MenuBoard.filter({ org_id: org }, { sort: "-updated_date", limit: 100 }),
     ]);
+    const urgentPage = list(urgentAll).filter(onScreen);
+    const playlistPage = list(playlistAll).filter((p: any) => onScreen(p) && p.is_active !== false);
+    const menuPage = list(menuAll).filter(onScreen);
 
     const urgent = list(urgentPage).find((m: any) =>
       (!m.starts_at || m.starts_at <= nowIso) && (!m.ends_at || m.ends_at > nowIso)) || null;
