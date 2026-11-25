@@ -188,11 +188,11 @@ function Stepper({ label, value, display, onChange, min, max, step = 1 }) {
   );
 }
 
-export function EarningsCalculator() {
-  const [screens, setScreens] = useState(2);
-  const [slots, setSlots] = useState(3);
-  const [price, setPrice] = useState(PRICING.advertiseFrom);
-  const [booked, setBooked] = useState(70);
+export function EarningsCalculator({ defaults = {} }) {
+  const [screens, setScreens] = useState(defaults.screens ?? 2);
+  const [slots, setSlots] = useState(defaults.slots ?? 3);
+  const [price, setPrice] = useState(defaults.price ?? PRICING.advertiseFrom);
+  const [booked, setBooked] = useState(defaults.booked ?? 70);
   const share = PRICING.venueShare / 100;
   const monthly = Math.round(screens * slots * price * (booked / 100) * share * 4);
   const fee = screens * PRICING.signageAds;
