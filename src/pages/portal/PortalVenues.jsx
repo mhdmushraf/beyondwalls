@@ -89,7 +89,7 @@ export default function PortalVenues() {
                     </div>
                   </div>
 
-                  {status === 'rejected' && venue.rejection_reason && <p className="mt-2 rounded-lg bg-rose-50 px-2 py-1.5 text-[11px] text-rose-700">Not approved: {venue.rejection_reason} — edit and save to send it again.</p>}
+                  {status === 'rejected' && venue.rejection_reason && <p className="mt-2 rounded-lg bg-rose-50 px-2 py-1.5 text-[11px] text-rose-700">Not approved: {venue.rejection_reason} — fix the details, then tap Help & support so we review it again.</p>}
                   {status === 'pending' && <p className="mt-2 text-[11px] text-amber-700">In review — usually under 24 hours.</p>}
                   <p className="mt-3 flex items-start gap-1.5 text-[11px] text-bw-muted">
                     <MapPin className="h-3.5 w-3.5 mt-0.5 shrink-0" />

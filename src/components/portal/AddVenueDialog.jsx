@@ -121,7 +121,7 @@ export default function AddVenueDialog({ open, onOpenChange, venue = null }) {
         peak_hours: form.peak_hours,
       };
       if (venue) {
-        await base44.entities.Venue.update(venue.id, venue.approval_status === 'rejected' ? { ...data, approval_status: 'pending', status: 'pending' } : data);
+        await base44.entities.Venue.update(venue.id, data);
         clear(); reload(); onOpenChange(false);
         notifySuccess(`${data.name} saved`, 'Advertisers see the updated details in the marketplace.');
         return;
