@@ -30,9 +30,6 @@ function AssignList({ title, icon: Icon, items, screenId, onToggle, empty, to, s
   );
 }
 
-import { validate, rules, notifyError, notifySuccess, isOnline } from '@/lib/states';
-import { FieldError } from '@/components/states/StateViews';
-
 export default function PortalScreenDetail() {
   const { screenId } = useParams();
   const { screens, venues, loadingData, reload } = usePortal();
@@ -149,8 +146,8 @@ export default function PortalScreenDetail() {
           {form && (
             <div className="bw-card p-4 space-y-3">
               <p className="text-[14px] font-bold text-bw-navy">Settings</p>
-              <Field label="Name"><input className="bw-input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></Field>
-              <Field label="Where is it?"><input className="bw-input" value={form.position_label} onChange={(e) => setForm({ ...form, position_label: e.target.value })} /></Field>
+              <Field label="Name"><input className="bw-input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /><FieldError msg={errors.name} /></Field>
+              <Field label="Where is it?"><input className="bw-input" value={form.position_label} onChange={(e) => setForm({ ...form, position_label: e.target.value })} /><FieldError msg={errors.position_label} /></Field>
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Orientation"><select className="bw-input" value={form.orientation} onChange={(e) => setForm({ ...form, orientation: e.target.value })}><option value="landscape">Landscape</option><option value="portrait">Portrait</option></select></Field>
                 <Field label="Mode"><select className="bw-input" value={form.mode} onChange={(e) => setForm({ ...form, mode: e.target.value })}>{SCREEN_MODES.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}</select></Field>
