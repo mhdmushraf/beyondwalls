@@ -115,7 +115,37 @@ export default async function (req: Request) {
       }
     }
 
+    // Marketplace ads: paid bookings with an approved ad, inside their dates (Dubai day).
+    let adCount = 0;
+    if ((screen.mode || "signage_ads") !== "signage_only") {
+      const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Dubai" }).format(new Date());
+      const booked = list(await svc.AdBooking.filter({ screen_id: screen.id, status: "active" }, { limit: 50 }))
+        .filter((b: any) => b.creative_status === "approved" && b.creative_url && b.start_date <= today && b.end_date >= today);
+      const ads: any[] = [];
+      for (const b of booked) {
+        const url = await resolveMediaUrl(base44, b.creative_url);
+        if (url) ads.push({ id: `ad-${b.id}`, kind: "media", url, type: b.creative_type || "image", duration: Number(screen.slot_duration) || 15, ad: true, booking_id: b.id });
+      }
+      adCount = ads.length;
+      if (ads.length) {
+        if (!items.length || (screen.mode || "") === "ads_only") {
+          items = [...ads, ...items];
+        } else {
+          // One ad after every two of the venue's own items, cycling through the ads.
+          const mixed: any[] = [];
+          let a = 0;
+          items.forEach((it, i) => {
+            mixed.push(it);
+            if (i % 2 === 1) { mixed.push(ads[a % ads.length]); a += 1; }
+          });
+          while (a < ads.length) { mixed.push(ads[a]); a += 1; }
+          items = mixed;
+        }
+      }
+    }
+
     return Response.json({
+      ads: adCount,
       screen: {
         id: screen.id,
         name: screen.name,
