@@ -44,6 +44,13 @@ export default async function (req: Request) {
     const creativeType = body.creative_type === "video" ? "video" : "image";
     if (!creativeUrl) return bad("Upload your ad (image or video).", "creative_url");
 
+    let client: any = null;
+    if (body.client_id) {
+      client = await svc.Client.get(String(body.client_id)).catch(() => null);
+      if (!client || client.agency_org_id !== org.id) return bad("That client isn't one of your agency's clients.", "client_id", 403);
+      if (client.status === "archived") return bad("That client is archived. Restore it first.", "client_id");
+    }
+
     const ids: string[] = [...new Set((Array.isArray(body.screen_ids) ? body.screen_ids : []).map(String))];
     if (!ids.length) return bad("Pick at least one screen.", "screen_ids");
     if (ids.length > 50) return bad("Book up to 50 screens at a time.", "screen_ids");
@@ -66,26 +73,33 @@ export default async function (req: Request) {
     });
     if (problems.length) return Response.json({ error: `${problems.join('; ')}. Remove ${problems.length === 1 ? 'it' : 'them'} or pick other dates.`, field: "screen_ids", unavailable: problems }, { status: 409 });
 
-    const platformPct = 100 - settings.venueSharePct;
+    // Platform share per venue business: its own commission_rate (Connect partners 15, partner venues 40/50), else the default.
+    const pctFor = (orgId: string) => {
+      const o: any = venueOrgById.get(orgId);
+      const n = Number(o?.commission_rate);
+      return Number.isFinite(n) && n >= 0 && n <= 100 && o?.commission_rate !== undefined && o?.commission_rate !== null ? n : 100 - settings.venueSharePct;
+    };
     const lines: any[] = [];
+    const forClient = client ? ` · for ${client.name}` : "";
     const rows = screens.map((s: any) => {
       const v = venueById.get(s.venue_id);
+      const platformPct = pctFor(v.org_id);
       const price = screenPrice(s, settings);
       const total = r2(price * weeks);
       const fee = r2((total * platformPct) / 100);
       lines.push({
-        description: `Screen ad · ${v.name} · ${s.name} · ${weeks} wk (${start} → ${end})`,
+        description: `Screen ad · ${v.name} · ${s.name} · ${weeks} wk (${start} → ${end})${forClient}`,
         description_ar: `إعلان على شاشة · ${v.name} · ${weeks} أسبوع`,
         qty: weeks, unit_price: price, amount: total,
       });
-      return { s, v, price, total, fee };
+      return { s, v, price, total, fee, platformPct };
     });
     const subtotal = r2(rows.reduce((a, r) => a + r.total, 0));
     const vat = r2((subtotal * settings.vatPct) / 100);
     const grand = r2(subtotal + vat);
 
     const campaign = await svc.Campaign.create({
-      name, goal: body.goal || "brand_awareness", description: String(body.description || "").slice(0, 1000),
+      name, goal: body.goal || "brand_awareness", client_id: client?.id || "", client_name: client?.name || "", deal_type: "marketplace", description: String(body.description || "").slice(0, 1000),
       org_id: org.id, org_name: org.name, advertiser_email: user.email, advertiser_member_user_ids: members,
       status: "pending_approval", payment_status: "unpaid", approval_status: "pending",
       start_date: start, end_date: end, weeks, subtotal, vat, total_budget: grand,
@@ -106,13 +120,13 @@ export default async function (req: Request) {
       const venueOrg: any = venueOrgById.get(r.v.org_id) || {};
       const auto = venueOrg.auto_approve_creative === true;
       bookings.push(await svc.AdBooking.create({
-        campaign_id: campaign.id, campaign_name: name, invoice_id: invoice.id,
+        campaign_id: campaign.id, campaign_name: name, invoice_id: invoice.id, deal_type: "marketplace", client_id: client?.id || "", client_name: client?.name || "",
         screen_id: r.s.id, screen_name: r.s.name, venue_id: r.v.id, venue_name: r.v.name,
         org_id: r.v.org_id, venue_member_user_ids: r.v.org_member_user_ids || [], venue_owner_email: r.v.owner_email || "",
-        advertiser_email: user.email, advertiser_org_id: org.id, advertiser_org_name: org.name, advertiser_member_user_ids: members,
+        advertiser_email: user.email, advertiser_org_id: org.id, advertiser_org_name: client ? `${client.name} (via ${org.name})` : org.name, advertiser_member_user_ids: members,
         creative_url: creativeUrl, creative_type: creativeType,
         start_date: start, end_date: end, weeks, slots_booked: 1, price_per_week: r.price, total_amount: r.total,
-        commission_rate_snapshot: platformPct, platform_fee: r.fee, venue_earnings: r2(r.total - r.fee),
+        commission_rate_snapshot: r.platformPct, platform_fee: r.fee, venue_earnings: r2(r.total - r.fee),
         status: "pending_payment", creative_status: auto ? "approved" : "pending_review",
         ...(auto ? { creative_reviewed_at: issued.toISOString(), creative_reviewed_by: "auto" } : {}),
       }));
