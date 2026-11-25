@@ -49,11 +49,13 @@ export default async function (req: Request) {
     // Filter by business, then by screen in code (array membership).
     const org = screen.org_id || "__none__";
     const onScreen = (r: any) => (r.screen_ids || []).includes(screen.id);
-    const [urgentAll, playlistAll, menuAll] = await Promise.all([
+    const [urgentAll, playlistAll, menuAll, qrAll] = await Promise.all([
       svc.UrgentMessage.filter({ org_id: org, status: "live" }, { sort: "-created_date", limit: 50 }),
       svc.Playlist.filter({ org_id: org }, { sort: "-updated_date", limit: 100 }),
       svc.MenuBoard.filter({ org_id: org }, { sort: "-updated_date", limit: 100 }),
+      svc.QRCode.filter({ org_id: org }, { sort: "-updated_date", limit: 50 }),
     ]);
+    const qr = list(qrAll).find((q: any) => onScreen(q) && q.is_active !== false && q.target_url) || null;
     const urgentPage = list(urgentAll).filter(onScreen);
     const playlistPage = list(playlistAll).filter((p: any) => onScreen(p) && p.is_active !== false);
     const menuPage = list(menuAll).filter(onScreen);
@@ -127,6 +129,7 @@ export default async function (req: Request) {
         id: urgent.id, text_en: urgent.text_en, text_ar: urgent.text_ar, subtext: urgent.subtext,
         style: urgent.style, ends_at: urgent.ends_at, sound: urgent.sound,
       },
+      qr: qr && { id: qr.id, label: qr.label || "", position: qr.position || "bottom_right" },
       house: {
         title: "Advertise here",
         subtitle: "beyondwalls.ae",
