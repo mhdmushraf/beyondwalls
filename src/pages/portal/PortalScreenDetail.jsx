@@ -1,258 +1,159 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
-import {
-  ArrowLeft, RotateCcw, EyeOff, Eye, RefreshCw, Upload, Check, MonitorPlay, Wifi,
-} from 'lucide-react';
+import { ArrowLeft, RotateCcw, Power, RefreshCw, MonitorPlay, Siren, ListVideo, UtensilsCrossed, QrCode, Save, Loader2, Camera } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { usePortal } from '@/lib/PortalContext';
-import { useI18n } from '@/lib/i18n';
-import { useSignedUrl, uploadPublic, formatDateTime, timeAgo, SCREEN_MODES } from '@/lib/portalData';
+import { useOrgEntity } from '@/lib/useOrgEntity';
+import { useSignedUrl, uploadPublic, formatDateTime, timeAgo, SCREEN_MODES, PLAYER_TYPES } from '@/lib/portalData';
 import { PageSkeleton } from '@/components/portal/Skeletons';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Toggle, Field } from '@/components/portal/ui';
+import { screenState } from './PortalScreens';
 
-const fieldClass = 'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring';
+function AssignList({ title, icon: Icon, items, screenId, onToggle, empty, to, sub }) {
+  return (
+    <div className="bw-card p-4">
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-[14px] font-bold text-bw-navy flex items-center gap-2"><Icon className="h-4 w-4 text-bw-coral" />{title}</p>
+        <Link to={to} className="text-[12px] font-semibold text-bw-coral">Manage</Link>
+      </div>
+      {items.length === 0 ? <p className="text-[12px] text-bw-muted py-2">{empty}</p> : items.map((it) => (
+        <div key={it.id} className="flex items-center gap-3 py-2 border-t border-bw-line first:border-0">
+          <div className="flex-1 min-w-0">
+            <p className="text-[13px] font-semibold text-bw-navy truncate">{it.name || it.label}</p>
+            <p className="text-[11px] text-bw-muted truncate">{sub(it)}</p>
+          </div>
+          <Toggle checked={(it.screen_ids || []).includes(screenId)} onChange={(v) => onToggle(it, v)} />
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function PortalScreenDetail() {
   const { screenId } = useParams();
-  const { t, lang } = useI18n();
   const { screens, venues, loadingData, reload } = usePortal();
-  const screen = screens.find((item) => item.id === screenId);
-  const venue = venues.find((item) => item.id === screen?.venue_id);
+  const screen = screens.find((s) => s.id === screenId);
+  const venue = venues.find((v) => v.id === screen?.venue_id);
   const snapshot = useSignedUrl(screen?.last_snapshot_url);
-
+  const playlists = useOrgEntity('Playlist', { sort: 'created_date' });
+  const menus = useOrgEntity('MenuBoard', { sort: 'created_date' });
+  const qrs = useOrgEntity('QRCode', { sort: 'created_date' });
   const [form, setForm] = useState(null);
   const [busy, setBusy] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [blanked, setBlanked] = useState(false);
 
   useEffect(() => {
     if (screen && !form) {
-      setForm({
-        name: screen.name || '',
-        position_label: screen.position_label || '',
-        orientation: screen.orientation || 'landscape',
-        mode: screen.mode || 'signage_ads',
-        screen_image_url: screen.screen_image_url || '',
-      });
+      setForm({ name: screen.name || '', position_label: screen.position_label || '', orientation: screen.orientation || 'landscape', mode: screen.mode || 'signage_ads', screen_image_url: screen.screen_image_url || '' });
+      setBlanked((screen.player_command || '').startsWith('blank'));
     }
   }, [screen, form]);
 
-  if (loadingData && !screen) return <PageSkeleton />;
+  useEffect(() => { const id = setInterval(reload, 30000); return () => clearInterval(id); }, [reload]);
 
+  if (loadingData && !screen) return <PageSkeleton />;
   if (!screen) {
     return (
-      <div className="rounded-2xl border border-bw-line bg-white p-10 text-center">
-        <p className="text-sm text-bw-muted">{t('screens.empty')}</p>
-        <Link to="/app/screens" className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-bw-coral hover:underline">
-          <ArrowLeft className="h-4 w-4" />
-          {t('nav.screens')}
-        </Link>
+      <div className="bw-card p-10 text-center">
+        <p className="text-sm text-bw-muted">Screen not found.</p>
+        <Link to="/app/screens" className="mt-4 inline-flex items-center gap-2 text-[13px] font-semibold text-bw-coral"><ArrowLeft className="h-4 w-4" />Screens</Link>
       </div>
     );
   }
 
-  const sendCommand = async (action) => {
+  const state = screenState(screen);
+  const cmd = async (action, msg) => {
     await base44.entities.Screen.update(screen.id, { player_command: `${action}:${Date.now()}` });
-    toast.success(t('screens.commandSent'));
+    toast.success(msg || 'Sent — the TV picks it up within 15 seconds');
   };
-
-  const save = async (event) => {
-    event.preventDefault();
+  const toggleAssign = (hook) => async (it, on) => {
+    const ids = new Set(it.screen_ids || []);
+    if (on) ids.add(screen.id); else ids.delete(screen.id);
+    await hook.update(it.id, { screen_ids: [...ids] });
+  };
+  const save = async () => {
     setBusy(true);
-    try {
-      await base44.entities.Screen.update(screen.id, form);
-      reload();
-      toast.success(t('screens.saved'));
-    } finally {
-      setBusy(false);
-    }
+    try { await base44.entities.Screen.update(screen.id, form); reload(); toast.success('Saved'); } finally { setBusy(false); }
   };
 
-  const uploadPhoto = async (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    try {
-      const url = await uploadPublic(file);
-      setForm((prev) => ({ ...prev, screen_image_url: url }));
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const commands = [
-    { action: 'restart', label: t('screens.restart'), icon: RotateCcw },
-    { action: 'blank', label: t('screens.blank'), icon: EyeOff },
-    { action: 'unblank', label: t('screens.unblank'), icon: Eye },
-    { action: 'refresh', label: t('screens.refresh'), icon: RefreshCw },
-  ];
+  const chip = { online: ['bg-emerald-50 text-emerald-700', 'Online'], offline: ['bg-rose-50 text-rose-600', 'Offline'], unpaired: ['bg-amber-50 text-amber-700', 'Not paired'] }[state];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div>
-        <Link to="/app/screens" className="inline-flex items-center gap-1.5 text-xs font-semibold text-bw-muted hover:text-bw-navy">
-          <ArrowLeft className="h-3.5 w-3.5" />
-          {t('nav.screens')}
-        </Link>
+        <Link to="/app/screens" className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-bw-muted hover:text-bw-navy"><ArrowLeft className="h-3.5 w-3.5" />Screens</Link>
         <div className="mt-2 flex flex-wrap items-center gap-3">
-          <h1 className="text-xl md:text-2xl font-semibold text-bw-navy">{screen.name}</h1>
-          <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium ${
-            screen.is_online ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-rose-50 text-rose-700 border-rose-100'
-          }`}>
-            <span className={`h-1.5 w-1.5 rounded-full ${screen.is_online ? 'bg-emerald-500' : 'bg-rose-500'}`} />
-            {screen.is_online ? t('screens.online') : t('screens.offline')}
-          </span>
+          <h1 className="text-[26px] font-bold text-bw-navy">{screen.name}</h1>
+          <span className={`bw-chip ${chip[0]}`}><span className="h-1.5 w-1.5 rounded-full bg-current" />{chip[1]}</span>
+          <span className="bw-chip bg-bw-lav text-bw-coral">{SCREEN_MODES.find((m) => m.value === screen.mode)?.label}</span>
         </div>
-        <p className="mt-1 text-sm text-bw-muted">
-          {venue?.name || '—'} · {screen.position_label || '—'}
-        </p>
+        <p className="mt-1 text-[13px] text-bw-muted">{venue?.name || '—'} · {screen.position_label || '—'} · {PLAYER_TYPES.find((p) => p.value === screen.player_type)?.label || 'Player'}</p>
       </div>
 
-      <div className="grid lg:grid-cols-5 gap-4">
-        <div className="lg:col-span-3 rounded-2xl border border-bw-line bg-white overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3 border-b border-bw-line">
-            <p className="text-sm font-semibold text-bw-navy">{t('screens.snapshot')}</p>
-            <button type="button" onClick={reload} className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-bw-muted hover:text-bw-navy">
-              <RefreshCw className="h-3.5 w-3.5" />
-              {t('common.view')}
-            </button>
-          </div>
-          <div className="aspect-video bg-bw-navy/95">
-            {snapshot ? (
-              <img src={snapshot} alt={screen.name} className="h-full w-full object-contain" />
-            ) : (
-              <div className="h-full w-full flex flex-col items-center justify-center gap-2 text-white/40">
-                <MonitorPlay className="h-8 w-8" />
-                <span className="text-xs">{t('screens.noSnapshot')}</span>
-              </div>
-            )}
-          </div>
-          <div className="grid grid-cols-2 gap-3 px-5 py-4 border-t border-bw-line">
-            <div>
-              <p className="text-[11px] text-bw-muted">{t('screens.playing')}</p>
-              <p className="text-xs font-medium text-bw-navy truncate">{screen.current_item || '—'}</p>
+      <div className="grid xl:grid-cols-[1fr_380px] gap-5">
+        <div className="space-y-5">
+          <div className="bw-card overflow-hidden">
+            <div className="relative aspect-video bg-bw-navy">
+              {snapshot ? <img src={snapshot} alt="" className="h-full w-full object-contain" />
+                : <div className="h-full w-full flex flex-col items-center justify-center gap-2 text-white/40"><MonitorPlay className="h-9 w-9" /><span className="text-[12px]">A live snapshot appears here every 5 minutes</span></div>}
+              <span className="absolute top-3 start-3 bw-chip bg-black/60 text-white">Live view</span>
             </div>
-            <div>
-              <p className="text-[11px] text-bw-muted">{t('screens.lastHeartbeat')}</p>
-              <p className="text-xs font-medium text-bw-navy">
-                {screen.last_heartbeat ? `${timeAgo(screen.last_heartbeat, lang)} · ${formatDateTime(screen.last_heartbeat, lang)}` : t('dashboard.never')}
-              </p>
+            <div className="grid grid-cols-3 gap-3 p-4">
+              <div><p className="text-[11px] text-bw-muted">Now playing</p><p className="text-[13px] font-semibold text-bw-navy truncate">{screen.current_item || '—'}</p></div>
+              <div><p className="text-[11px] text-bw-muted">Last check-in</p><p className="text-[13px] font-semibold text-bw-navy">{screen.last_heartbeat ? timeAgo(screen.last_heartbeat) : 'never'}</p></div>
+              <div><p className="text-[11px] text-bw-muted">Uptime</p><p className="text-[13px] font-semibold text-bw-navy">{screen.uptime_seconds ? `${Math.round(screen.uptime_seconds / 3600)} h` : '—'}</p></div>
             </div>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-4">
+            <AssignList title="Playlists" icon={ListVideo} items={playlists.items} screenId={screen.id} onToggle={toggleAssign(playlists)} to="/app/playlists"
+              empty="No playlists yet." sub={(p) => `${(p.items || []).length} items${p.start_time ? ` · ${p.start_time}–${p.end_time || '24:00'}` : ' · all day'}`} />
+            <AssignList title="Menus" icon={UtensilsCrossed} items={menus.items} screenId={screen.id} onToggle={toggleAssign(menus)} to="/app/menus"
+              empty="No menus yet." sub={(m) => `${(m.items || []).length} items`} />
+            <AssignList title="QR overlay" icon={QrCode} items={qrs.items} screenId={screen.id} onToggle={toggleAssign(qrs)} to="/app/qr"
+              empty="No QR codes yet." sub={(q) => `${q.scans || 0} scans`} />
           </div>
         </div>
 
-        <div className="lg:col-span-2 space-y-4">
-          <div className="rounded-2xl border border-bw-line bg-white p-5">
-            <p className="text-sm font-semibold text-bw-navy">Controls</p>
-            <div className="mt-3 grid grid-cols-2 gap-2">
-              {commands.map((command) => {
-                const Icon = command.icon;
-                return (
-                  <button
-                    key={command.action}
-                    type="button"
-                    onClick={() => sendCommand(command.action)}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-bw-line px-3 py-2.5 text-[11px] font-semibold text-bw-navy hover:bg-bw-cream"
-                  >
-                    <Icon className="h-3.5 w-3.5" />
-                    {command.label}
-                  </button>
-                );
-              })}
+        <div className="space-y-5">
+          <div className="bw-card p-4">
+            <p className="text-[14px] font-bold text-bw-navy mb-3">Controls</p>
+            <div className="grid grid-cols-2 gap-2">
+              <button type="button" className="bw-btn bw-btn-ghost" onClick={() => cmd('refresh', 'Content refreshing')}><RefreshCw className="h-4 w-4" />Reload</button>
+              <button type="button" className="bw-btn bw-btn-ghost" onClick={() => cmd('restart', 'Restarting player')}><RotateCcw className="h-4 w-4" />Restart</button>
+              <button type="button" className={`bw-btn ${blanked ? 'bw-btn-primary' : 'bw-btn-ghost'}`} onClick={() => { cmd(blanked ? 'unblank' : 'blank', blanked ? 'Screen on' : 'Screen off'); setBlanked(!blanked); }}><Power className="h-4 w-4" />{blanked ? 'Turn on' : 'Screen off'}</button>
+              <Link to="/app/urgent" className="bw-btn bw-btn-danger"><Siren className="h-4 w-4" />Urgent</Link>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-bw-line bg-white p-5">
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-bw-navy">{t('screens.tabGenerate')}</p>
-              <Wifi className={`h-4 w-4 ${screen.paired_device_id ? 'text-emerald-500' : 'text-amber-400'}`} />
+          {!screen.paired_device_id && (
+            <div className="bw-card p-4">
+              <p className="text-[14px] font-bold text-bw-navy">Pair this screen</p>
+              <p className="text-[12px] text-bw-muted">Open {window.location.origin}/player on the TV and type:</p>
+              <div className="mt-2 flex gap-1.5">{(screen.pairing_code || '------').split('').map((c, i) => <span key={i} className="h-10 w-9 rounded-lg bw-grad text-white text-[16px] font-bold flex items-center justify-center">{c}</span>)}</div>
             </div>
+          )}
 
-            {screen.paired_device_id ? (
-              <p className="mt-2 text-[11px] text-bw-muted break-all">
-                Device {screen.paired_device_id.slice(0, 8)}… · {screen.paired_at ? formatDateTime(screen.paired_at, lang) : '—'}
-              </p>
-            ) : (
-              <div className="mt-3">
-                <p className="text-[11px] text-bw-muted">{t('screens.codeTitle')}</p>
-                <div className="mt-2 flex gap-1.5">
-                  {(screen.pairing_code || '------').split('').map((char, index) => (
-                    <span key={index} className="h-9 w-8 rounded-lg bg-bw-navy text-white text-sm font-semibold flex items-center justify-center">
-                      {char}
-                    </span>
-                  ))}
-                </div>
-                <p className="mt-2 text-[11px] text-bw-muted">{t('screens.codeHelp')}</p>
+          {form && (
+            <div className="bw-card p-4 space-y-3">
+              <p className="text-[14px] font-bold text-bw-navy">Settings</p>
+              <Field label="Name"><input className="bw-input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></Field>
+              <Field label="Where is it?"><input className="bw-input" value={form.position_label} onChange={(e) => setForm({ ...form, position_label: e.target.value })} /></Field>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Orientation"><select className="bw-input" value={form.orientation} onChange={(e) => setForm({ ...form, orientation: e.target.value })}><option value="landscape">Landscape</option><option value="portrait">Portrait</option></select></Field>
+                <Field label="Mode"><select className="bw-input" value={form.mode} onChange={(e) => setForm({ ...form, mode: e.target.value })}>{SCREEN_MODES.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}</select></Field>
               </div>
-            )}
-          </div>
+              <div className="flex items-center gap-3">
+                {form.screen_image_url ? <img src={form.screen_image_url} alt="" className="h-12 w-16 rounded-lg object-cover" /> : <span className="h-12 w-16 rounded-lg bg-bw-cream flex items-center justify-center"><Camera className="h-4 w-4 text-bw-muted" /></span>}
+                <label className="bw-btn bw-btn-ghost !py-1.5 cursor-pointer">Photo of the screen<input type="file" accept="image/*" className="hidden" onChange={async (e) => { const f = e.target.files?.[0]; if (f) setForm({ ...form, screen_image_url: await uploadPublic(f) }); }} /></label>
+              </div>
+              <button type="button" className="bw-btn bw-btn-primary w-full" onClick={save} disabled={busy}>{busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}Save</button>
+              {screen.paired_at && <p className="text-[11px] text-bw-muted">Paired {formatDateTime(screen.paired_at)} · device {String(screen.paired_device_id).slice(0, 8)}</p>}
+            </div>
+          )}
         </div>
       </div>
-
-      <form onSubmit={save} className="rounded-2xl border border-bw-line bg-white p-5 space-y-4">
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <Label htmlFor="name">{t('screens.rename')}</Label>
-            <Input id="name" value={form?.name || ''} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="position">{t('screens.position')}</Label>
-            <Input
-              id="position"
-              value={form?.position_label || ''}
-              onChange={(e) => setForm({ ...form, position_label: e.target.value })}
-              placeholder="Front counter"
-            />
-          </div>
-        </div>
-
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <Label htmlFor="orientation">{t('screens.orientation')}</Label>
-            <select id="orientation" className={fieldClass} value={form?.orientation || 'landscape'} onChange={(e) => setForm({ ...form, orientation: e.target.value })}>
-              <option value="landscape">{t('screens.orientationLandscape')}</option>
-              <option value="portrait">{t('screens.orientationPortrait')}</option>
-            </select>
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="mode">{t('screens.mode')}</Label>
-            <select id="mode" className={fieldClass} value={form?.mode || 'signage_ads'} onChange={(e) => setForm({ ...form, mode: e.target.value })}>
-              {SCREEN_MODES.map((option) => (
-                <option key={option.value} value={option.value}>{option.label}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className="space-y-1.5">
-          <Label>{t('screens.photo')}</Label>
-          <div className="flex items-center gap-3">
-            {form?.screen_image_url ? (
-              <img src={form.screen_image_url} alt="" className="h-14 w-20 rounded-lg object-cover border border-bw-line" />
-            ) : (
-              <div className="h-14 w-20 rounded-lg bg-bw-cream border border-bw-line flex items-center justify-center">
-                <MonitorPlay className="h-5 w-5 text-bw-navy/30" />
-              </div>
-            )}
-            <label className="inline-flex items-center gap-2 rounded-xl border border-bw-line px-3 py-2 text-xs font-semibold text-bw-navy cursor-pointer hover:bg-bw-cream">
-              {uploading ? <Check className="h-4 w-4 text-emerald-500" /> : <Upload className="h-4 w-4" />}
-              {uploading ? t('common.uploading') : t('common.upload') || 'Upload'}
-              <input type="file" accept="image/*" className="hidden" onChange={uploadPhoto} />
-            </label>
-          </div>
-        </div>
-
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            disabled={busy}
-            className="rounded-xl bg-bw-coral px-5 py-2.5 text-sm font-semibold text-white hover:bg-bw-coral/90 disabled:opacity-60"
-          >
-            {busy ? t('common.loading') : t('common.save')}
-          </button>
-        </div>
-      </form>
     </div>
   );
 }
