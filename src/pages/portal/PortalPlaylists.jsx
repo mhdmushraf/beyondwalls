@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Plus, Trash2, ArrowUp, ArrowDown, ListVideo, Loader2, Film, Image as ImageIcon, UtensilsCrossed, Clock, Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { usePortal } from '@/lib/PortalContext';

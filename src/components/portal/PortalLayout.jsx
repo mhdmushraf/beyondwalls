@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink, Outlet, Navigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Store, MonitorPlay, LogOut, Menu, X, Megaphone, Image as ImageIcon,

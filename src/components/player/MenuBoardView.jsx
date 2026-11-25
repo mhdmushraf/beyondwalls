@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export const MENU_THEMES = {
   night: { bg: '#15112B', text: '#FFFFFF', sub: '#B9B3D6', price: '#FFCC33', accent: '#6F3FFD', highlight: 'rgba(111,63,253,.35)' },

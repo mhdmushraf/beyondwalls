@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Upload, Image as ImageIcon, Film, Trash2, Search, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/lib/AuthContext';

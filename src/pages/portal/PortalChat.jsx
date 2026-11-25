@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Send, Plus, Check, X, Paperclip, Loader2, Hash, ClipboardCheck } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Send, Check, X, Paperclip, Loader2, Hash, ClipboardCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/lib/AuthContext';
 import { usePortal } from '@/lib/PortalContext';

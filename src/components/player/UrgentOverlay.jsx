@@ -1,4 +1,3 @@
-import React from 'react';
 
 const STYLES = {
   urgent: ['#E5484D', '#8C141F', '#FFD7D9'],

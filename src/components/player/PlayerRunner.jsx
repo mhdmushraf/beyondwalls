@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import MenuBoardView from './MenuBoardView';
 import UrgentOverlay from './UrgentOverlay';

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Tv, Box, Monitor, Globe, Flame, Copy, MessageCircle, ArrowLeft, Check, AlertCircle, Loader2, ListVideo, UtensilsCrossed, QrCode, SlidersHorizontal, PartyPopper } from 'lucide-react';
+import { Tv, Box, Monitor, Globe, Copy, MessageCircle, ArrowLeft, Check, AlertCircle, Loader2, ListVideo, UtensilsCrossed, QrCode, SlidersHorizontal, PartyPopper } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { base44 } from '@/api/base44Client';
 import { usePortal } from '@/lib/PortalContext';
