@@ -5,6 +5,7 @@ import {
   UtensilsCrossed, ListVideo, Siren, MessagesSquare, Search, Bell, MessageCircle, MoreHorizontal, QrCode, Receipt, LifeBuoy, ShieldCheck, ShoppingBag, Inbox,
 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
+import NotificationBell from '@/components/portal/NotificationBell';
 import { PortalProvider, usePortal } from '@/lib/PortalContext';
 import { useI18n } from '@/lib/i18n';
 import { base44 } from '@/api/base44Client';
@@ -232,10 +233,7 @@ function PortalShell() {
           <div className="md:hidden flex-1"><BrandMark /></div>
           <div className="flex-1 hidden md:block" />
           <LanguageToggle />
-          <button type="button" className="relative h-9 w-9 rounded-xl border border-bw-line bg-white flex items-center justify-center text-bw-navy">
-            <Bell className="h-4 w-4" />
-            {offline > 0 && <span className="absolute top-1.5 end-1.5 h-2 w-2 rounded-full bg-rose-500" />}
-          </button>
+          <NotificationBell user={user} extraDot={offline > 0} />
           <div className="hidden md:flex items-center gap-2.5">
             <span className="h-9 w-9 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 text-white text-sm font-semibold flex items-center justify-center">{initial}</span>
             <div className="leading-tight">
