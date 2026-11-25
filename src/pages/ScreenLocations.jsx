@@ -147,10 +147,10 @@ export default function ScreenLocations() {
               </>
             )}
           </div>
-          <div className={`flex-1 min-h-[480px] lg:min-h-[640px] rounded-[24px] overflow-hidden border border-[#eceaf3] bg-white ${view === "list" ? "hidden lg:block" : ""}`}>
+          <div className={`flex-1 min-w-0 ${view === "list" ? "hidden lg:block" : ""}`}>
             {screens ? (
-              <ScreensMap screens={shown} selected={active ? shown.filter((s) => s.venue.id === active).map((s) => s.id) : []} onToggle={(id) => { const s = shown.find((x) => x.id === id); if (s) setActive(s.venue.id); }} />
-            ) : <div className="w-full h-full min-h-[480px] bg-[#efedf6] animate-pulse" />}
+              <ScreensMap pickLabel="Show in list" heightClass="h-[480px] lg:h-[640px]" screens={shown} selected={active ? shown.filter((s) => s.venue.id === active).map((s) => s.id) : []} onToggle={(id) => { const s = shown.find((x) => x.id === id); if (s) setActive(s.venue.id); }} />
+            ) : <div className="w-full h-[480px] lg:h-[690px] rounded-[18px] bg-[#efedf6] animate-pulse" />}
           </div>
         </div>
       </section>
