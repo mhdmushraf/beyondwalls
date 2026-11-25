@@ -3,10 +3,7 @@ import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useI18n } from '@/lib/i18n';
-import AuthShell from '@/components/auth/AuthShell';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { AlertCircle } from 'lucide-react';
+import AuthShell, { AuthTitle, AuthField, AuthButton, AuthError, AuthNote, GoogleButton } from '@/components/auth/AuthShell';
 
 export default function Signup() {
   const { t } = useI18n();
@@ -67,100 +64,31 @@ export default function Signup() {
   };
 
   return (
-    <AuthShell>
+    <AuthShell quote="“Two screens on the Signage + Ads plan. Ads booked on the map covered the fee in the first month.”" quoteBy="Example — how a venue earns from spare slots">
       {step === 'details' ? (
         <>
-          <h2 className="text-2xl font-semibold text-bw-navy">{t('auth.signUp')}</h2>
-          <p className="mt-1 text-sm text-bw-muted">{t('auth.haveAccount')}{' '}
-            <Link to="/login" className="font-semibold text-bw-coral hover:underline">{t('auth.signIn')}</Link>
-          </p>
-
-          <form onSubmit={startSignup} className="mt-6 space-y-4">
-            <div className="space-y-1.5">
-              <Label htmlFor="name">{t('auth.fullName')}</Label>
-              <Input id="name" required value={fullName} onChange={(e) => setFullName(e.target.value)} autoComplete="name" />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="email">{t('auth.email')}</Label>
-              <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="password">{t('auth.password')}</Label>
-              <Input id="password" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
-            </div>
-
-            {error && (
-              <div className="flex items-start gap-2 rounded-xl bg-rose-50 border border-rose-100 px-3 py-2 text-xs text-rose-600">
-                <AlertCircle className="h-4 w-4 shrink-0" />
-                {error}
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={busy}
-              className="w-full rounded-xl bg-bw-coral px-4 py-3 text-sm font-semibold text-white hover:bg-bw-coral/90 disabled:opacity-60"
-            >
-              {busy ? t('common.loading') : t('auth.signUp')}
-            </button>
+          <AuthTitle title={t('auth.createTitle', 'Create your account')} sub={t('auth.createSub', 'List your screens free, or start advertising across the UAE.')} />
+          <form onSubmit={startSignup} className="flex flex-col gap-4">
+            <AuthField id="name" label={t('auth.fullName')} required value={fullName} onChange={(e) => setFullName(e.target.value)} autoComplete="name" placeholder="Your name" />
+            <AuthField id="email" label={t('auth.email')} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" placeholder="you@business.ae" />
+            <AuthField id="password" label={t('auth.password')} type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" placeholder="At least 6 characters" />
+            <AuthError>{error}</AuthError>
+            <AuthButton type="submit" disabled={busy}>{busy ? 'Creating account…' : t('auth.signUp')}</AuthButton>
           </form>
-
-          <div className="my-5 flex items-center gap-3">
-            <span className="h-px flex-1 bg-bw-line" />
-            <span className="text-xs text-bw-muted">{t('auth.or')}</span>
-            <span className="h-px flex-1 bg-bw-line" />
-          </div>
-
-          <button
-            type="button"
-            onClick={() => base44.auth.loginWithProvider('google', '/onboarding')}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-bw-line bg-white px-4 py-3 text-sm font-semibold text-bw-navy hover:bg-bw-cream"
-          >
-            {t('auth.google')}
-          </button>
+          <AuthNote>We email you a 6-digit code to confirm it's you.</AuthNote>
+          <GoogleButton onClick={() => base44.auth.loginWithProvider('google', '/onboarding')} label={t('auth.google')} />
+          <p className="text-[14px] font-medium text-[#6b6787]">{t('auth.haveAccount')}{' '}
+            <Link to="/login" className="font-semibold text-[#5a2ded] hover:underline">{t('auth.signIn')}</Link>
+          </p>
         </>
       ) : (
         <>
-          <h2 className="text-2xl font-semibold text-bw-navy">{t('auth.verifyTitle')}</h2>
-          <p className="mt-1 text-sm text-bw-muted">
-            {t('auth.verifyBody')} <span className="font-semibold text-bw-navy">{email}</span>
-          </p>
-
-          <form onSubmit={verify} className="mt-6 space-y-4">
-            <div className="space-y-1.5">
-              <Label htmlFor="otp">Code</Label>
-              <Input
-                id="otp"
-                inputMode="numeric"
-                maxLength={6}
-                required
-                value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                className="text-center text-lg tracking-[0.4em]"
-              />
-            </div>
-
-            {error && (
-              <div className="flex items-start gap-2 rounded-xl bg-rose-50 border border-rose-100 px-3 py-2 text-xs text-rose-600">
-                <AlertCircle className="h-4 w-4 shrink-0" />
-                {error}
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={busy}
-              className="w-full rounded-xl bg-bw-coral px-4 py-3 text-sm font-semibold text-white hover:bg-bw-coral/90 disabled:opacity-60"
-            >
-              {busy ? t('common.loading') : t('auth.verify')}
-            </button>
-            <button
-              type="button"
-              onClick={resend}
-              className="w-full text-center text-xs font-semibold text-bw-muted hover:text-bw-navy"
-            >
-              {t('auth.resend')}
-            </button>
+          <AuthTitle title={t('auth.verifyTitle')} sub={<>{t('auth.verifyBody')} <span className="font-semibold text-[#111027]">{email}</span></>} />
+          <form onSubmit={verify} className="flex flex-col gap-4">
+            <AuthField id="otp" label="6-digit code" inputMode="numeric" maxLength={6} required value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))} className="text-center text-[22px] tracking-[0.5em]" placeholder="••••••" autoComplete="one-time-code" />
+            <AuthError>{error}</AuthError>
+            <AuthButton type="submit" disabled={busy}>{busy ? 'Checking…' : t('auth.verify')}</AuthButton>
+            <button type="button" onClick={resend} className="text-[13px] font-semibold text-[#6b6787] hover:text-[#5a2ded]">{t('auth.resend')}</button>
           </form>
         </>
       )}
