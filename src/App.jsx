@@ -104,6 +104,7 @@ const AuthenticatedApp = () => {
         '/', '/home', '/about', '/services', '/contact',
         '/screenlocations', '/blog', '/blogpost', '/authorprofile', '/helpcenter',
         '/terms', '/privacy', '/delete-account', '/howitworks', '/connect', '/plans', '/sitemap',
+        '/forvenues', '/foradvertisers', '/bone', '/pricing',
         
         '/doohadvertisingdubai', '/digitalsignageuae', '/cafescreenadvertisingdubai',
         '/gymscreenadvertisingdubai', '/coworkingspaceadvertisingdubai',

@@ -27,6 +27,10 @@ import Sitemap from './pages/Sitemap';
 import SitemapPage from './pages/SitemapPage';
 import SitemapXML from './pages/SitemapXML';
 import Terms from './pages/Terms';
+import ForVenues from './pages/ForVenues';
+import ForAdvertisers from './pages/ForAdvertisers';
+import BOne from './pages/BOne';
+import Pricing from './pages/Pricing';
 import __Layout from './Layout.jsx';
 
 export const PAGES = {
@@ -59,6 +63,10 @@ export const PAGES = {
     "SitemapPage": SitemapPage,
     "SitemapXML": SitemapXML,
     "Terms": Terms,
+    "ForVenues": ForVenues,
+    "ForAdvertisers": ForAdvertisers,
+    "BOne": BOne,
+    "Pricing": Pricing,
 };
 
 export const pagesConfig = {
