@@ -22,3 +22,10 @@ Preview any state as an admin with `?state=empty|loading|error|offline|slow|expi
 ## Other rules
 - Brand: violet #6F3FFD→#5A2DED, Inter + Readex Pro (Arabic). Use the `bw-*` classes in `src/index.css`.
 - Org data: always through `useOrgEntity` / `usePortal`; RLS uses `org_member_user_ids`.
+
+## Money & marketplace (server functions only)
+- Prices, shares, VAT and invoice numbers are computed in `base44/functions/*` (marketplaceBook, bookingAction, directDeal, venuePayout, paymobCheckout, paymobWebhook). Never trust amounts from the browser.
+- AdBooking, Campaign, Invoice, PayoutRequest, Notification are created by functions (service role); RLS blocks client writes.
+- Venue share: Organization.commission_rate (platform %), admin-only field. Default from PlatformSettings.venue_share_pct.
+- Notify people with `notifyUsers()` in `base44/shared/notify.ts` (in-app + Expo push). Ask Mushu before adding any email or WhatsApp sending.
+- The Expo app (separate repo/zip `beyondwalls-mobile`) uses the same entities — keep field names stable.
