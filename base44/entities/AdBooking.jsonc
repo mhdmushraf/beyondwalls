@@ -1,81 +1,37 @@
 {
+  "description": "One advertiser booking on one venue screen. Created only by the marketplaceBook function.",
   "name": "AdBooking",
-  "type": "object",
   "properties": {
-    "campaign_id": {
-      "type": "string"
-    },
-    "screen_id": {
-      "type": "string"
-    },
     "advertiser_email": {
       "type": "string"
     },
-    "venue_owner_email": {
+    "advertiser_member_user_ids": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "advertiser_org_id": {
       "type": "string"
     },
-    "org_id": {
-      "type": "string",
-      "description": "ID of the venue-side Organization that owns the screen (snapshot at booking time)"
+    "advertiser_org_name": {
+      "type": "string"
     },
-    "description": {
-      "type": "string",
-      "description": "Optional booking description (up to 1000 characters)",
-      "maxLength": 1000
+    "campaign_id": {
+      "type": "string"
     },
-    "start_date": {
-      "type": "string",
-      "format": "date"
+    "campaign_name": {
+      "type": "string"
     },
-    "end_date": {
-      "type": "string",
-      "format": "date"
-    },
-    "slots_booked": {
-      "type": "number",
-      "default": 1
-    },
-    "price_per_week": {
-      "type": "number"
-    },
-    "weeks": {
-      "type": "number",
-      "description": "Booking duration in weeks (snapshot at booking time)"
-    },
-    "total_amount": {
-      "type": "number"
+    "checkout_url": {
+      "type": "string"
     },
     "commission_rate_snapshot": {
-      "type": "number",
-      "description": "Organization commission_rate captured at booking time \u2014 drives settlement even if the org rate changes later"
+      "description": "Platform % kept at booking time",
+      "type": "number"
     },
-    "platform_fee": {
-      "type": "number",
-      "description": "total_amount \u00d7 commission_rate_snapshot / 100"
-    },
-    "venue_earnings": {
-      "type": "number",
-      "description": "total_amount \u2212 platform_fee"
-    },
-    "status": {
-      "type": "string",
-      "enum": [
-        "pending_payment",
-        "active",
-        "paused",
-        "completed",
-        "cancelled"
-      ],
-      "default": "pending_payment"
-    },
-    "creative_status": {
-      "type": "string",
-      "enum": [
-        "pending_review",
-        "approved",
-        "rejected"
-      ],
-      "default": "pending_review"
+    "creative_rejection_reason": {
+      "type": "string"
     },
     "creative_reviewed_at": {
       "type": "string"
@@ -83,20 +39,103 @@
     "creative_reviewed_by": {
       "type": "string"
     },
-    "creative_rejection_reason": {
+    "creative_status": {
+      "default": "pending_review",
+      "enum": [
+        "pending_review",
+        "approved",
+        "rejected"
+      ],
       "type": "string"
     },
-    "checkout_url": {
-      "type": "string",
-      "description": "Gateway checkout URL returned by the payment provider"
+    "creative_type": {
+      "default": "image",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "type": "string"
+    },
+    "creative_url": {
+      "type": "string"
+    },
+    "description": {
+      "maxLength": 1000,
+      "type": "string"
+    },
+    "end_date": {
+      "format": "date",
+      "type": "string"
     },
     "impressions": {
-      "type": "number",
-      "default": 0
+      "default": 0,
+      "type": "number"
+    },
+    "invoice_id": {
+      "type": "string"
+    },
+    "org_id": {
+      "description": "ID of the venue-side Organization that owns the screen (snapshot at booking time)",
+      "type": "string"
+    },
+    "platform_fee": {
+      "type": "number"
     },
     "plays": {
-      "type": "number",
-      "default": 0
+      "default": 0,
+      "type": "number"
+    },
+    "price_per_week": {
+      "type": "number"
+    },
+    "screen_id": {
+      "type": "string"
+    },
+    "screen_name": {
+      "type": "string"
+    },
+    "slots_booked": {
+      "default": 1,
+      "type": "number"
+    },
+    "start_date": {
+      "format": "date",
+      "type": "string"
+    },
+    "status": {
+      "default": "pending_payment",
+      "enum": [
+        "pending_payment",
+        "active",
+        "paused",
+        "completed",
+        "cancelled"
+      ],
+      "type": "string"
+    },
+    "total_amount": {
+      "type": "number"
+    },
+    "venue_earnings": {
+      "type": "number"
+    },
+    "venue_id": {
+      "type": "string"
+    },
+    "venue_member_user_ids": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "venue_name": {
+      "type": "string"
+    },
+    "venue_owner_email": {
+      "type": "string"
+    },
+    "weeks": {
+      "type": "number"
     }
   },
   "required": [
@@ -104,8 +143,24 @@
     "screen_id"
   ],
   "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
     "read": {
       "$or": [
+        {
+          "data.advertiser_member_user_ids": "{{user.id}}"
+        },
+        {
+          "data.venue_member_user_ids": "{{user.id}}"
+        },
         {
           "data.advertiser_email": "{{user.email}}"
         },
@@ -123,11 +178,7 @@
       "user_condition": {
         "role": "admin"
       }
-    },
-    "delete": {
-      "user_condition": {
-        "role": "admin"
-      }
     }
-  }
+  },
+  "type": "object"
 }
