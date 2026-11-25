@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, MapPin, Store, MonitorPlay } from 'lucide-react';
 import { usePortal } from '@/lib/PortalContext';
