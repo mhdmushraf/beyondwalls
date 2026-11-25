@@ -136,9 +136,9 @@ export default async function (req: Request) {
           let a = 0;
           items.forEach((it, i) => {
             mixed.push(it);
-            if (i % 2 === 1) { mixed.push(ads[a % ads.length]); a += 1; }
+            if (i % 2 === 1) { const ad = ads[a % ads.length]; mixed.push({ ...ad, id: `${ad.id}-${a}` }); a += 1; }
           });
-          while (a < ads.length) { mixed.push(ads[a]); a += 1; }
+          while (a < ads.length) { mixed.push({ ...ads[a], id: `${ads[a].id}-${a}` }); a += 1; }
           items = mixed;
         }
       }
