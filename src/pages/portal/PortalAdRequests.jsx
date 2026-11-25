@@ -9,6 +9,7 @@ import { PageHeader, EmptyState } from '@/components/portal/ui';
 import { ListSkeleton } from '@/components/portal/Skeletons';
 import { notifyError, notifySuccess } from '@/lib/states';
 import { ErrorState, SlowHint, FieldError } from '@/components/states/StateViews';
+import PayoutPanel from '@/components/portal/PayoutPanel';
 
 const aed = (n) => `AED ${Number(n || 0).toLocaleString('en-AE', { maximumFractionDigits: 2 })}`;
 
@@ -38,19 +39,13 @@ export default function PortalAdRequests() {
   const all = bookings.items.filter((b) => b.status !== 'cancelled');
   const review = all.filter((b) => b.creative_status === 'pending_review');
   const live = all.filter((b) => b.creative_status === 'approved');
-  const earnedPaid = all.filter((b) => b.status === 'active' || b.status === 'completed').reduce((a, b) => a + (b.venue_earnings || 0), 0);
-  const earnedPending = all.filter((b) => b.status === 'pending_payment' && b.creative_status !== 'rejected').reduce((a, b) => a + (b.venue_earnings || 0), 0);
   const listed = screens.filter((s) => s.marketplace_enabled).length;
   const shown = tab === 'review' ? review : tab === 'approved' ? live : all;
 
   return (
     <div>
       <PageHeader title="Ad requests" subtitle="Advertisers who booked your screens · you keep your share of every booking" />
-      <div className="grid sm:grid-cols-3 gap-3 mb-5">
-        <div className="bw-card p-4"><p className="text-[12px] text-bw-muted">Earned (paid bookings)</p><p className="text-[22px] font-bold text-bw-navy">{aed(earnedPaid)}</p></div>
-        <div className="bw-card p-4"><p className="text-[12px] text-bw-muted">Waiting for advertiser payment</p><p className="text-[22px] font-bold text-bw-navy">{aed(earnedPending)}</p></div>
-        <div className="bw-card p-4"><p className="text-[12px] text-bw-muted">Screens open to advertisers</p><p className="text-[22px] font-bold text-bw-navy">{listed} <span className="text-[13px] font-medium text-bw-muted">of {screens.length}</span></p></div>
-      </div>
+      <PayoutPanel refreshKey={bookings.items.length} />
 
       {listed === 0 && (
         <div className="mb-5 rounded-2xl bg-bw-lav p-4 flex flex-wrap items-center gap-3">

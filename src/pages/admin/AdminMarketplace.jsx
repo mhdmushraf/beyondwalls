@@ -13,15 +13,16 @@ const aed = (n) => `AED ${Number(n || 0).toLocaleString('en-AE', { maximumFracti
 export default function AdminMarketplace() {
   const campaigns = useAdminList('Campaign', { sort: '-created_date', limit: 500 });
   const bookings = useAdminList('AdBooking', { sort: '-created_date', limit: 2000 });
+  const payouts = useAdminList('PayoutRequest', { sort: '-created_date', limit: 300 });
   const invoices = useAdminList('Invoice', { sort: '-created_date', limit: 1000, query: { kind: 'marketplace' } });
   const [tab, setTab] = useState('unpaid');
   const [busy, setBusy] = useState(null);
 
-  const run = async (key, payload, ok) => {
+  const run = async (key, payload, ok, fn = 'bookingAction') => {
     setBusy(key);
     try {
-      await base44.functions.invoke('bookingAction', payload);
-      campaigns.reload(); bookings.reload(); invoices.reload();
+      await base44.functions.invoke(fn, payload);
+      campaigns.reload(); bookings.reload(); invoices.reload(); payouts.reload();
       notifySuccess(ok);
     } catch (e) { const m = e?.response?.data?.error; if (m) toast.error("Couldn't do that", { description: m }); else notifyError(e, 'save that'); } finally { setBusy(null); }
   };
@@ -46,7 +47,7 @@ export default function AdminMarketplace() {
         ))}
       </div>
       <div className="inline-flex rounded-xl bg-[#EEEDF5] p-1 mb-4">
-        {[['unpaid', `Unpaid (${unpaid.length})`], ['review', `Ad review (${review.length})`], ['bookings', 'All bookings'], ['refunds', `Refunds (${refunds.length})`]].map(([k, l]) => (
+        {[['unpaid', `Unpaid (${unpaid.length})`], ['review', `Ad review (${review.length})`], ['bookings', 'All bookings'], ['payouts', `Payouts (${payouts.items.filter((p) => p.status === 'pending').length})`], ['refunds', `Refunds (${refunds.length})`]].map(([k, l]) => (
           <button key={k} type="button" onClick={() => setTab(k)} className={`!min-h-0 rounded-lg px-4 py-1.5 text-[13px] font-semibold ${tab === k ? 'bg-white shadow-sm' : 'text-bw-muted'}`}>{l}</button>
         ))}
       </div>
@@ -111,6 +112,30 @@ export default function AdminMarketplace() {
                   <td className="p-3 text-end">
                     {b.status === 'active' && <button type="button" title="Pause" className="bw-btn bw-btn-ghost !py-1.5" onClick={() => run(b.id, { action: 'pause', booking_id: b.id }, 'Booking paused')}><Pause className="h-4 w-4" /></button>}
                     {b.status === 'paused' && b.creative_status === 'approved' && <button type="button" title="Resume" className="bw-btn bw-btn-ghost !py-1.5" onClick={() => run(b.id, { action: 'resume', booking_id: b.id }, 'Booking resumed')}><Play className="h-4 w-4" /></button>}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ))}
+
+      {tab === 'payouts' && (payouts.items.length === 0 ? <EmptyState icon={Check} title="No payout requests" body="Venues request payouts once their bookings finish." /> : (
+        <div className="bw-card overflow-x-auto">
+          <table className="w-full text-[13px]">
+            <thead><tr className="text-bw-muted text-[12px]"><th className="p-3 text-start">Venue</th><th className="p-3 text-start">Bank</th><th className="p-3 text-start">Status</th><th className="p-3 text-end">Amount</th><th className="p-3" /></tr></thead>
+            <tbody>
+              {payouts.items.map((p) => (
+                <tr key={p.id} className="border-t border-bw-line">
+                  <td className="p-3"><p className="font-semibold text-bw-navy">{p.org_name}</p><p className="text-[11px] text-bw-muted">{(p.booking_ids || []).length} bookings · {new Date(p.created_date).toLocaleDateString()}</p></td>
+                  <td className="p-3"><p>{p.account_holder_name} · {p.bank_name}</p><p className="font-mono text-[11px] text-bw-muted">{p.iban}{p.swift_code ? ` · ${p.swift_code}` : ''}</p></td>
+                  <td className="p-3"><span className="bw-chip bg-bw-cream">{p.status}</span>{p.reference_id && <span className="block text-[11px] text-bw-muted">ref {p.reference_id}</span>}</td>
+                  <td className="p-3 text-end font-semibold">{aed(p.amount)}</td>
+                  <td className="p-3 text-end whitespace-nowrap">
+                    {p.status === 'pending' && <>
+                      <button type="button" className="bw-btn bw-btn-primary !py-1.5" disabled={busy === p.id} onClick={() => { const ref = window.prompt(`Sent ${aed(p.amount)} to ${p.iban}? Enter the transfer reference:`); if (ref) run(p.id, { action: 'mark_paid', payout_id: p.id, reference: ref }, 'Payout marked paid — venue notified', 'venuePayout'); }}>Mark paid</button>
+                      <button type="button" className="bw-btn bw-btn-ghost !py-1.5 ms-1" disabled={busy === p.id} onClick={() => { const r = window.prompt('What needs fixing? The venue sees this.'); if (r) run(p.id, { action: 'reject', payout_id: p.id, reason: r }, 'Payout sent back to the venue', 'venuePayout'); }}><X className="h-4 w-4" /></button>
+                    </>}
                   </td>
                 </tr>
               ))}
