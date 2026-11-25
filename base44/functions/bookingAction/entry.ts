@@ -1,6 +1,6 @@
 import { createClientFromRequest } from "npm:@base44/sdk@0.8.54";
 import { getSessionUser, logActivity } from "../../shared/portalAuth.ts";
-import { list, r2 } from "../../shared/marketplace.ts";
+import { list, markInvoicePaid, r2 } from "../../shared/marketplace.ts";
 
 /**
  * Marketplace actions.
@@ -85,12 +85,7 @@ export default async function (req: Request) {
       if (!inv) return fail("Invoice not found.", 404);
       if (inv.status === "paid") return fail("This invoice is already paid.");
       if (inv.status === "void") return fail("This invoice was cancelled.");
-      await svc.Invoice.update(inv.id, { status: "paid", paid_at: now, payment_ref: String(body.payment_ref || "").slice(0, 80) });
-      if (inv.campaign_id) {
-        const bookings = list(await svc.AdBooking.filter({ campaign_id: inv.campaign_id }, { limit: 200 }));
-        for (const b of bookings) if (b.status === "pending_payment") await svc.AdBooking.update(b.id, { status: "active" });
-        await svc.Campaign.update(inv.campaign_id, { payment_status: "paid", status: "active" });
-      }
+      await markInvoicePaid(svc, inv, String(body.payment_ref || "bank transfer"), "bank_transfer");
       return Response.json({ ok: true });
     }
 
