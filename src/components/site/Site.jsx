@@ -9,6 +9,18 @@ import PublicAIChatWidget from "@/components/chat/PublicAIChatWidget";
 export const GRAD = "linear-gradient(135deg, #6f3ffd 0%, #5a2ded 71%)";
 export const WHATSAPP = "https://wa.me/971556140067";
 
+// Public lead capture (book a demo, B.One order, investor deck, newsletter) → Lead entity + admin alert.
+export async function submitLead(payload) {
+  const res = await base44.functions.invoke("submitLead", payload).catch((e) => ({ data: e?.response?.data || { error: e.message } }));
+  const data = res?.data || {};
+  if (data.error) {
+    const err = new Error(data.error);
+    err.field = data.field;
+    throw err;
+  }
+  return data;
+}
+
 export const SOCIALS = [["Instagram", ""], ["LinkedIn", ""], ["TikTok", ""], ["X", ""]];
 
 export const NAV_LINKS = [
@@ -156,12 +168,11 @@ function FooterNewsletter() {
     if (!/^\S+@\S+\.\S+$/.test(email.trim())) return toast.error("Enter a valid email");
     setBusy(true);
     try {
-      const existing = await base44.entities.NewsletterSubscriber.filter({ email: email.trim() });
-      if (!existing.length) await base44.entities.NewsletterSubscriber.create({ email: email.trim(), source: "footer", status: "active" });
+      await submitLead({ kind: "newsletter", email: email.trim() });
       toast.success("You're on the list.");
       setEmail("");
-    } catch {
-      toast.error("Couldn't subscribe right now. Try again.");
+    } catch (err) {
+      toast.error(err.message || "Couldn't subscribe right now. Try again.");
     } finally {
       setBusy(false);
     }
