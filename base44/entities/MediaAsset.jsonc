@@ -1,60 +1,102 @@
 {
   "name": "MediaAsset",
-  "type": "object",
   "properties": {
-    "owner_email": {
-      "type": "string",
-      "description": "Email of venue owner"
-    },
-    "name": {
-      "type": "string",
-      "description": "Asset name/label"
-    },
     "description": {
-      "type": "string",
-      "description": "Optional asset description (up to 1000 characters)",
-      "maxLength": 1000
+      "maxLength": 1000,
+      "type": "string"
     },
-    "file_url": {
-      "type": "string",
-      "description": "URL of uploaded file"
+    "duration_seconds": {
+      "type": "number"
     },
-    "file_type": {
-      "type": "string",
-      "enum": [
-        "image",
-        "video"
-      ],
-      "default": "image"
+    "expires_on": {
+      "format": "date",
+      "type": "string"
     },
     "file_size_kb": {
       "type": "number"
     },
-    "tags": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
+    "file_type": {
+      "default": "image",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "type": "string"
     },
-    "used_on_screens": {
-      "type": "array",
+    "file_url": {
+      "description": "URL of uploaded file",
+      "type": "string"
+    },
+    "height_px": {
+      "type": "number"
+    },
+    "name": {
+      "description": "Asset name/label",
+      "type": "string"
+    },
+    "org_id": {
+      "description": "Business that owns the asset",
+      "type": "string"
+    },
+    "org_member_user_ids": {
+      "description": "Denormalized from Organization.member_user_ids \u2014 drives RLS",
       "items": {
         "type": "string"
       },
-      "description": "Screen IDs using this asset"
+      "type": "array"
+    },
+    "owner_email": {
+      "description": "Email of uploader",
+      "type": "string"
+    },
+    "tags": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "used_on_screens": {
+      "description": "Screen IDs using this asset",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "width_px": {
+      "type": "number"
     }
   },
   "required": [
-    "owner_email",
     "name",
     "file_url",
     "file_type"
   ],
   "rls": {
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.org_member_user_ids": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
     "read": {
       "$or": [
         {
           "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.org_member_user_ids": "{{user.id}}"
         },
         {
           "user_condition": {
@@ -69,16 +111,7 @@
           "created_by_id": "{{user.id}}"
         },
         {
-          "user_condition": {
-            "role": "admin"
-          }
-        }
-      ]
-    },
-    "delete": {
-      "$or": [
-        {
-          "created_by_id": "{{user.id}}"
+          "data.org_member_user_ids": "{{user.id}}"
         },
         {
           "user_condition": {
@@ -87,5 +120,6 @@
         }
       ]
     }
-  }
+  },
+  "type": "object"
 }
