@@ -9,17 +9,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   // </React.StrictMode>,
 )
 
-// Fade out the static brand splash from index.html once the app has drawn and the minimum time has passed.
-(function hideSplash() {
-  const el = document.getElementById('bw-splash');
-  if (!el) return;
-  const min = window.__bwSplashMin ?? 700;
-  const wait = Math.max(0, min - performance.now());
-  setTimeout(() => {
-    el.classList.add('out');
-    setTimeout(() => el.remove(), 500);
-  }, wait);
-})();
+// The static splash in index.html hides itself once #root has content.
+window.__bwHideSplash?.();
 
 if (import.meta.hot) {
   import.meta.hot.on('vite:beforeUpdate', () => {
