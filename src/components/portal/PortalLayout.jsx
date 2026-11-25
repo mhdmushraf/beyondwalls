@@ -110,6 +110,11 @@ function PortalShell() {
   }, [mode]);
 
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
+  // Keep the sidebar in the right mode when someone opens a page directly.
+  useEffect(() => {
+    if (/^\/app\/(marketplace|campaigns|clients|pay)/.test(location.pathname)) setMode('advertise');
+    else if (/^\/app\/(screens|venues|menus|playlists|qr|urgent|ad-requests|chat)/.test(location.pathname) || location.pathname === '/app') setMode('screens');
+  }, [location.pathname]);
 
   const groups = useNavGroups(t, org?.advertiser_status === 'approved' || org?.type === 'advertiser' || org?.type === 'agency' ? mode : 'screens');
   const switchMode = (m) => { setMode(m); navigate(m === 'advertise' ? '/app/marketplace' : '/app'); };

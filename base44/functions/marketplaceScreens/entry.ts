@@ -45,7 +45,7 @@ export default async function (req: Request) {
         slots_free: Math.max(slots - taken, 0),
         photo_url: photo ? await resolveMediaUrl(base44, photo).catch(() => "") : "",
         venue: {
-          id: v.id, name: v.name, venue_type: v.venue_type || "", emirate: v.emirate || v.city || "", area: v.city || "",
+          id: v.id, name: v.name, latitude: Number(v.latitude) || null, longitude: Number(v.longitude) || null, venue_type: v.venue_type || "", emirate: v.emirate || v.city || "", area: v.city || "",
           weekly_footfall: Number(v.weekly_footfall) || (Number(v.daily_footfall) || Number(v.daily_customers) || 0) * 7,
           audience_age_group: v.audience_age_group || "", avg_dwell_time_minutes: v.avg_dwell_time_minutes || v.avg_stay_minutes || null,
         },
