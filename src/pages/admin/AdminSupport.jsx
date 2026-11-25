@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 import { MessageCircle, Mail } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { useAdminList } from '@/components/admin/AdminLayout';
-import { ErrorState, SlowHint } from '@/components/states/StateViews';
+import { ErrorState } from '@/components/states/StateViews';
 import TicketThread from '@/components/support/TicketThread';
 import { PageHeader } from '@/components/portal/ui';
 import { ListSkeleton } from '@/components/portal/Skeletons';
