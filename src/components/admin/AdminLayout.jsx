@@ -3,40 +3,73 @@ import { NavLink, Outlet, Link } from 'react-router-dom';
 import { LayoutDashboard, ShieldCheck, MonitorPlay, Wrench, LifeBuoy, Target, Receipt, Settings, LogOut, Menu, X, ArrowLeft } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
+import { readPreviewState, applyPreviewState, isOnline, notifyError } from '@/lib/states';
+import { OfflineBanner } from '@/components/states/StateViews';
+import { SessionExpiredDialog, PreviewSwitcher } from '@/components/states/SessionAndPreview';
 
-/** Admin-wide list loader (admins can read every business through RLS). */
+const readCache = (k) => { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } };
+const writeCache = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* full */ } };
+
+/** Admin-wide list loader (admins can read every business through RLS). Cached for offline, with error + preview states. */
 export function useAdminList(entityName, { sort = '-created_date', limit = 500, poll = 0, query = null } = {}) {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const preview = readPreviewState(user);
+  const qk = JSON.stringify(query || {});
+  const cacheKey = `bw_cache:admin:${entityName}:${sort}:${qk}`;
+  const [items, setItems] = useState(() => readCache(cacheKey) || []);
+  const [loading, setLoading] = useState(() => !readCache(cacheKey));
+  const [error, setError] = useState(null);
   const [tick, setTick] = useState(0);
   const reload = useCallback(() => setTick((t) => t + 1), []);
-  const qk = JSON.stringify(query || {});
   useEffect(() => {
     let alive = true;
+    if (!isOnline()) { setLoading(false); return () => { alive = false; }; }
     const run = query ? base44.entities[entityName].filter(query, { sort, limit }) : base44.entities[entityName].list({ sort, limit });
-    run.then((page) => { if (alive) { setItems(page.items || page || []); setLoading(false); } })
-      .catch(() => { if (alive) setLoading(false); });
+    run.then((page) => {
+      if (!alive) return;
+      const list = page.items || page || [];
+      setItems(list); setError(null); setLoading(false);
+      if (list.length <= 300) writeCache(cacheKey, list);
+    }).catch((e) => {
+      if (!alive) return;
+      setError(e); setLoading(false);
+      if (e?.response?.status === 401) window.dispatchEvent(new Event('bw:session-expired'));
+    });
     return () => { alive = false; };
   }, [entityName, sort, limit, tick, qk]); // eslint-disable-line
+  useEffect(() => {
+    window.addEventListener('online', reload);
+    return () => window.removeEventListener('online', reload);
+  }, [reload]);
   useEffect(() => {
     if (!poll) return undefined;
     const id = setInterval(reload, poll);
     return () => clearInterval(id);
   }, [poll, reload]);
-  const update = useCallback(async (id, data) => {
+  // Mutations show a friendly error (with Try again) and rethrow so callers skip their success toast.
+  const guard = (action, fn) => async (...args) => {
+    try { return await fn(...args); } catch (e) {
+      notifyError(e, action, () => guard(action, fn)(...args).catch(() => {}));
+      throw e;
+    }
+  };
+  const update = useCallback(guard('save the change', async (id, data) => {
     await base44.entities[entityName].update(id, data);
     setItems((l) => l.map((i) => (i.id === id ? { ...i, ...data } : i)));
-  }, [entityName]);
-  const create = useCallback(async (data) => {
+  }), [entityName]); // eslint-disable-line
+  const create = useCallback(guard('create it', async (data) => {
     const rec = await base44.entities[entityName].create(data);
     setItems((l) => [rec, ...l]);
     return rec;
-  }, [entityName]);
-  const remove = useCallback(async (id) => {
+  }), [entityName]); // eslint-disable-line
+  const remove = useCallback(guard('delete it', async (id) => {
     await base44.entities[entityName].delete(id);
     setItems((l) => l.filter((i) => i.id !== id));
-  }, [entityName]);
-  return { items, loading, reload, update, create, remove };
+  }), [entityName]); // eslint-disable-line
+  if (preview === 'empty') return { items: [], loading: false, error: null, reload, update, create, remove, preview };
+  if (preview === 'loading') return { items: [], loading: true, error: null, reload, update, create, remove, preview };
+  if (preview === 'error') return { items: [], loading: false, error: { response: { status: 500 } }, reload, update, create, remove, preview };
+  return { items, loading, error, reload, update, create, remove, preview };
 }
 
 const NAV = [
@@ -53,6 +86,8 @@ const NAV = [
 export default function AdminLayout() {
   const { user, isLoadingAuth, navigateToLogin, logout } = useAuth();
   const [open, setOpen] = useState(false);
+  const preview = readPreviewState(user);
+  useEffect(() => { applyPreviewState(preview); }, [preview]);
 
   useEffect(() => { if (!isLoadingAuth && !user) navigateToLogin(); }, [isLoadingAuth, user, navigateToLogin]);
   if (isLoadingAuth || !user) return <div className="min-h-screen bg-bw-cream" />;
@@ -101,6 +136,9 @@ export default function AdminLayout() {
           <button type="button" className="!min-h-0" onClick={() => setOpen(true)}><Menu className="h-5 w-5" /></button>
           <p className="font-bold text-bw-navy">Beyond Walls HQ</p>
         </header>
+        <OfflineBanner />
+        <SessionExpiredDialog forced={preview === 'expired'} />
+        <PreviewSwitcher user={user} current={preview} />
         <main className="p-4 md:p-8 max-w-[1300px]"><Outlet /></main>
       </div>
     </div>
