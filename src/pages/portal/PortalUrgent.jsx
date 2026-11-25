@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Send, AlertTriangle, Loader2, Square, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/lib/AuthContext';
@@ -35,6 +35,10 @@ export default function PortalUrgent() {
   const [targets, setTargets] = useState(() => screens.map((s) => s.id));
   const [busy, setBusy] = useState(false);
   const set = (p) => setForm((f) => ({ ...f, ...p }));
+  const seeded = useRef(false);
+  useEffect(() => {
+    if (!seeded.current && screens.length) { seeded.current = true; setTargets(screens.map((s) => s.id)); }
+  }, [screens]);
 
   const send = async () => {
     if (!form.text_en.trim()) { toast.error('Write a message'); return; }
