@@ -134,7 +134,7 @@ function PortalShell() {
                     to={item.to}
                     end={item.end}
                     className={({ isActive }) =>
-                      `flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium transition-colors ${
+                      `flex items-center justify-start gap-3 rounded-xl px-3 py-2 text-[13px] font-medium transition-colors ${
                         isActive ? 'bg-bw-lav text-bw-coral font-semibold' : 'text-bw-ink hover:bg-bw-cream'
                       }`
                     }
@@ -157,7 +157,7 @@ function PortalShell() {
           href="https://wa.me/971556140067"
           target="_blank"
           rel="noreferrer"
-          className="flex items-center gap-3 rounded-2xl bg-emerald-50 px-3 py-3"
+          className="flex items-center justify-start gap-3 rounded-2xl bg-emerald-50 px-3 py-3"
         >
           <MessageCircle className="h-4 w-4 text-emerald-600" />
           <span className="leading-tight">
@@ -168,7 +168,7 @@ function PortalShell() {
         <button
           type="button"
           onClick={() => logout(true)}
-          className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium text-bw-muted hover:text-bw-navy hover:bg-bw-cream"
+          className="flex w-full items-center justify-start gap-3 rounded-xl px-3 py-2 text-[13px] font-medium text-bw-muted hover:text-bw-navy hover:bg-bw-cream"
         >
           <LogOut className="h-4 w-4" />
           {t('nav.signOut', 'Sign out')}
