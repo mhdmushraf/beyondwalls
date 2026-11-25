@@ -1,28 +1,54 @@
 {
   "name": "Campaign",
-  "type": "object",
   "properties": {
+    "admin_notes": {
+      "type": "string"
+    },
     "advertiser_email": {
       "type": "string"
     },
-    "org_id": {
-      "type": "string",
-      "description": "ID of the organization this campaign belongs to"
+    "advertiser_member_user_ids": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
     },
-    "client_id": {
-      "type": "string",
-      "description": "ID of the client this campaign is for (agency context)"
-    },
-    "name": {
+    "approval_status": {
+      "default": "pending",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
       "type": "string"
     },
+    "client_id": {
+      "type": "string"
+    },
+    "creative_type": {
+      "default": "image",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "type": "string"
+    },
+    "creative_urls": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
     "description": {
-      "type": "string",
-      "description": "Optional campaign description (up to 1000 characters)",
-      "maxLength": 1000
+      "maxLength": 1000,
+      "type": "string"
+    },
+    "end_date": {
+      "format": "date",
+      "type": "string"
     },
     "goal": {
-      "type": "string",
+      "default": "brand_awareness",
       "enum": [
         "brand_awareness",
         "drive_traffic",
@@ -30,10 +56,49 @@
         "product_launch",
         "other"
       ],
-      "default": "brand_awareness"
+      "type": "string"
+    },
+    "invoice_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "org_id": {
+      "description": "ID of the advertiser organization this campaign belongs to",
+      "type": "string"
+    },
+    "org_name": {
+      "type": "string"
+    },
+    "payment_status": {
+      "default": "unpaid",
+      "enum": [
+        "unpaid",
+        "paid",
+        "refunded"
+      ],
+      "type": "string"
+    },
+    "rejection_reason": {
+      "type": "string"
+    },
+    "selected_screens": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "spent_budget": {
+      "default": 0,
+      "type": "number"
+    },
+    "start_date": {
+      "format": "date",
+      "type": "string"
     },
     "status": {
-      "type": "string",
+      "default": "draft",
       "enum": [
         "draft",
         "pending_approval",
@@ -41,82 +106,43 @@
         "active",
         "paused",
         "completed",
-        "rejected"
+        "rejected",
+        "cancelled"
       ],
-      "default": "draft"
-    },
-    "total_budget": {
-      "type": "number",
-      "description": "Total campaign budget in AED"
-    },
-    "spent_budget": {
-      "type": "number",
-      "default": 0
-    },
-    "start_date": {
-      "type": "string",
-      "format": "date"
-    },
-    "end_date": {
-      "type": "string",
-      "format": "date"
-    },
-    "selected_screens": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "Array of screen IDs"
-    },
-    "creative_urls": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "Uploaded creative file URLs"
-    },
-    "creative_type": {
-      "type": "string",
-      "enum": [
-        "image",
-        "video"
-      ],
-      "default": "image"
-    },
-    "approval_status": {
-      "type": "string",
-      "enum": [
-        "pending",
-        "approved",
-        "rejected"
-      ],
-      "default": "pending"
-    },
-    "rejection_reason": {
       "type": "string"
     },
-    "total_impressions": {
-      "type": "number",
-      "default": 0
-    },
-    "total_plays": {
-      "type": "number",
-      "default": 0
-    },
-    "target_venue_types": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
+    "subtotal": {
+      "type": "number"
     },
     "target_cities": {
-      "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "type": "array"
     },
-    "admin_notes": {
-      "type": "string"
+    "target_venue_types": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "total_budget": {
+      "description": "Total incl. VAT in AED",
+      "type": "number"
+    },
+    "total_impressions": {
+      "default": 0,
+      "type": "number"
+    },
+    "total_plays": {
+      "default": 0,
+      "type": "number"
+    },
+    "vat": {
+      "type": "number"
+    },
+    "weeks": {
+      "type": "number"
     }
   },
   "required": [
@@ -125,10 +151,15 @@
     "total_budget"
   ],
   "rls": {
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
     "read": {
       "$or": [
         {
-          "data.org_id": "{{user.current_org_id}}"
+          "data.advertiser_member_user_ids": "{{user.id}}"
         },
         {
           "data.advertiser_email": "{{user.email}}"
@@ -144,24 +175,10 @@
       ]
     },
     "update": {
-      "$or": [
-        {
-          "data.advertiser_email": "{{user.email}}"
-        },
-        {
-          "created_by_id": "{{user.id}}"
-        },
-        {
-          "user_condition": {
-            "role": "admin"
-          }
-        }
-      ]
-    },
-    "delete": {
       "user_condition": {
         "role": "admin"
       }
     }
-  }
+  },
+  "type": "object"
 }
