@@ -115,9 +115,9 @@ export default function PortalMenus() {
 
   const onPhoto = async (file) => {
     if (!file) return;
-    setUploading(true);
     if (!file.type.startsWith('image/')) { toast.error(`${file.name} isn't an image`, { description: 'Use a JPG, PNG or WebP photo.' }); return; }
     if (file.size > 10 * 1048576) { toast.error('Photo is too big', { description: 'Use a photo under 10 MB.' }); return; }
+    setUploading(true);
     try { set({ photo_url: await uploadPublic(file) }); } catch (e) { notifyError(e, 'upload the photo', () => onPhoto(file)); } finally { setUploading(false); }
   };
 
