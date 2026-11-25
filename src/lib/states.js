@@ -96,7 +96,8 @@ export function friendlyError(error, action = 'do that') {
 
 /** Toast with what went wrong, how to fix it, and a Retry button. */
 export function notifyError(error, action, retry) {
-  const { title, fix } = friendlyError(error, action);
+  const { title, fix, kind } = friendlyError(error, action);
+  if (kind === 'expired') { window.dispatchEvent(new Event('bw:session-expired')); return; }
   toast.error(title, {
     description: fix,
     duration: 8000,
