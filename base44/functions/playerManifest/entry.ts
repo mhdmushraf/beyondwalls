@@ -84,13 +84,16 @@ export default async function (req: Request) {
 
     if (playlist) {
       source = `playlist:${playlist.id}`;
+      let n = 0;
       for (const it of playlist.items || []) {
+        n += 1;
+        const itemId = it.id || `p${n}`;
         if (it.kind === "menu" && it.menu_board_id) {
           const m = await loadMenu(it.menu_board_id);
-          if (m) items.push({ id: it.id, kind: "menu", menu: menuPayload(m), duration: Number(it.duration) || 20 });
+          if (m) items.push({ id: itemId, kind: "menu", menu: menuPayload(m), duration: Number(it.duration) || 20 });
         } else if (it.url) {
           const url = await resolveMediaUrl(base44, it.url);
-          if (url) items.push({ id: it.id, kind: "media", url, type: it.type || "image", duration: Number(it.duration) || 10 });
+          if (url) items.push({ id: itemId, kind: "media", url, type: it.type || "image", duration: Number(it.duration) || 10 });
         }
       }
     }
