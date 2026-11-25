@@ -14,7 +14,7 @@ function pinEl(s, on, full) {
 }
 
 /** Google map of bookable screens, with an area search. Falls back to OpenStreetMap if Google won't load. */
-export default function ScreensMap({ screens, selected, onToggle }) {
+export default function ScreensMap({ screens, selected, onToggle, pickLabel = 'Add to booking', heightClass = 'h-[520px]' }) {
   const box = useRef(null);
   const api = useRef(null);
   const map = useRef(null);
@@ -55,8 +55,8 @@ export default function ScreensMap({ screens, selected, onToggle }) {
         div.innerHTML = `<p style="font-weight:700;margin:0">${s.venue.name.replace(/</g, '&lt;')}</p><p style="margin:2px 0 8px;color:#6B6880;font-size:12px">${s.name.replace(/</g, '&lt;')} · ${aed(s.price_per_week)}/wk · ${full ? 'full for these dates' : `${s.slots_free} slots free`}${s.venue.weekly_footfall ? ` · ~${s.venue.weekly_footfall.toLocaleString()} visits/wk` : ''}</p>`;
         const b = document.createElement('button');
         b.type = 'button';
-        b.disabled = full && !on;
-        b.textContent = on ? 'Added — tap to remove' : full ? 'Full for these dates' : 'Add to booking';
+        b.disabled = full && !on && pickLabel === 'Add to booking';
+        b.textContent = on && pickLabel === 'Add to booking' ? 'Added — tap to remove' : full && pickLabel === 'Add to booking' ? 'Full for these dates' : pickLabel;
         b.style.cssText = `width:100%;padding:7px 10px;border-radius:8px;border:0;font-weight:600;cursor:pointer;background:${on ? '#F0EBFF' : '#6F3FFD'};color:${on ? '#1E1B3A' : '#fff'}`;
         b.onclick = () => { onToggle(s.id); info.current.close(); };
         div.appendChild(b);
@@ -96,7 +96,7 @@ export default function ScreensMap({ screens, selected, onToggle }) {
         <button type="submit" className="bw-btn bw-btn-ghost" disabled={!ready}>Go</button>
       </form>
       {searchErr && <p className="mb-2 text-[12px] text-rose-600">{searchErr}</p>}
-      <div className="bw-card overflow-hidden h-[520px] relative">
+      <div className={`bw-card overflow-hidden ${heightClass} relative`}>
         {!ready && <div className="absolute inset-0 bw-shimmer" />}
         <div ref={box} className="h-full w-full" />
       </div>
