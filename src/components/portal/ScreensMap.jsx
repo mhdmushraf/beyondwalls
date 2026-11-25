@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Search } from 'lucide-react';
-import { loadGoogleMaps, GOOGLE_MAP_ID } from '@/lib/mapsConfig';
+import { loadGoogleMaps, GOOGLE_MAP_ID, onGoogleRefused } from '@/lib/mapsConfig';
 import ScreensMapOSM from './ScreensMapOSM';
 
 const aed = (n) => `AED ${Number(n || 0).toLocaleString('en-AE')}`;
@@ -34,7 +34,8 @@ export default function ScreensMap({ screens, selected, onToggle, pickLabel = 'A
       info.current = new g.InfoWindow();
       setReady(true);
     }).catch(() => { if (alive) setFailed(true); });
-    return () => { alive = false; };
+    const off = onGoogleRefused(() => { if (alive) setFailed(true); });
+    return () => { alive = false; off(); };
   }, []);
 
   // Draw / redraw pins when screens or selection change.

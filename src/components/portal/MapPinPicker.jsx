@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Search } from 'lucide-react';
-import { loadGoogleMaps, GOOGLE_MAP_ID } from '@/lib/mapsConfig';
+import { loadGoogleMaps, GOOGLE_MAP_ID, onGoogleRefused } from '@/lib/mapsConfig';
 import MapPinPickerOSM from './MapPinPickerOSM';
 
 /**
@@ -40,7 +40,8 @@ export default function MapPinPicker({ lat, lng, onChange, address }) {
       if (lat && lng) place(lat, lng);
       setReady(true);
     }).catch(() => { if (alive) setFailed(true); });
-    return () => { alive = false; };
+    const off = onGoogleRefused(() => { if (alive) setFailed(true); });
+    return () => { alive = false; off(); };
   }, []); // eslint-disable-line
 
   const search = async (e) => {

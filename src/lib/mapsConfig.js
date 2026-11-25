@@ -8,11 +8,20 @@ export const GOOGLE_MAPS_API_KEY = 'AIzaSyDqGm2ok3haWfS2SaaytZhgPgIvq9k7PK0';
 export const GOOGLE_MAP_ID = 'DEMO_MAP_ID';
 
 let loader = null;
+let googleRefused = false;
+
+/** Calls onRefused if Google rejects the key (it can do so after the map has drawn). Returns an unsubscribe. */
+export function onGoogleRefused(onRefused) {
+  if (googleRefused) { onRefused(); return () => {}; }
+  window.addEventListener('bw-gmaps-refused', onRefused);
+  return () => window.removeEventListener('bw-gmaps-refused', onRefused);
+}
 
 /** Loads Maps JS (vector map + advanced markers + geocoding) once. */
 export function loadGoogleMaps() {
   if (typeof window === 'undefined') return Promise.reject(new Error('no window'));
   if (!GOOGLE_MAPS_API_KEY) return Promise.reject(new Error('no key'));
+  if (googleRefused) return Promise.reject(new Error('Google Maps key refused for this site'));
   if (loader) return loader;
   loader = new Promise((resolve, reject) => {
     const timeout = setTimeout(() => { loader = null; reject(new Error('Google Maps timed out')); }, 12000);
@@ -28,7 +37,11 @@ export function loadGoogleMaps() {
       } catch (e) { clearTimeout(timeout); loader = null; reject(e); }
     };
     // Google calls this when the key is refused (wrong domain, billing off).
-    window.gm_authFailure = () => { clearTimeout(timeout); loader = null; reject(new Error('Google Maps key refused for this site')); };
+    window.gm_authFailure = () => {
+      clearTimeout(timeout); loader = null; googleRefused = true;
+      window.dispatchEvent(new Event('bw-gmaps-refused'));
+      reject(new Error('Google Maps key refused for this site'));
+    };
     if (window.google?.maps?.importLibrary) { done(); return; }
     const cb = '__bwGmapsReady';
     window[cb] = done;
