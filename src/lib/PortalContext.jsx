@@ -19,6 +19,7 @@ export function PortalProvider({ children }) {
   const [venues, setVenues] = useState([]);
   const [screens, setScreens] = useState([]);
   const [reloadKey, setReloadKey] = useState(0);
+  const [dataError, setDataError] = useState(null);
 
   const reload = useCallback(() => setReloadKey((k) => k + 1), []);
 
@@ -77,6 +78,7 @@ export function PortalProvider({ children }) {
     const cached = readCache(key);
     if (cached) { setVenues(cached.venues || []); setScreens(cached.screens || []); }
     setLoadingData(!cached);
+    setDataError(null);
     if (!navigator.onLine) { setLoadingData(false); return () => { cancelled = true; }; }
     (async () => {
       const [venuePage, screenPage] = await Promise.all([
@@ -88,7 +90,12 @@ export function PortalProvider({ children }) {
       setScreens(screenPage.items || []);
       setLoadingData(false);
       writeCache(key, { venues: venuePage.items || [], screens: screenPage.items || [] });
-    })().catch(() => { if (!cancelled) setLoadingData(false); });
+    })().catch((e) => {
+      if (cancelled) return;
+      setLoadingData(false);
+      if (!cached) setDataError(e);
+      if (e?.response?.status === 401) window.dispatchEvent(new Event('bw:session-expired'));
+    });
     return () => { cancelled = true; };
   }, [orgId, reloadKey]);
 
@@ -125,6 +132,7 @@ export function PortalProvider({ children }) {
     user,
     loading,
     loadingData,
+    dataError: preview === 'error' ? { response: { status: 500 } } : dataError,
     memberships,
     orgs,
     org,
