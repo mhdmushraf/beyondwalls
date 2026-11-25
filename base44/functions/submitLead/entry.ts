@@ -28,7 +28,7 @@ export default async function (req: Request) {
       if (phone && !/^\+?[\d\s-]{7,20}$/.test(phone)) return bad("Check the mobile number.", "phone");
     }
 
-    const type = ["venue", "advertiser", "agency", "investor"].includes(body.type) ? body.type : (kind === "investor" ? "investor" : kind === "bone" ? "venue" : "other");
+    const type = kind === "investor" ? "investor" : ["venue", "advertiser", "agency", "investor"].includes(body.type) ? body.type : (kind === "investor" ? "investor" : kind === "bone" ? "venue" : "other");
     const label = { demo: "Demo request", bone: "B.One order", investor: "Investor deck request", newsletter: "Launch updates subscriber" }[kind];
     const notes = [label, clip(body.preferred_time) && `Preferred time: ${clip(body.preferred_time)}`, clip(body.message, 1000)].filter(Boolean).join("\n");
 
