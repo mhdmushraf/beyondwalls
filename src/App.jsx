@@ -50,6 +50,7 @@ import PortalAdRequests from './pages/portal/PortalAdRequests';
 import PortalPayReturn from './pages/portal/PortalPayReturn';
 import PortalClients from './pages/portal/PortalClients';
 import PortalSettings from './pages/portal/PortalSettings';
+import DeleteAccount from './pages/DeleteAccount';
 import AdminMarketplace from './pages/admin/AdminMarketplace';
 import AdminLayout from './components/admin/AdminLayout';
 import AdminOverview from './pages/admin/AdminOverview';
@@ -102,7 +103,7 @@ const AuthenticatedApp = () => {
       const PUBLIC_PATH_PREFIXES = [
         '/', '/home', '/about', '/services', '/contact',
         '/screenlocations', '/blog', '/blogpost', '/authorprofile', '/helpcenter',
-        '/terms', '/privacy', '/howitworks', '/connect', '/plans', '/sitemap',
+        '/terms', '/privacy', '/delete-account', '/howitworks', '/connect', '/plans', '/sitemap',
         
         '/doohadvertisingdubai', '/digitalsignageuae', '/cafescreenadvertisingdubai',
         '/gymscreenadvertisingdubai', '/coworkingspaceadvertisingdubai',
@@ -262,6 +263,7 @@ const AuthenticatedApp = () => {
          <Route path="/signup" element={<Signup />} />
          <Route path="/player" element={<Player />} />
          <Route path="/q/:id" element={<QRRedirect />} />
+         <Route path="/delete-account" element={<DeleteAccount />} />
          <Route path="/onboarding" element={<Onboarding />} />
          <Route path="/admin" element={<AdminLayout />}>
            <Route index element={<AdminOverview />} />

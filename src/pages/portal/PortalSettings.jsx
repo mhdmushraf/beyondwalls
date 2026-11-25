@@ -79,6 +79,11 @@ export default function PortalSettings() {
           </div>
           <p className="mt-4 text-[12px] text-bw-muted">Your share of marketplace ads: <b className="text-bw-navy">{keep}%</b>. To change your plan, message us from Help & support.</p>
         </div>
+
+        <div className="bw-card p-5 flex flex-wrap items-center gap-3">
+          <div className="flex-1 min-w-[200px]"><p className="text-[14px] font-bold text-bw-navy">Delete my account</p><p className="text-[12px] text-bw-muted">Removes your login and personal details. The business and its records stay for your team.</p></div>
+          <a href="/delete-account" className="bw-btn bw-btn-ghost !text-rose-600">Delete account</a>
+        </div>
       </div>
     </div>
   );
