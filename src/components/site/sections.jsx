@@ -314,10 +314,10 @@ export function BOneBlock({ withHeader = true }) {
             ))}
           </div>
         </div>
-        <div className="flex flex-col items-center gap-2.5 text-center">
-          <Link to="/Contact?topic=bone" className="rounded-xl px-7 py-4 text-white font-bold text-[16px]" style={{ backgroundImage: GRAD }}>Get your B.One →</Link>
+        {withHeader && <div className="flex flex-col items-center gap-2.5 text-center">
+          <Link to="/BOne" className="rounded-xl px-7 py-4 text-white font-bold text-[16px]" style={{ backgroundImage: GRAD }}>Get your B.One →</Link>
           <p className="font-medium text-[13px] text-[#5b5675]">Delivery across the UAE · setup guide in the box · WhatsApp support</p>
-        </div>
+        </div>}
       </div>
     </Section>
   );
