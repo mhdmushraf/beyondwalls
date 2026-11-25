@@ -1,638 +1,162 @@
-import React, { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { createPageUrl } from "@/utils";
-import { useQuery } from "@tanstack/react-query";
+import { Search, BadgeCheck, List, Map as MapIcon, MonitorPlay } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import {
-  MonitorPlay,
-  MapPin,
-  Building2,
-  Search,
-  Users,
-  Clock,
-  X,
-  Map,
-  List
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-import PublicNav from "@/components/PublicNav";
-import PublicFooter from "@/components/PublicFooter";
-import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
-import VenueSuitabilityCalculator from "@/components/leadgen/VenueSuitabilityCalculator";
+import SEOHead from "@/components/SEOHead";
+import { SitePage } from "@/components/site/Site";
+import { Tag, Btn, inputCls, wrap } from "@/components/site/inner";
+import ScreensMap from "@/components/portal/ScreensMap";
 
-// Fix for default marker icons in react-leaflet
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
-  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
-  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-});
+const label = (t) => (t || "venue").replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+const PRICE_BANDS = [["any", "Any price"], ["100", "Under AED 100/wk"], ["200", "Under AED 200/wk"], ["200+", "AED 200+/wk"]];
 
-// Custom marker icons by venue type
-const venueTypeColors = {
-  restaurant: "red",
-  cafe: "orange", 
-  mall: "violet",
-  gym: "green",
-  coworking: "blue",
-  hotel: "gold",
-  hospital: "grey",
-  salon: "pink",
-  other: "violet"
-};
-
-const createVenueIcon = (type) => new L.Icon({
-  iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${venueTypeColors[type] || "violet"}.png`,
-  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
-const screenIcon = new L.Icon({
-  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png",
-  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
-// Map controller component for dynamic center/zoom
-function MapController({ center, zoom }) {
-  const map = useMap();
-  React.useEffect(() => {
-    map.setView(center, zoom, { animate: true });
-  }, [center, zoom, map]);
-  return null;
+function Skeleton() {
+  return (
+    <div className="flex flex-col gap-3">
+      {[0, 1, 2, 3].map((i) => (
+        <div key={i} className="bg-white border border-[#eceaf3] rounded-[18px] p-4 flex gap-4 animate-pulse">
+          <div className="w-20 h-20 rounded-xl bg-[#efedf6]" />
+          <div className="flex-1 flex flex-col gap-2 py-1"><div className="h-4 w-2/3 bg-[#efedf6] rounded" /><div className="h-3 w-1/2 bg-[#efedf6] rounded" /><div className="h-3 w-1/3 bg-[#efedf6] rounded" /></div>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export default function ScreenLocations() {
-  const [search, setSearch] = useState("");
-  const [cityFilter, setCityFilter] = useState("all");
-  const [typeFilter, setTypeFilter] = useState("all");
-  const [viewMode, setViewMode] = useState("map"); // "map" or "list"
-  const [selectedVenue, setSelectedVenue] = useState(null);
+  const [screens, setScreens] = useState(null);
+  const [error, setError] = useState("");
+  const [q, setQ] = useState("");
+  const [emirate, setEmirate] = useState("all");
+  const [type, setType] = useState("all");
+  const [price, setPrice] = useState("any");
+  const [view, setView] = useState("list");
+  const [active, setActive] = useState(null);
 
-  const { data: venues = [], isLoading } = useQuery({
-    queryKey: ["public-venues"],
-    queryFn: async () => {
-      return await base44.entities.Venue.filter({ approval_status: "approved" }, '-created_date', 100, 0);
+  const load = () => {
+    setError(""); setScreens(null);
+    base44.functions.invoke("marketplaceScreens", {})
+      .then((r) => setScreens(r?.data?.screens || []))
+      .catch(() => setError("We couldn't load the screen map. Check your connection and try again."));
+  };
+  useEffect(load, []);
+
+  const emirates = useMemo(() => [...new Set((screens || []).map((s) => s.venue.emirate).filter(Boolean))].sort(), [screens]);
+  const types = useMemo(() => [...new Set((screens || []).map((s) => s.venue.venue_type).filter(Boolean))].sort(), [screens]);
+
+  const shown = useMemo(() => (screens || []).filter((s) => {
+    const text = `${s.venue.name} ${s.venue.area} ${s.venue.emirate} ${s.name} ${s.position_label}`.toLowerCase();
+    if (q.trim() && !text.includes(q.trim().toLowerCase())) return false;
+    if (emirate !== "all" && s.venue.emirate !== emirate) return false;
+    if (type !== "all" && s.venue.venue_type !== type) return false;
+    if (price === "100" && s.price_per_week >= 100) return false;
+    if (price === "200" && s.price_per_week >= 200) return false;
+    if (price === "200+" && s.price_per_week < 200) return false;
+    return true;
+  }), [screens, q, emirate, type, price]);
+
+  const venues = useMemo(() => {
+    const m = new Map();
+    for (const s of shown) {
+      const v = m.get(s.venue.id) || { ...s.venue, screens: [], photo: s.photo_url };
+      v.screens.push(s);
+      if (!v.photo && s.photo_url) v.photo = s.photo_url;
+      m.set(s.venue.id, v);
     }
-  });
+    return [...m.values()].map((v) => ({ ...v, from: Math.min(...v.screens.map((s) => s.price_per_week)) }));
+  }, [shown]);
 
-  const { data: screens = [] } = useQuery({
-    queryKey: ["public-screens"],
-    queryFn: () => base44.entities.Screen.filter({ approval_status: "approved" }, '-created_date', 200, 0)
-  });
-
-  const filteredVenues = venues.filter(venue => {
-    const matchesSearch = venue.name?.toLowerCase().includes(search.toLowerCase()) ||
-                         venue.area?.toLowerCase().includes(search.toLowerCase());
-    const matchesCity = cityFilter === "all" || venue.city === cityFilter;
-    const matchesType = typeFilter === "all" || venue.type === typeFilter;
-    return matchesSearch && matchesCity && matchesType;
-  });
-
-  // Venues with coordinates for map
-  const venuesWithCoords = filteredVenues.filter(v => v.latitude && v.longitude);
-
-  const getScreenCount = (venueId) => screens.filter(s => s.venue_id === venueId).length;
-  const getVenueScreens = (venueId) => screens.filter(s => s.venue_id === venueId);
-
-  const cities = [...new Set(venues.map(v => v.city).filter(Boolean))];
-  const venueTypes = [...new Set(venues.map(v => v.type).filter(Boolean))];
-
-  const typeLabels = {
-    restaurant: "Restaurant",
-    cafe: "Café",
-    mall: "Shopping Mall",
-    gym: "Fitness Center",
-    coworking: "Coworking Space",
-    hotel: "Hotel",
-    hospital: "Hospital"
-  };
-
-  // UAE city coordinates for focused zoom
-  const cityCoords = {
-    "Dubai": { center: [25.2048, 55.2708], zoom: 11 },
-    "Abu Dhabi": { center: [24.4539, 54.3773], zoom: 11 },
-    "Sharjah": { center: [25.3463, 55.4209], zoom: 12 },
-    "Ajman": { center: [25.4052, 55.5136], zoom: 13 },
-    "RAK": { center: [25.7895, 55.9432], zoom: 12 },
-    "Fujairah": { center: [25.1288, 56.3265], zoom: 12 },
-    "Umm Al Quwain": { center: [25.5647, 55.5533], zoom: 13 }
-  };
-  
-  const uaeCenter = [25.2048, 55.2708]; // Dubai center
-  const defaultZoom = 11; // Zoom into Dubai
-  
-  // Get map center based on city filter
-  const getMapCenter = () => {
-    if (cityFilter !== "all" && cityCoords[cityFilter]) {
-      return cityCoords[cityFilter].center;
-    }
-    return uaeCenter;
-  };
-  
-  const getMapZoom = () => {
-    if (cityFilter !== "all" && cityCoords[cityFilter]) {
-      return cityCoords[cityFilter].zoom;
-    }
-    return defaultZoom;
-  };
+  const stats = [
+    [screens ? new Set(screens.map((s) => s.venue.id)).size : "—", "Founding venues", "Onboarding now"],
+    [screens ? screens.filter((s) => s.is_online).length : "—", "Live screens", "Updated in real time"],
+    [emirates.length || 1, "Emirates", "Dubai first, then UAE"],
+  ];
+  const where = emirate !== "all" ? emirate : "the UAE";
 
   return (
-    <div className="min-h-screen bg-white">
-      <SEOHead 
-        {...PAGE_SEO.screenLocations}
-        structuredData={{
-          "@context": "https://schema.org",
-          "@type": "ItemList",
-          "name": "BeyondWalls Digital Advertising Screen Locations",
-          "description": "Digital advertising screens in premium venues across the UAE",
-          "url": "https://beyondwalls.ae/screen-locations",
-          "numberOfItems": venues.length,
-          "itemListElement": filteredVenues.slice(0, 20).map((venue, index) => ({
-            "@type": "ListItem",
-            "position": index + 1,
-            "item": {
-              "@type": "Place",
-              "name": venue.name,
-              "address": {
-                "@type": "PostalAddress",
-                "addressLocality": venue.city,
-                "addressRegion": venue.area,
-                "addressCountry": "AE"
-              }
-            }
-          }))
-        }}
-      />
-      <PublicNav />
-
-      {/* Hero */}
-      <section className="pt-32 pb-12 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50">
-        <div className="max-w-4xl mx-auto text-center">
-          <Badge className="bg-amber-100 text-slate-900 mb-6">Screen Network</Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
-            Premium Screen Locations
-          </h1>
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-            Explore our network of high-traffic venues across the UAE. Find the perfect locations for your campaigns.
-          </p>
-        </div>
-      </section>
-
-      {/* Stats */}
-      <section className="py-8 px-6 bg-slate-900">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-3 gap-8">
-            <div className="text-center">
-              <p className="text-3xl font-bold text-white">{venues.length}</p>
-              <p className="text-slate-300">Premium Venues</p>
-            </div>
-            <div className="text-center">
-              <p className="text-3xl font-bold text-[#F5D547]">{screens.length}</p>
-              <p className="text-slate-300">Active Screens</p>
-            </div>
-            <div className="text-center">
-              <p className="text-3xl font-bold text-white">{cities.length}</p>
-              <p className="text-slate-300">Cities Covered</p>
-            </div>
+    <SitePage>
+      <SEOHead title="Screen map — advertise on venue screens in the UAE | BeyondWalls" description="Browse verified venues, see each screen's position and weekly price, and book in minutes." canonical="https://beyondwalls.ae/ScreenLocations" />
+      <section className="bg-[#fbfaff]">
+        <div className={`${wrap} pt-12 lg:pt-16 pb-8 flex flex-col lg:flex-row lg:items-end gap-8 justify-between`}>
+          <div className="flex flex-col gap-4 items-start">
+            <Tag>Screen network</Tag>
+            <h1 className="font-bold text-[36px] md:text-[48px] leading-[1.1] tracking-[-1.44px] text-[#111027]">Find screens across the UAE</h1>
+            <p className="text-[17px] text-[#6b6787] max-w-[560px]">Browse verified venues, see each screen's position and price, and book in minutes.</p>
           </div>
-        </div>
-      </section>
-
-      {/* Filters */}
-      <section className="py-8 px-6 border-b border-slate-100">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <Input
-                placeholder="Search venues..."
-                className="pl-10"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-            <Select value={cityFilter} onValueChange={setCityFilter}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="All Cities" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Cities</SelectItem>
-                {cities.map(city => (
-                  <SelectItem key={city} value={city}>{city}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="All Venue Types" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Venue Types</SelectItem>
-                {venueTypes.map(type => (
-                  <SelectItem key={type} value={type}>{typeLabels[type] || type}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <div className="flex border rounded-lg overflow-hidden">
-              <Button
-                variant={viewMode === "map" ? "default" : "ghost"}
-                size="sm"
-                className={viewMode === "map" ? "bg-violet-600 rounded-none" : "rounded-none"}
-                onClick={() => setViewMode("map")}
-              >
-                <Map className="w-4 h-4 mr-1" />
-                Map
-              </Button>
-              <Button
-                variant={viewMode === "list" ? "default" : "ghost"}
-                size="sm"
-                className={viewMode === "list" ? "bg-violet-600 rounded-none" : "rounded-none"}
-                onClick={() => setViewMode("list")}
-              >
-                <List className="w-4 h-4 mr-1" />
-                List
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Map View */}
-      {viewMode === "map" && (
-        <section className="px-6 py-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid lg:grid-cols-4 gap-6">
-              {/* Filter Sidebar */}
-              <div className="lg:col-span-1 space-y-4">
-                <Card className="p-4">
-                  <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-violet-600" />
-                    Filter by City
-                  </h3>
-                  <div className="space-y-2">
-                    <button
-                      onClick={() => setCityFilter("all")}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                        cityFilter === "all" ? "bg-violet-100 text-violet-700 font-medium" : "hover:bg-slate-100"
-                      }`}
-                    >
-                      All UAE ({venues.length})
-                    </button>
-                    {cities.map(city => {
-                      const count = venues.filter(v => v.city === city).length;
-                      return (
-                        <button
-                          key={city}
-                          onClick={() => setCityFilter(city)}
-                          className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex justify-between ${
-                            cityFilter === city ? "bg-violet-100 text-violet-700 font-medium" : "hover:bg-slate-100"
-                          }`}
-                        >
-                          <span>{city}</span>
-                          <span className="text-slate-500">{count}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </Card>
-
-                <Card className="p-4">
-                  <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-violet-600" />
-                    Filter by Venue Type
-                  </h3>
-                  <div className="space-y-2">
-                    <button
-                      onClick={() => setTypeFilter("all")}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                        typeFilter === "all" ? "bg-violet-100 text-violet-700 font-medium" : "hover:bg-slate-100"
-                      }`}
-                    >
-                      All Types
-                    </button>
-                    {venueTypes.map(type => {
-                      const count = venues.filter(v => v.type === type).length;
-                      return (
-                        <button
-                          key={type}
-                          onClick={() => setTypeFilter(type)}
-                          className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center justify-between ${
-                            typeFilter === type ? "bg-violet-100 text-violet-700 font-medium" : "hover:bg-slate-100"
-                          }`}
-                        >
-                          <span className="flex items-center gap-2">
-                            <span 
-                              className="w-3 h-3 rounded-full" 
-                              style={{ backgroundColor: venueTypeColors[type] || "violet" }}
-                            />
-                            {typeLabels[type] || type}
-                          </span>
-                          <span className="text-slate-500">{count}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </Card>
-
-                {/* Legend */}
-                <Card className="p-4">
-                  <h3 className="font-semibold text-slate-900 mb-3">Map Legend</h3>
-                  <div className="space-y-2 text-sm">
-                    {Object.entries(venueTypeColors).slice(0, 7).map(([type, color]) => (
-                      <div key={type} className="flex items-center gap-2">
-                        <span className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
-                        <span className="text-slate-600 capitalize">{typeLabels[type] || type}</span>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
+          <div className="grid grid-cols-3 gap-3">
+            {stats.map(([n, t, d]) => (
+              <div key={t} className="bg-white border border-[#eceaf3] rounded-[18px] px-4 py-3 min-w-[120px]">
+                <p className="font-bold text-[24px] text-[#111027]">{n}</p>
+                <p className="font-semibold text-[13px] text-[#111027]">{t}</p>
+                <p className="text-[12px] text-[#6b6787]">{d}</p>
               </div>
-
-              {/* Map */}
-              <div className="lg:col-span-3">
-                <div className="relative rounded-2xl overflow-hidden shadow-xl border border-slate-200" style={{ height: "700px" }}>
-                  <MapContainer
-                    center={getMapCenter()}
-                    zoom={getMapZoom()}
-                    style={{ height: "100%", width: "100%" }}
-                    scrollWheelZoom={true}
-                    zoomControl={true}
-                  >
-                    <MapController center={getMapCenter()} zoom={getMapZoom()} />
-                    <TileLayer
-                      attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-                      url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-                    />
-                    {venuesWithCoords.map((venue) => (
-                      <Marker
-                        key={venue.id}
-                        position={[venue.latitude, venue.longitude]}
-                        icon={createVenueIcon(venue.type)}
-                        eventHandlers={{
-                          click: () => setSelectedVenue(venue)
-                        }}
-                      >
-                        <Popup>
-                          <div className="p-2 min-w-[220px]">
-                            <div className="flex items-start gap-2 mb-2">
-                              <span 
-                                className="w-3 h-3 rounded-full mt-1.5 flex-shrink-0" 
-                                style={{ backgroundColor: venueTypeColors[venue.type] || "violet" }}
-                              />
-                              <div>
-                                <h3 className="font-bold text-slate-900">{venue.name}</h3>
-                                <p className="text-xs text-slate-500">{typeLabels[venue.type] || venue.type}</p>
-                              </div>
-                            </div>
-                            <p className="text-sm text-slate-600">{venue.area}, {venue.city}</p>
-                            <div className="flex items-center gap-1 mt-2 text-violet-600 font-medium text-sm">
-                              <MonitorPlay className="w-4 h-4" />
-                              {getScreenCount(venue.id)} Screens Available
-                            </div>
-                            {venue.avg_daily_footfall && (
-                              <div className="flex items-center gap-1 mt-1 text-slate-600 text-sm">
-                                <Users className="w-4 h-4" />
-                                {venue.avg_daily_footfall.toLocaleString()} daily visitors
-                              </div>
-                            )}
-                            <Button
-                              size="sm"
-                              className="w-full mt-3 bg-violet-600 hover:bg-violet-700"
-                              onClick={() => setSelectedVenue(venue)}
-                            >
-                              View Details & Screens
-                            </Button>
-                          </div>
-                        </Popup>
-                      </Marker>
-                    ))}
-                  </MapContainer>
-
-                  {/* Venue Detail Panel */}
-                  {selectedVenue && (
-                    <div className="absolute top-4 right-4 bg-white rounded-xl shadow-2xl p-5 w-80 z-[1000] max-h-[650px] overflow-y-auto">
-                      <button
-                        onClick={() => setSelectedVenue(null)}
-                        className="absolute top-3 right-3 p-1 hover:bg-slate-100 rounded-full"
-                      >
-                        <X className="w-5 h-5 text-slate-500" />
-                      </button>
-                      <img
-                        src={selectedVenue.image_url || "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=200&fit=crop"}
-                        alt={selectedVenue.name}
-                        className="w-full h-36 object-cover rounded-lg mb-4"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                      <div className="flex items-center gap-2 mb-2">
-                        <span 
-                          className="w-3 h-3 rounded-full" 
-                          style={{ backgroundColor: venueTypeColors[selectedVenue.type] || "violet" }}
-                        />
-                        <Badge className="bg-slate-100 text-slate-700">
-                          {typeLabels[selectedVenue.type] || selectedVenue.type}
-                        </Badge>
-                      </div>
-                      <h3 className="text-lg font-bold text-slate-900">{selectedVenue.name}</h3>
-                      <p className="text-sm text-slate-500 mt-1 flex items-center gap-1">
-                        <MapPin className="w-3 h-3" />
-                        {selectedVenue.area}, {selectedVenue.city}
-                      </p>
-                      
-                      <div className="mt-4 p-3 bg-violet-50 rounded-lg">
-                        <div className="grid grid-cols-2 gap-3 text-sm">
-                          <div>
-                            <p className="text-violet-600 font-semibold">{selectedVenue.avg_daily_footfall?.toLocaleString() || "N/A"}</p>
-                            <p className="text-slate-500 text-xs">Daily Visitors</p>
-                          </div>
-                          <div>
-                            <p className="text-violet-600 font-semibold">{getScreenCount(selectedVenue.id)}</p>
-                            <p className="text-slate-500 text-xs">Screens</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="mt-3 space-y-2 text-sm">
-                        <div className="flex items-center gap-2 text-slate-600">
-                          <Clock className="w-4 h-4 text-violet-600" />
-                          {selectedVenue.operating_hours || "Hours not specified"}
-                        </div>
-                      </div>
-
-                      {/* Screens List */}
-                      <div className="mt-4">
-                        <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
-                          <MonitorPlay className="w-4 h-4 text-violet-600" />
-                          Available Screens ({getScreenCount(selectedVenue.id)})
-                        </h4>
-                        <div className="space-y-2 max-h-48 overflow-y-auto">
-                          {getVenueScreens(selectedVenue.id).map((screen) => (
-                            <div key={screen.id} className="bg-slate-50 rounded-lg p-3 border border-slate-100">
-                              <p className="font-medium text-slate-900 text-sm">{screen.name}</p>
-                              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 mt-1">
-                                <Badge variant="outline" className="text-xs">{screen.size}</Badge>
-                                <Badge variant="outline" className="text-xs">{screen.orientation}</Badge>
-                              </div>
-                              <p className="text-violet-600 font-semibold text-sm mt-2">
-                                AED {screen.slot_price}/week
-                              </p>
-                            </div>
-                          ))}
-                          {getScreenCount(selectedVenue.id) === 0 && (
-                            <p className="text-sm text-slate-500 text-center py-4">No screens listed yet</p>
-                          )}
-                        </div>
-                      </div>
-
-                      <Link to={createPageUrl("Contact")}>
-                        <Button className="w-full mt-4 bg-gradient-to-r from-violet-600 to-indigo-600">
-                          Advertise at This Venue
-                        </Button>
-                      </Link>
-                    </div>
-                  )}
-
-                  {/* Results Count Badge */}
-                  <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg z-[1000]">
-                    <p className="text-sm font-medium text-slate-700">
-                      <span className="text-violet-600 font-bold">{venuesWithCoords.length}</span> venues 
-                      {cityFilter !== "all" && <span> in {cityFilter}</span>}
-                      {typeFilter !== "all" && <span> • {typeLabels[typeFilter] || typeFilter}</span>}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
-        </section>
-      )}
-
-      {/* Venues Grid (List View) */}
-      {viewMode === "list" && (
-      <section className="py-12 px-6">
-        <div className="max-w-6xl mx-auto">
-          {isLoading ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5, 6].map(i => (
-                <Card key={i}>
-                  <Skeleton className="h-48 w-full" />
-                  <CardContent className="p-4">
-                    <Skeleton className="h-6 w-3/4 mb-2" />
-                    <Skeleton className="h-4 w-1/2" />
-                  </CardContent>
-                </Card>
+        </div>
+        <div className={`${wrap} pb-6`}>
+          <div className="bg-white border border-[#eceaf3] rounded-[18px] p-3 flex flex-col md:flex-row gap-3">
+            <label className="flex-1 flex items-center gap-2 px-3">
+              <Search className="w-4 h-4 text-[#8f86b8]" />
+              <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search venues or areas…" className="flex-1 py-2.5 outline-none text-[15px] bg-transparent" />
+            </label>
+            <select value={emirate} onChange={(e) => setEmirate(e.target.value)} className={`${inputCls} md:w-44`}><option value="all">All emirates</option>{emirates.map((e) => <option key={e}>{e}</option>)}</select>
+            <select value={type} onChange={(e) => setType(e.target.value)} className={`${inputCls} md:w-48`}><option value="all">All venue types</option>{types.map((t) => <option key={t} value={t}>{label(t)}</option>)}</select>
+            <select value={price} onChange={(e) => setPrice(e.target.value)} className={`${inputCls} md:w-48`}>{PRICE_BANDS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select>
+            <div className="lg:hidden grid grid-cols-2 bg-[#f6f5fa] rounded-xl p-1">
+              {[["list", List, "List"], ["map", MapIcon, "Map"]].map(([k, Icon, l]) => (
+                <button key={k} onClick={() => setView(k)} className={`flex items-center justify-center gap-1.5 rounded-lg py-2 text-[13px] font-semibold ${view === k ? "bg-white text-[#5a2ded] shadow-sm" : "text-[#6b6787]"}`}><Icon className="w-4 h-4" />{l}</button>
               ))}
             </div>
-          ) : filteredVenues.length === 0 ? (
-            <div className="text-center py-16">
-              <MapPin className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-slate-700 mb-2">No venues found</h3>
-              <p className="text-slate-500">Try adjusting your search or filters</p>
-            </div>
-          ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredVenues.map((venue) => (
-                <Card key={venue.id} className="overflow-hidden hover:shadow-xl transition-shadow">
-                  <div className="relative h-48">
-                    <img
-                      src={venue.image_url || "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop"}
-                      alt={venue.name}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                    <Badge className="absolute top-3 right-3 bg-amber-100 text-slate-900">
-                      {typeLabels[venue.type] || venue.type}
-                    </Badge>
-                  </div>
-                  <CardContent className="p-5">
-                    <h3 className="text-lg font-bold text-slate-900 mb-2">{venue.name}</h3>
-                    <div className="space-y-2 text-sm text-slate-600">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4 text-violet-600" />
-                        {venue.area}, {venue.city}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <MonitorPlay className="w-4 h-4 text-violet-600" />
-                        {getScreenCount(venue.id)} Active Screens
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Users className="w-4 h-4 text-violet-600" />
-                        {venue.avg_daily_footfall?.toLocaleString() || "N/A"} daily visitors
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-violet-600" />
-                        {venue.operating_hours || "N/A"}
-                      </div>
-                    </div>
-                    <Link to={createPageUrl("Contact")}>
-                      <Button className="w-full mt-4 bg-gradient-to-r from-violet-600 to-indigo-600">
-                        Advertise Here
-                      </Button>
-                    </Link>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-      )}
-
-      {/* Venue Calculator */}
-      <section className="py-20 px-6 bg-slate-50">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <Badge className="bg-emerald-100 text-emerald-700 mb-4">For Venue Owners</Badge>
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">Calculate Your Revenue Potential</h2>
-            <p className="text-slate-600">
-              See how much you could earn by listing your venue on BeyondWalls
-            </p>
           </div>
-          <VenueSuitabilityCalculator />
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 px-6 bg-gradient-to-br from-violet-600 to-indigo-600">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-white mb-6">
-            Want to Add Your Venue?
-          </h2>
-          <p className="text-xl text-white/80 mb-8">
-            Join our network and start earning from your screens
-          </p>
-          <Link to={createPageUrl("Contact")}>
-            <Button size="lg" className="bg-amber-100 text-slate-900 hover:bg-amber-100/90">
-              <Building2 className="w-5 h-5 mr-2" />
-              List Your Venue
-            </Button>
-          </Link>
+      <section className="bg-[#fbfaff]">
+        <div className={`${wrap} pb-16 flex flex-col lg:flex-row gap-5`}>
+          <div className={`lg:w-[420px] shrink-0 flex flex-col gap-3 ${view === "map" ? "hidden lg:flex" : ""}`}>
+            {error ? (
+              <div className="bg-white border border-[#eceaf3] rounded-[18px] p-6 flex flex-col gap-3 items-start">
+                <p className="text-[15px] text-[#111027]">{error}</p>
+                <Btn kind="light" onClick={load}>Try again</Btn>
+              </div>
+            ) : !screens ? <Skeleton /> : (
+              <>
+                <p className="font-semibold text-[15px] text-[#111027]">{venues.length} venue{venues.length === 1 ? "" : "s"} in {where}</p>
+                {venues.length === 0 ? (
+                  <div className="bg-white border border-[#eceaf3] rounded-[18px] p-6 flex flex-col gap-3 items-start">
+                    <MonitorPlay className="w-8 h-8 text-[#6f3ffd]" />
+                    <p className="font-bold text-[17px] text-[#111027]">{screens.length ? "No venues match those filters" : "Founding venues are onboarding now"}</p>
+                    <p className="text-[14px] text-[#6b6787]">{screens.length ? "Clear a filter to see more screens." : "The first screens go live soon. Own a venue? List yours free and be first on the map."}</p>
+                    {!screens.length && <Btn to="/signup">List your screen — free</Btn>}
+                  </div>
+                ) : venues.map((v) => (
+                  <button key={v.id} onClick={() => setActive(v.id)} className={`text-left bg-white border rounded-[18px] p-4 flex gap-4 transition ${active === v.id ? "border-[#6f3ffd] ring-2 ring-[#6f3ffd]/15" : "border-[#eceaf3] hover:border-[#c9bdfb]"}`}>
+                    {v.photo ? <img src={v.photo} alt="" loading="lazy" className="w-20 h-20 rounded-xl object-cover shrink-0" /> : <div className="w-20 h-20 rounded-xl bg-[#f1ecff] flex items-center justify-center shrink-0"><MonitorPlay className="w-7 h-7 text-[#6f3ffd]" /></div>}
+                    <div className="flex-1 min-w-0 flex flex-col gap-1">
+                      <p className="font-bold text-[16px] text-[#111027] truncate">{v.name}</p>
+                      <p className="text-[13px] text-[#6b6787] truncate">{label(v.venue_type)} · {v.area || v.emirate}</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        <span className="bg-[#f1ecff] text-[#5a2ded] rounded-full px-2 py-0.5 text-[11px] font-semibold">{v.screens.length} screen{v.screens.length === 1 ? "" : "s"}</span>
+                        <span className="bg-[#dcfce7] text-[#166534] rounded-full px-2 py-0.5 text-[11px] font-semibold inline-flex items-center gap-1"><BadgeCheck className="w-3 h-3" />Verified</span>
+                      </div>
+                      <p className="font-bold text-[14px] text-[#5a2ded]">from AED {v.from}/wk</p>
+                    </div>
+                  </button>
+                ))}
+                {venues.length > 0 && <Btn to="/signup" className="mt-2">Sign up free to book</Btn>}
+              </>
+            )}
+          </div>
+          <div className={`flex-1 min-h-[480px] lg:min-h-[640px] rounded-[24px] overflow-hidden border border-[#eceaf3] bg-white ${view === "list" ? "hidden lg:block" : ""}`}>
+            {screens ? (
+              <ScreensMap screens={shown} selected={active ? shown.filter((s) => s.venue.id === active).map((s) => s.id) : []} onToggle={(id) => { const s = shown.find((x) => x.id === id); if (s) setActive(s.venue.id); }} />
+            ) : <div className="w-full h-full min-h-[480px] bg-[#efedf6] animate-pulse" />}
+          </div>
         </div>
       </section>
-
-      <PublicFooter />
-    </div>
+      <div className="bg-[#fbfaff] pb-4 text-center">
+        <Link to="/ForAdvertisers" className="text-[14px] font-semibold text-[#5a2ded]">How advertising works →</Link>
+      </div>
+    </SitePage>
   );
 }
