@@ -108,13 +108,13 @@ button:focus-visible {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
     /* Beyond Walls v2 portal palette */
-    --bw-navy: 226 51% 16%;
-    --bw-navy-soft: 226 40% 23%;
-    --bw-coral: 7 100% 67%;
-    --bw-cream: 38 44% 96%;
-    --bw-line: 226 22% 90%;
-    --bw-ink: 226 30% 22%;
-    --bw-muted: 226 14% 46%;
+    --bw-navy: 245 41% 11%;
+    --bw-navy-soft: 248 30% 20%;
+    --bw-coral: 254 84% 55%;
+    --bw-cream: 250 43% 97%;
+    --bw-line: 250 20% 91%;
+    --bw-ink: 248 19% 28%;
+    --bw-muted: 248 13% 47%;
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222 47% 11%;
     --sidebar-primary: 256 90% 60%;
@@ -160,13 +160,13 @@ button:focus-visible {
     --sidebar-border: 240 45% 20%;
     --sidebar-ring: 256 90% 60%;
     /* Beyond Walls v2 portal palette */
-    --bw-navy: 226 51% 16%;
-    --bw-navy-soft: 226 40% 23%;
-    --bw-coral: 7 100% 67%;
-    --bw-cream: 38 44% 96%;
-    --bw-line: 226 22% 90%;
-    --bw-ink: 226 30% 22%;
-    --bw-muted: 226 14% 46%;
+    --bw-navy: 245 41% 11%;
+    --bw-navy-soft: 248 30% 20%;
+    --bw-coral: 254 84% 55%;
+    --bw-cream: 250 43% 97%;
+    --bw-line: 250 20% 91%;
+    --bw-ink: 248 19% 28%;
+    --bw-muted: 248 13% 47%;
   }
 }
 
