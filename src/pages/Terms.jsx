@@ -1,130 +1,77 @@
-import { Badge } from "@/components/ui/badge";
-import PublicNav from "@/components/PublicNav";
-import PublicFooter from "@/components/PublicFooter";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import SEOHead, { PAGE_SEO } from "@/components/SEOHead";
+import LegalShell from "@/components/site/LegalShell";
+import { PRICING } from "@/components/site/sections";
 
 export default function Terms() {
+  const { hash } = useLocation();
+  useEffect(() => {
+    if (hash) setTimeout(() => document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "smooth" }), 50);
+  }, [hash]);
+
   return (
-    <div className="min-h-screen bg-white">
+    <LegalShell title="Terms of service" updated="November 2026">
       <SEOHead {...PAGE_SEO.terms} />
-      <PublicNav />
+      <h2>1. Who we are</h2>
+      <p>BeyondWalls ("we", "us") is operated by Linkzone Global FZ-LLC, in5 Tech, Dubai Internet City, Dubai, UAE (DDA licence 107603). By creating an account or using the website, apps or TV player ("Service") you agree to these terms.</p>
 
-      {/* Hero */}
-      <section className="pt-32 pb-12 px-6 bg-gradient-to-br from-violet-50 via-white to-indigo-50">
-        <div className="max-w-4xl mx-auto text-center">
-          <Badge className="bg-amber-100 text-slate-900 mb-6">Legal</Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
-            Terms of Service
-          </h1>
-          <p className="text-slate-600">Last updated: November 25, 2024</p>
-        </div>
-      </section>
+      <h2>2. The Service</h2>
+      <p>BeyondWalls lets venues run digital signage on their screens (menus, prices, playlists, QR codes) and, if they choose, offer spare ad slots to advertisers through a marketplace. Advertisers and agencies can book those slots and receive proof-of-play and QR-scan reporting.</p>
 
-      {/* Content */}
-      <section className="py-12 px-6">
-        <div className="max-w-3xl mx-auto prose prose-slate prose-lg">
-          <h2>1. Acceptance of Terms</h2>
-          <p>
-            By accessing or using BeyondWalls' digital out-of-home advertising platform ("Service"), 
-            you agree to be bound by these Terms of Service. If you do not agree to these terms, 
-            please do not use our Service.
-          </p>
+      <h2>3. Accounts</h2>
+      <p>You must give accurate details, including business documents we ask for to verify your business. You are responsible for activity under your account and for keeping your sign-in secure. You may delete your account at any time from the app or at <a href="/delete-account">beyondwalls.ae/delete-account</a>.</p>
 
-          <h2>2. Description of Service</h2>
-          <p>
-            BeyondWalls provides a self-serve marketplace connecting advertisers with venue owners 
-            for digital out-of-home advertising. Our platform enables:
-          </p>
-          <ul>
-            <li>Advertisers to create and manage advertising campaigns</li>
-            <li>Venue owners to register screens and earn revenue</li>
-            <li>Display of advertisements on registered screens</li>
-          </ul>
+      <h2>4. Plans and fees for venues</h2>
+      <ul>
+        <li><strong>Ads only</strong> — free. Your screen plays ads you approve.</li>
+        <li><strong>Signage + Ads</strong> — AED {PRICING.signageAds} per screen per month (founding price, locked for 12 months).</li>
+        <li><strong>Signage only</strong> — AED {PRICING.signageOnly} per screen per month (founding price, locked for 12 months). No ads are shown.</li>
+        <li><strong>B.One player</strong> — AED {PRICING.bone} one-off, optional, with a 12-month warranty.</li>
+      </ul>
+      <p>Plans are monthly with no minimum term; you can cancel any time and the plan ends at the end of the paid month. Screen fees are first deducted from your ad earnings; any balance is charged to your payment method. Prices exclude VAT.</p>
 
-          <h2>3. User Accounts</h2>
-          <p>
-            To use our Service, you must create an account and provide accurate information. 
-            You are responsible for maintaining the confidentiality of your account credentials 
-            and for all activities under your account.
-          </p>
+      <h2 id="venue-agreement">5. Venue agreement — ads and earnings</h2>
+      <ul>
+        <li>You must own or be authorised to use every screen and venue you register.</li>
+        <li>Every marketplace ad needs your approval before it plays. You can block categories and brands.</li>
+        <li>You receive <strong>{PRICING.venueShare}%</strong> of the booking value of marketplace ads that play on your screens. Partner venues that receive free hardware agree a 60/40 or 50/50 share in writing.</li>
+        <li>For direct deals — advertisers you sell to yourself and collect payment from — we charge a <strong>{PRICING.directDealFee}%</strong> platform fee on the deal value.</li>
+        <li>Earnings become available after the booked period has played. You can request payouts to a bank account in your business's name; we may hold payouts while we verify details or investigate fraud or non-delivery.</li>
+        <li>You agree to keep screens powered and online during your stated opening hours. Bookings that do not play may be refunded to the advertiser and are not paid out.</li>
+      </ul>
 
-          <h2>4. For Advertisers</h2>
-          <h3>4.1 Campaign Content</h3>
-          <p>
-            You are solely responsible for your advertising content. All content must comply with 
-            applicable laws and our content guidelines. We reserve the right to reject or remove 
-            any content that violates these terms.
-          </p>
-          <h3>4.2 Payment Terms</h3>
-          <p>
-            Campaign costs are calculated based on screen rates and duration. Payment is required 
-            upfront via wallet top-up. Refunds for cancelled campaigns are processed within 5-7 business days.
-          </p>
+      <h2>6. Advertisers and agencies</h2>
+      <ul>
+        <li>Prices are set per screen per week by each venue and shown before you pay. Payment is taken when you book.</li>
+        <li>If a venue declines your ad, the amount for that screen is refunded in full to your original payment method.</li>
+        <li>You are responsible for your creative and must hold the rights to everything in it.</li>
+        <li>Agencies and Connect partners may book for clients; partners keep {PRICING.connectShare}% under their partner agreement.</li>
+      </ul>
 
-          <h2>5. For Venue Owners</h2>
-          <h3>5.1 Screen Registration</h3>
-          <p>
-            You must own or have authorization to use the screens you register. You are responsible 
-            for maintaining screen connectivity and proper display of advertisements.
-          </p>
-          <h3>5.2 Revenue Share</h3>
-          <p>
-            Venue owners keep 100% of their screen rate. Advertisers pay a service fee on top. 
-            Payments are processed weekly or monthly based on your preference.
-          </p>
+      <h2 id="advertising-rules">7. Advertising rules</h2>
+      <p>Ads must follow UAE law and media content standards. We and the venue may reject or remove any ad. Not allowed: alcohol, tobacco and vaping, adult content, gambling, political or religious campaigning, weapons, unlicensed medical or financial claims, and anything misleading, offensive or infringing. Videos and images must match the screen's format; we check this on upload.</p>
 
-          <h2>6. Prohibited Activities</h2>
-          <p>You may not:</p>
-          <ul>
-            <li>Use the Service for illegal purposes</li>
-            <li>Upload harmful, offensive, or inappropriate content</li>
-            <li>Interfere with the operation of the Service</li>
-            <li>Attempt to gain unauthorized access to accounts or systems</li>
-            <li>Misrepresent your identity or affiliation</li>
-          </ul>
+      <h2>8. Your content</h2>
+      <p>You keep ownership of content you upload. You give us a licence to store, process and display it on the screens you choose, only to provide the Service.</p>
 
-          <h2>7. Intellectual Property</h2>
-          <p>
-            The BeyondWalls platform, including its design, features, and content, is owned by 
-            BeyondWalls and protected by intellectual property laws. You retain ownership of 
-            content you upload but grant us a license to display it on our network.
-          </p>
+      <h2>9. Acceptable use</h2>
+      <p>Do not misuse the Service: no illegal use, no interfering with screens or systems, no unauthorised access, no impersonation, and no inflating plays or QR scans.</p>
 
-          <h2>8. Limitation of Liability</h2>
-          <p>
-            BeyondWalls is not liable for any indirect, incidental, or consequential damages 
-            arising from your use of the Service. Our total liability shall not exceed the 
-            amount paid by you in the 12 months preceding the claim.
-          </p>
+      <h2>10. Availability and liability</h2>
+      <p>We work to keep screens and the Service running but do not guarantee uninterrupted service. To the extent the law allows, we are not liable for indirect or consequential losses, and our total liability is limited to the fees you paid us in the 12 months before the claim.</p>
 
-          <h2>9. Termination</h2>
-          <p>
-            We may suspend or terminate your account for violation of these terms. You may 
-            close your account at any time. Outstanding payments remain due upon termination.
-          </p>
+      <h2>11. Suspension and termination</h2>
+      <p>We may suspend or close accounts that break these terms. Amounts you owe remain due, and earnings from fraudulent activity are not paid.</p>
 
-          <h2>10. Changes to Terms</h2>
-          <p>
-            We may update these terms from time to time. Continued use of the Service after 
-            changes constitutes acceptance of the new terms.
-          </p>
+      <h2>12. Changes</h2>
+      <p>We may update these terms. We will notify you of material changes in the app or by email before they take effect.</p>
 
-          <h2>11. Governing Law</h2>
-          <p>
-            These terms are governed by the laws of the United Arab Emirates. Any disputes 
-            shall be resolved in the courts of Dubai.
-          </p>
+      <h2>13. Law</h2>
+      <p>These terms are governed by the laws of the United Arab Emirates as applied in the Emirate of Dubai, and the Dubai courts have jurisdiction.</p>
 
-          <h2>12. Contact</h2>
-          <p>
-            For questions about these Terms, contact us at:<br />
-            Email: info@linkzoneglobal.com<br />
-            Phone: +971 55 614 0067
-          </p>
-        </div>
-      </section>
-
-      <PublicFooter />
-    </div>
+      <h2>14. Contact</h2>
+      <p>hello@linkzoneglobal.com · +971 55 614 0067 (WhatsApp)</p>
+    </LegalShell>
   );
 }
