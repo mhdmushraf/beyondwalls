@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Monitor, Menu, X, Check } from "lucide-react";
+import { MonitorPlay, Menu, X, Check } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 import PublicAIChatWidget from "@/components/chat/PublicAIChatWidget";
@@ -36,7 +36,7 @@ export function Logo({ dark = true, size = "md" }) {
   return (
     <Link to="/" className="flex items-center gap-2.5 shrink-0">
       <span className={`flex items-center justify-center ${big ? "w-9 h-9 rounded-xl" : "w-8 h-8 rounded-[10px]"}`} style={{ backgroundImage: GRAD }}>
-        <Monitor className="w-[18px] h-[18px] text-white" />
+        <MonitorPlay className="w-[18px] h-[18px] text-white" />
       </span>
       <span className={`font-bold ${big ? "text-[22px]" : "text-[20px]"} ${dark ? "text-white" : "text-[#111027]"}`}>BeyondWalls</span>
     </Link>
