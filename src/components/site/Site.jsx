@@ -9,6 +9,8 @@ import PublicAIChatWidget from "@/components/chat/PublicAIChatWidget";
 export const GRAD = "linear-gradient(135deg, #6f3ffd 0%, #5a2ded 71%)";
 export const WHATSAPP = "https://wa.me/971556140067";
 
+export const SOCIALS = [["Instagram", ""], ["LinkedIn", ""], ["TikTok", ""], ["X", ""]];
+
 export const NAV_LINKS = [
   { label: "Venues", to: "/ForVenues" },
   { label: "Advertisers", to: "/ForAdvertisers" },
@@ -56,7 +58,7 @@ export function SiteNav({ dark = true }) {
         </button>
       </nav>
       {open && (
-        <div className="lg:hidden px-6 pb-6 flex flex-col gap-4 bg-[#140b3a]">
+        <div className="lg:hidden px-6 py-6 flex flex-col gap-4 bg-[#140b3a]">
           {NAV_LINKS.map((l) => (
             <Link key={l.to} to={l.to} className="text-[#cfc9ee] text-base font-medium" onClick={() => setOpen(false)}>{l.label}</Link>
           ))}
@@ -204,10 +206,8 @@ export function SiteFooter() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-[12px] text-[#9a93c4]">
           <p>© {new Date().getFullYear()} Linkzone Global FZ-LLC · DDA licence 107603 · in5 Tech, Dubai Internet City</p>
           <div className="flex flex-wrap gap-[18px] font-medium">
-            <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" className="hover:text-white">Instagram</a>
-            <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" className="hover:text-white">LinkedIn</a>
-            <a href="https://www.tiktok.com/" target="_blank" rel="noreferrer" className="hover:text-white">TikTok</a>
-            <a href="https://x.com/" target="_blank" rel="noreferrer" className="hover:text-white">X</a>
+            {/* TODO: set real profile URLs */}
+            {SOCIALS.map(([n, u]) => u ? <a key={n} href={u} target="_blank" rel="noreferrer" className="hover:text-white">{n}</a> : <span key={n}>{n}</span>)}
             <span dir="auto">English | العربية</span>
           </div>
         </div>
