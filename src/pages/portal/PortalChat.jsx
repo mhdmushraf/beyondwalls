@@ -6,6 +6,7 @@ import { usePortal } from '@/lib/PortalContext';
 import { useOrgEntity } from '@/lib/useOrgEntity';
 import { uploadPublic, timeAgo } from '@/lib/portalData';
 import { PageHeader } from '@/components/portal/ui';
+import { useDraft, isOnline, notifyError, notifySuccess } from '@/lib/states';
 
 const COLORS = ['#0EA5E9', '#EC4899', '#22C55E', '#F59E0B', '#6366F1', '#14B8A6'];
 function colorFor(id = '') {
@@ -20,6 +21,7 @@ export default function PortalChat() {
   const { items, create, update } = useOrgEntity('TeamMessage', { sort: '-created_date', limit: 300, poll: 6000 });
   const [channel, setChannel] = useState('all');
   const [text, setText] = useState('');
+  const { clear: clearDraft } = useDraft(`chat:${channel}`, text, setText, { saved: '' });
   const [approval, setApproval] = useState(false);
   const [attach, setAttach] = useState('');
   const [busy, setBusy] = useState(false);
@@ -42,13 +44,16 @@ export default function PortalChat() {
         attachment_url: attach || '', kind: approval ? 'approval' : 'text',
         ...(approval ? { approval_title: body.slice(0, 80), approval_detail: channels.find((c) => c.id === channel)?.name || '', approval_status: 'pending' } : {}),
       });
-      setText(''); setAttach(''); setApproval(false);
-    } catch (e) { toast.error('Message not sent'); } finally { setBusy(false); }
+      setText(''); setAttach(''); setApproval(false); clearDraft();
+      if (!isOnline()) toast("You're offline — message saved", { description: 'It sends by itself when you reconnect.' });
+    } catch (e) { notifyError(e, 'send the message', send); } finally { setBusy(false); }
   };
 
   const decide = async (m, status) => {
-    await update(m.id, { approval_status: status, decided_by_name: user?.full_name || user?.email || '' });
-    toast.success(status === 'approved' ? 'Approved' : 'Declined');
+    try {
+      await update(m.id, { approval_status: status, decided_by_name: user?.full_name || user?.email || '' });
+      notifySuccess(status === 'approved' ? 'Approved' : 'Declined', `${m.sender_name || 'Your teammate'} can see your decision in the chat.`);
+    } catch (e) { notifyError(e, status === 'approved' ? 'approve this' : 'decline this', () => decide(m, status)); }
   };
 
   const ApprovalCard = ({ m }) => (
@@ -113,7 +118,7 @@ export default function PortalChat() {
                 <Paperclip className="h-4 w-4" />
                 <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
                   const f = e.target.files?.[0]; if (!f) return;
-                  try { setAttach(await uploadPublic(f)); } catch (err) { toast.error('Upload failed'); }
+                  if (f.size > 25 * 1048576) { toast.error('File is too big', { description: 'Attach a file under 25 MB.' }); return; } try { setAttach(await uploadPublic(f)); } catch (err) { notifyError(err, `attach ${f.name}`); }
                 }} />
               </label>
               <button type="button" onClick={() => setApproval((v) => !v)} title="Ask for approval"
