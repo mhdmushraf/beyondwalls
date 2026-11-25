@@ -1,5 +1,25 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { base44 } from '@/api/base44Client';
+import MenuBoardView from './MenuBoardView';
+import UrgentOverlay from './UrgentOverlay';
+
+function chime() {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    const ctx = new Ctx();
+    [880, 660].forEach((f, i) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.frequency.value = f;
+      o.connect(g); g.connect(ctx.destination);
+      const t = ctx.currentTime + i * 0.35;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.4, t + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+      o.start(t); o.stop(t + 0.32);
+    });
+  } catch (e) { /* audio blocked */ }
+}
 
 const CACHE_NAME = 'bw-media-v1';
 
@@ -59,14 +79,25 @@ export default function PlayerRunner({ token, onMoved }) {
 
   useEffect(() => {
     load();
-    const id = setInterval(load, 60000);
+    const id = setInterval(load, 20000);
     return () => clearInterval(id);
   }, [load]);
+
+  // Chime when a new urgent message arrives.
+  const urgent = manifest?.urgent || null;
+  const chimedFor = useRef('');
+  useEffect(() => {
+    if (!urgent || urgent.sound === 'none') return undefined;
+    if (chimedFor.current !== urgent.id) { chimedFor.current = urgent.id; chime(); }
+    if (urgent.sound !== 'chime_repeat') return undefined;
+    const id = setInterval(chime, 60000);
+    return () => clearInterval(id);
+  }, [urgent?.id, urgent?.sound]);
 
   // Resolve (and cache) the current item.
   useEffect(() => {
     let alive = true;
-    if (!current) {
+    if (!current || current.kind === 'menu') {
       setDisplayUrl(null);
       return () => { alive = false; };
     }
@@ -94,7 +125,8 @@ export default function PlayerRunner({ token, onMoved }) {
         const item = currentRef.current;
         await base44.functions.invoke('playerHeartbeat', {
           device_token: token,
-          current_item: item ? (item.type === 'video' ? 'Video' : 'Image') : 'House slide',
+          current_item: manifestRef.current?.urgent ? `Urgent: ${manifestRef.current.urgent.text_en}`
+            : item ? (item.kind === 'menu' ? `Menu: ${item.menu?.name || ''}` : item.type === 'video' ? 'Video' : 'Image') : 'House slide',
           uptime_seconds: Math.floor((Date.now() - startedAt.current) / 1000),
           player_version: 'bw-player-1.0',
         });
@@ -193,8 +225,13 @@ export default function PlayerRunner({ token, onMoved }) {
 
   return (
     <div className="fixed inset-0 bg-black flex items-center justify-center overflow-hidden">
+      {urgent && <UrgentOverlay message={urgent} />}
       {current ? (
-        current.type === 'video' ? (
+        current.kind === 'menu' ? (
+          <div className="w-full" style={{ maxWidth: 'calc(100vh * 16 / 9)' }}>
+            <MenuBoardView board={current.menu} />
+          </div>
+        ) : current.type === 'video' ? (
           <video
             key={`${current.id}-${displayUrl}`}
             src={displayUrl || current.url}
