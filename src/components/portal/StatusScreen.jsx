@@ -4,7 +4,7 @@ import { useAuth } from '@/lib/AuthContext';
 
 const SUPPORT_TEXT = 'Hello Beyond Walls, I need help with my business account.';
 
-export default function StatusScreen({ org }) {
+export default function StatusScreen({ org, otherOrgs = [], onSwitch }) {
   const { t } = useI18n();
   const { logout } = useAuth();
 
@@ -49,6 +49,15 @@ export default function StatusScreen({ org }) {
               {[org?.emirate, org?.trade_license_number].filter(Boolean).join(' · ') || org?.type}
             </p>
           </div>
+
+          {otherOrgs.length > 0 && onSwitch && (
+            <div className="mt-4 text-start">
+              <p className="text-[12px] text-bw-muted mb-2">You also belong to these approved businesses:</p>
+              {otherOrgs.map((o) => (
+                <button key={o.id} type="button" onClick={() => onSwitch(o.id)} className="mt-2 w-full rounded-xl border border-bw-line px-4 py-3 text-start text-sm font-semibold text-bw-navy hover:bg-bw-cream">Open {o.name}</button>
+              ))}
+            </div>
+          )}
 
           <a
             href={whatsapp}

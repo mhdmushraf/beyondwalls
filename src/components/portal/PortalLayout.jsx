@@ -5,6 +5,7 @@ import {
   UtensilsCrossed, ListVideo, Siren, MessagesSquare, Search, MessageCircle, MoreHorizontal, QrCode, Receipt, LifeBuoy, ShieldCheck, ShoppingBag, Inbox, Briefcase, Settings,
 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
+import { toast } from 'sonner';
 import NotificationBell from '@/components/portal/NotificationBell';
 import { PortalProvider, usePortal } from '@/lib/PortalContext';
 import { useI18n } from '@/lib/i18n';
@@ -114,7 +115,18 @@ function PortalShell() {
   }
 
   if (!orgs.length) return <Navigate to="/onboarding" replace />;
-  if (org && org.status !== 'approved') return <StatusScreen org={org} />;
+  const isAdmin = user?.role === 'admin';
+  // Admins can always open the portal (they test and support businesses); everyone else waits for approval.
+  if (org && org.status !== 'approved' && !isAdmin) {
+    return <StatusScreen org={org} otherOrgs={orgs.filter((o) => o.id !== org.id && o.status === 'approved')} onSwitch={selectOrg} />;
+  }
+  const approveNow = async () => {
+    try {
+      await base44.entities.Organization.update(org.id, { status: 'approved', ...(org.advertiser_status === 'requested' ? { advertiser_status: 'approved' } : {}) });
+      toast.success(`${org.name} approved`);
+      reload();
+    } catch (e) { toast.error("Couldn't approve", { description: 'Open HQ → Approvals and try there.' }); }
+  };
 
   const requestAdvertising = async () => {
     if (!org) return;
@@ -248,6 +260,13 @@ function PortalShell() {
         <OfflineBanner />
         <SessionExpiredDialog forced={preview === 'expired'} />
         <PreviewSwitcher user={user} current={preview} />
+        {isAdmin && org && org.status !== 'approved' && (
+          <div className="mx-4 md:mx-8 mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 flex flex-wrap items-center gap-3">
+            <p className="flex-1 min-w-[220px] text-[13px] text-amber-800"><b>{org.name}</b> is {org.status}. Customers in this business see a "pending approval" screen — you see the portal because you're an admin.</p>
+            {org.status === 'pending' && <button type="button" className="bw-btn bw-btn-primary !py-1.5" onClick={approveNow}>Approve now</button>}
+            <a href="/admin/approvals" className="bw-btn bw-btn-ghost !py-1.5">Open approvals</a>
+          </div>
+        )}
         <main className="p-4 md:p-8 pb-28 md:pb-8 max-w-[1240px]">
           {mode === 'advertise' ? (
             <div className="bw-card p-10 text-center">
