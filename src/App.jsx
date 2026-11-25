@@ -40,6 +40,8 @@ import PortalMenus from './pages/portal/PortalMenus';
 import PortalPlaylists from './pages/portal/PortalPlaylists';
 import PortalUrgent from './pages/portal/PortalUrgent';
 import PortalChat from './pages/portal/PortalChat';
+import PortalQR from './pages/portal/PortalQR';
+import QRRedirect from './pages/QRRedirect';
 import { I18nProvider } from '@/lib/i18n';
 
 // Lazy load pages for code splitting
@@ -94,7 +96,7 @@ const AuthenticatedApp = () => {
         '/login', '/signup', '/player',
       ];
       const currentPath = window.location.pathname.toLowerCase().replace(/\/$/, '') || '/';
-      const onPublicRoute = PUBLIC_PATH_PREFIXES.includes(currentPath);
+      const onPublicRoute = PUBLIC_PATH_PREFIXES.includes(currentPath) || currentPath.startsWith('/q/');
       if (!onPublicRoute) {
         navigateToLogin();
         return null;
@@ -242,6 +244,7 @@ const AuthenticatedApp = () => {
          <Route path="/login" element={<Login />} />
          <Route path="/signup" element={<Signup />} />
          <Route path="/player" element={<Player />} />
+         <Route path="/q/:id" element={<QRRedirect />} />
          <Route path="/onboarding" element={<Onboarding />} />
          <Route path="/admin" element={<AdminApprovals />} />
          <Route path="/app" element={<PortalLayout />}>
@@ -254,6 +257,7 @@ const AuthenticatedApp = () => {
            <Route path="playlists" element={<PortalPlaylists />} />
            <Route path="urgent" element={<PortalUrgent />} />
            <Route path="chat" element={<PortalChat />} />
+           <Route path="qr" element={<PortalQR />} />
          </Route>
          <Route path="*" element={<PageNotFound />} />
          </Routes>
