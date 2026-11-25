@@ -196,7 +196,7 @@ export default function AddVenueDialog({ open, onOpenChange, venue = null }) {
 
           <div className="space-y-1.5">
             <Label>{t('venues.pin')}</Label>
-            <MapPinPicker lat={lat} lng={lng} onChange={(la, ln) => { setLat(la); setLng(ln); }} />
+            <MapPinPicker lat={lat} lng={lng} address={[form.name, form.address, form.emirate].filter(Boolean).join(", ")} onChange={(la, ln) => { setLat(la); setLng(ln); }} />
             <p className="text-[11px] text-bw-muted">
               {lat && lng ? `${lat.toFixed(5)}, ${lng.toFixed(5)}` : 'Tap the map to place the venue pin.'}
             </p>
