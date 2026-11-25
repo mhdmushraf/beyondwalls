@@ -48,7 +48,10 @@ const FIT_CLASS = {
 };
 
 export default function PlayerRunner({ token, onMoved }) {
-  const [manifest, setManifest] = useState(null);
+  // Last good manifest is kept so the screen keeps playing after a reboot with no internet.
+  const [manifest, setManifest] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('bw_manifest') || 'null'); } catch (e) { return null; }
+  });
   const [index, setIndex] = useState(0);
   const [blank, setBlank] = useState(false);
   const [displayUrl, setDisplayUrl] = useState(null);
@@ -72,6 +75,7 @@ export default function PlayerRunner({ token, onMoved }) {
     try {
       const res = await base44.functions.invoke('playerManifest', { device_token: token });
       setManifest(res.data);
+      try { localStorage.setItem('bw_manifest', JSON.stringify(res.data)); } catch (e) { /* storage full */ }
     } catch (e) {
       if (e?.response?.status === 409) onMoved();
     }
