@@ -11,17 +11,19 @@ import { useDraft, isOnline, notifyError, notifySuccess } from '@/lib/states';
 import { DraftBanner, FieldError, ErrorState, SlowHint, ProgressStrip } from '@/components/states/StateViews';
 import { payInvoiceByCard } from '@/lib/payments';
 import ScreensMap from '@/components/portal/ScreensMap';
+import { Select, DateRange, ScreenScheduleCard, DEFAULT_SCHED, addDaysISO, daysBetween } from '@/components/portal/BookingControls';
 
 const MAX_MB = 200;
 const aed = (n) => `AED ${Number(n || 0).toLocaleString('en-AE', { maximumFractionDigits: 2 })}`;
 const fmtK = (n) => (n >= 1000 ? `${Math.round(n / 100) / 10}k` : String(n || 0));
 const todayDubai = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Dubai' }).format(new Date());
-const BLANK = { client_id: '', name: '', goal: 'brand_awareness', start_date: '', weeks: 2, screen_ids: [], creative_url: '', creative_type: 'image', creative_name: '' };
+const BLANK = { client_id: '', name: '', goal: 'brand_awareness', start_date: '', end_date: '', schedules: {}, screen_ids: [], creative_url: '', creative_type: 'image', creative_name: '' };
 
 export default function PortalMarketplace() {
   const navigate = useNavigate();
   const { org, preview } = usePortal();
-  const [form, setForm] = useState(() => ({ ...BLANK, start_date: todayDubai() }));
+  const fresh = () => ({ ...BLANK, start_date: todayDubai(), end_date: addDaysISO(todayDubai(), 13) });
+  const [form, setForm] = useState(fresh);
   const { restored, discard, clear } = useDraft(org?.id ? `book:${org.id}` : null, form, setForm, { enabled: !!org?.id });
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -56,12 +58,12 @@ export default function PortalMarketplace() {
     if (preview === 'loading') return;
     setLoading(true); setError(null);
     try {
-      const res = await base44.functions.invoke('marketplaceScreens', { start_date: form.start_date, weeks: form.weeks });
+      const res = await base44.functions.invoke('marketplaceScreens', { start_date: form.start_date, end_date: form.end_date || addDaysISO(form.start_date, 13) });
       setData(res.data);
     } catch (e) { setError(e); } finally { setLoading(false); }
   };
   // eslint-disable-next-line
-  useEffect(() => { if (isOnline()) load(); else setLoading(false); }, [form.start_date, form.weeks]);
+  useEffect(() => { if (isOnline()) load(); else setLoading(false); }, [form.start_date, form.end_date]);
 
   const screens = preview === 'empty' ? [] : (data?.screens || []);
   const shown = useMemo(() => screens.filter((s) => {
@@ -73,10 +75,17 @@ export default function PortalMarketplace() {
 
   const picked = screens.filter((s) => form.screen_ids.includes(s.id));
   const missing = form.screen_ids.filter((id) => data && !screens.some((s) => s.id === id));
-  const subtotal = picked.reduce((a, s) => a + s.price_per_week * form.weeks, 0);
+  // Older drafts had weeks instead of an end date.
+  useEffect(() => { if (!form.end_date && form.start_date) set({ end_date: addDaysISO(form.start_date, (Number(form.weeks) || 2) * 7 - 1) }); }, [form.end_date, form.start_date]); // eslint-disable-line
+  const days = Math.max(daysBetween(form.start_date, form.end_date), 0);
+  const schedOf = (id) => (form.schedules || {})[id] || DEFAULT_SCHED;
+  const setSched = (id, v) => set({ schedules: { ...(form.schedules || {}), [id]: v } });
+  const applyAll = (id) => { const v = schedOf(id); set({ schedules: Object.fromEntries(form.screen_ids.map((x) => [x, { ...v, days: [...v.days] }])) }); toast.success('Same play times set for every screen'); };
+  const lineTotal = (s) => Math.round((s.price_per_week / 7) * days * 100) / 100;
+  const subtotal = Math.round(picked.reduce((a, s) => a + lineTotal(s), 0) * 100) / 100;
   const vatPct = data?.vat_pct || 0;
   const vat = Math.round(subtotal * vatPct) / 100;
-  const reach = picked.reduce((a, s) => a + (s.venue.weekly_footfall || 0) * form.weeks, 0);
+  const reach = picked.reduce((a, s) => a + (s.venue.weekly_footfall || 0) * (days / 7), 0);
   const toggle = (id) => set({ screen_ids: form.screen_ids.includes(id) ? form.screen_ids.filter((x) => x !== id) : [...form.screen_ids, id] });
 
   const onFile = async (file) => {
@@ -99,7 +108,10 @@ export default function PortalMarketplace() {
     else if (form.name.length > 60) e.name = `Campaign name is too long — ${form.name.length} of 60 characters.`;
     if (!form.start_date) e.start_date = 'Pick a start date.';
     else if (form.start_date < todayDubai()) e.start_date = "The start date can't be in the past.";
-    if (!(form.weeks >= 1 && form.weeks <= 12)) e.weeks = 'Book between 1 and 12 weeks.';
+    if (!form.end_date || form.end_date < form.start_date) e.end_date = 'Pick an end date on or after the start date.';
+    else if (days > 84) e.end_date = 'Book up to 12 weeks at a time.';
+    const badSched = picked.find((s) => { const sc = schedOf(s.id); return !sc.days.length || (sc.preset === 'custom' && (!sc.from || !sc.until || sc.from === sc.until)); });
+    if (badSched) e.schedules = `Fix the play times for ${badSched.venue.name}.`;
     if (!picked.length) e.screen_ids = 'Pick at least one screen from the list.';
     else if (picked.some((s) => s.slots_free <= 0)) e.screen_ids = `${picked.filter((s) => s.slots_free <= 0).map((s) => s.venue.name).join(', ')} is full for these dates — remove it or change dates.`;
     if (isAgency && org?.type === 'agency' && !form.client_id && clients.length) e.client_id = 'Pick which client this campaign is for.';
@@ -115,12 +127,13 @@ export default function PortalMarketplace() {
     setBusy(true);
     try {
       const res = await base44.functions.invoke('marketplaceBook', {
-        org_id: org.id, client_id: form.client_id || undefined, name: form.name.trim(), goal: form.goal, start_date: form.start_date, weeks: Number(form.weeks),
+        org_id: org.id, client_id: form.client_id || undefined, name: form.name.trim(), goal: form.goal, start_date: form.start_date, end_date: form.end_date,
+        schedules: Object.fromEntries(picked.map((s) => { const sc = schedOf(s.id); return [s.id, { from: sc.from || '', until: sc.until || '', days: sc.days }]; })),
         screen_ids: picked.map((s) => s.id), creative_url: form.creative_url, creative_type: form.creative_type,
       });
       clear();
       setDone(res.data);
-      setForm({ ...BLANK, start_date: todayDubai() });
+      setForm(fresh());
       setCartOpen(false);
       notifySuccess('Booking received', 'Pay the invoice by bank transfer — your ad starts once payment and the venue approve it.');
     } catch (err) {
@@ -136,7 +149,7 @@ export default function PortalMarketplace() {
       <div className="max-w-xl mx-auto bw-card p-7 text-center">
         <span className="mx-auto h-14 w-14 rounded-2xl bg-emerald-50 flex items-center justify-center"><Check className="h-7 w-7 text-emerald-600" /></span>
         <h1 className="mt-4 text-[22px] font-bold text-bw-navy">Booking received</h1>
-        <p className="mt-1 text-[13px] text-bw-muted">{done.bookings?.length || 0} screens · {done.campaign?.weeks} weeks from {done.campaign?.start_date}</p>
+        <p className="mt-1 text-[13px] text-bw-muted">{done.bookings?.length || 0} screens · {done.campaign?.days || (done.campaign?.weeks * 7)} days · {done.campaign?.start_date} → {done.campaign?.end_date}</p>
         <div className="mt-5 rounded-2xl bg-bw-cream p-4 text-start space-y-1.5 text-[13px]">
           <p className="font-bold text-bw-navy">What happens next</p>
           <p>1. Pay invoice <b>{inv.number}</b> — <b>{aed(inv.total)}</b> — by card now, or by bank transfer with the invoice number as the reference.</p>
@@ -156,24 +169,23 @@ export default function PortalMarketplace() {
     <div className="space-y-4">
       {isAgency && (
         <Field label="Booking for" hint={clients.length ? '' : 'Add your clients first to book on their behalf.'}>
-          <select className="bw-input" value={form.client_id} onChange={(e) => set({ client_id: e.target.value })}>
-            <option value="">{org?.type === 'agency' ? 'Pick a client…' : 'My own business'}</option>
-            {clients.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </select>
+          <Select value={form.client_id} onChange={(v) => set({ client_id: v })}
+            options={[{ value: '', label: org?.type === 'agency' ? 'Pick a client…' : 'My own business' }, ...clients.map((c) => ({ value: c.id, label: c.name }))]} />
           <FieldError msg={errors.client_id} />
           {!clients.length && <button type="button" className="!min-h-0 mt-1 text-[12px] font-semibold text-bw-coral" onClick={() => navigate('/app/clients')}>Add a client</button>}
         </Field>
       )}
       <Field label="Campaign name"><input className="bw-input" maxLength={60} placeholder="e.g. Weekend brunch offer" value={form.name} onChange={(e) => set({ name: e.target.value })} /><FieldError msg={errors.name} /></Field>
-      <div className="grid grid-cols-2 gap-3">
-        <Field label="Start date"><input type="date" min={todayDubai()} className="bw-input" value={form.start_date} onChange={(e) => set({ start_date: e.target.value })} /><FieldError msg={errors.start_date} /></Field>
-        <Field label="How long">
-          <select className="bw-input" value={form.weeks} onChange={(e) => set({ weeks: Number(e.target.value) })}>
-            {[1, 2, 3, 4, 6, 8, 12].map((w) => <option key={w} value={w}>{w} {w === 1 ? 'week' : 'weeks'}</option>)}
-          </select>
-          <FieldError msg={errors.weeks} />
-        </Field>
-      </div>
+      <Field label="Goal">
+        <Select value={form.goal} onChange={(v) => set({ goal: v })} options={[
+          { value: 'brand_awareness', label: 'Brand awareness', hint: 'Be seen' },
+          { value: 'promotion', label: 'Promote an offer', hint: 'Sales' },
+          { value: 'footfall', label: 'Bring people in', hint: 'Visits' },
+          { value: 'launch', label: 'Launch something new', hint: 'Launch' },
+        ]} />
+      </Field>
+      <DateRange start={form.start_date} end={form.end_date} min={todayDubai()} error={errors.start_date || errors.end_date}
+        onChange={(p) => { set(p); setErrors((x) => ({ ...x, start_date: null, end_date: null })); }} />
       <div>
         <p className="text-[12px] font-semibold text-bw-ink mb-1.5">Your ad</p>
         {form.creative_url ? (
@@ -196,24 +208,32 @@ export default function PortalMarketplace() {
         <FieldError msg={errors.creative_url} />
       </div>
       <div>
-        <p className="text-[12px] font-semibold text-bw-ink mb-1.5">Screens ({picked.length})</p>
-        {!picked.length && <p className="text-[12px] text-bw-muted">Tap "Add" on any screen to put it here.</p>}
-        <div className="space-y-1.5 max-h-56 overflow-auto">
+        <div className="flex items-center justify-between mb-1.5">
+          <p className="text-[12px] font-semibold text-bw-ink">Your screens <span className="text-bw-muted">({picked.length})</span></p>
+          {picked.length > 0 && <p className="text-[11px] text-bw-muted">Set play times per screen</p>}
+        </div>
+        {!picked.length && (
+          <div className="rounded-2xl border-2 border-dashed border-bw-line p-4 text-center">
+            <MonitorPlay className="mx-auto h-5 w-5 text-bw-violet" />
+            <p className="mt-1 text-[12px] font-semibold text-bw-navy">No screens yet</p>
+            <p className="text-[11px] text-bw-muted">Tap a price pin on the map, or "Add" in the list.</p>
+          </div>
+        )}
+        <div className="space-y-2.5">
           {picked.map((s) => (
-            <div key={s.id} className="flex items-center gap-2 rounded-xl bg-bw-cream px-3 py-2">
-              <div className="flex-1 min-w-0">
-                <p className="text-[12px] font-semibold text-bw-navy truncate">{s.venue.name}</p>
-                <p className="text-[11px] text-bw-muted truncate">{s.name} · {aed(s.price_per_week)}/wk{s.slots_free <= 0 ? ' · full for these dates' : ''}</p>
-              </div>
-              <button type="button" className="!min-h-0 !min-w-0 h-7 w-7 rounded-lg text-bw-muted hover:text-rose-600 flex items-center justify-center" onClick={() => toggle(s.id)} title="Remove"><X className="h-4 w-4" /></button>
-            </div>
+            <ScreenScheduleCard key={s.id} s={s} days={days} aed={aed} sched={schedOf(s.id)}
+              onChange={(v) => { setSched(s.id, v); setErrors((x) => ({ ...x, schedules: null })); }}
+              onRemove={() => toggle(s.id)} onApplyAll={() => applyAll(s.id)} showApplyAll={picked.length > 1} />
           ))}
         </div>
         {missing.length > 0 && <p className="mt-1 text-[11px] text-amber-700">{missing.length} saved screen{missing.length > 1 ? 's are' : ' is'} no longer available and won't be booked.</p>}
-        <FieldError msg={errors.screen_ids} />
+        <FieldError msg={errors.screen_ids || errors.schedules} />
       </div>
       <div className="rounded-xl border border-bw-line p-3 text-[13px] space-y-1">
-        <div className="flex justify-between"><span className="text-bw-muted">{picked.length} screens × {form.weeks} wk</span><span>{aed(subtotal)}</span></div>
+        {picked.map((s) => (
+          <div key={s.id} className="flex justify-between gap-3 text-[12px]"><span className="text-bw-muted truncate">{s.venue.name} · {days} d</span><span className="shrink-0">{aed(lineTotal(s))}</span></div>
+        ))}
+        <div className="flex justify-between pt-1 border-t border-bw-line"><span className="text-bw-muted">Subtotal · {picked.length} screen{picked.length === 1 ? '' : 's'} × {days} days</span><span>{aed(subtotal)}</span></div>
         {vatPct > 0 && <div className="flex justify-between"><span className="text-bw-muted">VAT {vatPct}%</span><span>{aed(vat)}</span></div>}
         <div className="flex justify-between font-bold text-bw-navy text-[15px] pt-1 border-t border-bw-line"><span>Total</span><span>{aed(subtotal + vat)}</span></div>
         {reach > 0 && <p className="text-[11px] text-bw-muted">About {fmtK(reach)} venue visits over your dates (venue estimates).</p>}
@@ -230,8 +250,8 @@ export default function PortalMarketplace() {
         <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-bw-muted" />
         <input className="bw-input !ps-9" placeholder="Search venue or area" value={q} onChange={(e) => setQ(e.target.value)} />
       </div>
-      <select className="bw-input !w-auto" value={emirate} onChange={(e) => setEmirate(e.target.value)}><option value="all">All emirates</option>{EMIRATES.map((x) => <option key={x}>{x}</option>)}</select>
-      <select className="bw-input !w-auto capitalize" value={vtype} onChange={(e) => setVtype(e.target.value)}><option value="all">All venue types</option>{VENUE_TYPES.map((x) => <option key={x} value={x}>{x}</option>)}</select>
+      <Select compact className="w-[160px]" value={emirate} onChange={setEmirate} options={[{ value: 'all', label: 'All emirates' }, ...EMIRATES.map((x) => ({ value: x, label: x }))]} />
+      <Select compact className="w-[170px]" value={vtype} onChange={setVtype} options={[{ value: 'all', label: 'All venue types' }, ...VENUE_TYPES.map((x) => ({ value: x, label: x }))]} />
       <div className="inline-flex rounded-xl border border-bw-line bg-white p-0.5">
         {[['map', 'Map'], ['list', 'List']].map(([k, l]) => (
           <button key={k} type="button" onClick={() => setView(k)} className={`!min-h-0 rounded-lg px-3 py-1.5 text-xs font-semibold ${view === k ? 'bg-bw-navy text-white' : 'text-bw-muted'}`}>{l}</button>
