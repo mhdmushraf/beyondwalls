@@ -19,15 +19,21 @@ export default async function (req) {
     const { venue, status } = await getVenueForUser(base44, venueId, user);
     if (status === 404) return Response.json({ error: "Venue not found" }, { status: 404 });
     if (status === 403) return Response.json({ error: "Forbidden" }, { status: 403 });
-    if (venue.approval_status !== "approved") {
-      return Response.json({ error: "This venue is still pending approval" }, { status: 400 });
+    // Pending venues may pair now; their own content plays, ads/marketplace wait for approval.
+    if (venue.approval_status === "rejected") {
+      return Response.json({ error: "This venue was not approved. Message us on WhatsApp to fix it." }, { status: 400 });
     }
 
     const device = firstOf(
       await base44.asServiceRole.entities.PlayerDevice.filter({ pairing_code: code }, { limit: 1 }),
     );
     if (!device || device.status !== "unclaimed") {
-      return Response.json({ error: "That code is not waiting to be paired" }, { status: 404 });
+      return Response.json({ error: "That code is not waiting to be paired. Check the TV — codes change when the player restarts." }, { status: 404 });
+    }
+    if (body.peek) {
+      const ua = String(device.user_agent || "");
+      const kind = /AFT/i.test(ua) ? "Fire TV" : /Web0S|webOS/i.test(ua) ? "LG TV" : /Tizen/i.test(ua) ? "Samsung TV" : /Android/i.test(ua) ? "Android TV" : /Linux|X11|aarch64|armv/i.test(ua) ? "B.One" : "TV browser";
+      return Response.json({ found: true, kind, device_id: String(device.device_id || "").slice(-4).toUpperCase(), last_seen: device.last_seen || null });
     }
 
     const now = new Date().toISOString();
@@ -49,6 +55,7 @@ export default async function (req) {
       status: "active",
       approval_status: "approved",
       marketplace_enabled: false,
+      ...(body.screen_image_url ? { screen_image_url: String(body.screen_image_url) } : {}),
     });
 
     await base44.asServiceRole.entities.PlayerDevice.update(device.id, {
