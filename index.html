@@ -43,7 +43,7 @@
       (function () {
         var p = location.pathname.toLowerCase();
         var el = document.getElementById('bw-splash');
-        if (/^\/(player|q\/|screenplayer)/.test(p)) { el && el.remove(); return; }
+        if (/^\/(player|q\/|screenplayer|app-map)/.test(p)) { el && el.remove(); return; }
         var seen = false; try { seen = sessionStorage.getItem('bw_splash') === '1'; sessionStorage.setItem('bw_splash', '1'); } catch (e) {}
         var access = false; try { access = sessionStorage.getItem('bw_access') === '1'; sessionStorage.removeItem('bw_access'); } catch (e) {}
         window.__bwAccess = access;
