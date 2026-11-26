@@ -59,7 +59,7 @@ function ScreenWall() {
               src={s.img}
               alt=""
               fetchPriority={i === 0 ? 'high' : 'low'}
-              className={`absolute inset-0 h-full w-full object-cover transition-all duration-[1200ms] ease-out ${i === active ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
+              className={`absolute inset-0 h-full w-full object-cover transition-all duration-1000 ease-out ${i === active ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
             />
           ))}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" />
