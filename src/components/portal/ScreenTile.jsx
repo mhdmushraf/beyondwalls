@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
-import { MonitorPlay, WifiOff, Radio } from 'lucide-react';
+import { WifiOff, Radio } from 'lucide-react';
 import { useSignedUrl, timeAgo } from '@/lib/portalData';
 import { useI18n } from '@/lib/i18n';
+import ScreenLivePreview from '@/components/portal/ScreenLivePreview';
+import { isLive } from '@/pages/portal/PortalUrgent';
 
-export default function ScreenTile({ screen, venueName, fallbackImage }) {
+export default function ScreenTile({ screen, venueName, fallbackImage, menus, urgent }) {
   const { t, lang } = useI18n();
   const snapshot = useSignedUrl(screen.last_snapshot_url);
   const photo = useSignedUrl(!screen.last_snapshot_url ? (screen.screen_image_url || fallbackImage) : null);
@@ -27,15 +29,20 @@ export default function ScreenTile({ screen, venueName, fallbackImage }) {
         {snapshot ? (
           <img src={snapshot} alt={screen.name} className="h-full w-full object-cover" />
         ) : (
+          menus || urgent ? (
+            <div className="relative h-full w-full overflow-hidden">
+              <div className="absolute inset-0 origin-top-left scale-[0.5] w-[200%] h-[200%]"><ScreenLivePreview screen={{ ...screen, screen_image_url: screen.screen_image_url || fallbackImage }} menus={menus || []} urgent={urgent || []} isLive={isLive} /></div>
+            </div>
+          ) : (
           <div className="relative h-full w-full overflow-hidden" style={{ backgroundImage: 'linear-gradient(140deg,#2a1470 0%,#140b3a 60%,#0d0a1f 100%)' }}>
             {photo && <img src={photo} alt="" className="absolute inset-0 h-full w-full object-cover opacity-60" />}
             <div className="absolute inset-0 bg-gradient-to-t from-[#0d0a1f] via-[#0d0a1f]/40 to-transparent" />
             <div className="absolute inset-x-4 bottom-4">
               <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#c4b5fd]">{online ? 'Now playing' : 'Last played'}</p>
               <p className="mt-0.5 truncate text-[18px] font-bold text-white">{screen.current_item || screen.name}</p>
-              <p className="mt-0.5 flex items-center gap-1.5 text-[11px] text-white/60"><MonitorPlay className="h-3.5 w-3.5" />{t('screens.noSnapshot')}</p>
             </div>
           </div>
+          )
         )}
         <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-black/50 backdrop-blur px-2.5 py-1 text-[11px] font-medium text-white">
           <span className={`h-1.5 w-1.5 rounded-full ${stateStyles.dot}`} />

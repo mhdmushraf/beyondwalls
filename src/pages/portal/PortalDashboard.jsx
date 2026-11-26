@@ -60,6 +60,7 @@ export default function PortalDashboard() {
   const chat = useOrgEntity('TeamMessage', { limit: 100 });
   const qr = useOrgEntity('QRCode');
   const bookings = useOrgEntity('AdBooking', { limit: 200 });
+  const menuBoards = useOrgEntity('MenuBoard', { limit: 50 });
   const [addOpen, setAddOpen] = useState(false);
 
   if ((loadingData || preview === 'loading') && !screens.length && !venues.length) return <div><SlowHint loading forced={preview === 'slow'} /><PageSkeleton /></div>;
@@ -171,7 +172,7 @@ export default function PortalDashboard() {
               </div>
             ) : (
               <div className="grid sm:grid-cols-2 gap-4">
-                {screens.slice(0, 4).map((s) => <ScreenTile key={s.id} screen={s} venueName={venues.find((v) => v.id === s.venue_id)?.name} fallbackImage={venues.find((v) => v.id === s.venue_id)?.image_url} />)}
+                {screens.slice(0, 4).map((s) => <ScreenTile key={s.id} screen={s} venueName={venues.find((v) => v.id === s.venue_id)?.name} fallbackImage={venues.find((v) => v.id === s.venue_id)?.image_url} menus={menuBoards.items} urgent={urgent.items} />)}
               </div>
             )}
           </div>
