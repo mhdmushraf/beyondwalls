@@ -59,8 +59,8 @@ export default function PortalSupport() {
       {tickets.error && !tickets.items.length && !form ? <ErrorState error={tickets.error} action="load your requests" onRetry={tickets.reload} /> : tickets.items.length === 0 && !form ? (
         <EmptyState icon={LifeBuoy} title="No requests yet" body="If a screen goes offline or something looks wrong, send us a request and we'll sort it." action={<button type="button" className="bw-btn bw-btn-primary" onClick={() => setForm({ subject: '', category: 'other', screen_id: '', text: '' })}><Plus className="h-4 w-4" />New request</button>} />
       ) : (
-        <div className="grid lg:grid-cols-[340px_1fr] gap-5">
-          <div className="bw-card p-2 h-fit">
+        <div className={`grid gap-5 ${tickets.items.length ? 'lg:grid-cols-[340px_1fr]' : 'lg:grid-cols-[1fr_340px]'}`}>
+          {tickets.items.length > 0 && <div className="bw-card p-2 h-fit">
             {tickets.items.map((t) => (
               <button key={t.id} type="button" onClick={() => { setActiveId(t.id); setForm(null); }} className={`!min-h-0 !block w-full text-start rounded-xl p-3 ${t.id === activeId ? 'bg-bw-lav' : 'hover:bg-bw-cream'}`}>
                 <span className={`bw-chip ${ST[t.status]?.[1]}`}>{ST[t.status]?.[0]}</span>
@@ -68,7 +68,7 @@ export default function PortalSupport() {
                 <p className="text-[11px] text-bw-muted">{timeAgo(t.last_activity_at || t.created_date)}</p>
               </button>
             ))}
-          </div>
+          </div>}
           {form ? (
             <div className="bw-card p-5 space-y-3">
               <p className="text-[17px] font-bold text-bw-navy">New request</p>
@@ -86,6 +86,22 @@ export default function PortalSupport() {
               <TicketThread ticket={active} onReply={reply} fromTeam={false} />
             </div>
           ) : <div className="bw-card p-10 text-center text-[13px] text-bw-muted">Pick a request</div>}
+          {!tickets.items.length && (
+            <div className="space-y-3">
+              <a href="https://wa.me/971545469496" target="_blank" rel="noreferrer" className="!justify-start bw-card p-4 flex items-center gap-3 hover:-translate-y-0.5 transition">
+                <span className="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center"><MessageCircle className="h-5 w-5" /></span>
+                <span><span className="block text-[14px] font-bold text-bw-navy">WhatsApp +971 54 546 9496</span><span className="block text-[12px] text-bw-muted">Fastest for a screen that's down</span></span>
+              </a>
+              <a href="mailto:beyondwalls@linkzoneglobal.com" className="!justify-start bw-card p-4 flex items-center gap-3 hover:-translate-y-0.5 transition">
+                <span className="h-10 w-10 rounded-xl bg-bw-lav text-bw-coral flex items-center justify-center"><LifeBuoy className="h-5 w-5" /></span>
+                <span><span className="block text-[14px] font-bold text-bw-navy">beyondwalls@linkzoneglobal.com</span><span className="block text-[12px] text-bw-muted">Billing, contracts and anything else</span></span>
+              </a>
+              <a href="/helpcenter" target="_blank" rel="noreferrer" className="!justify-start bw-card p-4 flex items-center gap-3 hover:-translate-y-0.5 transition">
+                <span className="h-10 w-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center"><Plus className="h-5 w-5 rotate-45" /></span>
+                <span><span className="block text-[14px] font-bold text-bw-navy">Help centre</span><span className="block text-[12px] text-bw-muted">Pairing a TV, menus, payouts, ads</span></span>
+              </a>
+            </div>
+          )}
         </div>
       )}
     </div>

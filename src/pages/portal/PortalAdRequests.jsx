@@ -49,8 +49,16 @@ export default function PortalAdRequests() {
   return (
     <div>
       <PageHeader title="Ad requests" subtitle="Advertisers who booked your screens · you keep your share of every booking"
-        actions={<button type="button" className="bw-btn bw-btn-ghost" onClick={() => setDealOpen(true)}><Megaphone className="h-4 w-4" />Add direct deal</button>} />
+        actions={<button type="button" className="bw-btn bw-btn-primary" onClick={() => setDealOpen(true)}><Megaphone className="h-4 w-4" />New direct deal</button>} />
       <PayoutPanel refreshKey={bookings.items.length} />
+      <button type="button" onClick={() => setDealOpen(true)} className="!justify-start mb-5 w-full rounded-[22px] p-5 text-start text-white flex flex-wrap items-center gap-4 shadow-[0_18px_40px_-22px_rgba(60,20,180,0.6)]" style={{ backgroundImage: 'linear-gradient(140deg,#6f3ffd 0%,#4c22d6 55%,#2e1594 100%)' }}>
+        <span className="h-11 w-11 rounded-2xl bg-white/15 flex items-center justify-center"><Megaphone className="h-5 w-5" /></span>
+        <span className="flex-1 min-w-[220px]">
+          <span className="block text-[16px] font-bold">Sold an ad yourself? Add it as a direct deal</span>
+          <span className="block text-[13px] text-white/80">You collect the money from your advertiser. We play it on your screen and report plays — fee {settings.direct_deal_fee_pct ?? 10}% of the deal value.</span>
+        </span>
+        <span className="rounded-xl bg-white px-4 py-2 text-[13px] font-bold text-[#5a2ded]">New direct deal</span>
+      </button>
 
       {listed === 0 && (
         <div className="mb-5 rounded-2xl bg-bw-lav p-4 flex flex-wrap items-center gap-3">
