@@ -55,6 +55,7 @@ export default async function (req: Request) {
       svc.MenuBoard.filter({ org_id: org }, { sort: "-updated_date", limit: 100 }),
       svc.QRCode.filter({ org_id: org }, { sort: "-updated_date", limit: 50 }),
     ]);
+    const venue = screen.venue_id ? await svc.Venue.get(screen.venue_id).catch(() => null) : null;
     const qr = list(qrAll).find((q: any) => onScreen(q) && q.is_active !== false && q.target_url) || null;
     const urgentPage = list(urgentAll).filter(onScreen);
     const playlistPage = list(playlistAll).filter((p: any) => onScreen(p) && p.is_active !== false);
@@ -172,6 +173,15 @@ export default async function (req: Request) {
         mode: screen.mode || "signage_ads",
         slot_duration: screen.slot_duration || 30,
       },
+      // Prayer pause: the player works out today's times itself from these coordinates (UAE method), so it keeps working offline.
+      prayer: screen.prayer_pause?.enabled ? {
+        minutes: Math.min(60, Math.max(5, Number(screen.prayer_pause.minutes) || 15)),
+        jumuah_minutes: Math.min(90, Math.max(10, Number(screen.prayer_pause.jumuah_minutes) || 45)),
+        show: screen.prayer_pause.show === "blank" ? "blank" : "card",
+        prayers: Array.isArray(screen.prayer_pause.prayers) && screen.prayer_pause.prayers.length ? screen.prayer_pause.prayers : ["fajr", "dhuhr", "asr", "maghrib", "isha"],
+        lat: Number(venue?.latitude) || 25.2048, lng: Number(venue?.longitude) || 55.2708,
+        venue: venue?.name || "",
+      } : null,
       source,
       items,
       urgent: urgent && {
