@@ -29,6 +29,7 @@ import Signup from './pages/Signup';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Onboarding from './pages/Onboarding';
+import AppMap from './pages/AppMap';
 import Player from './pages/Player';
 import PortalLayout from './components/portal/PortalLayout';
 import PortalDashboard from './pages/portal/PortalDashboard';
@@ -113,7 +114,7 @@ const AuthenticatedApp = () => {
         '/doohadvertisingcostdubai', '/indoorvenuedoohvsbillboardsdubai',
         '/whatisdoohadvertisingguide', '/earnmoneyvenuescreensdubai',
         '/doohadvertisingmarketplacedubai', '/robotstxt', '/sitemapxml', '/notfound',
-        '/login', '/sign-in', '/signup', '/forgot-password', '/reset-password', '/player',
+        '/login', '/sign-in', '/signup', '/forgot-password', '/reset-password', '/player', '/app-map',
       ];
       const currentPath = window.location.pathname.toLowerCase().replace(/\/$/, '') || '/';
       const onPublicRoute = PUBLIC_PATH_PREFIXES.includes(currentPath) || currentPath.startsWith('/q/');
@@ -261,6 +262,7 @@ const AuthenticatedApp = () => {
          <Route path="/forgot-password" element={<ForgotPassword />} />
          <Route path="/reset-password" element={<ResetPassword />} />
          <Route path="/player" element={<Player />} />
+          <Route path="/app-map" element={<AppMap />} />
          <Route path="/q/:id" element={<QRRedirect />} />
          <Route path="/delete-account" element={<DeleteAccount />} />
          <Route path="/onboarding" element={<Onboarding />} />
