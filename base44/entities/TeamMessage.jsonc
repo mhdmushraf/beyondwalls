@@ -1,0 +1,119 @@
+{
+  "description": "Team chat message inside a business; can carry an approval request.",
+  "name": "TeamMessage",
+  "properties": {
+    "approval_action": {
+      "description": "What approving does, e.g. menu_price",
+      "type": "string"
+    },
+    "approval_detail": {
+      "type": "string"
+    },
+    "approval_status": {
+      "enum": [
+        "pending",
+        "approved",
+        "declined"
+      ],
+      "type": "string"
+    },
+    "approval_title": {
+      "type": "string"
+    },
+    "attachment_url": {
+      "type": "string"
+    },
+    "channel": {
+      "default": "all",
+      "description": "'all' or a venue id",
+      "type": "string"
+    },
+    "decided_by_name": {
+      "type": "string"
+    },
+    "item_id": {
+      "type": "string"
+    },
+    "kind": {
+      "default": "text",
+      "enum": [
+        "text",
+        "approval"
+      ],
+      "type": "string"
+    },
+    "menu_board_id": {
+      "type": "string"
+    },
+    "new_price": {
+      "type": "number"
+    },
+    "org_id": {
+      "type": "string"
+    },
+    "org_member_user_ids": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "sender_id": {
+      "type": "string"
+    },
+    "sender_name": {
+      "type": "string"
+    },
+    "sold_out": {
+      "type": "boolean"
+    },
+    "text": {
+      "maxLength": 2000,
+      "type": "string"
+    }
+  },
+  "required": [
+    "org_id"
+  ],
+  "type": "object",
+  "rls": {
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "data.org_member_user_ids": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.org_member_user_ids": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
