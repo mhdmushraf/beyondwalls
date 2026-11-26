@@ -63,6 +63,9 @@ export default function PlayerRunner({ token, onMoved }) {
   });
   const [index, setIndex] = useState(0);
   const [blank, setBlank] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const [volume, setVolume] = useState(() => Number(localStorage.getItem('bw_volume') || 0));
+  const captureRef = useRef(null);
   const [displayUrl, setDisplayUrl] = useState(null);
 
   const currentRef = useRef(null);
@@ -127,9 +130,10 @@ export default function PlayerRunner({ token, onMoved }) {
   // Advance still images on their duration.
   useEffect(() => {
     if (!current || current.type === 'video') return undefined;
+    if (paused) return undefined;
     const timer = setTimeout(() => setIndex((value) => value + 1), (current.duration || 15) * 1000);
     return () => clearTimeout(timer);
-  }, [current?.id, index]);
+  }, [current?.id, index, paused]);
 
   // Count each marketplace ad that actually starts on screen (not under an urgent takeover or blank).
   useEffect(() => {
@@ -194,6 +198,16 @@ export default function PlayerRunner({ token, onMoved }) {
         } else if (action === 'takeover') {
           setBlank(false);
           load();
+        } else if (action === 'pause') {
+          setPaused(true);
+        } else if (action === 'resume') {
+          setPaused(false);
+        } else if (action === 'snapshot') {
+          captureRef.current?.();
+        } else if (action.startsWith('volume-')) {
+          const v = Math.max(0, Math.min(100, Number(action.slice(7)) || 0));
+          setVolume(v);
+          localStorage.setItem('bw_volume', String(v));
         }
       } catch (e) {
         if (e?.response?.status === 409) onMoved();
@@ -239,6 +253,8 @@ export default function PlayerRunner({ token, onMoved }) {
     }
   }, [token]);
 
+  captureRef.current = capture;
+
   useEffect(() => {
     const first = setTimeout(capture, 30000);
     const id = setInterval(capture, 5 * 60 * 1000);
@@ -275,9 +291,10 @@ export default function PlayerRunner({ token, onMoved }) {
             src={displayUrl || current.url}
             className="max-h-full max-w-full"
             autoPlay
-            muted
+            muted={volume === 0}
+            ref={(el) => { if (el) el.volume = volume / 100; }}
             playsInline
-            onEnded={() => setIndex((value) => value + 1)}
+            onEnded={() => { if (!paused) setIndex((value) => value + 1); }}
           />
         ) : displayUrl ? (
           <img key={displayUrl} src={displayUrl} alt="" className={`h-full w-full ${fit}`} />
