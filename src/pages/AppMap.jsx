@@ -33,7 +33,7 @@ export default function AppMap() {
       if (!alive) return;
       g.current = api;
       map.current = new api.Map(box.current, { center: UAE, zoom: 11, mapId: GOOGLE_MAP_ID, disableDefaultUI: true, zoomControl: true, gestureHandling: 'greedy', clickableIcons: false });
-      if (pinMode) map.current.addListener('idle', () => { const c = map.current.getCenter(); post({ type: 'center', lat: c.lat(), lng: c.lng() }); });
+      if (pinMode) map.current.addListener('dragend', () => { const c = map.current.getCenter(); post({ type: 'center', lat: c.lat(), lng: c.lng() }); });
       post({ type: 'ready' });
     }).catch(() => { setFailed(true); post({ type: 'error' }); });
     const off = onGoogleRefused(() => { setFailed(true); post({ type: 'error' }); });
@@ -61,7 +61,7 @@ export default function AppMap() {
         if (d.radiusKm) extras.current.push(new api.Circle({ map: map.current, center: d.me, radius: d.radiusKm * 1000, strokeColor: '#6F3FFD', strokeOpacity: 0.6, strokeWeight: 1.5, fillColor: '#6F3FFD', fillOpacity: 0.12 }));
         bounds.extend(d.me);
       }
-      if (d.center?.lat) { map.current.setCenter(d.center); map.current.setZoom(d.zoom || 15); }
+      if (d.center?.lat) { map.current.setCenter(d.center); map.current.setZoom(d.zoom || 15); if (pinMode) post({ type: 'center', lat: d.center.lat, lng: d.center.lng }); }
       else if (d.fit !== false && marks.current.length > 1) map.current.fitBounds(bounds, 50);
       else if (marks.current.length === 1) { map.current.setCenter(bounds.getCenter()); map.current.setZoom(14); }
     };
