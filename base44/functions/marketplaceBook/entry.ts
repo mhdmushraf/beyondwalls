@@ -2,7 +2,7 @@ import { createClientFromRequest } from "npm:@base44/sdk@0.8.54";
 import { getSessionUser, logActivity } from "../../shared/portalAuth.ts";
 import { notifyUsers } from "../../shared/notify.ts";
 import {
-  addDays, dubaiToday, holdsSlot, isBookable, list, loadSettings, nextInvoiceNumber, overlaps, r2, screenPrice, slotsFor,
+  addDays, dubaiToday, holdsSlot, isBookable, isDemoVenue, isDemoViewer, list, loadSettings, nextInvoiceNumber, overlaps, r2, screenPrice, slotsFor,
 } from "../../shared/marketplace.ts";
 
 /**
@@ -63,11 +63,12 @@ export default async function (req: Request) {
     const venueOrgs = await Promise.all(venueOrgIds.map((id) => svc.Organization.get(id).catch(() => null)));
     const venueOrgById = new Map(venueOrgs.filter(Boolean).map((o: any) => [o.id, o]));
 
+    const demoViewer = await isDemoViewer(base44, svc);
     const allBookings = list(await svc.AdBooking.list({ sort: "-created_date", limit: 5000 }));
     const problems: string[] = [];
     screens.forEach((s: any, i: number) => {
       const v = s && venueById.get(s.venue_id);
-      if (!s || !isBookable(s, v)) { problems.push(`${s?.name || ids[i]} is no longer available`); return; }
+      if (!s || !isBookable(s, v) || (isDemoVenue(v) && !demoViewer)) { problems.push(`${s?.name || ids[i]} is no longer available`); return; }
       const taken = allBookings.filter((b: any) => b.screen_id === s.id && holdsSlot(b) && overlaps(b.start_date, b.end_date, start, end)).length;
       if (taken >= slotsFor(s)) problems.push(`${s.name} at ${v.name} is full for these dates`);
     });

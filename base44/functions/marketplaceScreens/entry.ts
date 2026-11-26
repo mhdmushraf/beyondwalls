@@ -1,6 +1,6 @@
 import { createClientFromRequest } from "npm:@base44/sdk@0.8.54";
 import { resolveMediaUrl } from "../../shared/portalAuth.ts";
-import { addDays, dubaiToday, holdsSlot, isBookable, list, loadSettings, overlaps, screenPrice, slotsFor } from "../../shared/marketplace.ts";
+import { addDays, dubaiToday, holdsSlot, isBookable, isDemoVenue, isDemoViewer, list, loadSettings, overlaps, screenPrice, slotsFor } from "../../shared/marketplace.ts";
 
 /**
  * Marketplace listing: bookable venue screens with price and free ad slots for a date range.
@@ -25,11 +25,13 @@ export default async function (req: Request) {
       svc.AdBooking.list({ sort: "-created_date", limit: 5000 }).then(list),
     ]);
     const venueById = new Map(venues.map((v: any) => [v.id, v]));
+    const demoViewer = await isDemoViewer(base44, svc);
 
     const out: any[] = [];
     for (const s of screens) {
       const v = venueById.get(s.venue_id);
       if (!isBookable(s, v)) continue;
+      if (isDemoVenue(v) && !demoViewer) continue;
       const taken = bookings.filter((b: any) => b.screen_id === s.id && holdsSlot(b) && overlaps(b.start_date, b.end_date, start, end)).length;
       const slots = slotsFor(s);
       const photo = v.image_url || (v.photo_urls || [])[0] || s.screen_image_url || "";

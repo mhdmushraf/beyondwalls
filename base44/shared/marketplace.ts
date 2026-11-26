@@ -140,3 +140,14 @@ export async function paymobHmacOk(secret: string, obj: any, received: string, f
   const mine = await hmacHex(secret, text);
   return mine.toLowerCase() === String(received).toLowerCase();
 }
+
+// Demo listings (venue tagged "demo") are only shown to App Store / Play review accounts,
+// i.e. members of an organization whose trade licence number starts with "DEMO-".
+export const isDemoVenue = (venue: any) => Array.isArray(venue?.venue_group_tags) && venue.venue_group_tags.includes("demo");
+
+export async function isDemoViewer(base44: any, svc: any) {
+  const user = await base44.auth.me().catch(() => null);
+  if (!user) return false;
+  const orgs = await svc.Organization.filter({ member_user_ids: user.id }, { limit: 20 }).then(list).catch(() => []);
+  return orgs.some((o: any) => String(o.trade_license_number || "").toUpperCase().startsWith("DEMO-"));
+}
