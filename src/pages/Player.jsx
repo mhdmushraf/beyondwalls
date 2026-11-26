@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import PlayerPairing from '@/components/player/PlayerPairing';
 import PlayerRunner from '@/components/player/PlayerRunner';
+import { BrandTile } from '@/components/Brand';
 
 const DEVICE_KEY = 'bw_device_id';
 const TOKEN_KEY = 'bw_device_token';
@@ -126,9 +127,7 @@ export default function Player() {
   if (phase === 'moved') {
     return (
       <div className="fixed inset-0 bg-bw-navy text-white flex flex-col items-center justify-center px-6 text-center">
-        <div className="h-14 w-14 rounded-2xl bg-white/10 flex items-center justify-center">
-          <span className="h-3.5 w-3.5 rounded-sm bg-bw-coral" />
-        </div>
+        <BrandTile size={56} dark />
         <h1 className="mt-6 text-xl md:text-2xl font-semibold max-w-md">{t('player.movedTitle')}</h1>
         <p className="mt-2 text-sm text-white/60 max-w-sm">{t('player.movedBody')}</p>
         <button

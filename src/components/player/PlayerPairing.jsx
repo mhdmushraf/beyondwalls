@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useI18n } from '@/lib/i18n';
+import { BrandTile } from '@/components/Brand';
 
 export default function PlayerPairing({ code, onSubmit, busy, error }) {
   const { t } = useI18n();
@@ -13,10 +14,8 @@ export default function PlayerPairing({ code, onSubmit, busy, error }) {
 
       <div className="relative z-10 w-full max-w-xl text-center">
         <div className="mx-auto flex items-center gap-2.5 justify-center">
-          <span className="h-9 w-9 rounded-xl bg-white/10 flex items-center justify-center">
-            <span className="h-3.5 w-3.5 rounded-sm bg-bw-coral" />
-          </span>
-          <span className="text-sm font-semibold tracking-tight">Beyond Walls</span>
+          <BrandTile size={36} dark />
+          <span className="text-[16px] font-bold tracking-tight">BeyondWalls</span>
         </div>
 
         <h1 className="mt-8 text-2xl md:text-3xl font-semibold">{t('player.enterCodeTitle')}</h1>
