@@ -120,7 +120,7 @@ export const AuthProvider = ({ children }) => {
     
     if (shouldRedirect) {
       // Use the SDK's logout method which handles token cleanup and redirect
-      base44.auth.logout(window.location.href);
+      base44.auth.logout(`${window.location.origin}/sign-in`);
     } else {
       // Just remove the token without redirect
       base44.auth.logout();
@@ -128,7 +128,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const navigateToLogin = () => {
-    // Send to our own /login page, not Base44's hosted form.
+    // Send to our own /sign-in page. The server answers a full-page /login with Base44's hosted form.
     window.location.href = `/sign-in?next=${encodeURIComponent(window.location.pathname)}`;
   };
 
