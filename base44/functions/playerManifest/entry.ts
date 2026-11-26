@@ -63,11 +63,16 @@ export default async function (req: Request) {
     const urgent = list(urgentPage).find((m: any) =>
       (!m.starts_at || m.starts_at <= nowIso) && (!m.ends_at || m.ends_at > nowIso)) || null;
 
-    const playlist = list(playlistPage).find((p: any) => {
-      const days = p.days_of_week || [];
-      if (days.length && !days.includes(dow)) return false;
-      return inWindow(p.start_time, p.end_time, hm) && (p.items || []).length > 0;
-    });
+    const todayDate = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Dubai" }).format(new Date());
+    const itemLive = (it: any) => (!it.expires_on || it.expires_on >= todayDate) && (!it.starts_on || it.starts_on <= todayDate);
+    // A time block (start/end set) wins over an all-day loop when both match right now.
+    const playlist = [...list(playlistPage)]
+      .sort((a: any, b: any) => (b.start_time ? 1 : 0) - (a.start_time ? 1 : 0) || (Number(b.priority) || 0) - (Number(a.priority) || 0))
+      .find((p: any) => {
+        const days = p.days_of_week || [];
+        if (days.length && !days.includes(dow)) return false;
+        return inWindow(p.start_time, p.end_time, hm) && (p.items || []).filter(itemLive).length > 0;
+      });
 
     const menuCache: Record<string, any> = {};
     const loadMenu = async (id: string) => {
@@ -85,7 +90,7 @@ export default async function (req: Request) {
     if (playlist) {
       source = `playlist:${playlist.id}`;
       let n = 0;
-      for (const it of playlist.items || []) {
+      for (const it of (playlist.items || []).filter(itemLive)) {
         n += 1;
         const itemId = it.id || `p${n}`;
         if (it.kind === "menu" && it.menu_board_id) {
