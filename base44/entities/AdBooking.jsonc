@@ -157,7 +157,11 @@
     },
     "weeks": {
       "type": "number"
-    }
+    },
+    "days": { "type": "number", "description": "Booked days, start to end inclusive" },
+    "play_from": { "type": "string", "description": "HH:MM Dubai time; empty = all day" },
+    "play_until": { "type": "string", "description": "HH:MM Dubai time; may be earlier than play_from for overnight" },
+    "play_days": { "type": "array", "items": { "type": "number" }, "description": "Weekdays 0=Sun..6=Sat; empty = every day" }
   },
   "required": [
     "campaign_id",

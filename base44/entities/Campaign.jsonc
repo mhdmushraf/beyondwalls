@@ -155,7 +155,8 @@
     },
     "weeks": {
       "type": "number"
-    }
+    },
+    "days": { "type": "number" }
   },
   "required": [
     "name",
