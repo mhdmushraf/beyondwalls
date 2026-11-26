@@ -41,7 +41,7 @@ export default function ForgotPassword() {
           </form>
         </>
       )}
-      <AuthFooterLink text="Remembered it?" to="/login" label="Back to sign in" />
+      <AuthFooterLink text="Remembered it?" to="/sign-in" label="Back to sign in" />
     </AuthShell>
   );
 }

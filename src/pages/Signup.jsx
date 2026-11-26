@@ -75,7 +75,7 @@ export default function Signup() {
             <AuthButton type="submit" disabled={busy}>{busy ? 'Creating account…' : t('auth.signUp')}</AuthButton>
           </form>
           <AuthNote>We email you a 6-digit code to confirm it's you.</AuthNote>
-          <AuthFooterLink text={t('auth.haveAccount')} to="/login" label={t('auth.signIn')} />
+          <AuthFooterLink text={t('auth.haveAccount')} to="/sign-in" label={t('auth.signIn')} />
         </>
       ) : (
         <>

@@ -112,7 +112,7 @@ const AuthenticatedApp = () => {
         '/doohadvertisingcostdubai', '/indoorvenuedoohvsbillboardsdubai',
         '/whatisdoohadvertisingguide', '/earnmoneyvenuescreensdubai',
         '/doohadvertisingmarketplacedubai', '/robotstxt', '/sitemapxml', '/notfound',
-        '/login', '/signup', '/forgot-password', '/reset-password', '/player',
+        '/login', '/sign-in', '/signup', '/forgot-password', '/reset-password', '/player',
       ];
       const currentPath = window.location.pathname.toLowerCase().replace(/\/$/, '') || '/';
       const onPublicRoute = PUBLIC_PATH_PREFIXES.includes(currentPath) || currentPath.startsWith('/q/');
@@ -254,6 +254,7 @@ const AuthenticatedApp = () => {
          <Route path="/plans" element={<Navigate to="/Pricing" replace />} />
          <Route path="/HowItWorks" element={<Navigate to="/ForAdvertisers" replace />} />
          <Route path="/Services" element={<Navigate to="/ForVenues" replace />} />
+         <Route path="/sign-in" element={<Login />} />
          <Route path="/login" element={<Login />} />
          <Route path="/signup" element={<Signup />} />
          <Route path="/forgot-password" element={<ForgotPassword />} />

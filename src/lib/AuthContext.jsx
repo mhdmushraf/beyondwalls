@@ -129,7 +129,7 @@ export const AuthProvider = ({ children }) => {
 
   const navigateToLogin = () => {
     // Send to our own /login page, not Base44's hosted form.
-    window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
+    window.location.href = `/sign-in?next=${encodeURIComponent(window.location.pathname)}`;
   };
 
   return (

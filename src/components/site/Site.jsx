@@ -63,7 +63,7 @@ export function SiteNav({ dark = true }) {
           ))}
         </div>
         <div className="hidden lg:flex items-center gap-3">
-          <Link to="/login" className={`text-[15px] font-medium ${link}`}>Sign in</Link>
+          <Link to="/sign-in" className={`text-[15px] font-medium ${link}`}>Sign in</Link>
           <GradButton to="/signup">Get started</GradButton>
         </div>
         <button className={`lg:hidden p-2 -mr-2 ${dark ? "text-white" : "text-[#111027]"}`} onClick={() => setOpen(!open)} aria-label="Menu">
@@ -76,7 +76,7 @@ export function SiteNav({ dark = true }) {
             <Link key={l.to} to={l.to} className="text-[#cfc9ee] text-base font-medium" onClick={() => setOpen(false)}>{l.label}</Link>
           ))}
           <div className="flex gap-3 pt-2">
-            <Link to="/login" className="flex-1 text-center rounded-full border border-[#4b4380] text-white py-3 font-semibold">Sign in</Link>
+            <Link to="/sign-in" className="flex-1 text-center rounded-full border border-[#4b4380] text-white py-3 font-semibold">Sign in</Link>
             <GradButton to="/signup" className="flex-1">Get started</GradButton>
           </div>
         </div>

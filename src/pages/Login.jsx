@@ -15,7 +15,13 @@ export default function Login() {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
-  const next = new URLSearchParams(window.location.search).get('next') || '/app';
+  const qs = new URLSearchParams(window.location.search);
+  const rawNext = qs.get('next') || qs.get('from_url') || qs.get('returnTo') || '/app';
+  let next = '/app';
+  try {
+    const u = new URL(rawNext, window.location.origin);
+    if (u.origin === window.location.origin && !/^\/(login|sign-in)/i.test(u.pathname)) next = u.pathname + u.search;
+  } catch (e) { /* keep default */ }
 
   useEffect(() => {
     if (isAuthenticated) navigate(next, { replace: true });

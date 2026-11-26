@@ -44,7 +44,7 @@ export default function ResetPassword() {
       {done ? (
         <>
           <AuthSuccess>Password updated. You can sign in now.</AuthSuccess>
-          <Link to="/login"><AuthButton type="button">Go to sign in<ArrowRight className="h-4 w-4" /></AuthButton></Link>
+          <Link to="/sign-in"><AuthButton type="button">Go to sign in<ArrowRight className="h-4 w-4" /></AuthButton></Link>
         </>
       ) : (
         <form onSubmit={submit} className="flex flex-col gap-4">
@@ -54,7 +54,7 @@ export default function ResetPassword() {
           <AuthButton type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save password'}</AuthButton>
         </form>
       )}
-      <AuthFooterLink text="Changed your mind?" to="/login" label="Back to sign in" />
+      <AuthFooterLink text="Changed your mind?" to="/sign-in" label="Back to sign in" />
     </AuthShell>
   );
 }
