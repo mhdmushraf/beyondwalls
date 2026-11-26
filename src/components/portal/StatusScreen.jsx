@@ -3,6 +3,7 @@ import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
 import { BrandLogo, BrandBackdrop } from '@/components/Brand';
 import LanguageToggle from '@/components/portal/LanguageToggle';
+import ShowcaseStack from '@/components/auth/ShowcaseCards';
 
 const SUPPORT_TEXT = 'Hello Beyond Walls, I need help with my business account.';
 const WA_NUMBER = '971545469496';
@@ -47,7 +48,8 @@ export default function StatusScreen({ org, otherOrgs = [], onSwitch }) {
       </header>
 
       <main className="relative z-10 flex-1 flex items-center justify-center px-5 pb-12">
-        <div className="w-full max-w-[540px]">
+        <div className="grid w-full max-w-6xl items-center gap-14 xl:grid-cols-[540px_1fr]">
+        <div className="w-full max-w-[540px] mx-auto">
           <div className="rounded-[28px] bg-white/80 backdrop-blur-xl ring-1 ring-[#e7e3f3] shadow-[0_24px_60px_-20px_rgba(55,30,140,0.25)] overflow-hidden">
             {/* Top band */}
             <div className="relative px-8 pt-8 pb-7 bg-[#0d0824] text-white overflow-hidden">
@@ -122,6 +124,14 @@ export default function StatusScreen({ org, otherOrgs = [], onSwitch }) {
             </div>
           </div>
           <p className="mt-5 text-center text-[12px] text-[#8a86a3]">Linkzone Global FZ-LLC · Dubai Internet City · UAE</p>
+        </div>
+        <aside className="hidden xl:block">
+          <ShowcaseStack greeting="Coming soon to your screens" />
+          <div className="mt-6 max-w-[460px] mx-auto">
+            <p className="text-[18px] font-bold tracking-[-0.3px] text-[#111027]">This is what your home looks like once you're live.</p>
+            <p className="mt-1.5 text-[14px] text-[#6b6787]">Earnings, every screen's status, and ads waiting for your OK — in one place.</p>
+          </div>
+        </aside>
         </div>
       </main>
     </div>

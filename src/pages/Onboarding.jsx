@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Store, Megaphone, Sparkles, Upload, Check, AlertCircle, ArrowRight, Eye, X, FileText, RefreshCw } from 'lucide-react';
 import { BrandLogo, BrandBackdrop } from '@/components/Brand';
+import ShowcaseStack from '@/components/auth/ShowcaseCards';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useI18n } from '@/lib/i18n';
@@ -158,7 +159,8 @@ export default function Onboarding() {
         <LanguageToggle />
       </header>
 
-      <div className="relative z-10 max-w-2xl mx-auto px-5 pt-4 pb-14 md:pt-8">
+      <div className="relative z-10 mx-auto grid max-w-6xl gap-14 px-5 pt-4 pb-14 md:pt-8 xl:grid-cols-[minmax(0,640px)_1fr]">
+        <div className="min-w-0">
         <ol className="mb-8 grid grid-cols-3 gap-3">
           {[t('onboarding.step.mode'), t('onboarding.step.details'), t('onboarding.step.review')].map((label, index) => (
             <li key={index} className="flex flex-col gap-2">
@@ -401,6 +403,16 @@ export default function Onboarding() {
             </div>
           </div>
         )}
+        </div>
+        <aside className="hidden xl:block">
+          <div className="sticky top-10 pt-8">
+            <ShowcaseStack greeting={step === 2 ? 'Almost live' : 'Good morning'} />
+            <div className="mt-6 max-w-[460px] mx-auto">
+              <p className="text-[18px] font-bold tracking-[-0.3px] text-[#111027]">{step === 0 ? 'Earn from the screens you already have.' : step === 1 ? 'We verify every business — that keeps ads on your walls safe.' : 'Once approved, ads start booking your free slots.'}</p>
+              <p className="mt-1.5 text-[14px] text-[#6b6787]">Venues keep 70% of every booking. You approve every ad before it plays.</p>
+            </div>
+          </div>
+        </aside>
       </div>
       {showLicense && licensePreview && (
         <div role="dialog" aria-modal="true" aria-label="Trade licence" className="fixed inset-0 z-50 flex items-center justify-center bg-[#0d0824]/70 p-4 backdrop-blur-sm" onClick={() => setShowLicense(false)}>
