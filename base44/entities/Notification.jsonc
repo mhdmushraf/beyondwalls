@@ -52,6 +52,7 @@
         "ad_rejected",
         "payment_received",
         "wallet_low",
+        "offer",
         "system"
       ],
       "type": "string"
@@ -63,6 +64,7 @@
     "title",
     "message"
   ],
+  "type": "object",
   "rls": {
     "create": {
       "user_condition": {
@@ -111,6 +113,5 @@
         }
       ]
     }
-  },
-  "type": "object"
+  }
 }
