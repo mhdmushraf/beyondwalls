@@ -58,7 +58,7 @@ function ScreenWall() {
               key={s.img}
               src={s.img}
               alt=""
-              fetchpriority={i === 0 ? 'high' : 'low'}
+              fetchPriority={i === 0 ? 'high' : 'low'}
               className={`absolute inset-0 h-full w-full object-cover transition-all duration-[1200ms] ease-out ${i === active ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
             />
           ))}

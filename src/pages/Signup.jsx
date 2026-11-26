@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useI18n } from '@/lib/i18n';
-import AuthShell, { AuthTitle, AuthField, AuthButton, AuthError, AuthNote, GoogleButton } from '@/components/auth/AuthShell';
+import AuthShell, { AuthTitle, AuthField, AuthButton, AuthError, AuthNote, AuthFooterLink } from '@/components/auth/AuthShell';
 
 export default function Signup() {
   const { t } = useI18n();
@@ -64,22 +63,19 @@ export default function Signup() {
   };
 
   return (
-    <AuthShell quote="“Two screens on the Signage + Ads plan. Ads booked on the map covered the fee in the first month.”" quoteBy="Example — how a venue earns from spare slots">
+    <AuthShell headline={<>Your TVs,<br /><span className="bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(90deg,#b9a6ff,#7dd3fc)' }}>now earning.</span></>} sub="List your screens, run your menus, and keep 70% of every ad that plays.">
       {step === 'details' ? (
         <>
-          <AuthTitle title={t('auth.createTitle', 'Create your account')} sub={t('auth.createSub', 'List your screens free, or start advertising across the UAE.')} />
+          <AuthTitle eyebrow="Free to start" title={t('auth.createTitle', 'Create your account')} sub={t('auth.createSub', 'List your screens free, or start advertising across the UAE.')} />
           <form onSubmit={startSignup} className="flex flex-col gap-4">
             <AuthField id="name" label={t('auth.fullName')} required value={fullName} onChange={(e) => setFullName(e.target.value)} autoComplete="name" placeholder="Your name" />
             <AuthField id="email" label={t('auth.email')} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" placeholder="you@business.ae" />
-            <AuthField id="password" label={t('auth.password')} type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" placeholder="At least 6 characters" />
+            <AuthField id="password" label={t('auth.password')} type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" placeholder="At least 8 characters" />
             <AuthError>{error}</AuthError>
             <AuthButton type="submit" disabled={busy}>{busy ? 'Creating account…' : t('auth.signUp')}</AuthButton>
           </form>
           <AuthNote>We email you a 6-digit code to confirm it's you.</AuthNote>
-          <GoogleButton onClick={() => base44.auth.loginWithProvider('google', '/onboarding')} label={t('auth.google')} />
-          <p className="text-[14px] font-medium text-[#6b6787]">{t('auth.haveAccount')}{' '}
-            <Link to="/login" className="font-semibold text-[#5a2ded] hover:underline">{t('auth.signIn')}</Link>
-          </p>
+          <AuthFooterLink text={t('auth.haveAccount')} to="/login" label={t('auth.signIn')} />
         </>
       ) : (
         <>
