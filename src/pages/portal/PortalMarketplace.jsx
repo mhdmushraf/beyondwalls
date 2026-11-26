@@ -30,7 +30,7 @@ export default function PortalMarketplace() {
   const [emirate, setEmirate] = useState('all');
   const [vtype, setVtype] = useState('all');
   const [cartOpen, setCartOpen] = useState(false);
-  const [view, setView] = useState('list');
+  const [view, setView] = useState('map');
   const [errors, setErrors] = useState({});
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(0);
@@ -224,6 +224,54 @@ export default function PortalMarketplace() {
     </div>
   );
 
+  const filters = (floating) => (
+    <div className={`flex flex-wrap gap-2 ${floating ? 'rounded-2xl bg-white/90 p-2 shadow-[0_12px_30px_-12px_rgba(17,16,39,0.35)] ring-1 ring-black/5 backdrop-blur' : 'mb-4'}`}>
+      <div className="relative flex-1 min-w-[180px]">
+        <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-bw-muted" />
+        <input className="bw-input !ps-9" placeholder="Search venue or area" value={q} onChange={(e) => setQ(e.target.value)} />
+      </div>
+      <select className="bw-input !w-auto" value={emirate} onChange={(e) => setEmirate(e.target.value)}><option value="all">All emirates</option>{EMIRATES.map((x) => <option key={x}>{x}</option>)}</select>
+      <select className="bw-input !w-auto capitalize" value={vtype} onChange={(e) => setVtype(e.target.value)}><option value="all">All venue types</option>{VENUE_TYPES.map((x) => <option key={x} value={x}>{x}</option>)}</select>
+      <div className="inline-flex rounded-xl border border-bw-line bg-white p-0.5">
+        {[['map', 'Map'], ['list', 'List']].map(([k, l]) => (
+          <button key={k} type="button" onClick={() => setView(k)} className={`!min-h-0 rounded-lg px-3 py-1.5 text-xs font-semibold ${view === k ? 'bg-bw-navy text-white' : 'text-bw-muted'}`}>{l}</button>
+        ))}
+      </div>
+    </div>
+  );
+
+  const drawer = cartOpen && (
+    <div className="fixed inset-0 z-50 bg-black/40 flex items-end lg:items-stretch lg:justify-end" onClick={() => setCartOpen(false)}>
+      <div className="w-full lg:w-[420px] max-h-[90vh] lg:max-h-none overflow-auto rounded-t-3xl lg:rounded-none lg:rounded-l-3xl bg-white p-5" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-3"><p className="text-[16px] font-bold text-bw-navy">Your booking</p><button type="button" className="!min-h-0" onClick={() => setCartOpen(false)}><X className="h-5 w-5" /></button></div>
+        {cart}
+      </div>
+    </div>
+  );
+
+  // Full-size map: fills everything right of the sidebar; filters and booking float on top.
+  if (view === 'map' && !loading && !error && screens.length > 0 && preview !== 'loading') {
+    return (
+      <div className="relative -m-4 md:-m-6 lg:-m-8 h-[calc(100vh-64px)] overflow-hidden">
+        <ScreensMap bare screens={shown} selected={form.screen_ids} onToggle={toggle} searchClass="bottom-6 left-4 w-[min(380px,calc(100%-2rem))]" />
+        <div className="absolute top-4 left-4 right-4 z-10 flex flex-col gap-2 pointer-events-none">
+          <div className="pointer-events-auto flex flex-wrap items-center gap-3">
+            <div className="rounded-2xl bg-white/90 px-4 py-2.5 shadow-[0_12px_30px_-12px_rgba(17,16,39,0.35)] ring-1 ring-black/5 backdrop-blur">
+              <p className="text-[16px] font-bold text-bw-navy leading-tight">Book screens</p>
+              <p className="text-[12px] text-bw-muted">{shown.length} of {screens.length} screens · {data?.start_date} → {data?.end_date}</p>
+            </div>
+            <div className="flex-1 min-w-[300px]">{filters(true)}</div>
+          </div>
+        </div>
+        <button type="button" onClick={() => setCartOpen(true)} className="absolute bottom-6 right-6 z-10 flex items-center gap-3 rounded-2xl px-5 py-3.5 text-white shadow-[0_18px_40px_-14px_rgba(90,45,237,0.8)]" style={{ backgroundImage: 'linear-gradient(135deg,#6f3ffd,#4c22d6)' }}>
+          <ShoppingCart className="h-5 w-5" />
+          <span className="text-start leading-tight"><span className="block text-[14px] font-bold">{picked.length ? `${picked.length} screen${picked.length > 1 ? 's' : ''} · ${aed(subtotal + vat)}` : 'Your booking'}</span><span className="block text-[11px] text-white/75">{picked.length ? 'Review & book' : 'Tap a price pin to add a screen'}</span></span>
+        </button>
+        {drawer}
+      </div>
+    );
+  }
+
   return (
     <div>
       <PageHeader title="Book screens" subtitle={data ? `${screens.length} venue screens across the UAE · prices per week, ${data.start_date} → ${data.end_date}` : 'Put your ad on screens in cafés, gyms, clinics and more'}
@@ -233,19 +281,7 @@ export default function PortalMarketplace() {
 
       <div className="grid lg:grid-cols-[1fr_360px] gap-5">
         <div>
-          <div className="flex flex-wrap gap-2 mb-4">
-            <div className="relative flex-1 min-w-[200px]">
-              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-bw-muted" />
-              <input className="bw-input !ps-9" placeholder="Search venue or area" value={q} onChange={(e) => setQ(e.target.value)} />
-            </div>
-            <select className="bw-input !w-auto" value={emirate} onChange={(e) => setEmirate(e.target.value)}><option value="all">All emirates</option>{EMIRATES.map((x) => <option key={x}>{x}</option>)}</select>
-            <div className="inline-flex rounded-xl border border-bw-line bg-white p-0.5">
-              {[['list', 'List'], ['map', 'Map']].map(([k, l]) => (
-                <button key={k} type="button" onClick={() => setView(k)} className={`!min-h-0 rounded-lg px-3 py-1.5 text-xs font-semibold ${view === k ? 'bg-bw-navy text-white' : 'text-bw-muted'}`}>{l}</button>
-              ))}
-            </div>
-            <select className="bw-input !w-auto capitalize" value={vtype} onChange={(e) => setVtype(e.target.value)}><option value="all">All venue types</option>{VENUE_TYPES.map((x) => <option key={x} value={x}>{x}</option>)}</select>
-          </div>
+          {filters(false)}
 
           {loading || preview === 'loading' ? <TilesSkeleton count={6} />
             : error ? <ErrorState error={error} action="load screens" onRetry={load} />

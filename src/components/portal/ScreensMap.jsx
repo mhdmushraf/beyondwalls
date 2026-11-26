@@ -52,8 +52,9 @@ export default function ScreensMap({ screens, selected, onToggle, pickLabel = 'A
       const m = new g.AdvancedMarkerElement({ map: map.current, position: pos, content: pinEl(s, on, full), title: s.venue.name });
       m.addListener('click', () => {
         const div = document.createElement('div');
-        div.style.cssText = 'min-width:200px;font-family:Inter,sans-serif';
-        div.innerHTML = `<p style="font-weight:700;margin:0">${s.venue.name.replace(/</g, '&lt;')}</p><p style="margin:2px 0 8px;color:#6B6880;font-size:12px">${s.name.replace(/</g, '&lt;')} · ${aed(s.price_per_week)}/wk · ${full ? 'full for these dates' : `${s.slots_free} slots free`}${s.venue.weekly_footfall ? ` · ~${s.venue.weekly_footfall.toLocaleString()} visits/wk` : ''}</p>`;
+        div.style.cssText = 'width:260px;font-family:Inter,sans-serif';
+        const esc = (t) => String(t || '').replace(/[<>"&]/g, '');
+        div.innerHTML = `${s.photo_url ? `<div style="position:relative;margin:-2px 0 10px;border-radius:12px;overflow:hidden;aspect-ratio:16/9;background:#140b3a"><img src="${esc(s.photo_url)}" style="width:100%;height:100%;object-fit:cover;display:block"/><span style="position:absolute;top:8px;left:8px;background:${s.is_online ? '#10b981' : '#6b7280'};color:#fff;font:700 10px Inter;padding:3px 8px;border-radius:999px">${s.is_online ? '● LIVE' : 'Offline'}</span><span style="position:absolute;bottom:8px;right:8px;background:#fff;color:#111027;font:800 12px Inter;padding:3px 9px;border-radius:999px">${aed(s.price_per_week)}/wk</span></div>` : ''}<p style="font-weight:700;margin:0">${s.venue.name.replace(/</g, '&lt;')}</p><p style="margin:2px 0 8px;color:#6B6880;font-size:12px">${s.name.replace(/</g, '&lt;')} · ${aed(s.price_per_week)}/wk · ${full ? 'full for these dates' : `${s.slots_free} slots free`}${s.venue.weekly_footfall ? ` · ~${s.venue.weekly_footfall.toLocaleString()} visits/wk` : ''}</p>`;
         const b = document.createElement('button');
         b.type = 'button';
         b.disabled = full && !on && pickLabel === 'Add to booking';
