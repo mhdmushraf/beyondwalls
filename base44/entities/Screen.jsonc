@@ -1,63 +1,210 @@
 {
   "name": "Screen",
-  "type": "object",
   "properties": {
-    "org_id": {
-      "type": "string",
-      "description": "ID of the Organization that owns this screen"
+    "accept_offers": {
+      "default": true,
+      "description": "Advertisers may offer a lower weekly price (Make an offer)",
+      "type": "boolean"
     },
-    "org_member_user_ids": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "Denormalized from parent Organization.member_user_ids \u2014 drives RLS on this screen."
+    "approval_status": {
+      "default": "pending",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "enumColors": [
+        "yellow",
+        "green",
+        "red"
+      ],
+      "type": "string"
     },
-    "venue_id": {
-      "type": "string",
-      "description": "Venue this screen sits in (required for new screens)"
+    "current_item": {
+      "description": "What the player last reported as playing",
+      "type": "string"
     },
-    "site_id": {
-      "type": "string",
-      "description": "ID of the Site this screen belongs to (enterprise grouping). Optional."
-    },
-    "name": {
-      "type": "string",
-      "description": "Screen name/identifier"
+    "default_image_url": {
+      "description": "Image shown when the screen is stopped or has no content",
+      "type": "string"
     },
     "description": {
-      "type": "string",
-      "maxLength": 1000
+      "maxLength": 1000,
+      "type": "string"
+    },
+    "device_token": {
+      "description": "Secret the paired player uses to call the player endpoints",
+      "type": "string"
+    },
+    "display_mode": {
+      "default": "fit",
+      "enum": [
+        "fit",
+        "stretch",
+        "fill"
+      ],
+      "type": "string"
+    },
+    "height_px": {
+      "description": "Screen height in pixels",
+      "type": "number"
+    },
+    "internal_slots": {
+      "default": 3,
+      "type": "number"
+    },
+    "is_online": {
+      "default": false,
+      "type": "boolean"
+    },
+    "last_heartbeat": {
+      "type": "string"
+    },
+    "last_snapshot_url": {
+      "description": "Private file_uri of the most recent player snapshot",
+      "type": "string"
+    },
+    "location_description": {
+      "type": "string"
+    },
+    "marketplace_enabled": {
+      "default": false,
+      "type": "boolean"
     },
     "mode": {
-      "type": "string",
+      "default": "signage_ads",
+      "description": "What the screen shows: advertising only, signage plus ads, or signage only",
       "enum": [
         "ads_only",
         "signage_ads",
         "signage_only"
       ],
-      "default": "signage_ads",
-      "description": "What the screen shows: advertising only, signage plus ads, or signage only",
       "enumColors": [
         "blue",
         "purple",
         "gray"
-      ]
+      ],
+      "type": "string"
     },
-    "position_label": {
-      "type": "string",
-      "description": "Where the screen sits, e.g. front counter"
+    "monetization_mode": {
+      "default": "marketplace",
+      "enum": [
+        "marketplace",
+        "self_serve",
+        "hybrid"
+      ],
+      "type": "string"
+    },
+    "name": {
+      "description": "Screen name/identifier",
+      "type": "string"
+    },
+    "offer_floor_per_week": {
+      "description": "Lowest weekly offer the venue will see. Empty = 30% of the list price",
+      "type": "number"
+    },
+    "org_id": {
+      "description": "ID of the Organization that owns this screen",
+      "type": "string"
+    },
+    "org_member_user_ids": {
+      "description": "Denormalized from parent Organization.member_user_ids \u2014 drives RLS on this screen.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
     },
     "orientation": {
-      "type": "string",
+      "default": "landscape",
       "enum": [
         "landscape",
         "portrait"
       ],
-      "default": "landscape"
+      "type": "string"
+    },
+    "owner_slot_1_type": {
+      "default": "image",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "type": "string"
+    },
+    "owner_slot_1_url": {
+      "type": "string"
+    },
+    "owner_slot_2_type": {
+      "default": "image",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "type": "string"
+    },
+    "owner_slot_2_url": {
+      "type": "string"
+    },
+    "owner_slot_3_type": {
+      "default": "image",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "type": "string"
+    },
+    "owner_slot_3_url": {
+      "type": "string"
+    },
+    "owner_slot_4_type": {
+      "default": "image",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "type": "string"
+    },
+    "owner_slot_4_url": {
+      "type": "string"
+    },
+    "owner_slot_5_type": {
+      "default": "image",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "type": "string"
+    },
+    "owner_slot_5_url": {
+      "type": "string"
+    },
+    "owner_slot_6_type": {
+      "default": "image",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "type": "string"
+    },
+    "owner_slot_6_url": {
+      "type": "string"
+    },
+    "paired_at": {
+      "type": "string"
+    },
+    "paired_device_id": {
+      "description": "The one device currently locked to this screen",
+      "type": "string"
+    },
+    "pairing_code": {
+      "description": "6 character code used to pair a device to this screen",
+      "type": "string"
+    },
+    "player_command": {
+      "description": "Pending command for the player, e.g. restart:1712345678",
+      "type": "string"
     },
     "player_type": {
-      "type": "string",
+      "default": "browser",
       "enum": [
         "bone",
         "browser",
@@ -65,233 +212,134 @@
         "lg",
         "samsung"
       ],
-      "default": "browser"
-    },
-    "pairing_code": {
-      "type": "string",
-      "description": "6 character code used to pair a device to this screen"
-    },
-    "paired_device_id": {
-      "type": "string",
-      "description": "The one device currently locked to this screen"
-    },
-    "paired_at": {
       "type": "string"
-    },
-    "device_token": {
-      "type": "string",
-      "description": "Secret the paired player uses to call the player endpoints"
-    },
-    "last_heartbeat": {
-      "type": "string"
-    },
-    "is_online": {
-      "type": "boolean",
-      "default": false
-    },
-    "current_item": {
-      "type": "string",
-      "description": "What the player last reported as playing"
     },
     "player_version": {
       "type": "string"
     },
-    "uptime_seconds": {
-      "type": "number",
-      "default": 0
+    "position_label": {
+      "description": "Where the screen sits, e.g. front counter",
+      "type": "string"
     },
-    "last_snapshot_url": {
-      "type": "string",
-      "description": "Private file_uri of the most recent player snapshot"
+    "prayer_pause": {
+      "description": "Pause the screen at each prayer time (times worked out on the player from the venue location)",
+      "properties": {
+        "enabled": {
+          "default": false,
+          "type": "boolean"
+        },
+        "jumuah_minutes": {
+          "default": 45,
+          "type": "number"
+        },
+        "minutes": {
+          "default": 15,
+          "type": "number"
+        },
+        "prayers": {
+          "items": {
+            "enum": [
+              "fajr",
+              "dhuhr",
+              "asr",
+              "maghrib",
+              "isha"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "show": {
+          "default": "card",
+          "enum": [
+            "card",
+            "blank"
+          ],
+          "type": "string"
+        }
+      },
+      "type": "object"
     },
-    "player_command": {
-      "type": "string",
-      "description": "Pending command for the player, e.g. restart:1712345678"
+    "price_per_week": {
+      "type": "number"
     },
-    "marketplace_enabled": {
-      "type": "boolean",
-      "default": false
+    "public_ad_slots": {
+      "default": 7,
+      "type": "number"
     },
-    "setup_code": {
-      "type": "string",
-      "description": "Legacy setup code for player (BW- prefix)"
+    "rejection_reason": {
+      "type": "string"
+    },
+    "screen_image_url": {
+      "description": "Photo of the physical screen",
+      "type": "string"
     },
     "screen_pin": {
       "type": "string"
     },
-    "screen_image_url": {
-      "type": "string",
-      "description": "Photo of the physical screen"
+    "setup_code": {
+      "description": "Legacy setup code for player (BW- prefix)",
+      "type": "string"
     },
-    "default_image_url": {
-      "type": "string",
-      "description": "Image shown when the screen is stopped or has no content"
-    },
-    "width_px": {
-      "type": "number",
-      "description": "Screen width in pixels"
-    },
-    "height_px": {
-      "type": "number",
-      "description": "Screen height in pixels"
-    },
-    "display_mode": {
-      "type": "string",
-      "enum": [
-        "fit",
-        "stretch",
-        "fill"
-      ],
-      "default": "fit"
-    },
-    "total_slots": {
-      "type": "number",
-      "default": 10
-    },
-    "public_ad_slots": {
-      "type": "number",
-      "default": 7
-    },
-    "internal_slots": {
-      "type": "number",
-      "default": 3
+    "site_id": {
+      "description": "ID of the Site this screen belongs to (enterprise grouping). Optional.",
+      "type": "string"
     },
     "slot_duration": {
-      "type": "number",
+      "default": 30,
       "enum": [
         15,
         30,
         45,
         60
       ],
-      "default": 30
-    },
-    "price_per_week": {
       "type": "number"
     },
-    "monetization_mode": {
-      "type": "string",
-      "enum": [
-        "marketplace",
-        "self_serve",
-        "hybrid"
-      ],
-      "default": "marketplace"
-    },
     "status": {
-      "type": "string",
+      "default": "pending",
       "enum": [
         "active",
         "inactive",
         "offline",
         "pending"
       ],
-      "default": "pending"
-    },
-    "approval_status": {
-      "type": "string",
-      "enum": [
-        "pending",
-        "approved",
-        "rejected"
-      ],
-      "default": "pending",
-      "enumColors": [
-        "yellow",
-        "green",
-        "red"
-      ]
-    },
-    "location_description": {
       "type": "string"
     },
     "tags": {
-      "type": "array",
       "items": {
         "type": "string"
-      }
-    },
-    "rejection_reason": {
-      "type": "string"
+      },
+      "type": "array"
     },
     "total_impressions": {
-      "type": "number",
-      "default": 0
+      "default": 0,
+      "type": "number"
     },
     "total_revenue": {
-      "type": "number",
-      "default": 0
+      "default": 0,
+      "type": "number"
     },
-    "owner_slot_1_url": {
+    "total_slots": {
+      "default": 10,
+      "type": "number"
+    },
+    "uptime_seconds": {
+      "default": 0,
+      "type": "number"
+    },
+    "venue_id": {
+      "description": "Venue this screen sits in (required for new screens)",
       "type": "string"
     },
-    "owner_slot_1_type": {
-      "type": "string",
-      "enum": [
-        "image",
-        "video"
-      ],
-      "default": "image"
-    },
-    "owner_slot_2_url": {
-      "type": "string"
-    },
-    "owner_slot_2_type": {
-      "type": "string",
-      "enum": [
-        "image",
-        "video"
-      ],
-      "default": "image"
-    },
-    "owner_slot_3_url": {
-      "type": "string"
-    },
-    "owner_slot_3_type": {
-      "type": "string",
-      "enum": [
-        "image",
-        "video"
-      ],
-      "default": "image"
-    },
-    "owner_slot_4_url": {
-      "type": "string"
-    },
-    "owner_slot_4_type": {
-      "type": "string",
-      "enum": [
-        "image",
-        "video"
-      ],
-      "default": "image"
-    },
-    "owner_slot_5_url": {
-      "type": "string"
-    },
-    "owner_slot_5_type": {
-      "type": "string",
-      "enum": [
-        "image",
-        "video"
-      ],
-      "default": "image"
-    },
-    "owner_slot_6_url": {
-      "type": "string"
-    },
-    "owner_slot_6_type": {
-      "type": "string",
-      "enum": [
-        "image",
-        "video"
-      ],
-      "default": "image"
+    "width_px": {
+      "description": "Screen width in pixels",
+      "type": "number"
     }
   },
   "required": [
     "name"
   ],
+  "type": "object",
   "rls": {
     "read": {
       "$or": [
