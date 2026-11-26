@@ -147,7 +147,7 @@ export default function AuthShell({ children, headline, sub }) {
             <AdRequestCard />
           </div>
           <div className="absolute left-[6%] top-[9%] hidden xl:block -rotate-[3deg]"><LiveChip /></div>
-          <div className="absolute right-[6%] bottom-[10%] hidden xl:flex rotate-[3deg] items-center gap-3 rounded-2xl bg-white px-3.5 py-3 shadow-[0_18px_40px_-18px_rgba(17,16,39,0.45)] ring-1 ring-black/5">
+          <div className="absolute right-[6%] bottom-[10%] hidden 2xl:flex rotate-[3deg] items-center gap-3 rounded-2xl bg-white px-3.5 py-3 shadow-[0_18px_40px_-18px_rgba(17,16,39,0.45)] ring-1 ring-black/5">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-[18px]">☕</span>
             <span className="leading-tight">
               <span className="block text-[10px] font-bold uppercase tracking-[0.08em] text-[#5a2ded]">Menu updated</span>

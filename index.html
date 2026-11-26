@@ -47,7 +47,7 @@
         var seen = false; try { seen = sessionStorage.getItem('bw_splash') === '1'; sessionStorage.setItem('bw_splash', '1'); } catch (e) {}
         var access = false; try { access = sessionStorage.getItem('bw_access') === '1'; sessionStorage.removeItem('bw_access'); } catch (e) {}
         window.__bwAccess = access;
-        if (access) { var tg = document.getElementById('bw-splash-tag'); if (tg) tg.textContent = 'Accessing your platform…'; }
+        if (access) { if (el) el.remove(); document.documentElement.style.background = '#0d0a1f'; return; }
         var min = access ? 0 : (seen ? 1400 : 3800);
         window.__bwSplashMin = min;
         var done = false;
