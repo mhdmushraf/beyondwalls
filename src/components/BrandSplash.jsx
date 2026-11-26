@@ -1,7 +1,9 @@
 import { MonitorPlay } from 'lucide-react';
+import AccessingScreen from '@/components/auth/AccessingScreen';
 
 // In-app brand splash (auth check / route loading). Matches the static splash in index.html.
 export default function BrandSplash() {
+  if (typeof window !== 'undefined' && window.__bwAccess) return <AccessingScreen step={2} />;
   return (
     <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center font-[Inter,system-ui,sans-serif]" role="status" aria-label="Loading Beyond Walls"
       style={{ background: 'radial-gradient(1200px 600px at 50% 40%,#2a1470 0%,rgba(42,20,112,0) 60%),linear-gradient(151deg,#140b3a 14%,#0d0a1f 54%,#2a0f6b 86%)' }}>

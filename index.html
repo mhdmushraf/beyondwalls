@@ -32,7 +32,7 @@
         <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2.2"/><path d="M12 17v4"/><path d="M8 21h8"/><path style="animation:bwPlay 1.8s ease-in-out infinite" fill="#fff" d="M10 7.75a.75.75 0 0 1 1.142-.638l3.664 2.249a.75.75 0 0 1 0 1.278l-3.664 2.25a.75.75 0 0 1-1.142-.64z"/></svg>
       </div>
       <div class="t" style="margin-top:22px;color:#fff;font-weight:800;font-size:34px;letter-spacing:-.03em;animation-delay:.35s">BeyondWalls</div>
-      <div class="t" style="margin-top:6px;color:#bdb6e3;font-size:15px;font-weight:500;animation-delay:.65s">Your screen runs your shop. Then it pays you.</div>
+      <div id="bw-splash-tag" class="t" style="margin-top:6px;color:#bdb6e3;font-size:15px;font-weight:500;animation-delay:.65s">Your screen runs your shop. Then it pays you.</div>
       <div class="t" style="position:relative;margin-top:28px;width:140px;height:4px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden;animation-delay:.95s"><div style="position:absolute;top:0;bottom:0;width:40%;border-radius:99px;background:linear-gradient(90deg,#8b6bff,#c4b5fd);animation:bwBar 1.8s ease-in-out infinite"></div></div>
       <div class="t" style="position:absolute;bottom:40px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:6px;animation-delay:1.35s">
         <div style="color:#fff;font-size:17px;font-weight:600;letter-spacing:-.01em"><span style="color:#a39bd0;font-weight:500">A</span> Linkzone Global <span style="color:#a39bd0;font-weight:500">company</span></div>
@@ -45,7 +45,10 @@
         var el = document.getElementById('bw-splash');
         if (/^\/(player|q\/|screenplayer)/.test(p)) { el && el.remove(); return; }
         var seen = false; try { seen = sessionStorage.getItem('bw_splash') === '1'; sessionStorage.setItem('bw_splash', '1'); } catch (e) {}
-        var min = seen ? 1400 : 3800;
+        var access = false; try { access = sessionStorage.getItem('bw_access') === '1'; sessionStorage.removeItem('bw_access'); } catch (e) {}
+        window.__bwAccess = access;
+        if (access) { var tg = document.getElementById('bw-splash-tag'); if (tg) tg.textContent = 'Accessing your platform…'; }
+        var min = access ? 0 : (seen ? 1400 : 3800);
         window.__bwSplashMin = min;
         var done = false;
         function hide() {

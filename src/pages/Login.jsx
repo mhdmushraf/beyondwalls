@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useI18n } from '@/lib/i18n';
+import AccessingScreen from '@/components/auth/AccessingScreen';
 import AuthShell, { AuthTitle, AuthField, AuthButton, AuthError, AuthFooterLink } from '@/components/auth/AuthShell';
 
 export default function Login() {
@@ -14,6 +15,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [access, setAccess] = useState(null); // { name, step }
 
   const qs = new URLSearchParams(window.location.search);
   const rawNext = qs.get('next') || qs.get('from_url') || qs.get('returnTo') || '/app';
@@ -32,13 +34,18 @@ export default function Login() {
     setBusy(true);
     setError('');
     try {
-      await base44.auth.loginViaEmailPassword(email.trim(), password);
-      window.location.href = next;
+      const res = await base44.auth.loginViaEmailPassword(email.trim(), password);
+      setAccess({ name: res?.user?.full_name || '', step: 1 });
+      setTimeout(() => setAccess((a) => (a ? { ...a, step: 2 } : a)), 700);
+      try { sessionStorage.setItem('bw_access', '1'); } catch (e) { /* ignore */ }
+      setTimeout(() => window.location.replace(next), 1500);
     } catch (e) {
       setError("That email and password don't match. Check for typos, or reset your password.");
       setBusy(false);
     }
   };
+
+  if (access) return <AccessingScreen name={access.name} step={access.step} />;
 
   return (
     <AuthShell>
