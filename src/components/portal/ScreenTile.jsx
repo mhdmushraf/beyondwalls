@@ -3,9 +3,10 @@ import { MonitorPlay, WifiOff, Radio } from 'lucide-react';
 import { useSignedUrl, timeAgo } from '@/lib/portalData';
 import { useI18n } from '@/lib/i18n';
 
-export default function ScreenTile({ screen, venueName }) {
+export default function ScreenTile({ screen, venueName, fallbackImage }) {
   const { t, lang } = useI18n();
   const snapshot = useSignedUrl(screen.last_snapshot_url);
+  const photo = useSignedUrl(!screen.last_snapshot_url ? (screen.screen_image_url || fallbackImage) : null);
 
   const paired = Boolean(screen.paired_device_id);
   const online = Boolean(screen.is_online);
@@ -20,15 +21,20 @@ export default function ScreenTile({ screen, venueName }) {
   return (
     <Link
       to={`/app/screens/${screen.id}`}
-      className="group block rounded-2xl border border-bw-line bg-white overflow-hidden hover:border-bw-navy/20 hover:shadow-sm transition-all"
+      className="group block rounded-[22px] border border-[#ebe8f4] bg-white overflow-hidden shadow-[0_14px_34px_-22px_rgba(55,30,140,0.35)] hover:-translate-y-0.5 hover:shadow-[0_22px_44px_-22px_rgba(55,30,140,0.45)] transition-all"
     >
       <div className="relative aspect-video bg-bw-navy/95">
         {snapshot ? (
           <img src={snapshot} alt={screen.name} className="h-full w-full object-cover" />
         ) : (
-          <div className="h-full w-full flex flex-col items-center justify-center gap-2 text-white/40">
-            <MonitorPlay className="h-7 w-7" />
-            <span className="text-[11px]">{t('screens.noSnapshot')}</span>
+          <div className="relative h-full w-full overflow-hidden" style={{ backgroundImage: 'linear-gradient(140deg,#2a1470 0%,#140b3a 60%,#0d0a1f 100%)' }}>
+            {photo && <img src={photo} alt="" className="absolute inset-0 h-full w-full object-cover opacity-60" />}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0d0a1f] via-[#0d0a1f]/40 to-transparent" />
+            <div className="absolute inset-x-4 bottom-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#c4b5fd]">{online ? 'Now playing' : 'Last played'}</p>
+              <p className="mt-0.5 truncate text-[18px] font-bold text-white">{screen.current_item || screen.name}</p>
+              <p className="mt-0.5 flex items-center gap-1.5 text-[11px] text-white/60"><MonitorPlay className="h-3.5 w-3.5" />{t('screens.noSnapshot')}</p>
+            </div>
           </div>
         )}
         <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-black/50 backdrop-blur px-2.5 py-1 text-[11px] font-medium text-white">

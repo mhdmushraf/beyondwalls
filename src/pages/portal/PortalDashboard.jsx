@@ -18,20 +18,39 @@ function greeting() {
   return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
 }
 
-function StoryRing({ screen }) {
-  const snap = useSignedUrl(screen.last_snapshot_url || screen.screen_image_url);
+function StoryRing({ screen, fallback }) {
+  const snap = useSignedUrl(screen.last_snapshot_url || screen.screen_image_url || fallback);
   const st = screenState(screen);
-  const ring = st === 'online' ? 'from-emerald-400 to-emerald-600' : st === 'offline' ? 'from-rose-400 to-rose-600' : 'from-amber-300 to-amber-500';
+  const ring = st === 'online' ? 'from-emerald-300 to-emerald-500' : st === 'offline' ? 'from-rose-400 to-pink-500' : 'from-amber-300 to-orange-400';
   return (
-    <Link to={`/app/screens/${screen.id}`} className="!flex-col !justify-start items-center gap-1.5 w-[72px] shrink-0">
-      <span className={`p-[3px] rounded-full bg-gradient-to-br ${ring}`}>
-        <span className="block h-[62px] w-[62px] rounded-full border-[3px] border-white overflow-hidden bg-bw-navy">
-          {snap ? <img src={snap} alt="" className="h-full w-full object-cover" /> : <MonitorPlay className="h-6 w-6 text-white/50 m-[16px]" />}
+    <Link to={`/app/screens/${screen.id}`} className="group !flex !flex-col !justify-start items-center gap-2 w-[78px] shrink-0">
+      <span className={`block rounded-full bg-gradient-to-br p-[3px] ${ring} transition group-hover:scale-105`}>
+        <span className="block rounded-full bg-[#4c22d6] p-[3px]">
+          <span className="flex h-[60px] w-[60px] items-center justify-center overflow-hidden rounded-full bg-[#1b1147]">
+            {snap ? <img src={snap} alt="" className="h-full w-full object-cover" /> : <MonitorPlay className="h-6 w-6 text-white/60" />}
+          </span>
         </span>
       </span>
-      <span className="text-[11px] font-semibold text-white/90 truncate w-full text-center">{screen.name}</span>
+      <span className="w-full truncate text-center text-[12px] font-semibold text-white">{screen.name}</span>
     </Link>
   );
+}
+
+function monthEarnings(bookings) {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), now.getMonth(), 1);
+  const prevStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const overlaps = (b, from, to) => {
+    const s = b.start_date ? new Date(b.start_date) : null;
+    const e = b.end_date ? new Date(b.end_date) : s;
+    return s && e && s < to && e >= from;
+  };
+  const counted = bookings.filter((b) => ['active', 'completed'].includes(b.status));
+  const sum = (list) => list.reduce((t, b) => t + (Number(b.venue_earnings) || 0), 0);
+  const thisMonth = sum(counted.filter((b) => overlaps(b, start, new Date(now.getFullYear(), now.getMonth() + 1, 1))));
+  const lastMonth = sum(counted.filter((b) => overlaps(b, prevStart, start)));
+  const change = lastMonth > 0 ? Math.round(((thisMonth - lastMonth) / lastMonth) * 100) : null;
+  return { thisMonth, change };
 }
 
 export default function PortalDashboard() {
@@ -40,6 +59,7 @@ export default function PortalDashboard() {
   const urgent = useOrgEntity('UrgentMessage', { limit: 20 });
   const chat = useOrgEntity('TeamMessage', { limit: 100 });
   const qr = useOrgEntity('QRCode');
+  const bookings = useOrgEntity('AdBooking', { limit: 200 });
   const [addOpen, setAddOpen] = useState(false);
 
   if ((loadingData || preview === 'loading') && !screens.length && !venues.length) return <div><SlowHint loading forced={preview === 'slow'} /><PageSkeleton /></div>;
@@ -49,7 +69,11 @@ export default function PortalDashboard() {
   const liveMsgs = urgent.items.filter(isLive);
   const pendingOk = chat.items.filter((m) => m.kind === 'approval' && m.approval_status === 'pending');
   const scans = qr.items.reduce((s, q) => s + (q.scans || 0), 0);
-  const first = (user?.full_name || '').split(' ')[0];
+  const rawName = (user?.full_name || '').trim();
+  const first = rawName && !/[+@]/.test(rawName) ? rawName.split(' ')[0] : '';
+  const earn = monthEarnings(bookings.items);
+  const pendingAds = bookings.items.filter((b) => b.creative_status === 'pending_review' && b.status !== 'cancelled').length;
+  const venueImg = venues.find((v) => v.image_url)?.image_url;
 
   const needs = [
     ...screens.filter((s) => screenState(s) === 'offline').map((s) => ({ id: `o${s.id}`, icon: WifiOff, tone: 'text-rose-600 bg-rose-50', title: `${s.name} is offline`, sub: 'Check power and Wi-Fi', to: `/app/screens/${s.id}` })),
@@ -69,27 +93,48 @@ export default function PortalDashboard() {
 
   return (
     <div className="space-y-5">
-      <div className="rounded-[28px] bw-grad p-5 md:p-7 text-white relative overflow-hidden">
-        <div className="absolute -top-16 -end-16 h-56 w-56 rounded-full bg-white/10" />
-        <div className="relative flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-          <div>
-            <p className="text-white/80 text-[14px]">{greeting()}{first ? `, ${first}` : ''}</p>
-            <h1 className="text-[28px] md:text-[34px] font-bold leading-tight">{online} of {screens.length} screens live</h1>
-            <p className="text-white/70 text-[13px]">{org?.name} · {venues.length} {venues.length === 1 ? 'venue' : 'venues'}</p>
+      <div className="relative overflow-hidden rounded-[30px] p-6 md:p-8 text-white shadow-[0_30px_70px_-30px_rgba(60,20,180,0.6)]" style={{ backgroundImage: 'linear-gradient(140deg,#6f3ffd 0%,#4c22d6 45%,#2e1594 100%)' }}>
+        <div className="pointer-events-none absolute -right-24 -top-28 h-80 w-80 rounded-full bg-white/10" />
+        <div className="pointer-events-none absolute -left-20 -bottom-28 h-64 w-64 rounded-full bg-white/[0.06]" />
+
+        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+          <div className="min-w-0">
+            <p className="text-[15px] text-white/80">{greeting()}{first ? `, ${first}` : ''}</p>
+            <div className="mt-1 flex flex-wrap items-center gap-3">
+              <p className="text-[38px] md:text-[46px] font-extrabold leading-none tracking-[-1.5px]">AED {earn.thisMonth.toLocaleString('en-AE', { maximumFractionDigits: 0 })}</p>
+              {earn.change !== null && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[13px] font-bold text-[#5a2ded]">{earn.change >= 0 ? '▲' : '▼'} {Math.abs(earn.change)}%</span>
+              )}
+            </div>
+            <p className="mt-2 text-[14px] text-white/80">earned from ad bookings this month · <span className="font-semibold text-white">{online} of {screens.length} screens live</span></p>
           </div>
-          <div className="flex gap-3">
-            {[[liveMsgs.length, 'live messages'], [scans, 'QR scans'], [pendingOk.length, 'waiting']].map(([v, l]) => (
-              <div key={l} className="rounded-2xl bg-white/15 px-4 py-2.5 text-center"><p className="text-[22px] font-bold">{v}</p><p className="text-[11px] text-white/80">{l}</p></div>
-            ))}
+
+          <div className="flex items-stretch gap-2.5">
+            <Link to="/app/ad-requests" className="!flex !flex-col !items-start min-w-[112px] rounded-2xl bg-white/12 px-4 py-3 ring-1 ring-white/15 backdrop-blur hover:bg-white/20" style={{ background: 'rgba(255,255,255,0.12)' }}>
+              <span className="text-[24px] font-bold leading-none">{pendingAds}</span>
+              <span className="mt-1.5 text-[12px] text-white/80">ads to review</span>
+            </Link>
+            <Link to="/app/chat" className="!flex !flex-col !items-start min-w-[112px] rounded-2xl px-4 py-3 ring-1 ring-white/15 hover:bg-white/20" style={{ background: 'rgba(255,255,255,0.12)' }}>
+              <span className="text-[24px] font-bold leading-none">{pendingOk.length}</span>
+              <span className="mt-1.5 text-[12px] text-white/80">team requests</span>
+            </Link>
+            <Link to="/app/urgent" className="!flex !flex-col !items-start min-w-[112px] rounded-2xl px-4 py-3 ring-1 ring-white/15 hover:bg-white/20" style={{ background: 'rgba(255,255,255,0.12)' }}>
+              <span className="text-[24px] font-bold leading-none">{liveMsgs.length}</span>
+              <span className="mt-1.5 text-[12px] text-white/80">live messages</span>
+            </Link>
           </div>
         </div>
+
         {screens.length > 0 && (
-          <div className="relative mt-5 flex gap-3 overflow-x-auto pb-1">
-            {screens.slice(0, 12).map((s) => <StoryRing key={s.id} screen={s} />)}
-            <button type="button" onClick={() => setAddOpen(true)} className="!flex-col !justify-start items-center gap-1.5 w-[72px] shrink-0">
-              <span className="h-[68px] w-[68px] rounded-full border-2 border-dashed border-white/60 flex items-center justify-center"><Plus className="h-6 w-6" /></span>
-              <span className="text-[11px] font-semibold text-white/90">Add</span>
-            </button>
+          <div className="relative mt-7">
+            <p className="mb-3 text-[14px] font-semibold text-white/85">Your screens</p>
+            <div className="flex gap-4 overflow-x-auto pb-1">
+              {screens.slice(0, 12).map((s) => <StoryRing key={s.id} screen={s} fallback={venues.find((v) => v.id === s.venue_id)?.image_url || venueImg} />)}
+              <button type="button" onClick={() => setAddOpen(true)} className="!flex !flex-col !justify-start items-center gap-2 w-[78px] shrink-0">
+                <span className="flex h-[72px] w-[72px] items-center justify-center rounded-full border-2 border-dashed border-white/50 hover:border-white"><Plus className="h-6 w-6" /></span>
+                <span className="text-[12px] font-semibold text-white/90">Add</span>
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -126,7 +171,7 @@ export default function PortalDashboard() {
               </div>
             ) : (
               <div className="grid sm:grid-cols-2 gap-4">
-                {screens.slice(0, 4).map((s) => <ScreenTile key={s.id} screen={s} venueName={venues.find((v) => v.id === s.venue_id)?.name} />)}
+                {screens.slice(0, 4).map((s) => <ScreenTile key={s.id} screen={s} venueName={venues.find((v) => v.id === s.venue_id)?.name} fallbackImage={venues.find((v) => v.id === s.venue_id)?.image_url} />)}
               </div>
             )}
           </div>
