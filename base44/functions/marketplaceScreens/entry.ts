@@ -46,6 +46,8 @@ export default async function (req: Request) {
         orientation: s.orientation || "landscape",
         is_online: !!s.is_online,
         price_per_week: screenPrice(s, settings),
+        accept_offers: s.accept_offers !== false,
+        offer_floor_per_week: Math.max(Math.round(screenPrice(s, settings) * 0.3 * 100) / 100, Number(s.offer_floor_per_week) || 0),
         slot_seconds: Number(s.slot_duration) || 15,
         slots,
         slots_free: Math.max(slots - taken, 0),
