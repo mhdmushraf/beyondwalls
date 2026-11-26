@@ -114,22 +114,33 @@ export default async function (req: Request) {
       const n = Number(o?.commission_rate);
       return Number.isFinite(n) && n >= 0 && n <= 100 && o?.commission_rate !== undefined && o?.commission_rate !== null ? n : 100 - settings.venueSharePct;
     };
+    // Accepted offers (Make an offer) replace the list price for their screen. Body: offer_ids { [screen_id]: offer_id }.
+    const offerBy = new Map<string, any>();
+    const rawOffers = body.offer_ids && typeof body.offer_ids === "object" ? body.offer_ids : {};
+    for (const sid of Object.keys(rawOffers)) {
+      const o = await svc.Offer.get(String(rawOffers[sid])).catch(() => null);
+      if (!o || o.screen_id !== sid || o.advertiser_org_id !== org.id) return bad("That offer isn't for this screen or business.", "offer_ids", 403);
+      if (o.status !== "accepted") return bad(`Your offer on ${o.screen_name} is ${o.status}, not accepted.`, "offer_ids", 409);
+      if (o.use_by && o.use_by < today) return bad(`Your accepted price on ${o.screen_name} expired on ${o.use_by}.`, "offer_ids", 409);
+      offerBy.set(sid, o);
+    }
     const lines: any[] = [];
     const forClient = client ? ` · for ${client.name}` : "";
     const rows = screens.map((s: any) => {
       const v = venueById.get(s.venue_id);
       const platformPct = pctFor(v.org_id);
-      const price = screenPrice(s, settings);
+      const offer = offerBy.get(s.id);
+      const price = offer ? Number(offer.price_per_week) : screenPrice(s, settings);
       const perDay = price / 7;
       const total = r2(perDay * days);
       const fee = r2((total * platformPct) / 100);
       const sched = schedFor(s.id);
       lines.push({
-        description: `Screen ad · ${v.name} · ${s.name} · ${days} day${days > 1 ? "s" : ""} (${start} → ${end}) · ${schedLabel(sched)}${forClient}`,
+        description: `Screen ad · ${v.name} · ${s.name} · ${days} day${days > 1 ? "s" : ""} (${start} → ${end}) · ${schedLabel(sched)}${offer ? " · agreed offer" : ""}${forClient}`,
         description_ar: `إعلان على شاشة · ${v.name} · ${days} يوم`,
         qty: days, unit_price: r2(perDay), amount: total,
       });
-      return { s, v, price, total, fee, platformPct, sched };
+      return { s, v, price, total, fee, platformPct, sched, offer };
     });
     const subtotal = r2(rows.reduce((a, r) => a + r.total, 0));
     const vat = r2((subtotal * settings.vatPct) / 100);
@@ -169,6 +180,7 @@ export default async function (req: Request) {
       }));
     }
     await svc.Campaign.update(campaign.id, { invoice_id: invoice.id });
+    for (const o of offerBy.values()) await svc.Offer.update(o.id, { status: "used", used_campaign_id: campaign.id });
     const byVenueOrg = new Map<string, any[]>();
     bookings.forEach((b: any) => { if (!byVenueOrg.has(b.org_id)) byVenueOrg.set(b.org_id, []); byVenueOrg.get(b.org_id)!.push(b); });
     for (const [vOrg, list2] of byVenueOrg) {
