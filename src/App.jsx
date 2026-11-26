@@ -63,6 +63,7 @@ import AdminBilling from './pages/admin/AdminBilling';
 import AdminSettings from './pages/admin/AdminSettings';
 import { I18nProvider } from '@/lib/i18n';
 import BrandSplash from '@/components/BrandSplash';
+import AccessOverlay from '@/components/auth/AccessOverlay';
 
 // Lazy load pages for code splitting
 const LazyPageLoader = ({ Page }) => (
@@ -315,6 +316,7 @@ function App() {
             <NavigationTracker />
             <AuthenticatedApp />
           </Router>
+          <AccessOverlay />
           <Toaster closeButton richColors position="top-right" />
           <VisualEditAgent />
         </QueryClientProvider>

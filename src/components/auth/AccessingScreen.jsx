@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Check, Lock, MonitorPlay } from 'lucide-react';
 
 const STEPS = [
@@ -8,14 +7,14 @@ const STEPS = [
 ];
 
 // Post sign-in handover: orbiting logo, progress, and a skeleton of the portal opening behind it.
-export default function AccessingScreen({ name, step = 1 }) {
+export default function AccessingScreen({ name, step = 1, intro = true, leaving = false }) {
   const first = name && !/[+@]/.test(name) ? name.trim().split(' ')[0] : '';
   const pct = Math.min(100, Math.round(((step + 1) / STEPS.length) * 100) - (step < STEPS.length - 1 ? 8 : 0));
 
-  useEffect(() => () => { document.documentElement.style.background = ''; }, []);
+
 
   return (
-    <div role="status" aria-live="polite" aria-label="Accessing your platform" className="fixed inset-0 z-[120] overflow-hidden font-[Inter,system-ui,sans-serif] text-white"
+    <div role="status" aria-live="polite" aria-label="Accessing your platform" className={`fixed inset-0 z-[200] overflow-hidden font-[Inter,system-ui,sans-serif] text-white transition-opacity duration-500 ${leaving ? 'opacity-0 pointer-events-none' : 'opacity-100'} ${intro ? '' : 'bwa-nointro'}`}
       style={{ background: 'radial-gradient(900px 520px at 50% 30%,#3a1c9a 0%,rgba(58,28,154,0) 60%),linear-gradient(160deg,#140b3a 0%,#0d0a1f 55%,#1d0d55 100%)' }}>
       <style>{`
         @keyframes bwa-spin { to { transform: rotate(360deg) } }
@@ -28,6 +27,7 @@ export default function AccessingScreen({ name, step = 1 }) {
         .bwa-tile { animation: bwa-glow 2.6s ease-in-out infinite }
         .bwa-rise { animation: bwa-rise .7s cubic-bezier(.2,.8,.2,1) both }
         .bwa-sk { background: linear-gradient(90deg, rgba(255,255,255,.05) 0%, rgba(255,255,255,.13) 50%, rgba(255,255,255,.05) 100%); background-size: 200% 100%; animation: bwa-sk 1.4s ease-in-out infinite }
+        .bwa-nointro .bwa-rise { animation: none }
         @media (prefers-reduced-motion: reduce) { .bwa-orbit, .bwa-orbit-r, .bwa-tile, .bwa-sk, .bwa-rise { animation: none } }
       `}</style>
 
