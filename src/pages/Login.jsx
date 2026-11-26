@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useI18n } from '@/lib/i18n';
-import AuthShell, { AuthTitle, AuthField, AuthButton, AuthError, GoogleButton } from '@/components/auth/AuthShell';
+import AuthShell, { AuthTitle, AuthField, AuthButton, AuthError, AuthFooterLink } from '@/components/auth/AuthShell';
 
 export default function Login() {
   const { t } = useI18n();
@@ -28,24 +29,33 @@ export default function Login() {
       await base44.auth.loginViaEmailPassword(email.trim(), password);
       window.location.href = next;
     } catch (e) {
-      setError('Email or password is incorrect.');
+      setError("That email and password don't match. Check for typos, or reset your password.");
       setBusy(false);
     }
   };
 
   return (
     <AuthShell>
-      <AuthTitle title={t('auth.welcomeBack', 'Welcome back')} sub={t('auth.signInSub', 'Sign in to manage your screens or campaigns.')} />
+      <AuthTitle eyebrow="Venue & advertiser portal" title={t('auth.welcomeBack', 'Welcome back')} sub={t('auth.signInSub', 'Sign in to manage your screens or campaigns.')} />
       <form onSubmit={submit} className="flex flex-col gap-4">
         <AuthField id="email" label={t('auth.email')} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" placeholder="you@business.ae" />
-        <AuthField id="password" label={t('auth.password')} type="password" required value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" placeholder="••••••••" />
+        <AuthField
+          id="password"
+          label={t('auth.password')}
+          type="password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          autoComplete="current-password"
+          placeholder="Your password"
+          aside={<Link to={`/forgot-password${email ? `?email=${encodeURIComponent(email.trim())}` : ''}`} className="text-[12px] font-semibold text-[#5a2ded] hover:underline">{t('auth.forgot', 'Forgot your password?')}</Link>}
+        />
         <AuthError>{error}</AuthError>
-        <AuthButton type="submit" disabled={busy}>{busy ? 'Signing in…' : t('auth.signIn')}</AuthButton>
+        <AuthButton type="submit" disabled={busy}>
+          {busy ? 'Signing in…' : <>{t('auth.signIn')}<ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" /></>}
+        </AuthButton>
       </form>
-      <GoogleButton onClick={() => base44.auth.loginWithProvider('google', next)} label={t('auth.google')} />
-      <p className="text-[14px] font-medium text-[#6b6787]">{t('auth.noAccount')}{' '}
-        <Link to="/signup" className="font-semibold text-[#5a2ded] hover:underline">{t('auth.signUp')}</Link>
-      </p>
+      <AuthFooterLink text={t('auth.noAccount')} to="/signup" label={t('auth.signUp')} />
     </AuthShell>
   );
 }
