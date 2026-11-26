@@ -35,10 +35,11 @@ export default function Login() {
     setError('');
     try {
       const res = await base44.auth.loginViaEmailPassword(email.trim(), password);
-      setAccess({ name: res?.user?.full_name || '', step: 1 });
-      setTimeout(() => setAccess((a) => (a ? { ...a, step: 2 } : a)), 700);
+      setAccess({ name: res?.user?.full_name || '', step: 0 });
+      setTimeout(() => setAccess((a) => (a ? { ...a, step: 1 } : a)), 850);
+      setTimeout(() => setAccess((a) => (a ? { ...a, step: 2 } : a)), 1700);
       try { sessionStorage.setItem('bw_access', '1'); } catch (e) { /* ignore */ }
-      setTimeout(() => window.location.replace(next), 1500);
+      setTimeout(() => window.location.replace(next), 2700);
     } catch (e) {
       setError("That email and password don't match. Check for typos, or reset your password.");
       setBusy(false);
