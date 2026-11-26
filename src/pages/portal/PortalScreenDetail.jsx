@@ -11,6 +11,8 @@ import { useSignedUrl, uploadPublic, formatDateTime, timeAgo, SCREEN_MODES, PLAY
 import { PageSkeleton } from '@/components/portal/Skeletons';
 import { Toggle, Field } from '@/components/portal/ui';
 import { screenState } from './PortalScreens';
+import { isLive } from './PortalUrgent';
+import ScreenLivePreview from '@/components/portal/ScreenLivePreview';
 
 function AssignList({ title, icon: Icon, items, screenId, onToggle, empty, to, sub }) {
   return (
@@ -41,6 +43,7 @@ export default function PortalScreenDetail() {
   const playlists = useOrgEntity('Playlist', { sort: 'created_date' });
   const menus = useOrgEntity('MenuBoard', { sort: 'created_date' });
   const qrs = useOrgEntity('QRCode', { sort: 'created_date' });
+  const urgent = useOrgEntity('UrgentMessage', { limit: 30, poll: 15000 });
   const [form, setForm] = useState(null);
   const [busy, setBusy] = useState(false);
   const [blanked, setBlanked] = useState(false);
@@ -108,8 +111,9 @@ export default function PortalScreenDetail() {
           <div className="bw-card overflow-hidden">
             <div className="relative aspect-video bg-bw-navy">
               {snapshot ? <img src={snapshot} alt="" className="h-full w-full object-contain" />
-                : <div className="h-full w-full flex flex-col items-center justify-center gap-2 text-white/40"><MonitorPlay className="h-9 w-9" /><span className="text-[12px]">A live snapshot appears here every 5 minutes</span></div>}
-              <span className="absolute top-3 start-3 bw-chip bg-black/60 text-white">Live view</span>
+                : blanked ? <div className="absolute inset-0 bg-black flex items-center justify-center text-white/40 text-[13px]"><MonitorPlay className="h-6 w-6 me-2" />Screen is off</div>
+                  : <ScreenLivePreview screen={screen} menus={menus.items} urgent={urgent.items} isLive={isLive} />}
+              <span className="absolute top-3 start-3 z-10 bw-chip bg-black/60 text-white"><span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />{snapshot ? 'Live view' : 'Live preview · what is on screen now'}</span>
             </div>
             <div className="grid grid-cols-3 gap-3 p-4">
               <div><p className="text-[11px] text-bw-muted">Now playing</p><p className="text-[13px] font-semibold text-bw-navy truncate">{screen.current_item || '—'}</p></div>
