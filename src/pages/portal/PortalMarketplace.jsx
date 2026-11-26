@@ -252,7 +252,7 @@ export default function PortalMarketplace() {
   // Full-size map: fills everything right of the sidebar; filters and booking float on top.
   if (view === 'map' && !loading && !error && screens.length > 0 && preview !== 'loading') {
     return (
-      <div className="relative -m-4 md:-m-6 lg:-m-8 h-[calc(100vh-64px)] overflow-hidden">
+      <div className="relative h-[calc(100vh-64px)] overflow-hidden">
         <ScreensMap bare screens={shown} selected={form.screen_ids} onToggle={toggle} searchClass="bottom-6 left-4 w-[min(380px,calc(100%-2rem))]" />
         <div className="absolute top-4 left-4 right-4 z-10 flex flex-col gap-2 pointer-events-none">
           <div className="pointer-events-auto flex flex-wrap items-center gap-3">
@@ -273,7 +273,7 @@ export default function PortalMarketplace() {
   }
 
   return (
-    <div>
+    <div className="p-4 md:p-8 pb-28 md:pb-8 max-w-[1240px]">
       <PageHeader title="Book screens" subtitle={data ? `${screens.length} venue screens across the UAE · prices per week, ${data.start_date} → ${data.end_date}` : 'Put your ad on screens in cafés, gyms, clinics and more'}
         actions={<button type="button" className="bw-btn bw-btn-primary lg:hidden" onClick={() => setCartOpen(true)}><ShoppingCart className="h-4 w-4" />Booking ({picked.length})</button>} />
       {restored && <DraftBanner restored onDiscard={discard} what="booking" />}
@@ -328,14 +328,7 @@ export default function PortalMarketplace() {
         </aside>
       </div>
 
-      {cartOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-black/40 flex items-end" onClick={() => setCartOpen(false)}>
-          <div className="w-full max-h-[90vh] overflow-auto rounded-t-3xl bg-white p-5" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-3"><p className="text-[16px] font-bold text-bw-navy">Your booking</p><button type="button" className="!min-h-0" onClick={() => setCartOpen(false)}><X className="h-5 w-5" /></button></div>
-            {cart}
-          </div>
-        </div>
-      )}
+      {drawer}
     </div>
   );
 }

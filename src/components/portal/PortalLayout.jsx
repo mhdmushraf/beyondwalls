@@ -290,7 +290,7 @@ function PortalShell() {
             <a href="/admin/approvals" className="bw-btn bw-btn-ghost !py-1.5">Open approvals</a>
           </div>
         )}
-        <main className="p-4 md:p-8 pb-28 md:pb-8 max-w-[1240px]">
+        <main className={location.pathname.startsWith('/app/marketplace') ? 'relative' : 'p-4 md:p-8 pb-28 md:pb-8 max-w-[1240px]'}>
           <Outlet />
         </main>
       </div>
