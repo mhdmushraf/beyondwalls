@@ -1,35 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import ShowcaseStack from '@/components/auth/ShowcaseCards';
 import { Link } from 'react-router-dom';
-import { MonitorPlay, AlertCircle, Lock, Eye, EyeOff, Tag, BellRing, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { MonitorPlay, AlertCircle, Lock, Eye, EyeOff, CheckCircle2, ShieldCheck } from 'lucide-react';
 import LanguageToggle from '@/components/portal/LanguageToggle';
 
 const GRAD = 'linear-gradient(135deg, #6f3ffd 0%, #5a2ded 71%)';
-
-// What the venue's screens are "doing" — cycles on the left panel to show the product, not a stock photo.
-const SCENES = [
-  {
-    img: '/site/cafe.webp', label: 'Café · Dubai Marina',
-    toast: { icon: Tag, title: 'Flat white  AED 18 → 16', sub: 'Updated on 3 screens · 2s ago' },
-  },
-  {
-    img: '/site/v-restaurant.webp', label: 'Restaurant · JLT',
-    toast: { icon: BellRing, title: 'Urgent: Back in 10 minutes', sub: 'Showing on every screen · ends 14:20' },
-  },
-  {
-    img: '/site/v-gym.webp', label: 'Gym · Al Barsha',
-    toast: { icon: CheckCircle2, title: 'Ad approved · Juice bar promo', sub: 'Plays from tomorrow · 6 slots' },
-  },
-];
-
-function useScene(ms = 3800) {
-  const [i, setI] = useState(0);
-  useEffect(() => {
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return undefined;
-    const id = setInterval(() => setI((n) => (n + 1) % SCENES.length), ms);
-    return () => clearInterval(id);
-  }, [ms]);
-  return i;
-}
 
 function Brand() {
   return (
@@ -45,67 +20,12 @@ function Brand() {
   );
 }
 
-function ScreenWall() {
-  const active = useScene();
-  const scene = SCENES[active];
-  const Icon = scene.toast.icon;
-  return (
-    <div className="relative w-full max-w-[560px] mx-auto">
-      <div className="relative rounded-[18px] bg-[#05030f] p-[10px] shadow-[0_30px_80px_rgba(0,0,0,0.55)] ring-1 ring-white/10">
-        <div className="relative aspect-video overflow-hidden rounded-[10px] bg-[#140b3a]">
-          {SCENES.map((s, i) => (
-            <img
-              key={s.img}
-              src={s.img}
-              alt=""
-              fetchPriority={i === 0 ? 'high' : 'low'}
-              className={`absolute inset-0 h-full w-full object-cover transition-all duration-1000 ease-out ${i === active ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
-            />
-          ))}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" />
-          <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-black/55 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur">
-            <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-70" /><span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" /></span>
-            LIVE
-          </div>
-          <div className="absolute bottom-3 left-3 text-[12px] font-semibold text-white/90">{scene.label}</div>
-        </div>
-        <div className="mx-auto mt-2 h-1 w-16 rounded-full bg-white/10" />
-      </div>
-
-      <div className="mt-4 grid grid-cols-3 gap-3">
-        {SCENES.map((s, i) => (
-          <div key={s.label} className={`rounded-[10px] bg-[#05030f] p-[5px] ring-1 transition ${i === active ? 'ring-[#8b6bff]' : 'ring-white/10'}`}>
-            <div className="relative aspect-video overflow-hidden rounded-[6px]">
-              <img src={s.img} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
-              <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-emerald-400" />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div key={active} className="bw-toast absolute -right-2 xl:-right-8 top-[42%] w-[250px] rounded-2xl bg-white/95 p-3.5 shadow-[0_20px_50px_rgba(0,0,0,0.35)] backdrop-blur">
-        <div className="flex items-start gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-white" style={{ backgroundImage: GRAD }}>
-            <Icon className="h-[18px] w-[18px]" />
-          </span>
-          <div className="min-w-0">
-            <p className="text-[13px] font-bold text-[#111027] leading-snug">{scene.toast.title}</p>
-            <p className="mt-0.5 text-[11px] font-medium text-[#6b6787]">{scene.toast.sub}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // Left: a live "screen wall" showing what the app does. Right: the form.
 export default function AuthShell({ children, headline, sub }) {
   return (
     <div className="min-h-screen bg-[#f6f5fa] lg:grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] font-[Inter,system-ui,sans-serif]">
       <style>{`
-        @keyframes bw-toast-in { 0% { opacity: 0; transform: translateY(14px) scale(.96) } 100% { opacity: 1; transform: none } }
-        .bw-toast { animation: bw-toast-in .55s cubic-bezier(.2,.8,.2,1) both }
-        @keyframes bw-drift { 0%,100% { transform: translate(0,0) } 50% { transform: translate(30px,-20px) } }
+                @keyframes bw-drift { 0%,100% { transform: translate(0,0) } 50% { transform: translate(30px,-20px) } }
         @media (prefers-reduced-motion: reduce) { .bw-toast, .bw-orb { animation: none !important } }
       `}</style>
 
@@ -126,7 +46,7 @@ export default function AuthShell({ children, headline, sub }) {
             </h2>
             <p className="mt-3 text-[16px] text-[#b8b0e0]">{sub || 'Change prices, push urgent messages and approve ads on every TV in your venue — live, from your phone.'}</p>
           </div>
-          <ScreenWall />
+          <ShowcaseStack />
         </div>
 
         <p className="relative z-10 mt-4 hidden lg:block text-[12px] text-[#7d74b0]">Dubai Internet City · UAE</p>
