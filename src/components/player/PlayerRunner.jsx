@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import MenuBoardView from './MenuBoardView';
 import UrgentOverlay from './UrgentOverlay';
 import { QRCodeSVG } from 'qrcode.react';
+import { BrandTile } from '@/components/Brand';
 
 const QR_POS = {
   bottom_right: { bottom: '3vh', right: '2vw' },
@@ -287,9 +288,7 @@ export default function PlayerRunner({ token, onMoved }) {
         <div className="absolute inset-0 bg-bw-navy flex flex-col items-center justify-center text-center px-8">
           <div className="absolute inset-0 bg-gradient-to-br from-bw-navy via-bw-navy to-bw-coral/40" />
           <div className="relative z-10">
-            <div className="mx-auto h-14 w-14 rounded-2xl bg-white/10 flex items-center justify-center">
-              <span className="h-5 w-5 rounded-md bg-bw-coral" />
-            </div>
+            <div className="flex justify-center"><BrandTile size={72} dark /></div>
             <p className="mt-6 text-3xl md:text-5xl font-semibold text-white">{house.title}</p>
             <p className="mt-3 text-base md:text-2xl text-bw-coral">{house.subtitle}</p>
           </div>
