@@ -16,8 +16,12 @@ export default async function (req: Request) {
 
     const today = dubaiToday();
     const start = /^\d{4}-\d{2}-\d{2}$/.test(body.start_date || "") && body.start_date >= today ? body.start_date : today;
-    const weeks = Math.min(Math.max(Number(body.weeks) || 1, 1), 12);
-    const end = addDays(start, weeks * 7 - 1);
+    let weeks = Math.min(Math.max(Number(body.weeks) || 1, 1), 12);
+    let end = addDays(start, weeks * 7 - 1);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(body.end_date || "") && body.end_date >= start && body.end_date <= addDays(start, 83)) {
+      end = body.end_date;
+      weeks = Math.ceil((Math.round((Date.parse(`${end}T00:00:00Z`) - Date.parse(`${start}T00:00:00Z`)) / 86400000) + 1) / 7);
+    }
 
     const [screens, venues, bookings] = await Promise.all([
       svc.Screen.filter({ marketplace_enabled: true }, { limit: 2000 }).then(list),

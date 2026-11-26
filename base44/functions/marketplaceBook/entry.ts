@@ -36,9 +36,43 @@ export default async function (req: Request) {
     const start = String(body.start_date || "");
     if (!/^\d{4}-\d{2}-\d{2}$/.test(start)) return bad("Pick a start date.", "start_date");
     if (start < today) return bad("The start date can't be in the past.", "start_date");
-    const weeks = Number(body.weeks);
-    if (!Number.isInteger(weeks) || weeks < 1 || weeks > 12) return bad("Book between 1 and 12 weeks.", "weeks");
-    const end = addDays(start, weeks * 7 - 1);
+    // Custom dates: end_date (inclusive) wins; older clients still send weeks.
+    let end: string;
+    if (body.end_date) {
+      end = String(body.end_date);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(end)) return bad("Pick an end date.", "end_date");
+      if (end < start) return bad("The end date must be on or after the start date.", "end_date");
+    } else {
+      const w = Number(body.weeks);
+      if (!Number.isInteger(w) || w < 1 || w > 12) return bad("Book between 1 and 12 weeks.", "weeks");
+      end = addDays(start, w * 7 - 1);
+    }
+    const days = Math.round((Date.parse(`${end}T00:00:00Z`) - Date.parse(`${start}T00:00:00Z`)) / 86400000) + 1;
+    if (days < 1 || days > 84) return bad("Book between 1 day and 12 weeks.", "end_date");
+    const weeks = Math.ceil(days / 7);
+
+    // Per-screen play times: { [screen_id]: { from: 'HH:MM', until: 'HH:MM', days: [0-6] } }. Missing = all day, every day.
+    const HM = /^([01]\d|2[0-3]):[0-5]\d$|^24:00$/;
+    const rawSched = body.schedules && typeof body.schedules === "object" ? body.schedules : {};
+    const schedFor = (id: string) => {
+      const r = rawSched[id] || {};
+      const from = HM.test(String(r.from || "")) ? String(r.from) : "";
+      const until = HM.test(String(r.until || "")) ? String(r.until) : "";
+      const ds = Array.isArray(r.days) ? [...new Set(r.days.map(Number).filter((d: number) => Number.isInteger(d) && d >= 0 && d <= 6))].sort() : [];
+      const allDay = (!from && !until) || (from === "00:00" && (until === "24:00" || until === "00:00"));
+      return { play_from: allDay ? "" : (from || "00:00"), play_until: allDay ? "" : (until || "24:00"), play_days: ds.length === 7 ? [] : ds };
+    };
+    for (const id of Object.keys(rawSched)) {
+      const r = rawSched[id] || {};
+      if ((r.from && !HM.test(String(r.from))) || (r.until && !HM.test(String(r.until)))) return bad("Use a valid play time, like 07:00 to 11:00.", "schedules");
+      if (r.from && r.until && r.from === r.until) return bad("Play start and end times can't be the same.", "schedules");
+      if (Array.isArray(r.days) && r.days.length === 0) return bad("Pick at least one day for each screen.", "schedules");
+    }
+    const schedLabel = (sc: any) => {
+      const D = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const t = sc.play_from ? `${sc.play_from}–${sc.play_until}` : "all day";
+      return sc.play_days.length ? `${t} · ${sc.play_days.map((d: number) => D[d]).join(" ")}` : t;
+    };
 
     const creativeUrl = String(body.creative_url || "").trim();
     const creativeType = body.creative_type === "video" ? "video" : "image";
@@ -86,14 +120,16 @@ export default async function (req: Request) {
       const v = venueById.get(s.venue_id);
       const platformPct = pctFor(v.org_id);
       const price = screenPrice(s, settings);
-      const total = r2(price * weeks);
+      const perDay = price / 7;
+      const total = r2(perDay * days);
       const fee = r2((total * platformPct) / 100);
+      const sched = schedFor(s.id);
       lines.push({
-        description: `Screen ad · ${v.name} · ${s.name} · ${weeks} wk (${start} → ${end})${forClient}`,
-        description_ar: `إعلان على شاشة · ${v.name} · ${weeks} أسبوع`,
-        qty: weeks, unit_price: price, amount: total,
+        description: `Screen ad · ${v.name} · ${s.name} · ${days} day${days > 1 ? "s" : ""} (${start} → ${end}) · ${schedLabel(sched)}${forClient}`,
+        description_ar: `إعلان على شاشة · ${v.name} · ${days} يوم`,
+        qty: days, unit_price: r2(perDay), amount: total,
       });
-      return { s, v, price, total, fee, platformPct };
+      return { s, v, price, total, fee, platformPct, sched };
     });
     const subtotal = r2(rows.reduce((a, r) => a + r.total, 0));
     const vat = r2((subtotal * settings.vatPct) / 100);
@@ -103,7 +139,7 @@ export default async function (req: Request) {
       name, goal: body.goal || "brand_awareness", client_id: client?.id || "", client_name: client?.name || "", deal_type: "marketplace", description: String(body.description || "").slice(0, 1000),
       org_id: org.id, org_name: org.name, advertiser_email: user.email, advertiser_member_user_ids: members,
       status: "pending_approval", payment_status: "unpaid", approval_status: "pending",
-      start_date: start, end_date: end, weeks, subtotal, vat, total_budget: grand,
+      start_date: start, end_date: end, weeks, days, subtotal, vat, total_budget: grand,
       selected_screens: ids, creative_urls: [creativeUrl], creative_type: creativeType,
     });
 
@@ -126,7 +162,7 @@ export default async function (req: Request) {
         org_id: r.v.org_id, venue_member_user_ids: r.v.org_member_user_ids || [], venue_owner_email: r.v.owner_email || "",
         advertiser_email: user.email, advertiser_org_id: org.id, advertiser_org_name: client ? `${client.name} (via ${org.name})` : org.name, advertiser_member_user_ids: members,
         creative_url: creativeUrl, creative_type: creativeType,
-        start_date: start, end_date: end, weeks, slots_booked: 1, price_per_week: r.price, total_amount: r.total,
+        start_date: start, end_date: end, weeks, days, ...r.sched, slots_booked: 1, price_per_week: r.price, total_amount: r.total,
         commission_rate_snapshot: r.platformPct, platform_fee: r.fee, venue_earnings: r2(r.total - r.fee),
         status: "pending_payment", creative_status: auto ? "approved" : "pending_review",
         ...(auto ? { creative_reviewed_at: issued.toISOString(), creative_reviewed_by: "auto" } : {}),
@@ -140,14 +176,14 @@ export default async function (req: Request) {
       await notifyUsers(svc, list2[0].venue_member_user_ids || [], {
         type: review ? "ad_review" : "new_booking", org_id: vOrg,
         title: review ? `New ad to review · ${org.name}` : `New booking · ${org.name}`,
-        message: `${org.name} booked ${list2.length} of your screens for ${weeks} wk from ${start}.${review ? " Approve or reject the ad." : ""} It starts once they pay.`,
+        message: `${org.name} booked ${list2.length} of your screens for ${days} days from ${start}.${review ? " Approve or reject the ad." : ""} It starts once they pay.`,
         link: "/app/ad-requests", reference_id: campaign.id,
       });
     }
 
     await logActivity(base44, {
       orgId: org.id, memberIds: members, userEmail: user.email, action: "campaign_booked",
-      targetType: "Campaign", targetId: campaign.id, details: `${ids.length} screens · ${weeks} wk · AED ${grand}`,
+      targetType: "Campaign", targetId: campaign.id, details: `${ids.length} screens · ${days} days · AED ${grand}`,
     });
 
     return Response.json({ campaign: { ...campaign, invoice_id: invoice.id }, invoice, bookings });

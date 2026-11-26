@@ -120,7 +120,18 @@ export default async function (req: Request) {
     if ((screen.mode || "signage_ads") !== "signage_only") {
       const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Dubai" }).format(new Date());
       const booked = list(await svc.AdBooking.filter({ screen_id: screen.id, status: "active" }, { limit: 50 }))
-        .filter((b: any) => b.creative_status === "approved" && b.creative_url && b.start_date <= today && b.end_date >= today);
+        .filter((b: any) => b.creative_status === "approved" && b.creative_url && b.start_date <= today && b.end_date >= today)
+        // Advertiser's chosen play times for this screen (Dubai time). Empty = all day, every day.
+        .filter((b: any) => {
+          const pd = Array.isArray(b.play_days) ? b.play_days : [];
+          if (pd.length) {
+            const nowD = dubaiNow();
+            const overnightEarly = b.play_from && b.play_until && b.play_from > b.play_until && nowD.hm < b.play_until;
+            const day = overnightEarly ? (nowD.dow + 6) % 7 : nowD.dow;
+            if (!pd.includes(day)) return false;
+          }
+          return inWindow(b.play_from || "", b.play_until || "", dubaiNow().hm);
+        });
       const ads: any[] = [];
       for (const b of booked) {
         const url = await resolveMediaUrl(base44, b.creative_url);
