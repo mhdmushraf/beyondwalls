@@ -4,6 +4,7 @@ import MenuBoardView from './MenuBoardView';
 import UrgentOverlay from './UrgentOverlay';
 import { QRCodeSVG } from 'qrcode.react';
 import { BrandTile } from '@/components/Brand';
+import { activePrayerPause, hm } from '@/lib/prayerTimes';
 
 const QR_POS = {
   bottom_right: { bottom: '3vh', right: '2vw' },
@@ -64,6 +65,8 @@ export default function PlayerRunner({ token, onMoved }) {
   const [index, setIndex] = useState(0);
   const [blank, setBlank] = useState(false);
   const [paused, setPaused] = useState(false);
+  // Prayer pause: worked out on the device from the venue location, so it holds even with no internet.
+  const [prayer, setPrayer] = useState(null);
   const [volume, setVolume] = useState(() => Number(localStorage.getItem('bw_volume') || 0));
   const captureRef = useRef(null);
   const [displayUrl, setDisplayUrl] = useState(null);
@@ -127,17 +130,24 @@ export default function PlayerRunner({ token, onMoved }) {
     return () => { alive = false; };
   }, [current?.id, current?.url]);
 
+  useEffect(() => {
+    const check = () => setPrayer(activePrayerPause(new Date(), manifest?.prayer || null));
+    check();
+    const id = setInterval(check, 20000);
+    return () => clearInterval(id);
+  }, [manifest?.prayer]);
+
   // Advance still images on their duration.
   useEffect(() => {
     if (!current || current.type === 'video') return undefined;
-    if (paused) return undefined;
+    if (paused || prayer) return undefined;
     const timer = setTimeout(() => setIndex((value) => value + 1), (current.duration || 15) * 1000);
     return () => clearTimeout(timer);
-  }, [current?.id, index, paused]);
+  }, [current?.id, index, paused, prayer]);
 
   // Count each marketplace ad that actually starts on screen (not under an urgent takeover or blank).
   useEffect(() => {
-    if (!current?.ad || !current.booking_id || urgent || blank) return;
+    if (!current?.ad || !current.booking_id || urgent || blank || prayer) return;
     try {
       const plays = JSON.parse(localStorage.getItem('bw_ad_plays') || '{}');
       plays[current.booking_id] = (plays[current.booking_id] || 0) + 1;
@@ -269,6 +279,18 @@ export default function PlayerRunner({ token, onMoved }) {
 
   if (blank) {
     return <div className="fixed inset-0 bg-black" />;
+  }
+
+  if (prayer && !urgent) {
+    if (prayer.show === 'blank') return <div className="fixed inset-0 bg-black" />;
+    return (
+      <div className="fixed inset-0 flex flex-col items-center justify-center text-center" style={{ background: 'radial-gradient(circle at 50% 40%, #2A1F5C 0%, #100C24 70%)' }}>
+        <p className="text-[2vw] font-medium tracking-[0.3em] uppercase text-[#B9A6FF]">Prayer time</p>
+        <p className="mt-[1vh] text-[9vw] font-bold leading-none text-white" dir="rtl">{prayer.ar}</p>
+        <p className="mt-[1.5vh] text-[3.5vw] font-semibold text-white">{prayer.en}</p>
+        <p className="mt-[4vh] text-[1.8vw] text-[#B9A6FF]">Back at {hm(prayer.until)} · نعود الساعة {hm(prayer.until)}</p>
+      </div>
+    );
   }
 
   return (
