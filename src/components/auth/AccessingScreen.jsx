@@ -5,6 +5,7 @@ const STEPS = ['Account verified', 'Loading your venues & screens', 'Preparing y
 
 // Shown right after sign-in (and while the portal boots after the reload): brand + progress + skeleton of the dashboard.
 export default function AccessingScreen({ name, step = 1 }) {
+  const first = name && !/[+@]/.test(name) ? name.trim().split(' ')[0] : '';
   return (
     <div role="status" aria-label="Accessing your platform" className="fixed inset-0 z-[120] flex items-center justify-center overflow-hidden font-[Inter,system-ui,sans-serif]"
       style={{ background: 'radial-gradient(1100px 560px at 30% 20%,#2a1470 0%,rgba(42,20,112,0) 60%),linear-gradient(151deg,#140b3a 14%,#0d0a1f 54%,#2a0f6b 86%)' }}>
@@ -15,7 +16,7 @@ export default function AccessingScreen({ name, step = 1 }) {
           <BrandTile size={56} dark />
           <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.16em] text-[#b9a6ff]">BeyondWalls</p>
           <h1 className="mt-2 text-[34px] font-bold leading-[1.1] tracking-[-0.8px] text-white">
-            Accessing your<br />platform{name ? <span className="text-[#c4b5fd]">, {name.split(' ')[0]}</span> : null}
+            Accessing your<br />platform{first ? <span className="text-[#c4b5fd]">, {first}</span> : null}
           </h1>
           <ul className="mt-7 space-y-3">
             {STEPS.map((label, i) => {

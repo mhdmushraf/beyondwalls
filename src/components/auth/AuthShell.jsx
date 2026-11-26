@@ -132,8 +132,19 @@ export default function AuthShell({ children, headline, sub }) {
         <p className="relative z-10 mt-4 hidden lg:block text-[12px] text-[#7d74b0]">Dubai Internet City · UAE</p>
       </aside>
 
-      <main className="relative flex items-center justify-center px-6 py-10 lg:px-16 lg:py-12">
-        <div className="w-full max-w-[420px] flex flex-col gap-6">
+      <main className="relative flex items-center justify-center overflow-hidden px-5 py-10 lg:px-16 lg:py-12">
+        {/* Right-side decoration: soft brand light, dot grid, and a faint screen outline */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-32 -right-24 h-[420px] w-[420px] rounded-full bg-[#6f3ffd]/15 blur-[110px]" />
+          <div className="absolute -bottom-40 -left-20 h-[380px] w-[380px] rounded-full bg-[#38bdf8]/10 blur-[110px]" />
+          <div className="absolute inset-0" style={{ opacity: 0.6, backgroundImage: 'radial-gradient(rgba(90,45,237,0.13) 1px, transparent 1px)', backgroundSize: '22px 22px', maskImage: 'radial-gradient(ellipse at 50% 45%, #000 30%, transparent 78%)', WebkitMaskImage: 'radial-gradient(ellipse at 50% 45%, #000 30%, transparent 78%)' }} />
+          <div className="absolute right-10 top-10 hidden xl:block h-24 w-40 rounded-2xl border border-[#6f3ffd]/15 bg-white/40" />
+          <div className="absolute right-16 top-16 hidden xl:block h-24 w-40 rounded-2xl border border-[#6f3ffd]/10" />
+          <div className="absolute bottom-12 left-12 hidden xl:flex items-center gap-2 rounded-full bg-white/70 px-3 py-1.5 text-[11px] font-semibold text-[#5a2ded] ring-1 ring-[#e7e3f3] backdrop-blur">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Screens across the UAE, live
+          </div>
+        </div>
+        <div className="relative w-full max-w-[460px] flex flex-col gap-6 rounded-[28px] bg-white/75 p-7 sm:p-9 ring-1 ring-[#e7e3f3] shadow-[0_30px_70px_-30px_rgba(55,30,140,0.35)] backdrop-blur-xl">
           {children}
           <div className="flex items-center justify-center gap-1.5 pt-2 text-[12px] text-[#8a86a3]">
             <ShieldCheck className="h-3.5 w-3.5" /> Encrypted sign-in · Linkzone Global FZ-LLC
