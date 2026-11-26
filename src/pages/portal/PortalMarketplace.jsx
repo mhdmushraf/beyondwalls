@@ -179,9 +179,10 @@ export default function PortalMarketplace() {
       <Field label="Goal">
         <Select value={form.goal} onChange={(v) => set({ goal: v })} options={[
           { value: 'brand_awareness', label: 'Brand awareness', hint: 'Be seen' },
-          { value: 'promotion', label: 'Promote an offer', hint: 'Sales' },
-          { value: 'footfall', label: 'Bring people in', hint: 'Visits' },
-          { value: 'launch', label: 'Launch something new', hint: 'Launch' },
+          { value: 'drive_traffic', label: 'Bring people in', hint: 'Visits' },
+          { value: 'promote_event', label: 'Promote an event or offer', hint: 'Event' },
+          { value: 'product_launch', label: 'Launch a product', hint: 'Launch' },
+          { value: 'other', label: 'Something else' },
         ]} />
       </Field>
       <DateRange start={form.start_date} end={form.end_date} min={todayDubai()} error={errors.start_date || errors.end_date}
